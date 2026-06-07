@@ -1,0 +1,10 @@
+.vercel/
+
+node_modules/
+dist/
+
+*.log
+*.err
+*.tar.gz
+
+preview-*.html

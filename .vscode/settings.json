@@ -1,0 +1,10 @@
+{
+  "livePreview.defaultPreviewPath": "/preview-local.html",
+  "livePreview.hostIP": "127.0.0.1",
+  "livePreview.openPreviewTarget": "Embedded Preview",
+  "livePreview.portNumber": 3000,
+  "livePreview.serverKeepAliveAfterEmbeddedPreviewClose": 20,
+  "livePreview.useIntegratedBrowser": true,
+  "workbench.statusBar.visible": true,
+  "workbench.browser.openLocalhostLinks": true
+}
