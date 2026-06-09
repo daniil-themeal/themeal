@@ -4,6 +4,7 @@ import { createPortal } from "react-dom";
 
 import { Button } from "../common/Button";
 import { COLOR_TOKENS } from "../common/colorTokens";
+import { TEXT_TRIM_CLASS_NAME } from "../common/textTrimTokens";
 import { FONT_SIZE_TOKENS } from "../common/fontSizeTokens";
 import { MealDetailModal } from "./MealDetailModal";
 import {
@@ -367,7 +368,7 @@ export function BottomFloatTotalBlock({
             onClick={toggleMenu}
             className="flex h-[32px] cursor-pointer items-center justify-center gap-[4px] rounded-tl-[4px] rounded-tr-[4px] bg-[var(--bottom-total-tab-bg)] px-[16px]"
           >
-            <p className="text-center font-['Quicksand'] text-[length:var(--bottom-total-menu-toggle-font-size)] font-bold leading-[18px] text-[var(--bottom-total-muted)]">
+            <p className="text-center font-sans text-[length:var(--bottom-total-menu-toggle-font-size)] font-bold leading-[18px] text-[var(--bottom-total-muted)]">
               {menuOpen ? "Hide menu" : "Show menu"}
             </p>
 
@@ -458,7 +459,7 @@ export function BottomFloatTotalBlock({
                             >
                               <div className="flex w-full flex-col items-center gap-[4px]">
                                 <p
-                                  className={`font-['Quicksand'] text-[length:var(--bottom-total-date-font-size)] font-bold leading-none tracking-[-0.16px] ${
+                                  className={`font-sans text-[length:var(--bottom-total-date-font-size)] font-bold leading-none tracking-[-0.16px] ${
                                     active
                                       ? "text-[var(--bottom-total-primary)]"
                                       : "text-[var(--bottom-total-text)]"
@@ -468,7 +469,7 @@ export function BottomFloatTotalBlock({
                                 </p>
 
                                 <p
-                                  className={`font-['Quicksand'] text-[length:var(--bottom-total-small-font-size)] font-bold leading-none tracking-[-0.12px] ${
+                                  className={`font-sans text-[length:var(--bottom-total-small-font-size)] font-bold leading-none tracking-[-0.12px] ${
                                     active
                                       ? "text-[var(--bottom-total-primary)]"
                                       : "text-[var(--bottom-total-text)]"
@@ -479,7 +480,7 @@ export function BottomFloatTotalBlock({
                               </div>
 
                               <p
-                                className={`font-['Quicksand'] text-[length:var(--bottom-total-small-font-size)] font-medium leading-none tracking-[-0.12px] ${
+                                className={`font-sans text-[length:var(--bottom-total-small-font-size)] font-medium leading-none tracking-[-0.12px] ${
                                   active
                                     ? "text-[var(--bottom-total-primary-muted)]"
                                     : "text-[var(--bottom-total-muted)]"
@@ -544,7 +545,12 @@ export function BottomFloatTotalBlock({
                           />
                         </div>
 
-                        <p className="w-[150px] overflow-hidden text-ellipsis font-['Quicksand'] text-[length:var(--bottom-total-meal-title-font-size)] font-semibold leading-[140%] text-[var(--bottom-total-text)] transition-colors group-hover:text-[var(--bottom-total-primary)]">
+                        <p
+                          className={[
+                            TEXT_TRIM_CLASS_NAME,
+                            "w-[150px] font-sans text-[length:var(--bottom-total-meal-title-font-size)] font-semibold leading-[140%] text-[var(--bottom-total-text)] transition-colors group-hover:text-[var(--bottom-total-primary)]",
+                          ].join(" ")}
+                        >
                           {meal.name}
                         </p>
                       </button>
@@ -573,21 +579,21 @@ export function BottomFloatTotalBlock({
                   <div className="flex flex-1 flex-col items-center gap-[2px]">
                     <div className="flex items-end gap-[4px]">
                       {pricing.oldPeriodPrice ? (
-                        <p className="font-['Quicksand'] text-[length:var(--bottom-total-small-font-size)] font-bold text-[var(--bottom-total-muted)] line-through">
+                        <p className="font-sans text-[length:var(--bottom-total-small-font-size)] font-bold text-[var(--bottom-total-muted)] line-through">
                           {formatAed(pricing.oldPeriodPrice)}
                         </p>
                       ) : null}
 
-                      <p className="font-['Quicksand'] text-[length:var(--bottom-total-price-font-size)] font-bold leading-none text-[var(--bottom-total-primary)]">
+                      <p className="font-sans text-[length:var(--bottom-total-price-font-size)] font-bold leading-none text-[var(--bottom-total-primary)]">
                         AED
                       </p>
 
-                      <p className="font-['Quicksand'] text-[length:var(--bottom-total-price-font-size)] font-bold leading-none text-[var(--bottom-total-primary)]">
+                      <p className="font-sans text-[length:var(--bottom-total-price-font-size)] font-bold leading-none text-[var(--bottom-total-primary)]">
                         {formatAed(pricing.periodPrice)}
                       </p>
                     </div>
 
-                    <p className="font-['Quicksand'] text-[length:var(--bottom-total-small-font-size)] font-bold text-[var(--bottom-total-text)]">
+                    <p className="font-sans text-[length:var(--bottom-total-small-font-size)] font-bold text-[var(--bottom-total-text)]">
                       AED {formatPricePerDay(pricing.pricePerDay)}/day
                     </p>
                   </div>

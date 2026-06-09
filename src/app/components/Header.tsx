@@ -3,19 +3,18 @@ import type { CSSProperties } from 'react';
 import svgPaths from '../../imports/svgPaths';
 
 import { COLOR_TOKENS } from './common/designTokens';
+import { DeliveryIcon } from './common/icons/DeliveryIcon';
 
 type HeaderCssVariables = CSSProperties & {
   '--header-icon-hover': string;
 };
 
-function SupportButton({ onClick }: { onClick: () => void }) {
+function SupportButton() {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className="group relative size-[56px] shrink-0 cursor-pointer"
+    <div
+      className="relative size-[56px] shrink-0"
       data-name="SupportButton"
-      aria-label="Open delivery details"
+      aria-hidden="true"
     >
       <div className="absolute left-[calc(50%+0.03px)] top-1/2 size-[24.774px] -translate-x-1/2 -translate-y-1/2">
         <div className="absolute inset-[-0.4%_-0.4%_-0.39%_-0.4%]">
@@ -28,7 +27,6 @@ function SupportButton({ onClick }: { onClick: () => void }) {
             <g id="Frame 2685">
               <path
                 d={svgPaths.p8ea0700}
-                className="transition-colors duration-200 group-hover:fill-[var(--header-icon-hover)]"
                 fill={COLOR_TOKENS.base.white}
                 id="Vector (Stroke)"
               />
@@ -36,6 +34,61 @@ function SupportButton({ onClick }: { onClick: () => void }) {
           </svg>
         </div>
       </div>
+    </div>
+  );
+}
+
+function DeliveryDetailsButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group relative flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
+      data-name="DeliveryDetailsButton"
+      aria-label="Open delivery details"
+    >
+      <DeliveryIcon
+        size={24}
+        className="text-white transition-colors duration-200 group-hover:text-[var(--header-icon-hover)]"
+      />
+    </button>
+  );
+}
+
+function PaymentButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group relative flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
+      data-name="PaymentButton"
+      aria-label="Open payment"
+    >
+      <svg className="block size-[24px]" fill="none" viewBox="0 0 24 24" aria-hidden>
+        <rect
+          x="3"
+          y="6"
+          width="18"
+          height="12"
+          rx="2"
+          stroke={COLOR_TOKENS.base.white}
+          strokeWidth="1.75"
+          className="transition-colors duration-200 group-hover:stroke-[var(--header-icon-hover)]"
+        />
+        <path
+          d="M3 10H21"
+          stroke={COLOR_TOKENS.base.white}
+          strokeWidth="1.75"
+          className="transition-colors duration-200 group-hover:stroke-[var(--header-icon-hover)]"
+        />
+        <path
+          d="M6.5 14.5H10.5"
+          stroke={COLOR_TOKENS.base.white}
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          className="transition-colors duration-200 group-hover:stroke-[var(--header-icon-hover)]"
+        />
+      </svg>
     </button>
   );
 }
@@ -90,26 +143,32 @@ function ScrollToFooterButton() {
 }
 
 function ActionButtons({
-  onMessageClick,
+  onDeliveryDetailsClick,
+  onPaymentClick,
   onUserClick,
 }: {
-  onMessageClick: () => void;
+  onDeliveryDetailsClick: () => void;
+  onPaymentClick: () => void;
   onUserClick: () => void;
 }) {
   return (
     <div className="flex shrink-0 items-center">
       <ScrollToFooterButton />
-      <SupportButton onClick={onMessageClick} />
+      <SupportButton />
+      <DeliveryDetailsButton onClick={onDeliveryDetailsClick} />
+      <PaymentButton onClick={onPaymentClick} />
       <MyAccountButton onClick={onUserClick} />
     </div>
   );
 }
 
 export default function Header({
-  onMessageClick,
+  onDeliveryDetailsClick,
+  onPaymentClick,
   onUserClick,
 }: {
-  onMessageClick: () => void;
+  onDeliveryDetailsClick: () => void;
+  onPaymentClick: () => void;
   onUserClick: () => void;
 }) {
   const headerStyle: HeaderCssVariables = {
@@ -146,7 +205,11 @@ export default function Header({
         </svg>
       </button>
 
-      <ActionButtons onMessageClick={onMessageClick} onUserClick={onUserClick} />
+      <ActionButtons
+        onDeliveryDetailsClick={onDeliveryDetailsClick}
+        onPaymentClick={onPaymentClick}
+        onUserClick={onUserClick}
+      />
     </div>
   );
 }

@@ -6,6 +6,7 @@ export const FONT_SIZE_TOKENS = {
   25: '25px',
   32: '32px',
   40: '40px',
+  48: '48px',
 } as const;
 
 export type FontSizeTokenName = keyof typeof FONT_SIZE_TOKENS;

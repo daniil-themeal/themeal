@@ -385,10 +385,13 @@ export function SmsCodeScreen({
   };
 
   return (
-    <div className="flex min-h-full bg-[var(--sms-code-page-bg)]" style={smsCodeScreenStyle}>
-      <div className="mx-auto flex min-h-full w-full max-w-[1200px] flex-col justify-center px-[20px] py-[56px] md:px-[24px] lg:px-[32px]">
+    <div
+      className="flex min-h-full bg-white lg:bg-[var(--sms-code-page-bg)]"
+      style={smsCodeScreenStyle}
+    >
+      <div className="mx-auto flex min-h-full w-full max-w-[1200px] flex-col justify-center px-[20px] pt-[24px] md:px-[32px] lg:justify-center lg:px-[32px] lg:py-[56px]">
         <div className="mx-auto flex w-full max-w-[420px] flex-col items-center md:max-w-[520px] lg:max-w-[640px]">
-          <h1 className="text-center font-['Quicksand'] text-[length:var(--sms-code-title-font-size)] font-bold leading-[120%] text-[var(--sms-code-text)] md:text-[length:var(--sms-code-title-font-size-md)] lg:text-[length:var(--sms-code-title-font-size-lg)]">
+          <h1 className="text-center font-sans text-[length:var(--sms-code-title-font-size)] font-bold leading-[120%] text-[var(--sms-code-text)] md:text-[length:var(--sms-code-title-font-size-md)] lg:text-[length:var(--sms-code-title-font-size-lg)]">
             {mode === 'code' ? 'Enter the code from SMS' : 'Change phone number'}
           </h1>
 
@@ -428,7 +431,7 @@ export function SmsCodeScreen({
                       aria-label={`SMS code digit ${index + 1}`}
                       aria-invalid={hasError}
                       className={[
-                        'h-[72px] w-[56px] rounded-[12px] text-center font-["Quicksand"]',
+                        'h-[72px] w-[56px] rounded-[12px] text-center font-sans',
                         'text-[length:var(--sms-code-digit-font-size)] font-bold leading-none text-[var(--sms-code-text)]',
                         'outline-none ring-1 transition-colors disabled:cursor-not-allowed disabled:opacity-60',
                         'focus:ring-2 md:h-[88px] md:w-[72px] md:text-[length:var(--sms-code-digit-font-size-md)]',
@@ -443,32 +446,32 @@ export function SmsCodeScreen({
               </div>
 
               {error ? (
-                <p className="mt-[12px] text-center font-['Quicksand'] text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-danger)]">
+                <p className="mt-[12px] text-center font-sans text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-danger)]">
                   {error}
                 </p>
               ) : null}
 
-              <p className="mt-[28px] text-center font-['Quicksand'] text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-muted)]">
+              <p className="mt-[28px] text-center font-sans text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-muted)]">
                 <button
                   type="button"
                   disabled={isVerifying}
-                  className="cursor-pointer font-['Quicksand'] font-bold text-[var(--sms-code-primary)] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="cursor-pointer font-sans font-bold text-[var(--sms-code-primary)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   Send again
                 </button>{' '}
                 the code after 60 seconds
               </p>
 
-              <p className="mt-[12px] text-center font-['Quicksand'] text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-muted)]">
+              <p className="mt-[12px] text-center font-sans text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-muted)]">
                 <button
                   type="button"
                   onClick={handleChangeNumberClick}
                   disabled={isVerifying}
-                  className="cursor-pointer font-['Quicksand'] font-bold text-[var(--sms-code-primary)] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="cursor-pointer font-sans font-bold text-[var(--sms-code-primary)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   Change number
                 </button>{' '}
-                <span className="font-['Quicksand'] font-bold">
+                <span className="font-sans font-bold">
                   {formattedPhone}
                 </span>
               </p>
@@ -496,7 +499,7 @@ export function SmsCodeScreen({
                     <UaeFlag />
                   </div>
 
-                  <p className="pr-[16px] font-['Quicksand'] text-[length:var(--sms-code-phone-font-size)] font-semibold leading-[130%] text-[var(--sms-code-text)]">
+                  <p className="pr-[16px] font-sans text-[length:var(--sms-code-phone-font-size)] font-semibold leading-[130%] text-[var(--sms-code-text)]">
                     +971
                   </p>
                 </div>
@@ -511,7 +514,7 @@ export function SmsCodeScreen({
                     value={phone}
                     onChange={(event) => handlePhoneChange(event.target.value)}
                     placeholder="Type your phone"
-                    className="w-full bg-transparent font-['Quicksand'] text-[length:var(--sms-code-phone-font-size)] font-semibold text-[var(--sms-code-text)] outline-none placeholder:text-[var(--sms-code-placeholder)]"
+                    className="w-full bg-transparent font-sans text-[length:var(--sms-code-phone-font-size)] font-semibold text-[var(--sms-code-text)] outline-none placeholder:text-[var(--sms-code-placeholder)]"
                   />
                 </div>
               </div>

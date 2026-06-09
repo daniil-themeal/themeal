@@ -1,4 +1,6 @@
 import type { PointerEvent } from 'react';
+
+import { FONT_FAMILY_TOKENS } from '../../common/fontFamilyTokens';
 import {
   testDeliveryZones,
   type DeliveryAvailability,
@@ -194,7 +196,7 @@ function MapArtwork({
         y="360"
         fill="#3F5D7A"
         opacity="0.72"
-        fontFamily="Quicksand, sans-serif"
+        fontFamily={FONT_FAMILY_TOKENS.sans}
         fontWeight="700"
         fontSize="44"
       >
@@ -211,7 +213,7 @@ function MapArtwork({
         y="450"
         fill="#E92FA1"
         opacity="0.8"
-        fontFamily="Quicksand, sans-serif"
+        fontFamily={FONT_FAMILY_TOKENS.sans}
         fontWeight="700"
         fontSize="38"
       >
@@ -229,7 +231,7 @@ function MapArtwork({
         y="657"
         textAnchor="middle"
         fill="#456079"
-        fontFamily="Quicksand, sans-serif"
+        fontFamily={FONT_FAMILY_TOKENS.sans}
         fontWeight="700"
         fontSize="22"
       >
@@ -242,7 +244,7 @@ function MapArtwork({
         y="864"
         textAnchor="middle"
         fill="#456079"
-        fontFamily="Quicksand, sans-serif"
+        fontFamily={FONT_FAMILY_TOKENS.sans}
         fontWeight="700"
         fontSize="22"
       >

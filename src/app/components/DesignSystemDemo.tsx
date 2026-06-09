@@ -2,14 +2,51 @@ import { useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
 import { Badge, BADGE_VARIANTS } from './common/Badge';
-import { Button, BUTTON_SIZES, BUTTON_VARIANTS } from './common/Button';
+import { Button, BUTTON_SIZE_LABELS, BUTTON_SIZES, BUTTON_VARIANTS } from './common/Button';
 import { Checkbox } from './common/Checkbox';
+import { CHECKBOX_SIZE_LABELS, CHECKBOX_SIZES } from './common/checkboxSizeTokens';
 import { COLOR_TOKENS } from './common/colorTokens';
+import { Divider } from './common/Divider';
 import { Dropdown } from './common/Dropdown';
+import { FIELD_SIZE_LABELS, FIELD_SIZES } from './common/fieldSizeTokens';
+import { BORDER_RADIUS_TOKENS } from './common/borderRadiusTokens';
+import {
+  FONT_FAMILY_CLASS_NAMES,
+  FONT_FAMILY_TOKENS,
+  getFontFamilyStyle,
+  type FontFamilyTokenName,
+} from './common/fontFamilyTokens';
 import { FONT_SIZE_TOKENS } from './common/fontSizeTokens';
 import { FormLabel } from './common/FormLabel';
+import { InputButtonRow } from './common/InputButtonRow';
+import { PromoCodeBlock } from './common/PromoCodeBlock';
+import { PayMethodCard } from './common/PayMethodCard';
+import {
+  PAYMENT_METHODS,
+  PaymentMethodSelector,
+  type PaymentMethodId,
+} from './common/PaymentMethodSelector';
+import { PlanTariffSummary } from './common/PlanTariffSummary';
+import { getPlanTariffChips, getPlanTariffTitle } from './common/planTariffSummaryUtils';
 import { TextArea, TEXT_AREA_STATES } from './common/TextArea';
 import { TextInput, TEXT_INPUT_STATES } from './common/TextInput';
+import {
+  PAYMENT_METHOD_BRAND_ICON_IDS,
+  PAYMENT_METHOD_CARD_ICON_FILE_NAMES,
+  PAYMENT_METHOD_CARD_ICON_SHADE_MAP,
+  PAYMENT_METHOD_CARD_ICON_VARIANTS,
+  PAYMENT_METHOD_ICON_FILE_NAMES,
+  PAYMENT_METHOD_ICON_IDS,
+  PAYMENT_METHOD_ICON_LABELS,
+  PAYMENT_METHOD_ICON_SLOT_SIZE_PX,
+  PAYMENT_METHOD_ICON_TILE_SIZE_PX,
+} from './common/paymentMethodIconTokens';
+import {
+  PaymentMethodBrandIcon,
+  PaymentMethodCardIcon,
+  PaymentMethodIcon,
+} from './common/icons/PaymentMethodIcons';
+import { CheckoutHeader } from './checkout/CheckoutHeader';
 
 type DesignSystemDemoProps = {
   onClose: () => void;
@@ -21,11 +58,19 @@ type DemoAnchorId =
   | PageSectionId
   | 'color-tokens'
   | 'font-size-tokens'
+  | 'border-radius-tokens'
+  | 'payment-method-icon-tokens'
   | 'form-label'
   | 'text-input'
+  | 'input-button-row'
+  | 'promo-code-block'
   | 'text-area'
   | 'checkbox'
+  | 'divider'
   | 'dropdown'
+  | 'plan-tariff-summary'
+  | 'pay-method-card'
+  | 'payment-method-selector'
   | 'button-variants'
   | 'button-sizes'
   | 'button-icons'
@@ -50,9 +95,6 @@ type DemoCssVariables = CSSProperties & {
   '--demo-muted': string;
   '--demo-subtle': string;
   '--demo-shadow': string;
-  '--demo-close-bg': string;
-  '--demo-close-bg-hover': string;
-  '--demo-close-icon': string;
 };
 
 const demoNavigationItems: DemoNavigationItem[] = [
@@ -62,6 +104,8 @@ const demoNavigationItems: DemoNavigationItem[] = [
     children: [
       { id: 'color-tokens', label: 'Color tokens' },
       { id: 'font-size-tokens', label: 'Font size tokens' },
+      { id: 'border-radius-tokens', label: 'Border radius tokens' },
+      { id: 'payment-method-icon-tokens', label: 'Payment method icons' },
     ],
   },
   {
@@ -70,15 +114,21 @@ const demoNavigationItems: DemoNavigationItem[] = [
     children: [
       { id: 'form-label', label: 'FormLabel' },
       { id: 'text-input', label: 'TextInput' },
+      { id: 'input-button-row', label: 'InputButtonRow' },
+      { id: 'promo-code-block', label: 'PromoCodeBlock' },
+      { id: 'payment-method-selector', label: 'Payment method selector' },
       { id: 'text-area', label: 'TextArea' },
       { id: 'dropdown', label: 'Dropdown' },
       { id: 'checkbox', label: 'Checkbox' },
+      { id: 'divider', label: 'Divider' },
     ],
   },
   {
     id: 'actions',
     label: 'Actions',
     children: [
+      { id: 'plan-tariff-summary', label: 'PlanTariffSummary' },
+      { id: 'pay-method-card', label: 'PayMethodCard' },
       { id: 'button-variants', label: 'Button variants' },
       { id: 'button-sizes', label: 'Button sizes' },
       { id: 'button-icons', label: 'Button icons' },
@@ -113,9 +163,6 @@ const demoCssVariables: DemoCssVariables = {
   '--demo-muted': COLOR_TOKENS.neutral[500],
   '--demo-subtle': COLOR_TOKENS.neutral[400],
   '--demo-shadow': hexToRgba(COLOR_TOKENS.neutral[900], 0.08),
-  '--demo-close-bg': COLOR_TOKENS.neutral[50],
-  '--demo-close-bg-hover': COLOR_TOKENS.neutral[75],
-  '--demo-close-icon': COLOR_TOKENS.neutral[900],
 };
 
 function PageSection({
@@ -132,15 +179,15 @@ function PageSection({
   return (
     <section id={id} className="scroll-mt-[96px]">
       <div className="mb-[20px]">
-        <p className="mb-[6px] font-['Quicksand'] text-[12px] font-bold uppercase leading-[130%] tracking-[0.12px] text-[var(--demo-subtle)]">
+        <p className="mb-[6px] font-sans text-[12px] font-bold uppercase leading-[130%] tracking-[0.12px] text-[var(--demo-subtle)]">
           Section
         </p>
 
-        <h2 className="font-['Quicksand'] text-[32px] font-bold leading-[130%] tracking-[-0.64px] text-[var(--demo-title)]">
+        <h2 className="font-sans text-[32px] font-bold leading-[130%] tracking-[-0.64px] text-[var(--demo-title)]">
           {title}
         </h2>
 
-        <p className="mt-[6px] max-w-[640px] font-['Quicksand'] text-[16px] font-semibold leading-[150%] text-[var(--demo-muted)]">
+        <p className="mt-[6px] max-w-[640px] font-sans text-[16px] font-semibold leading-[150%] text-[var(--demo-muted)]">
           {description}
         </p>
       </div>
@@ -174,12 +221,12 @@ function DemoCard({
         .join(' ')}
     >
       <div className="mb-[20px]">
-        <h3 className="font-['Quicksand'] text-[20px] font-bold leading-[130%] text-[var(--demo-title)]">
+        <h3 className="font-sans text-[20px] font-bold leading-[130%] text-[var(--demo-title)]">
           {title}
         </h3>
 
         {description ? (
-          <p className="mt-[4px] font-['Quicksand'] text-[14px] font-semibold leading-[145%] text-[var(--demo-muted)]">
+          <p className="mt-[4px] font-sans text-[14px] font-semibold leading-[145%] text-[var(--demo-muted)]">
             {description}
           </p>
         ) : null}
@@ -192,7 +239,7 @@ function DemoCard({
 
 function DemoSubheading({ children }: { children: ReactNode }) {
   return (
-    <p className="font-['Quicksand'] text-[14px] font-semibold leading-[140%] text-[var(--demo-muted)]">
+    <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-muted)]">
       {children}
     </p>
   );
@@ -206,11 +253,35 @@ function CodeLabel({ children }: { children: ReactNode }) {
   );
 }
 
+function capitalizeWord(value: string) {
+  return value.charAt(0).toUpperCase() + value.slice(1);
+}
+
+function DemoMobileNavigation() {
+  const quickLinks = demoNavigationItems.flatMap((item) => item.children);
+
+  return (
+    <nav className="sticky top-[56px] z-20 border-b border-[var(--demo-card-border)] bg-[var(--demo-page-bg)] px-[20px] py-[12px] xl:hidden">
+      <div className="mx-auto flex max-w-[1200px] gap-[8px] overflow-x-auto pb-[2px] scrollbar-hide">
+        {quickLinks.map((link) => (
+          <a
+            key={link.id}
+            href={`#${link.id}`}
+            className="shrink-0 rounded-[999px] border border-[var(--demo-card-border)] bg-[var(--demo-card-bg)] px-[12px] py-[6px] font-sans text-[12px] font-semibold leading-[130%] text-[var(--demo-body)] transition-colors hover:bg-[var(--demo-card-soft-bg)]"
+          >
+            {link.label}
+          </a>
+        ))}
+      </div>
+    </nav>
+  );
+}
+
 function DemoNavigation() {
   return (
-    <aside className="fixed right-[20px] top-[104px] z-20 hidden w-[176px] xl:block">
+    <aside className="fixed right-[20px] top-[76px] z-20 hidden w-[176px] xl:block">
       <nav className="rounded-[18px] border border-[var(--demo-card-border)] bg-[var(--demo-card-bg)] p-[12px] shadow-[0_12px_32px_var(--demo-shadow)]">
-        <p className="mb-[8px] px-[10px] font-['Quicksand'] text-[12px] font-bold uppercase leading-[130%] tracking-[0.12px] text-[var(--demo-subtle)]">
+        <p className="mb-[8px] px-[10px] font-sans text-[12px] font-bold uppercase leading-[130%] tracking-[0.12px] text-[var(--demo-subtle)]">
           Sections
         </p>
 
@@ -219,7 +290,7 @@ function DemoNavigation() {
             <div key={item.id} className="flex flex-col gap-[2px]">
               <a
                 href={`#${item.id}`}
-                className="rounded-[10px] px-[10px] py-[8px] font-['Quicksand'] text-[14px] font-bold leading-[130%] text-[var(--demo-body)] transition-colors hover:bg-[var(--demo-card-soft-bg)]"
+                className="rounded-[10px] px-[10px] py-[8px] font-sans text-[14px] font-bold leading-[130%] text-[var(--demo-body)] transition-colors hover:bg-[var(--demo-card-soft-bg)]"
               >
                 {item.label}
               </a>
@@ -229,7 +300,7 @@ function DemoNavigation() {
                   <a
                     key={child.id}
                     href={`#${child.id}`}
-                    className="rounded-[8px] px-[8px] py-[6px] font-['Quicksand'] text-[12px] font-semibold leading-[130%] text-[var(--demo-muted)] transition-colors hover:bg-[var(--demo-card-soft-bg)] hover:text-[var(--demo-body)]"
+                    className="rounded-[8px] px-[8px] py-[6px] font-sans text-[12px] font-semibold leading-[130%] text-[var(--demo-muted)] transition-colors hover:bg-[var(--demo-card-soft-bg)] hover:text-[var(--demo-body)]"
                   >
                     {child.label}
                   </a>
@@ -259,11 +330,11 @@ function ColorTokenRow({
       />
 
       <div className="flex min-w-0 flex-1 items-baseline justify-between gap-[12px]">
-        <span className="font-['Quicksand'] text-[14px] font-bold leading-[130%] text-[var(--demo-body)]">
+        <span className="font-sans text-[14px] font-bold leading-[130%] text-[var(--demo-body)]">
           {name}
         </span>
 
-        <span className="font-['Quicksand'] text-[12px] font-semibold leading-[130%] text-[var(--demo-muted)]">
+        <span className="font-sans text-[12px] font-semibold leading-[130%] text-[var(--demo-muted)]">
           {value}
         </span>
       </div>
@@ -291,6 +362,43 @@ function ColorPalette({
   );
 }
 
+function FontFamilyTokenRow({
+  token,
+  value,
+}: {
+  token: FontFamilyTokenName;
+  value: string;
+}) {
+  const utilityClass =
+    FONT_FAMILY_CLASS_NAMES[token as keyof typeof FONT_FAMILY_CLASS_NAMES];
+
+  return (
+    <div className="flex flex-col gap-[8px] rounded-[12px] bg-[var(--demo-card-soft-bg)] p-[16px]">
+      <div className="flex items-baseline justify-between gap-[12px]">
+        <DemoSubheading>
+          <CodeLabel>{`FONT_FAMILY_TOKENS.${token}`}</CodeLabel>
+        </DemoSubheading>
+
+        <span className="font-sans text-[12px] font-semibold leading-[130%] text-[var(--demo-muted)]">
+          {utilityClass ?? 'style'}
+        </span>
+      </div>
+
+      <p
+        className={[
+          utilityClass,
+          'text-[20px] font-bold leading-[130%] text-[var(--demo-body)]',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        style={utilityClass ? undefined : getFontFamilyStyle(token)}
+      >
+        {value}
+      </p>
+    </div>
+  );
+}
+
 function FontSizeTokenRow({
   token,
   value,
@@ -305,17 +413,135 @@ function FontSizeTokenRow({
           <CodeLabel>{`FONT_SIZE_TOKENS[${token}]`}</CodeLabel>
         </DemoSubheading>
 
-        <span className="font-['Quicksand'] text-[12px] font-semibold leading-[130%] text-[var(--demo-muted)]">
+        <span className="font-sans text-[12px] font-semibold leading-[130%] text-[var(--demo-muted)]">
           {value}
         </span>
       </div>
 
       <p
-        className="font-['Quicksand'] font-bold leading-[130%] text-[var(--demo-body)]"
+        className="font-sans font-bold leading-[130%] text-[var(--demo-body)]"
         style={{ fontSize: value }}
       >
-        Quicksand {value}
+        The quick brown fox {value}
       </p>
+    </div>
+  );
+}
+
+function getBorderRadiusTokenLabel(token: string) {
+  return token === 'full'
+    ? "BORDER_RADIUS_TOKENS['full']"
+    : `BORDER_RADIUS_TOKENS[${token}]`;
+}
+
+function BorderRadiusTokenRow({
+  token,
+  value,
+}: {
+  token: string;
+  value: string;
+}) {
+  return (
+    <div className="flex flex-col gap-[8px] rounded-[12px] bg-[var(--demo-card-soft-bg)] p-[16px]">
+      <div className="flex items-baseline justify-between gap-[12px]">
+        <DemoSubheading>
+          <CodeLabel>{getBorderRadiusTokenLabel(token)}</CodeLabel>
+        </DemoSubheading>
+
+        <span className="font-sans text-[12px] font-semibold leading-[130%] text-[var(--demo-muted)]">
+          {value}
+        </span>
+      </div>
+
+      <div
+        className="h-[56px] w-full border border-[var(--demo-card-border)] bg-[var(--demo-subtle)]"
+        style={{ borderRadius: value }}
+      />
+    </div>
+  );
+}
+
+function PaymentMethodCardIconTokenRow({
+  variant,
+}: {
+  variant: (typeof PAYMENT_METHOD_CARD_ICON_VARIANTS)[number];
+}) {
+  const shades = PAYMENT_METHOD_CARD_ICON_SHADE_MAP[variant];
+
+  return (
+    <div className="flex items-center gap-[16px] rounded-[12px] bg-[var(--demo-card-soft-bg)] p-[16px]">
+      <div
+        className="flex shrink-0 items-center justify-center rounded-[8px] border border-[var(--demo-card-border)] bg-[var(--demo-card-bg)]"
+        style={{
+          width: PAYMENT_METHOD_ICON_SLOT_SIZE_PX,
+          height: PAYMENT_METHOD_ICON_SLOT_SIZE_PX,
+        }}
+      >
+        <PaymentMethodCardIcon variant={variant} />
+      </div>
+
+      <div className="flex min-w-0 flex-1 flex-col gap-[4px]">
+        <DemoSubheading>
+          <CodeLabel>{`PAYMENT_METHOD_CARD_ICON_VARIANTS · "${variant}"`}</CodeLabel>
+        </DemoSubheading>
+
+        <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+          {PAYMENT_METHOD_ICON_LABELS.card}
+        </p>
+
+        <p className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-muted)]">
+          {PAYMENT_METHOD_CARD_ICON_FILE_NAMES[variant]}
+        </p>
+
+        <p className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-muted)]">
+          {`fill ${shades.fill} · stripe ${shades.stripe}`}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function PaymentMethodIconTokenRow({
+  id,
+  variant = 'tile',
+}: {
+  id: (typeof PAYMENT_METHOD_ICON_IDS)[number] | (typeof PAYMENT_METHOD_BRAND_ICON_IDS)[number];
+  variant?: 'tile' | 'brand-badge';
+}) {
+  const tokenLabel =
+    variant === 'brand-badge'
+      ? `PAYMENT_METHOD_BRAND_ICON_IDS · "${id}"`
+      : `PAYMENT_METHOD_ICON_IDS · "${id}"`;
+
+  return (
+    <div className="flex items-center gap-[16px] rounded-[12px] bg-[var(--demo-card-soft-bg)] p-[16px]">
+      <div
+        className="flex shrink-0 items-center justify-center rounded-[8px] border border-[var(--demo-card-border)] bg-[var(--demo-card-bg)]"
+        style={{
+          width: PAYMENT_METHOD_ICON_SLOT_SIZE_PX,
+          height: PAYMENT_METHOD_ICON_SLOT_SIZE_PX,
+        }}
+      >
+        {variant === 'brand-badge' ? (
+          <PaymentMethodBrandIcon brand={id} />
+        ) : (
+          <PaymentMethodIcon method={id} />
+        )}
+      </div>
+
+      <div className="flex min-w-0 flex-1 flex-col gap-[4px]">
+        <DemoSubheading>
+          <CodeLabel>{tokenLabel}</CodeLabel>
+        </DemoSubheading>
+
+        <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+          {PAYMENT_METHOD_ICON_LABELS[id]}
+        </p>
+
+        <p className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-muted)]">
+          {PAYMENT_METHOD_ICON_FILE_NAMES[id]}
+        </p>
+      </div>
     </div>
   );
 }
@@ -329,58 +555,34 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
   const [instructions, setInstructions] = useState(
     'Tower B, gate 2 from main road, blue door at end of hallway',
   );
+  const [promoCode, setPromoCode] = useState('');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>('card');
 
   return (
     <div
       className="fixed inset-0 z-50 overflow-auto bg-[var(--demo-page-bg)]"
       style={demoCssVariables}
     >
-      <div className="sticky top-0 z-30 border-b border-[var(--demo-card-border)] bg-[var(--demo-card-bg)]">
-        <div className="mx-auto flex max-w-[1200px] items-center justify-between px-[20px] py-[16px] xl:mr-[216px]">
-          <div>
-            <h1 className="font-['Quicksand'] text-[25px] font-bold leading-[130%] text-[var(--demo-title)]">
-              Design System Demo
-            </h1>
-
-            <p className="mt-[4px] font-['Quicksand'] text-[14px] font-semibold leading-[140%] text-[var(--demo-muted)]">
-              Foundations, form controls, and actions
-            </p>
-          </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="group flex size-[48px] shrink-0 cursor-pointer items-center justify-center"
-            aria-label="Close design system demo"
-          >
-            <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--demo-close-bg)] text-[var(--demo-close-icon)] transition-colors duration-150 group-hover:bg-[var(--demo-close-bg-hover)]">
-              <svg
-                width="12"
-                height="12"
-                viewBox="0 0 12 12"
-                fill="none"
-                aria-hidden="true"
-                focusable="false"
-              >
-                <path
-                  d="M1 1L11 11M11 1L1 11"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </span>
-          </button>
-        </div>
+      <div className="sticky top-0 z-30 shrink-0">
+        <CheckoutHeader
+          title="Design System Demo"
+          closeAriaLabel="Close design system demo"
+          onBack={() => undefined}
+          onClose={onClose}
+        />
       </div>
 
+      <DemoMobileNavigation />
       <DemoNavigation />
 
       <main className="mx-auto flex max-w-[1200px] flex-col gap-[56px] px-[20px] py-[48px] xl:mr-[216px]">
+        <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-muted)]">
+          Foundations, form controls, and actions
+        </p>
         <PageSection
           id="foundations"
           title="Foundations"
-          description="Base design tokens used by components. These are raw palettes and primitive font-size tokens, not full component styles."
+          description="Base design tokens used by components. These are raw palettes and primitive scales, not full component styles."
         >
           <DemoCard
             id="color-tokens"
@@ -411,6 +613,57 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
               ))}
             </div>
           </DemoCard>
+
+          <DemoCard
+            id="font-family-tokens"
+            title="Font family tokens"
+            description="Quicksand is the primary brand font. Arial is the fallback across the project."
+            className="lg:col-span-2"
+          >
+            <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
+              {(
+                Object.entries(FONT_FAMILY_TOKENS) as Array<
+                  [FontFamilyTokenName, string]
+                >
+              ).map(([token, value]) => (
+                <FontFamilyTokenRow key={token} token={token} value={value} />
+              ))}
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="border-radius-tokens"
+            title="Border radius tokens"
+            description="Current approved primitive border-radius scale: 2 / 4 / 8 / 12 / 16 / 24 / 32 / full."
+            className="lg:col-span-2"
+          >
+            <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
+              {Object.entries(BORDER_RADIUS_TOKENS).map(([token, value]) => (
+                <BorderRadiusTokenRow key={token} token={token} value={value} />
+              ))}
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="payment-method-icon-tokens"
+            title="Payment method icon tokens"
+            description={`Figma Property 1 tiles (${PAYMENT_METHOD_ICON_TILE_SIZE_PX}×${PAYMENT_METHOD_ICON_TILE_SIZE_PX}) centered in a ${PAYMENT_METHOD_ICON_SLOT_SIZE_PX}×${PAYMENT_METHOD_ICON_SLOT_SIZE_PX} slot.`}
+            className="lg:col-span-2"
+          >
+            <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
+              {PAYMENT_METHOD_CARD_ICON_VARIANTS.map((variant) => (
+                <PaymentMethodCardIconTokenRow key={variant} variant={variant} />
+              ))}
+
+              {PAYMENT_METHOD_ICON_IDS.filter((id) => id !== 'card').map((id) => (
+                <PaymentMethodIconTokenRow key={id} id={id} />
+              ))}
+
+              {PAYMENT_METHOD_BRAND_ICON_IDS.map((id) => (
+                <PaymentMethodIconTokenRow key={id} id={id} variant="brand-badge" />
+              ))}
+            </div>
+          </DemoCard>
         </PageSection>
 
         <PageSection
@@ -426,7 +679,33 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
             </div>
           </DemoCard>
 
-          <DemoCard id="text-input" title="TextInput">
+          <DemoCard
+            id="text-input"
+            title="TextInput"
+            description="Sizes: small (40px) and large (48px, default)."
+          >
+            <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
+              {FIELD_SIZES.map((size) => (
+                <div key={size} className="flex flex-col gap-[8px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`size="${size}"`}</CodeLabel>
+                    <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-muted)]">
+                      {` · ${FIELD_SIZE_LABELS[size]}`}
+                    </span>
+                  </DemoSubheading>
+
+                  <TextInput
+                    id={`demo-email-${size}`}
+                    size={size}
+                    label="E-mail *"
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
+                    placeholder="email@themeal.menu"
+                  />
+                </div>
+              ))}
+            </div>
+
             <TextInput
               id="demo-email"
               label="E-mail *"
@@ -480,16 +759,10 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
             />
 
             <TextInput
-              id="demo-both-icons"
-              label="Left + right icon"
+              id="demo-right-icon"
+              label="With right icon"
               value="email@themeal.menu"
               onChange={() => undefined}
-              leftIcon={
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
-                  <rect x="2.5" y="4.5" width="15" height="11" rx="1.5" stroke="currentColor" strokeWidth="1.5" />
-                  <path d="M2.5 7l7.138 4.545a.833.833 0 0 0 .724 0L17.5 7" stroke="currentColor" strokeWidth="1.5" />
-                </svg>
-              }
               rightIcon={
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
                   <circle cx="9" cy="9" r="6" stroke="currentColor" strokeWidth="1.5" />
@@ -499,7 +772,112 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
             />
           </DemoCard>
 
-          <DemoCard id="text-area" title="TextArea">
+          <DemoCard
+            id="input-button-row"
+            title="InputButtonRow"
+            description="Primitive row: TextInput and Button aligned to the bottom. Compose into higher-level blocks such as PromoCodeBlock."
+          >
+            <InputButtonRow
+              input={
+                <TextInput
+                  id="demo-input-button-row"
+                  label="Field label"
+                  placeholder="Placeholder"
+                />
+              }
+              action={
+                <Button type="button" variant="neutral" size="48" className="w-full sm:w-[140px]">
+                  Action
+                </Button>
+              }
+            />
+          </DemoCard>
+
+          <DemoCard
+            id="promo-code-block"
+            title="PromoCodeBlock"
+            description="Checkout promo code section built from FormLabel, TextInput, PromoCodeIcon, InputButtonRow, and Button."
+          >
+            <PromoCodeBlock
+              id="demo-promo-code"
+              value={promoCode}
+              onChange={setPromoCode}
+            />
+          </DemoCard>
+
+          <DemoCard
+            id="payment-method-selector"
+            title="PaymentMethodSelector"
+            description="Selectable payment method row with icon, title, optional subtitle, and radio check indicator."
+            className="lg:col-span-2"
+          >
+            <div className="flex flex-col gap-[16px]">
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>default</CodeLabel>
+                </DemoSubheading>
+
+                {PAYMENT_METHODS.map((method) => (
+                  <PaymentMethodSelector
+                    key={method}
+                    method={method}
+                    selected={paymentMethod === method}
+                    onSelect={() => setPaymentMethod(method)}
+                  />
+                ))}
+              </div>
+
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>disabled</CodeLabel>
+                </DemoSubheading>
+
+                <PaymentMethodSelector
+                  method="apple-pay"
+                  selected={false}
+                  disabled
+                  onSelect={() => undefined}
+                />
+
+                <PaymentMethodSelector
+                  method="tabby"
+                  selected={false}
+                  disabled
+                  onSelect={() => undefined}
+                />
+              </div>
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="text-area"
+            title="TextArea"
+            description="Sizes: small (14px text) and large (16px text, default)."
+          >
+            <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
+              {FIELD_SIZES.map((size) => (
+                <div key={size} className="flex flex-col gap-[8px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`size="${size}"`}</CodeLabel>
+                    <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-muted)]">
+                      {` · ${FIELD_SIZE_LABELS[size]}`}
+                    </span>
+                  </DemoSubheading>
+
+                  <TextArea
+                    id={`demo-instructions-${size}`}
+                    size={size}
+                    label="How can the courier find you?"
+                    value={instructions}
+                    onChange={(event) => setInstructions(event.target.value)}
+                    placeholder="Add delivery instructions"
+                    rows={4}
+                    counter={`${instructions.length}/500`}
+                  />
+                </div>
+              ))}
+            </div>
+
             <TextArea
               id="demo-instructions"
               label="How can the courier find you?"
@@ -538,8 +916,35 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           <DemoCard
             id="dropdown"
             title="Dropdown"
-            description="Select-based field. Chevron always on right; left icon optional."
+            description="Select-based field. Sizes: small and large (default). Chevron always on right; left icon optional."
           >
+            <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
+              {FIELD_SIZES.map((size) => (
+                <div key={size} className="flex flex-col gap-[8px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`size="${size}"`}</CodeLabel>
+                    <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-muted)]">
+                      {` · ${FIELD_SIZE_LABELS[size]}`}
+                    </span>
+                  </DemoSubheading>
+
+                  <Dropdown
+                    id={`demo-dropdown-size-${size}`}
+                    size={size}
+                    label="Subscription duration"
+                    placeholder="Select duration…"
+                    value={dropdownValue}
+                    onChange={setDropdownValue}
+                    options={[
+                      { value: 'weekly', label: 'Weekly' },
+                      { value: 'monthly', label: 'Monthly' },
+                      { value: '2months', label: '2 months' },
+                    ]}
+                  />
+                </div>
+              ))}
+            </div>
+
             <Dropdown
               id="demo-dropdown-default"
               label="Subscription duration"
@@ -615,8 +1020,28 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           <DemoCard
             id="checkbox"
             title="Checkbox"
-            description="Four states: unchecked, checked, disabled unchecked, disabled checked."
+            description="Sizes: small (16×16, 12px label, 4px gap) and large (20×20, 16px label, 8px gap, default)."
           >
+            <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
+              {CHECKBOX_SIZES.map((size) => (
+                <div key={size} className="flex flex-col gap-[8px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`size="${size}"`}</CodeLabel>
+                    <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-muted)]">
+                      {` · ${CHECKBOX_SIZE_LABELS[size]}`}
+                    </span>
+                  </DemoSubheading>
+
+                  <Checkbox
+                    size={size}
+                    checked={checkboxChecked}
+                    onChange={setCheckboxChecked}
+                    label="Leave the bag at the door"
+                  />
+                </div>
+              ))}
+            </div>
+
             <div className="flex flex-col gap-[8px]">
               <DemoSubheading><CodeLabel>unchecked</CodeLabel></DemoSubheading>
               <Checkbox checked={false} onChange={() => undefined} label="Leave the bag at the door" />
@@ -647,17 +1072,176 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
               />
             </div>
           </DemoCard>
+
+          <DemoCard
+            id="divider"
+            title="Divider"
+            description="Horizontal 1px separator with no built-in margin or padding. Default color is neutral[100]. Spacing is controlled by the parent."
+          >
+            <div className="flex flex-col gap-[20px]">
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>default</CodeLabel>
+                </DemoSubheading>
+
+                <div className="flex flex-col rounded-[12px] border border-[var(--demo-card-border)] p-[16px]">
+                  <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+                    Content above
+                  </p>
+                  <Divider />
+                  <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+                    Content below
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>parent gap-[16px]</CodeLabel>
+                </DemoSubheading>
+
+                <div className="flex flex-col gap-[16px] rounded-[12px] border border-[var(--demo-card-border)] p-[16px]">
+                  <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+                    Content above
+                  </p>
+                  <Divider />
+                  <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+                    Content below
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>{`color={COLOR_TOKENS.neutral[200]}`}</CodeLabel>
+                </DemoSubheading>
+
+                <div className="flex flex-col rounded-[12px] border border-[var(--demo-card-border)] p-[16px]">
+                  <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+                    Content above
+                  </p>
+                  <Divider color={COLOR_TOKENS.neutral[200]} />
+                  <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+                    Content below
+                  </p>
+                </div>
+              </div>
+            </div>
+          </DemoCard>
         </PageSection>
 
         <PageSection
           id="actions"
           title="Actions"
-          description="Button variants, size tokens, and icon behavior grouped in one place."
+          description="Button variants, size tokens, selection cards, and icon behavior grouped in one place."
         >
+          <DemoCard
+            id="plan-tariff-summary"
+            title="PlanTariffSummary"
+            description="Plan title with option chips. Used in order summary and payment review."
+          >
+            <div className="flex flex-col gap-[12px]">
+              <PlanTariffSummary
+                title={getPlanTariffTitle('base')}
+                chips={getPlanTariffChips({
+                  plan: 'base',
+                  days: 'weekdays',
+                  duration: 'monthly',
+                  ingredients: ['no-fish'],
+                  lightMealOption: 'lunch-dinner',
+                })}
+              />
+
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>with Edit action</CodeLabel>
+                </DemoSubheading>
+
+                <PlanTariffSummary
+                  title={getPlanTariffTitle('base')}
+                  chips={getPlanTariffChips({
+                    plan: 'base',
+                    days: 'weekdays',
+                    duration: 'monthly',
+                    ingredients: [],
+                    lightMealOption: 'lunch-dinner',
+                  })}
+                  actionLabel="Edit"
+                  onAction={() => undefined}
+                />
+              </div>
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="pay-method-card"
+            title="PayMethodCard"
+            description="Full-width selectable row for payment methods, delivery address, and similar pickers."
+          >
+            <div className="flex flex-col gap-[12px]">
+              <PayMethodCard
+                title="Debit/Credit Card"
+                leftIcon={
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                    <rect x="1.5" y="4.5" width="17" height="11" rx="2" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M1.5 8.5H18.5" stroke="currentColor" strokeWidth="1.5" />
+                  </svg>
+                }
+                actionLabel="✓"
+                onClick={() => undefined}
+              />
+
+              <PayMethodCard
+                title="Dubai Creek Harbour Residences"
+                subtitle="Dubai Creek Harbour, Dubai, United Arab Emirates"
+                actionLabel="Change"
+                leftIcon={
+                  <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+                    <path
+                      d="M10 1.667A5.833 5.833 0 0 0 4.167 7.5C4.167 12.083 10 18.333 10 18.333s5.833-6.25 5.833-10.833A5.833 5.833 0 0 0 10 1.667Z"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      fill="none"
+                    />
+                    <circle cx="10" cy="7.5" r="2" stroke="currentColor" strokeWidth="1.5" fill="none" />
+                  </svg>
+                }
+                onClick={() => undefined}
+              />
+
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>with subtitle</CodeLabel>
+                </DemoSubheading>
+
+                <PayMethodCard
+                  title="Tabby"
+                  subtitle="4 payments, 0% interest"
+                  onClick={() => undefined}
+                  actionLabel={null}
+                />
+              </div>
+
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>disabled</CodeLabel>
+                </DemoSubheading>
+
+                <PayMethodCard
+                  title="Delivery address"
+                  subtitle="Select your delivery address"
+                  actionLabel="Change"
+                  disabled
+                  onClick={() => undefined}
+                />
+              </div>
+            </div>
+          </DemoCard>
+
           <DemoCard
             id="button-variants"
             title="Button variants"
-            description="Token-based variants. Do not add structural variants without a real design source."
+            description="Color variants with filled and outline styles. Outline uses transparent background and 1px border in the same palette."
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {BUTTON_VARIANTS.map((variant) => (
@@ -667,11 +1251,19 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                   </DemoSubheading>
 
                   <Button variant={variant} fullWidth>
-                    {variant} Button
+                    {capitalizeWord(variant)} Button
                   </Button>
 
                   <Button variant={variant} fullWidth disabled>
-                    {variant} Disabled
+                    {capitalizeWord(variant)} Disabled
+                  </Button>
+
+                  <Button variant={variant} outline fullWidth>
+                    {capitalizeWord(variant)} Outline
+                  </Button>
+
+                  <Button variant={variant} outline fullWidth disabled>
+                    {capitalizeWord(variant)} Outline Disabled
                   </Button>
                 </div>
               ))}
@@ -681,17 +1273,20 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           <DemoCard
             id="button-sizes"
             title="Button sizes"
-            description="Only agreed pixel size tokens are allowed: 32 / 40 / 48 / 64 / 80. The old 56px Figma Make button size is intentionally excluded."
+            description="Agreed size tokens: Small 32 / Medium 40 / Large 48 / Extra large 64 / Hero 80. Border radius: Small & Medium 4 / Large & Extra large 8 / Hero 12."
           >
             <div className="flex flex-col gap-[16px]">
               {BUTTON_SIZES.map((size) => (
                 <div key={size} className="flex flex-col gap-[8px]">
                   <DemoSubheading>
                     <CodeLabel>{`size="${size}"`}</CodeLabel>
+                    <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-muted)]">
+                      {` · ${BUTTON_SIZE_LABELS[size]}`}
+                    </span>
                   </DemoSubheading>
 
                   <Button size={size} fullWidth>
-                    {size}px Button
+                    {BUTTON_SIZE_LABELS[size]} Button
                   </Button>
                 </div>
               ))}
@@ -701,7 +1296,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           <DemoCard
             id="button-icons"
             title="Button icons"
-            description="Icon size is controlled by button size, not by the icon component itself."
+            description="One icon per button: left or right. Icon size is controlled by button size."
           >
             <div className="flex flex-col gap-[12px]">
               <Button
@@ -718,7 +1313,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                   </svg>
                 }
               >
-                leftIcon
+                Left icon
               </Button>
 
               <Button
@@ -736,27 +1331,17 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                   </svg>
                 }
               >
-                rightIcon
+                Right icon
               </Button>
 
               <Button
-                variant="neutral"
+                variant="primary"
+                outline
                 fullWidth
                 leftIcon={
                   <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
                     <path
-                      d="M12 5v14M5 12h14"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                }
-                rightIcon={
-                  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                    <path
-                      d="M9 18l6-6-6-6"
+                      d="M5 12h14M13 6l6 6-6 6"
                       stroke="currentColor"
                       strokeWidth="2"
                       strokeLinecap="round"
@@ -765,7 +1350,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                   </svg>
                 }
               >
-                leftIcon + rightIcon
+                Outline + left icon
               </Button>
             </div>
           </DemoCard>
@@ -781,9 +1366,9 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
             title="Badge variants"
             description="Two semantic variants tied to business intent — not generic color aliases."
           >
-            <div className="flex flex-col gap-[16px]">
+            <div className="flex flex-wrap items-end gap-[24px]">
               {BADGE_VARIANTS.map((variant) => (
-                <div key={variant} className="flex flex-col gap-[8px]">
+                <div key={variant} className="flex w-fit flex-col gap-[8px]">
                   <DemoSubheading>
                     <CodeLabel>{`variant="${variant}"`}</CodeLabel>
                   </DemoSubheading>

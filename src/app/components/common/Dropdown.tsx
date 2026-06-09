@@ -1,13 +1,14 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
-import { Fragment } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
-import { Divider } from './Divider';
-import { FONT_SIZE_TOKENS } from './fontSizeTokens';
+import {
+  FIELD_SIZE_CONFIG,
+  getFieldSizeStyle,
+  type FieldSize,
+} from './fieldSizeTokens';
 import { FormLabel } from './FormLabel';
-
-// ─── Types ────────────────────────────────────────────────────────────────────
+import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
 export type DropdownOption = {
   value: string;
@@ -18,8 +19,6 @@ export type DropdownOption = {
 export const DROPDOWN_STATES = ['default', 'focus', 'success', 'error'] as const;
 export type DropdownState = (typeof DROPDOWN_STATES)[number];
 
-// ─── Tokens ───────────────────────────────────────────────────────────────────
-
 type DropdownCssVariables = CSSProperties & {
   '--dropdown-bg': string;
   '--dropdown-border': string;
@@ -27,8 +26,6 @@ type DropdownCssVariables = CSSProperties & {
   '--dropdown-text': string;
   '--dropdown-placeholder': string;
   '--dropdown-icon': string;
-  '--dropdown-font-size': string;
-  '--dropdown-supporting-font-size': string;
 };
 
 const FIELD_STATE_STYLES: Record<DropdownState, DropdownCssVariables> = {
@@ -39,8 +36,6 @@ const FIELD_STATE_STYLES: Record<DropdownState, DropdownCssVariables> = {
     '--dropdown-text': COLOR_TOKENS.neutral[900],
     '--dropdown-placeholder': COLOR_TOKENS.neutral[200],
     '--dropdown-icon': COLOR_TOKENS.neutral[400],
-    '--dropdown-font-size': FONT_SIZE_TOKENS[16],
-    '--dropdown-supporting-font-size': FONT_SIZE_TOKENS[12],
   },
   focus: {
     '--dropdown-bg': COLOR_TOKENS.neutral[50],
@@ -49,8 +44,6 @@ const FIELD_STATE_STYLES: Record<DropdownState, DropdownCssVariables> = {
     '--dropdown-text': COLOR_TOKENS.neutral[900],
     '--dropdown-placeholder': COLOR_TOKENS.neutral[200],
     '--dropdown-icon': COLOR_TOKENS.neutral[400],
-    '--dropdown-font-size': FONT_SIZE_TOKENS[16],
-    '--dropdown-supporting-font-size': FONT_SIZE_TOKENS[12],
   },
   success: {
     '--dropdown-bg': COLOR_TOKENS.success[50],
@@ -59,8 +52,6 @@ const FIELD_STATE_STYLES: Record<DropdownState, DropdownCssVariables> = {
     '--dropdown-text': COLOR_TOKENS.neutral[900],
     '--dropdown-placeholder': COLOR_TOKENS.neutral[200],
     '--dropdown-icon': COLOR_TOKENS.neutral[400],
-    '--dropdown-font-size': FONT_SIZE_TOKENS[16],
-    '--dropdown-supporting-font-size': FONT_SIZE_TOKENS[12],
   },
   error: {
     '--dropdown-bg': COLOR_TOKENS.danger[50],
@@ -69,18 +60,14 @@ const FIELD_STATE_STYLES: Record<DropdownState, DropdownCssVariables> = {
     '--dropdown-text': COLOR_TOKENS.neutral[900],
     '--dropdown-placeholder': COLOR_TOKENS.neutral[200],
     '--dropdown-icon': COLOR_TOKENS.neutral[400],
-    '--dropdown-font-size': FONT_SIZE_TOKENS[16],
-    '--dropdown-supporting-font-size': FONT_SIZE_TOKENS[12],
   },
 };
 
-// ─── Icons ────────────────────────────────────────────────────────────────────
-
-function ChevronIcon() {
+function ChevronIcon({ size }: { size: number }) {
   return (
     <svg
-      width="20"
-      height="20"
+      width={size}
+      height={size}
       viewBox="0 0 20 20"
       fill="none"
       aria-hidden
@@ -97,9 +84,9 @@ function ChevronIcon() {
   );
 }
 
-function CheckIcon() {
+function CheckIcon({ size }: { size: number }) {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" aria-hidden>
       <path
         d="M3 8l3.5 3.5 6.5-7"
         stroke="currentColor"
@@ -111,15 +98,14 @@ function CheckIcon() {
   );
 }
 
-// ─── Icon slot (shared with TextInput proportions) ────────────────────────────
-
-const iconSlotCls =
-  'flex w-[48px] shrink-0 self-stretch items-center justify-center [&>svg]:h-[24px] [&>svg]:w-[24px] [&>svg]:shrink-0';
-
-// ─── Props ────────────────────────────────────────────────────────────────────
+const iconSlotClassName = [
+  'flex w-[length:var(--field-icon-slot-width)] shrink-0 self-stretch items-center justify-center',
+  '[&>svg]:h-[length:var(--field-icon-size)] [&>svg]:w-[length:var(--field-icon-size)] [&>svg]:shrink-0',
+].join(' ');
 
 type DropdownProps = {
   label: ReactNode;
+  size?: FieldSize;
   options: DropdownOption[];
   value: string;
   onChange: (value: string) => void;
@@ -134,10 +120,9 @@ type DropdownProps = {
   fieldClassName?: string;
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
 export function Dropdown({
   label,
+  size = 'large',
   options,
   value,
   onChange,
@@ -155,31 +140,29 @@ export function Dropdown({
   const fieldState = hasError ? 'error' : (explicitState ?? 'default');
   const fieldVars = FIELD_STATE_STYLES[fieldState];
   const descriptionId = id && (error || hint) ? `${id}-description` : undefined;
+  const sizeConfig = FIELD_SIZE_CONFIG[size];
+  const chevronSize = sizeConfig.iconSizePx;
+  const checkIconSize = Math.min(sizeConfig.iconSizePx, 20);
 
   return (
     <div
       className={['flex w-full flex-col gap-[8px]', containerClassName].filter(Boolean).join(' ')}
-      style={fieldVars}
+      style={{
+        ...getFieldSizeStyle(size),
+        ...fieldVars,
+      }}
     >
-      {/* Label */}
-      <div className="px-[2px]">
-        <FormLabel as="label" htmlFor={id} className="flex-1">
-          {label}
-        </FormLabel>
-      </div>
+      <FormLabel as="label" htmlFor={id} className="px-[2px]">
+        {label}
+      </FormLabel>
 
-      {/* Field */}
-      <SelectPrimitive.Root
-        value={value}
-        onValueChange={onChange}
-        disabled={disabled}
-      >
+      <SelectPrimitive.Root value={value} onValueChange={onChange} disabled={disabled}>
         <SelectPrimitive.Trigger
           id={id}
           aria-describedby={descriptionId}
           aria-invalid={hasError || undefined}
           className={[
-            'group flex w-full items-stretch overflow-hidden rounded-[8px] border outline-none',
+            'group flex w-full items-stretch rounded-[length:var(--field-border-radius)] border outline-none',
             'border-[var(--dropdown-border)] bg-[var(--dropdown-bg)]',
             'transition-colors',
             'data-[state=open]:border-[var(--dropdown-open-border)]',
@@ -190,92 +173,92 @@ export function Dropdown({
             .filter(Boolean)
             .join(' ')}
         >
-          {/* Left icon */}
           {leftIcon ? (
-            <span
-              className={iconSlotCls}
-              style={{ color: 'var(--dropdown-icon)' }}
-            >
+            <span className={iconSlotClassName} style={{ color: 'var(--dropdown-icon)' }}>
               {leftIcon}
             </span>
           ) : null}
 
-          {/* Value / placeholder */}
           <span
-            className="flex h-[48px] min-w-0 flex-1 items-center px-[16px] text-left font-['Quicksand'] text-[length:var(--dropdown-font-size)] font-semibold leading-[130%]"
+            className={[
+              TEXT_TRIM_CLASS_NAME,
+              'flex h-[length:var(--field-height)] min-w-0 flex-1 items-center text-left font-sans text-[length:var(--field-font-size)] font-semibold leading-[130%]',
+              leftIcon
+                ? 'pr-[length:var(--field-horizontal-padding)]'
+                : 'pl-[length:var(--field-horizontal-padding)]',
+            ].join(' ')}
             style={{
               color: value ? 'var(--dropdown-text)' : 'var(--dropdown-placeholder)',
-              paddingLeft: leftIcon ? '0' : undefined,
             }}
           >
             <SelectPrimitive.Value placeholder={placeholder} />
           </span>
 
-          {/* Chevron */}
           <SelectPrimitive.Icon asChild>
             <span
-              className={[iconSlotCls, 'pointer-events-none'].join(' ')}
+              className={[iconSlotClassName, 'pointer-events-none'].join(' ')}
               style={{ color: 'var(--dropdown-icon)' }}
             >
-              <ChevronIcon />
+              <ChevronIcon size={chevronSize} />
             </span>
           </SelectPrimitive.Icon>
         </SelectPrimitive.Trigger>
 
-        {/* Dropdown content */}
         <SelectPrimitive.Portal>
           <SelectPrimitive.Content
             position="popper"
             sideOffset={4}
-            className="z-[300] w-[var(--radix-select-trigger-width)] overflow-hidden rounded-[12px] outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
+            className="z-[300] w-[var(--radix-select-trigger-width)] overflow-hidden rounded-[length:var(--field-border-radius)] outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
             style={{
+              ...getFieldSizeStyle(size),
               backgroundColor: COLOR_TOKENS.base.white,
               boxShadow: '0 12px 32px rgba(47,56,70,0.16)',
             }}
           >
             <SelectPrimitive.Viewport>
-              {options.map((opt, index) => (
-                <Fragment key={opt.value}>
-                  {index > 0 && (
-                    <div aria-hidden>
-                      <Divider color={COLOR_TOKENS.neutral[100]} />
-                    </div>
-                  )}
-                  <SelectPrimitive.Item
-                    value={opt.value}
-                    disabled={opt.disabled}
-                    className="flex w-full cursor-pointer select-none items-center justify-between px-[16px] py-[12px] outline-none transition-colors data-[disabled]:pointer-events-none data-[highlighted]:bg-[var(--item-hover-bg)] data-[disabled]:opacity-40"
-                    style={
-                      {
-                        '--item-hover-bg': COLOR_TOKENS.neutral[50],
-                        color: COLOR_TOKENS.neutral[900],
-                      } as CSSProperties
-                    }
-                  >
-                    <SelectPrimitive.ItemText>
-                      <span className="font-['Quicksand'] text-[length:var(--dropdown-font-size)] font-semibold leading-[130%]">
-                        {opt.label}
-                      </span>
-                    </SelectPrimitive.ItemText>
+              {options.map((opt) => (
+                <SelectPrimitive.Item
+                  key={opt.value}
+                  value={opt.value}
+                  disabled={opt.disabled}
+                  className="flex h-[length:var(--field-height)] w-full cursor-pointer select-none items-center justify-between px-[length:var(--field-horizontal-padding)] outline-none transition-colors data-[disabled]:pointer-events-none data-[highlighted]:bg-[var(--item-hover-bg)] data-[disabled]:opacity-40"
+                  style={
+                    {
+                      '--item-hover-bg': COLOR_TOKENS.neutral[50],
+                      color: COLOR_TOKENS.neutral[900],
+                    } as CSSProperties
+                  }
+                >
+                  <SelectPrimitive.ItemText>
+                    <span
+                      className={[
+                        TEXT_TRIM_CLASS_NAME,
+                        'font-sans text-[length:var(--field-font-size)] font-semibold leading-[130%]',
+                      ].join(' ')}
+                    >
+                      {opt.label}
+                    </span>
+                  </SelectPrimitive.ItemText>
 
-                    <SelectPrimitive.ItemIndicator>
-                      <span style={{ color: COLOR_TOKENS.primary[500] }}>
-                        <CheckIcon />
-                      </span>
-                    </SelectPrimitive.ItemIndicator>
-                  </SelectPrimitive.Item>
-                </Fragment>
+                  <SelectPrimitive.ItemIndicator>
+                    <span style={{ color: COLOR_TOKENS.primary[500] }}>
+                      <CheckIcon size={checkIconSize} />
+                    </span>
+                  </SelectPrimitive.ItemIndicator>
+                </SelectPrimitive.Item>
               ))}
             </SelectPrimitive.Viewport>
           </SelectPrimitive.Content>
         </SelectPrimitive.Portal>
       </SelectPrimitive.Root>
 
-      {/* Error / hint */}
       {error || hint ? (
         <p
           id={descriptionId}
-          className="px-[2px] font-['Quicksand'] text-[length:var(--dropdown-supporting-font-size)] font-semibold leading-[150%]"
+          className={[
+            TEXT_TRIM_CLASS_NAME,
+            'px-[2px] font-sans text-[length:var(--field-supporting-font-size)] font-semibold leading-[150%]',
+          ].join(' ')}
           style={{
             color: hasError ? COLOR_TOKENS.danger[400] : COLOR_TOKENS.neutral[500],
           }}

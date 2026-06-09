@@ -62,7 +62,7 @@ export function OutOfAreaContactNotice({
       style={outOfAreaContactStyle}
     >
       <div className="flex items-center gap-[16px]">
-        <p className="min-w-0 flex-1 font-['Quicksand'] text-[length:var(--out-of-area-notice-font-size)] font-medium leading-[135%] text-[var(--out-of-area-text)]">
+        <p className="min-w-0 flex-1 font-sans text-[length:var(--out-of-area-notice-font-size)] font-medium leading-[135%] text-[var(--out-of-area-text)]">
           Not in your area yet. Leave your details, and we’ll contact you when we deliver there.
         </p>
 
@@ -141,7 +141,7 @@ export function OutOfAreaContactForm({ isOpen, onClose }: OutOfAreaContactFormPr
 
         <h2
           id="contact-me-modal-title"
-          className="font-['Quicksand'] text-[length:var(--out-of-area-title-font-size)] font-bold leading-[125%] text-[var(--out-of-area-text)]"
+          className="font-sans text-[length:var(--out-of-area-title-font-size)] font-bold leading-[125%] text-[var(--out-of-area-text)]"
         >
           Leave your contact information and we will decide where to send your order.
         </h2>

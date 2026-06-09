@@ -4,6 +4,7 @@ import type { Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
 import { Badge } from '../common/Badge';
 import type { BadgeVariant } from '../common/Badge';
+import { Chip } from '../common/Chip';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 
@@ -69,7 +70,6 @@ type PlanSelectorBlockCssVariables = CSSProperties & {
   '--plan-selector-card-title-font-size-md': string;
   '--plan-selector-card-meta-font-size': string;
   '--plan-selector-card-meta-font-size-md': string;
-  '--plan-selector-chip-font-size': string;
   '--plan-selector-radio-font-size': string;
   '--plan-selector-nutrition-font-size': string;
   '--plan-selector-text': string;
@@ -78,9 +78,6 @@ type PlanSelectorBlockCssVariables = CSSProperties & {
   '--plan-selector-card-bg': string;
   '--plan-selector-card-selected-bg': string;
   '--plan-selector-card-selected-border': string;
-  '--plan-selector-chip-border': string;
-  '--plan-selector-chip-selected-border': string;
-  '--plan-selector-chip-text': string;
   '--plan-selector-radio-bg': string;
   '--plan-selector-radio-selected-bg': string;
   '--plan-selector-radio-dot': string;
@@ -92,7 +89,6 @@ const planSelectorBlockStyle: PlanSelectorBlockCssVariables = {
   '--plan-selector-card-title-font-size-md': FONT_SIZE_TOKENS[20],
   '--plan-selector-card-meta-font-size': FONT_SIZE_TOKENS[12],
   '--plan-selector-card-meta-font-size-md': FONT_SIZE_TOKENS[14],
-  '--plan-selector-chip-font-size': FONT_SIZE_TOKENS[12],
   '--plan-selector-radio-font-size': FONT_SIZE_TOKENS[12],
   '--plan-selector-nutrition-font-size': FONT_SIZE_TOKENS[12],
   '--plan-selector-text': COLOR_TOKENS.neutral[900],
@@ -101,9 +97,6 @@ const planSelectorBlockStyle: PlanSelectorBlockCssVariables = {
   '--plan-selector-card-bg': COLOR_TOKENS.base.white,
   '--plan-selector-card-selected-bg': COLOR_TOKENS.primary[50],
   '--plan-selector-card-selected-border': COLOR_TOKENS.primary[200],
-  '--plan-selector-chip-border': COLOR_TOKENS.neutral[100],
-  '--plan-selector-chip-selected-border': COLOR_TOKENS.primary[200],
-  '--plan-selector-chip-text': COLOR_TOKENS.neutral[700],
   '--plan-selector-radio-bg': COLOR_TOKENS.neutral[50],
   '--plan-selector-radio-selected-bg': COLOR_TOKENS.primary[100],
   '--plan-selector-radio-dot': COLOR_TOKENS.primary[500],
@@ -145,7 +138,7 @@ function PlanCard({
           <div className="flex flex-[1_0_0] items-center gap-[4px]">
             <p
               className={[
-                "font-['Quicksand'] text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]",
+                "font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]",
                 selected ? 'text-[var(--plan-selector-active)]' : 'text-[var(--plan-selector-text)]',
               ].join(' ')}
             >
@@ -154,7 +147,7 @@ function PlanCard({
 
             <p
               className={[
-                "whitespace-nowrap font-['Quicksand'] text-[length:var(--plan-selector-card-title-font-size)] font-medium leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]",
+                "whitespace-nowrap font-sans text-[length:var(--plan-selector-card-title-font-size)] font-medium leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]",
                 selected ? 'text-[var(--plan-selector-active)]' : 'text-[var(--plan-selector-text)]',
               ].join(' ')}
             >
@@ -163,11 +156,11 @@ function PlanCard({
           </div>
 
           <div className="flex items-baseline gap-[4px] text-right text-[var(--plan-selector-active)]">
-            <p className="font-['Quicksand'] text-[length:var(--plan-selector-card-meta-font-size)] font-medium leading-[130%] md:text-[length:var(--plan-selector-card-meta-font-size-md)]">
+            <p className="font-sans text-[length:var(--plan-selector-card-meta-font-size)] font-medium leading-[130%] md:text-[length:var(--plan-selector-card-meta-font-size-md)]">
               from
             </p>
 
-            <p className="whitespace-nowrap text-right font-['Quicksand'] text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]">
+            <p className="whitespace-nowrap text-right font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]">
               {plan.pricePerDay}/day
             </p>
           </div>
@@ -175,26 +168,9 @@ function PlanCard({
 
         <div className="flex flex-wrap items-center gap-[4px] text-center">
           {visibleChips.map((chip) => (
-            <div
-              key={chip}
-              className={[
-                'flex items-center justify-center rounded-[80px] border border-solid px-[5px] py-[4px]',
-                selected
-                  ? 'border-[var(--plan-selector-chip-selected-border)]'
-                  : 'border-[var(--plan-selector-chip-border)]',
-              ].join(' ')}
-            >
-              <p
-                className={[
-                  "whitespace-nowrap font-['Quicksand'] text-[length:var(--plan-selector-chip-font-size)] font-normal leading-[130%]",
-                  selected
-                    ? 'text-[var(--plan-selector-active)]'
-                    : 'text-[var(--plan-selector-chip-text)]',
-                ].join(' ')}
-              >
-                {chip}
-              </p>
-            </div>
+            <Chip key={chip} variant={selected ? 'selected' : 'default'}>
+              {chip}
+            </Chip>
           ))}
         </div>
 
@@ -230,7 +206,7 @@ function PlanCard({
                     ) : null}
                   </span>
 
-                  <span className="font-['Quicksand'] text-[length:var(--plan-selector-radio-font-size)] font-medium leading-[130%] text-[var(--plan-selector-text)]">
+                  <span className="font-sans text-[length:var(--plan-selector-radio-font-size)] font-medium leading-[130%] text-[var(--plan-selector-text)]">
                     {option.label}
                   </span>
                 </span>
@@ -245,21 +221,21 @@ function PlanCard({
             selected ? 'text-[var(--plan-selector-active)]' : 'text-[var(--plan-selector-muted)]',
           ].join(' ')}
         >
-          <p className="font-['Quicksand'] text-[length:var(--plan-selector-nutrition-font-size)] font-medium leading-[140%]">
+          <p className="font-sans text-[length:var(--plan-selector-nutrition-font-size)] font-medium leading-[140%]">
             {plan.kcal} Kcal
           </p>
 
           <div className="gap-[6px]" />
 
-          <p className="font-['Quicksand'] text-[length:var(--plan-selector-nutrition-font-size)] font-medium leading-[140%]">
+          <p className="font-sans text-[length:var(--plan-selector-nutrition-font-size)] font-medium leading-[140%]">
             Proteins: {plan.proteins}g
           </p>
 
-          <p className="font-['Quicksand'] text-[length:var(--plan-selector-nutrition-font-size)] font-medium leading-[140%]">
+          <p className="font-sans text-[length:var(--plan-selector-nutrition-font-size)] font-medium leading-[140%]">
             Fats: {plan.fats}g
           </p>
 
-          <p className="font-['Quicksand'] text-[length:var(--plan-selector-nutrition-font-size)] font-medium leading-[140%]">
+          <p className="font-sans text-[length:var(--plan-selector-nutrition-font-size)] font-medium leading-[140%]">
             Carbs: {plan.carbs}g
           </p>
         </div>
@@ -284,7 +260,7 @@ export function PlanSelectorBlock({
       className="flex w-full flex-col items-start gap-[16px]"
       style={planSelectorBlockStyle}
     >
-      <p className="w-full px-[4px] font-['Quicksand'] text-[length:var(--plan-selector-title-font-size)] font-bold leading-[130%] text-[var(--plan-selector-text)]">
+      <p className="w-full px-[4px] font-sans text-[length:var(--plan-selector-title-font-size)] font-bold leading-[130%] text-[var(--plan-selector-text)]">
         Choose your plan
       </p>
 

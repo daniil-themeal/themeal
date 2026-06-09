@@ -60,6 +60,12 @@ export default function App() {
     setCheckoutOpen(true);
   };
 
+  const openPayment = () => {
+    setInitialCheckoutStep('payment');
+    setInitialDeliveryStep('details');
+    setCheckoutOpen(true);
+  };
+
   const closeCheckout = () => {
     setCheckoutOpen(false);
   };
@@ -92,7 +98,11 @@ export default function App() {
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
-          <Header onMessageClick={openDeliveryDetails} onUserClick={openDesignSystem} />
+          <Header
+            onDeliveryDetailsClick={openDeliveryDetails}
+            onPaymentClick={openPayment}
+            onUserClick={openDesignSystem}
+          />
         </div>
       </div>
 

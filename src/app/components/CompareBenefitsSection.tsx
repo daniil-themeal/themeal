@@ -259,8 +259,8 @@ function CompareItem({ Icon, label, value }: CompareItemData) {
       </IconWrapper>
 
       <div className="content-stretch flex flex-[1_0_0] sm:flex-none md:flex-none lg:flex-1 flex-col gap-[4px] sm:items-center md:items-center lg:items-start sm:w-full md:w-full lg:w-auto leading-[1.3] min-w-0 relative text-[#383e48]">
-        <p className="font-['Quicksand:Medium',sans-serif] text-[14px] md:text-[16px] w-full">{label}</p>
-        <p className="font-['Quicksand:Bold',sans-serif] text-[16px] md:text-[20px] w-full">{value}</p>
+        <p className="font-quicksand-medium text-[14px] md:text-[16px] w-full">{label}</p>
+        <p className="font-quicksand-bold text-[16px] md:text-[20px] w-full">{value}</p>
       </div>
     </div>
   );
@@ -344,7 +344,7 @@ function BenefitsCard({ card }: { card: CardConfig }) {
       <div className="flex flex-col gap-[24px] md:gap-[32px] items-center relative shrink-0 w-full">
         <div className="flex flex-col gap-[4px] items-center relative shrink-0 w-full text-center">
           {card.title}
-          <p className={`font-['Quicksand:SemiBold',sans-serif] leading-none text-[16px] md:text-[20px] w-full ${card.subtitleColor}`}>{card.subtitle}</p>
+          <p className={`font-quicksand-semibold leading-none text-[16px] md:text-[20px] w-full ${card.subtitleColor}`}>{card.subtitle}</p>
         </div>
 
         {/* ЗДЕСЬ ИДЕТ ЦИКЛ ВЫВОДА ЭЛЕМЕНТОВ С ИКОНКАМИ */}
@@ -356,8 +356,8 @@ function BenefitsCard({ card }: { card: CardConfig }) {
       </div>
 
       <div className={`flex flex-col gap-[4px] md:gap-[12px] items-center leading-[1.3] text-center w-full mt-auto ${card.totalColor}`}>
-        <p className="font-['Quicksand:Medium',sans-serif] text-[14px] sm:text-[16px] md:text-[20px] w-full">{card.totalLabel}</p>
-        <p className="font-['Quicksand:Bold',sans-serif] text-[20px] md:text-[25px] w-full">{card.totalValue}</p>
+        <p className="font-quicksand-medium text-[14px] sm:text-[16px] md:text-[20px] w-full">{card.totalLabel}</p>
+        <p className="font-quicksand-bold text-[20px] md:text-[25px] w-full">{card.totalValue}</p>
       </div>
     </div>
   );
@@ -368,7 +368,7 @@ export default function CompareBenefitsSection() {
     <div className="bg-[#f3f4f7] relative shrink-0 w-full flex justify-center section-spacing-y section-spacing-x">
       <div className="flex flex-col items-center rounded-[inherit] justify-center size-full maxWidth">
         <div className="content-stretch flex flex-col gap-[32px] md:gap-[48px] lg:gap-[64px] items-center relative size-full">
-          <h2 className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] text-[#383e48] text-center h2-title w-full">
+          <h2 className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold text-[#383e48] text-center h2-title w-full">
             Compare your benefits
           </h2>
 
@@ -379,10 +379,10 @@ export default function CompareBenefitsSection() {
           </div>
 
           <div className="content-stretch flex flex-col gap-[24px] md:gap-[32px] lg:gap-[40px] items-center relative max-w-[600px] shrink-0 w-full">
-            <p className="font-['Quicksand:Bold',sans-serif] leading-[1.5] text-[#383e48] text-[20px] md:text-[25px] lg:text-[32px] text-center w-full">
+            <p className="font-quicksand-bold leading-[1.5] text-[#383e48] text-[20px] md:text-[25px] lg:text-[32px] text-center w-full">
               Find out how much time and Money you really spend on food
             </p>
-            <button className="btn flex items-center justify-center gap-[6px] px-[28px] lg:px-[40px] bg-[#9a38ef] hover:bg-[#8C33D9] transition-all duration-200 shadow-[0_4px_20px_rgba(140,51,217,0.35)] hover:shadow-[0_8px_32px_rgba(140,51,217,0.55)] hover:-translate-y-[2px] relative rounded-[8px] shrink-0 w-full sm:w-auto cursor-pointer font-['Quicksand:Bold',sans-serif] text-[20px] lg:text-[25px] text-center text-white whitespace-nowrap">
+            <button className="btn flex items-center justify-center gap-[6px] px-[28px] lg:px-[40px] bg-[#9a38ef] hover:bg-[#8C33D9] transition-all duration-200 shadow-[0_4px_20px_rgba(140,51,217,0.35)] hover:shadow-[0_8px_32px_rgba(140,51,217,0.55)] hover:-translate-y-[2px] relative rounded-[8px] shrink-0 w-full sm:w-auto cursor-pointer font-quicksand-bold text-[20px] lg:text-[25px] text-center text-white whitespace-nowrap">
               Take the 2-minute test
             </button>
           </div>

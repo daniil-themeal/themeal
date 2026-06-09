@@ -33,9 +33,9 @@ const BADGE_LABELS: Record<BadgeVariant, string> = {
 };
 
 const baseClassName = [
-  'inline-flex items-center justify-center',
+  'inline-flex w-fit self-start items-center justify-center',
   'rounded-full px-[4px] py-[2px]',
-  "font-['Quicksand'] text-[11px] font-semibold leading-none whitespace-nowrap",
+  "font-sans text-[11px] font-semibold leading-none whitespace-nowrap",
   'bg-[var(--badge-bg)] text-[var(--badge-text)]',
 ].join(' ');
 

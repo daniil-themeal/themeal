@@ -3,11 +3,11 @@ import svgPaths from "../../imports/svgPaths";
 function H2TitleContaner() {
   return (
     <div className="h2-title-row content-end flex flex-wrap items-end justify-center relative shrink-0 w-full">
-      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] not-italic relative shrink-0 text-[#383e48] h2-title text-center whitespace-nowrap">
+      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold not-italic relative shrink-0 text-[#383e48] h2-title text-center whitespace-nowrap">
         How
       </p>
 
-      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] not-italic relative shrink-0 text-[#383e48] h2-title text-center whitespace-nowrap">
+      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold not-italic relative shrink-0 text-[#383e48] h2-title text-center whitespace-nowrap">
         does
       </p>
 
@@ -30,7 +30,7 @@ function H2TitleContaner() {
         </svg>
       </div>
 
-      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] not-italic relative shrink-0 text-[#383e48] h2-title text-center whitespace-nowrap">
+      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold not-italic relative shrink-0 text-[#383e48] h2-title text-center whitespace-nowrap">
         work?
       </p>
     </div>
@@ -82,7 +82,7 @@ function Stage() {
   return (
     <div className="content-stretch flex flex-col flex-1 gap-[12px] items-center relative shrink-0 w-full">
       <Stage1Icon />
-      <p className="[word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-[1.4] min-w-full not-italic relative shrink-0 text-[#383e48] text-[20px] sm:text-[20px] md:text-[25px] text-center w-[min-content]">
+      <p className="[word-break:break-word] font-quicksand-bold leading-[1.4] min-w-full not-italic relative shrink-0 text-[#383e48] text-[20px] sm:text-[20px] md:text-[25px] text-center w-[min-content]">
         We prepare tasty and nutritious food
       </p>
     </div>
@@ -124,7 +124,7 @@ function Stage1() {
   return (
     <div className="content-stretch flex flex-col flex-1 gap-[12px] items-center relative shrink-0 w-full">
       <Stage2Icon />
-      <p className="[word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-[1.4] min-w-full not-italic relative shrink-0 text-[#383e48] text-[20px] sm:text-[20px] md:text-[25px] text-center w-[min-content]">
+      <p className="[word-break:break-word] font-quicksand-bold leading-[1.4] min-w-full not-italic relative shrink-0 text-[#383e48] text-[20px] sm:text-[20px] md:text-[25px] text-center w-[min-content]">
         We deliver free of charge within 3-hour slots twice a week
       </p>
     </div>
@@ -191,7 +191,7 @@ function Stage2() {
   return (
     <div className="content-stretch flex flex-col flex-1 gap-[12px] items-center relative shrink-0 w-full">
       <Stage3Icon />
-      <p className="[word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-[1.4] min-w-full not-italic relative shrink-0 text-[#383e48] text-[20px] sm:text-[20px] md:text-[25px] text-center w-[min-content]">
+      <p className="[word-break:break-word] font-quicksand-bold leading-[1.4] min-w-full not-italic relative shrink-0 text-[#383e48] text-[20px] sm:text-[20px] md:text-[25px] text-center w-[min-content]">
         Just heat and enjoy your food
       </p>
     </div>

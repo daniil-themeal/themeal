@@ -88,7 +88,7 @@ function DayChip({
         chipClassName,
       ].join(' ')}
     >
-      <p className="text-center font-['Quicksand'] text-[length:var(--days-chip-font-size)] font-medium leading-[130%]">
+      <p className="text-center font-sans text-[length:var(--days-chip-font-size)] font-medium leading-[130%]">
         {label}
       </p>
     </div>
@@ -121,7 +121,7 @@ function DayCard({
       <div className="flex flex-col items-start gap-[8px] p-[20px] md:px-[24px]">
         <p
           className={[
-            'w-full font-["Quicksand"] text-[length:var(--days-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--days-card-title-font-size-md)]',
+            'w-full font-sans text-[length:var(--days-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--days-card-title-font-size-md)]',
             selected ? 'text-[var(--days-card-selected-text)]' : 'text-[var(--days-text)]',
           ].join(' ')}
         >
@@ -156,11 +156,11 @@ export function DaysBlock({
       style={daysBlockStyle}
     >
       <div className="flex w-full flex-col gap-[2px] px-[4px]">
-        <p className="font-['Quicksand'] text-[length:var(--days-title-font-size)] font-bold leading-[130%] text-[var(--days-text)] md:text-[length:var(--days-title-font-size-md)]">
+        <p className="font-sans text-[length:var(--days-title-font-size)] font-bold leading-[130%] text-[var(--days-text)] md:text-[length:var(--days-title-font-size-md)]">
           Which days do you eat with us?
         </p>
 
-        <p className="font-['Quicksand'] text-[length:var(--days-description-font-size)] font-medium leading-[130%] text-[var(--days-text)] md:text-[length:var(--days-description-font-size-md)]">
+        <p className="font-sans text-[length:var(--days-description-font-size)] font-medium leading-[130%] text-[var(--days-text)] md:text-[length:var(--days-description-font-size-md)]">
           Pick the days you want meals ready. Custom days cost the same per day.
         </p>
       </div>

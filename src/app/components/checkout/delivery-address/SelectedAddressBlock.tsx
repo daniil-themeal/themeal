@@ -28,7 +28,7 @@ export function SelectedAddressBlock({
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="font-['Quicksand:SemiBold',sans-serif] text-[16px] leading-[1.35] text-[#8594ac]">
+        <p className="font-quicksand-semibold text-[16px] leading-[1.35] text-[#8594ac]">
           {address.title}, {address.subtitle}
         </p>
       </div>

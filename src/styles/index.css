@@ -98,7 +98,7 @@
   }
 
   .compare-card-title-text {
-    @apply font-['Quicksand:Bold',sans-serif] leading-none text-[25px] md:text-[32px] tracking-[-0.75px] text-center;
+    @apply font-quicksand-bold leading-none text-[25px] md:text-[32px] tracking-[-0.75px] text-center;
   }
 
   .compare-card-logo {
@@ -133,7 +133,7 @@
     font-size: var(--compare-title-fs);
     line-height: var(--compare-title-lh);
 
-    @apply [text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] not-italic relative shrink-0 text-[#7dd336] text-center whitespace-nowrap;
+    @apply [text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold not-italic relative shrink-0 text-[#7dd336] text-center whitespace-nowrap;
   }
 
   .compare-section-title-logo {
@@ -155,7 +155,7 @@
   .badge {
     @apply absolute rounded-[999px] px-[4px] text-[11px] whitespace-nowrap z-[1] py-[2px];
 
-    font-family: "Quicksand:SemiBold", sans-serif;
+    font-family: var(--font-family-quicksand-semibold);
   }
 
   .scrollbar-hide {

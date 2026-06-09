@@ -1,26 +1,35 @@
 import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
-import { FONT_SIZE_TOKENS } from './fontSizeTokens';
+import { getFieldSizeStyle, type FieldSize } from './fieldSizeTokens';
 import { FormLabel } from './FormLabel';
+import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
 export const TEXT_INPUT_STATES = ['default', 'focus', 'success', 'error'] as const;
 
 export type TextInputState = (typeof TEXT_INPUT_STATES)[number];
 
-type TextInputProps = {
+type TextInputBaseProps = {
   label: ReactNode;
+  size?: FieldSize;
   error?: ReactNode;
   hint?: ReactNode;
   counter?: ReactNode;
-  leftIcon?: ReactNode;
-  rightIcon?: ReactNode;
   state?: TextInputState;
   containerClassName?: string;
   labelClassName?: string;
   fieldClassName?: string;
   className?: string;
-} & Omit<ComponentPropsWithoutRef<'input'>, 'className'>;
+};
+
+type TextInputIconProps =
+  | { leftIcon?: ReactNode; rightIcon?: never }
+  | { leftIcon?: never; rightIcon?: ReactNode }
+  | { leftIcon?: never; rightIcon?: never };
+
+type TextInputProps = TextInputBaseProps &
+  TextInputIconProps &
+  Omit<ComponentPropsWithoutRef<'input'>, 'className'>;
 
 type TextInputCssVariables = CSSProperties & {
   '--text-input-bg': string;
@@ -28,16 +37,6 @@ type TextInputCssVariables = CSSProperties & {
   '--text-input-focus-border': string;
   '--text-input-text': string;
   '--text-input-placeholder': string;
-};
-
-type TextInputTypographyVariables = CSSProperties & {
-  '--text-input-font-size': string;
-  '--text-input-supporting-font-size': string;
-};
-
-const textInputTypographyStyle: TextInputTypographyVariables = {
-  '--text-input-font-size': FONT_SIZE_TOKENS[16],
-  '--text-input-supporting-font-size': FONT_SIZE_TOKENS[12],
 };
 
 const FIELD_STATE_STYLES: Record<TextInputState, TextInputCssVariables> = {
@@ -75,23 +74,42 @@ const FIELD_STATE_STYLES: Record<TextInputState, TextInputCssVariables> = {
 };
 
 const fieldBaseClassName = [
-  'flex w-full items-stretch overflow-hidden rounded-[8px] border',
+  'flex w-full items-stretch rounded-[length:var(--field-border-radius)] border',
   'border-[var(--text-input-border)] bg-[var(--text-input-bg)]',
   'transition-colors',
   'focus-within:border-[var(--text-input-focus-border)]',
 ].join(' ');
 
 const inputBaseClassName = [
-  "h-[48px] min-w-0 flex-1 bg-transparent px-[16px] font-['Quicksand']",
-  'text-[length:var(--text-input-font-size)] font-semibold leading-[130%] text-[var(--text-input-text)]',
+  TEXT_TRIM_CLASS_NAME,
+  "h-[length:var(--field-height)] min-w-0 flex-1 bg-transparent font-sans",
+  'text-[length:var(--field-font-size)] font-semibold leading-[130%] text-[var(--text-input-text)]',
   'outline-none placeholder:text-[var(--text-input-placeholder)]',
   'disabled:cursor-not-allowed',
 ].join(' ');
 
+function getInputPaddingClassName({
+  leftIcon,
+  rightIcon,
+}: {
+  leftIcon?: ReactNode;
+  rightIcon?: ReactNode;
+}) {
+  if (leftIcon) {
+    return 'pr-[length:var(--field-horizontal-padding)]';
+  }
+
+  if (rightIcon) {
+    return 'pl-[length:var(--field-horizontal-padding)]';
+  }
+
+  return 'px-[length:var(--field-horizontal-padding)]';
+}
+
 const iconSlotClassName = [
-  'flex w-[48px] shrink-0 self-stretch items-center justify-center',
-  '[&>svg]:h-[24px] [&>svg]:w-[24px] [&>svg]:shrink-0',
-  '[&>img]:h-[24px] [&>img]:w-[24px] [&>img]:shrink-0',
+  'flex w-[length:var(--field-icon-slot-width)] shrink-0 self-stretch items-center justify-center',
+  '[&>svg]:h-[length:var(--field-icon-size)] [&>svg]:w-[length:var(--field-icon-size)] [&>svg]:shrink-0',
+  '[&>img]:h-[length:var(--field-icon-size)] [&>img]:w-[length:var(--field-icon-size)] [&>img]:shrink-0',
 ].join(' ');
 
 function getFieldState({
@@ -122,6 +140,7 @@ function getFieldClassName({
 
 export function TextInput({
   label,
+  size = 'large',
   error,
   hint,
   counter,
@@ -140,31 +159,38 @@ export function TextInput({
   const hasError = Boolean(error);
   const fieldState = getFieldState({ explicitState, hasError });
   const descriptionId = id && (error || hint) ? `${id}-description` : undefined;
+  const showLabelRow = Boolean(label) || Boolean(counter);
 
   return (
     <div
-      className={['flex w-full flex-col gap-[8px]', containerClassName]
+      className={[
+        'flex w-full flex-col',
+        showLabelRow ? 'gap-[8px]' : '',
+        containerClassName,
+      ]
         .filter(Boolean)
         .join(' ')}
-      style={textInputTypographyStyle}
+      style={getFieldSizeStyle(size)}
     >
-      <div className="flex items-baseline gap-[3px] px-[2px]">
-        <FormLabel
-          htmlFor={id}
-          className={['flex-1', labelClassName].filter(Boolean).join(' ')}
-        >
-          {label}
-        </FormLabel>
-
-        {counter ? (
-          <span
-            className="font-['Quicksand'] text-[length:var(--text-input-supporting-font-size)] font-semibold leading-[120%] tracking-[0.12px]"
-            style={{ color: COLOR_TOKENS.neutral[500] }}
+      {showLabelRow ? (
+        <div className="flex items-baseline gap-[3px] px-[2px]">
+          <FormLabel
+            htmlFor={id}
+            className={['flex-1', labelClassName].filter(Boolean).join(' ')}
           >
-            {counter}
-          </span>
-        ) : null}
-      </div>
+            {label}
+          </FormLabel>
+
+          {counter ? (
+            <span
+              className="shrink-0 font-sans text-[length:var(--field-supporting-font-size)] font-semibold leading-[120%] tracking-[0.12px]"
+              style={{ color: COLOR_TOKENS.neutral[500] }}
+            >
+              {counter}
+            </span>
+          ) : null}
+        </div>
+      ) : null}
 
       <div
         className={getFieldClassName({
@@ -173,25 +199,48 @@ export function TextInput({
         })}
         style={FIELD_STATE_STYLES[fieldState]}
       >
-        {leftIcon ? <span className={iconSlotClassName}>{leftIcon}</span> : null}
+        {leftIcon ? (
+          <span
+            className={iconSlotClassName}
+            style={{ color: COLOR_TOKENS.neutral[500] }}
+          >
+            {leftIcon}
+          </span>
+        ) : null}
 
         <input
           id={id}
           disabled={disabled}
           aria-invalid={hasError || undefined}
           aria-describedby={descriptionId}
-          className={[inputBaseClassName, className].filter(Boolean).join(' ')}
+          className={[
+            inputBaseClassName,
+            getInputPaddingClassName({ leftIcon, rightIcon }),
+            className,
+          ]
+            .filter(Boolean)
+            .join(' ')}
           style={style}
           {...inputProps}
         />
 
-        {rightIcon ? <span className={iconSlotClassName}>{rightIcon}</span> : null}
+        {rightIcon ? (
+          <span
+            className={iconSlotClassName}
+            style={{ color: COLOR_TOKENS.neutral[500] }}
+          >
+            {rightIcon}
+          </span>
+        ) : null}
       </div>
 
       {error || hint ? (
         <p
           id={descriptionId}
-          className="px-[2px] font-['Quicksand'] text-[length:var(--text-input-supporting-font-size)] font-semibold leading-[150%]"
+          className={[
+            TEXT_TRIM_CLASS_NAME,
+            'px-[2px] font-sans text-[length:var(--field-supporting-font-size)] font-semibold leading-[150%]',
+          ].join(' ')}
           style={{
             color: hasError ? COLOR_TOKENS.danger[400] : COLOR_TOKENS.neutral[500],
           }}

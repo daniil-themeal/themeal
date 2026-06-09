@@ -1,7 +1,9 @@
 import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from 'react';
 
-import { COLOR_TOKENS } from './colorTokens';
+import { BORDER_RADIUS_TOKENS } from './borderRadiusTokens';
+import { COLOR_TOKENS, type ColorPaletteName } from './colorTokens';
 import { FONT_SIZE_TOKENS } from './fontSizeTokens';
+import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
 export const BUTTON_VARIANTS = [
   'primary',
@@ -16,19 +18,35 @@ export const BUTTON_VARIANTS = [
 
 export const BUTTON_SIZES = ['32', '40', '48', '64', '80'] as const;
 
+export const BUTTON_SIZE_LABELS: Record<(typeof BUTTON_SIZES)[number], string> = {
+  '32': 'Small',
+  '40': 'Medium',
+  '48': 'Large',
+  '64': 'Extra large',
+  '80': 'Hero',
+};
+
 export type ButtonVariant = (typeof BUTTON_VARIANTS)[number];
 
 export type ButtonSize = (typeof BUTTON_SIZES)[number];
 
-type ButtonProps = {
+type ButtonBaseProps = {
   children: ReactNode;
   variant?: ButtonVariant;
+  outline?: boolean;
   size?: ButtonSize;
   fullWidth?: boolean;
-  leftIcon?: ReactNode;
-  rightIcon?: ReactNode;
   className?: string;
-} & ButtonHTMLAttributes<HTMLButtonElement>;
+};
+
+type ButtonIconProps =
+  | { leftIcon?: ReactNode; rightIcon?: never }
+  | { leftIcon?: never; rightIcon?: ReactNode }
+  | { leftIcon?: never; rightIcon?: never };
+
+type ButtonProps = ButtonBaseProps &
+  ButtonIconProps &
+  ButtonHTMLAttributes<HTMLButtonElement>;
 
 type ButtonCssVariables = CSSProperties & {
   '--button-bg': string;
@@ -36,7 +54,11 @@ type ButtonCssVariables = CSSProperties & {
   '--button-text': string;
   '--button-bg-disabled': string;
   '--button-text-disabled': string;
+  '--button-border': string;
+  '--button-border-hover': string;
+  '--button-border-disabled': string;
   '--button-font-size': string;
+  '--button-border-radius': string;
 };
 
 function hexToRgba(hex: string, alpha: number) {
@@ -49,13 +71,16 @@ function hexToRgba(hex: string, alpha: number) {
   return `rgba(${red},${green},${blue},${alpha})`;
 }
 
-const BUTTON_VARIANT_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--button-font-size'>> = {
+const BUTTON_FILLED_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--button-font-size'>> = {
   primary: {
     '--button-bg': COLOR_TOKENS.primary[500],
     '--button-bg-hover': COLOR_TOKENS.primary[600],
     '--button-text': COLOR_TOKENS.base.white,
     '--button-bg-disabled': hexToRgba(COLOR_TOKENS.primary[500], 0.5),
     '--button-text-disabled': COLOR_TOKENS.base.white,
+    '--button-border': COLOR_TOKENS.primary[500],
+    '--button-border-hover': COLOR_TOKENS.primary[600],
+    '--button-border-disabled': hexToRgba(COLOR_TOKENS.primary[500], 0.5),
   },
 
   secondary: {
@@ -64,6 +89,9 @@ const BUTTON_VARIANT_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--b
     '--button-text': COLOR_TOKENS.base.white,
     '--button-bg-disabled': hexToRgba(COLOR_TOKENS.secondary[500], 0.5),
     '--button-text-disabled': COLOR_TOKENS.base.white,
+    '--button-border': COLOR_TOKENS.secondary[500],
+    '--button-border-hover': COLOR_TOKENS.secondary[600],
+    '--button-border-disabled': hexToRgba(COLOR_TOKENS.secondary[500], 0.5),
   },
 
   neutral: {
@@ -72,6 +100,9 @@ const BUTTON_VARIANT_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--b
     '--button-text': COLOR_TOKENS.neutral[900],
     '--button-bg-disabled': COLOR_TOKENS.neutral[75],
     '--button-text-disabled': hexToRgba(COLOR_TOKENS.neutral[900], 0.5),
+    '--button-border': COLOR_TOKENS.neutral[75],
+    '--button-border-hover': COLOR_TOKENS.neutral[200],
+    '--button-border-disabled': COLOR_TOKENS.neutral[75],
   },
 
   success: {
@@ -80,6 +111,9 @@ const BUTTON_VARIANT_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--b
     '--button-text': COLOR_TOKENS.neutral[900],
     '--button-bg-disabled': hexToRgba(COLOR_TOKENS.success[500], 0.5),
     '--button-text-disabled': hexToRgba(COLOR_TOKENS.neutral[900], 0.5),
+    '--button-border': COLOR_TOKENS.success[500],
+    '--button-border-hover': COLOR_TOKENS.success[600],
+    '--button-border-disabled': hexToRgba(COLOR_TOKENS.success[500], 0.5),
   },
 
   warning: {
@@ -88,6 +122,9 @@ const BUTTON_VARIANT_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--b
     '--button-text': COLOR_TOKENS.neutral[900],
     '--button-bg-disabled': hexToRgba(COLOR_TOKENS.warning[500], 0.5),
     '--button-text-disabled': hexToRgba(COLOR_TOKENS.neutral[900], 0.5),
+    '--button-border': COLOR_TOKENS.warning[500],
+    '--button-border-hover': COLOR_TOKENS.warning[600],
+    '--button-border-disabled': hexToRgba(COLOR_TOKENS.warning[500], 0.5),
   },
 
   danger: {
@@ -96,6 +133,9 @@ const BUTTON_VARIANT_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--b
     '--button-text': COLOR_TOKENS.base.white,
     '--button-bg-disabled': hexToRgba(COLOR_TOKENS.danger[500], 0.5),
     '--button-text-disabled': COLOR_TOKENS.base.white,
+    '--button-border': COLOR_TOKENS.danger[500],
+    '--button-border-hover': COLOR_TOKENS.danger[600],
+    '--button-border-disabled': hexToRgba(COLOR_TOKENS.danger[500], 0.5),
   },
 
   info: {
@@ -104,6 +144,9 @@ const BUTTON_VARIANT_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--b
     '--button-text': COLOR_TOKENS.base.white,
     '--button-bg-disabled': hexToRgba(COLOR_TOKENS.info[500], 0.5),
     '--button-text-disabled': COLOR_TOKENS.base.white,
+    '--button-border': COLOR_TOKENS.info[500],
+    '--button-border-hover': COLOR_TOKENS.info[600],
+    '--button-border-disabled': hexToRgba(COLOR_TOKENS.info[500], 0.5),
   },
 
   blue: {
@@ -112,15 +155,63 @@ const BUTTON_VARIANT_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--b
     '--button-text': COLOR_TOKENS.base.white,
     '--button-bg-disabled': hexToRgba(COLOR_TOKENS.blue[500], 0.5),
     '--button-text-disabled': COLOR_TOKENS.base.white,
+    '--button-border': COLOR_TOKENS.blue[500],
+    '--button-border-hover': COLOR_TOKENS.blue[600],
+    '--button-border-disabled': hexToRgba(COLOR_TOKENS.blue[500], 0.5),
   },
 };
 
+function getOutlineStyles(variant: ButtonVariant): Omit<ButtonCssVariables, '--button-font-size'> {
+  if (variant === 'neutral') {
+    return {
+      '--button-bg': 'transparent',
+      '--button-bg-hover': COLOR_TOKENS.neutral[50],
+      '--button-text': COLOR_TOKENS.neutral[900],
+      '--button-bg-disabled': 'transparent',
+      '--button-text-disabled': hexToRgba(COLOR_TOKENS.neutral[900], 0.5),
+      '--button-border': COLOR_TOKENS.neutral[200],
+      '--button-border-hover': COLOR_TOKENS.neutral[300],
+      '--button-border-disabled': hexToRgba(COLOR_TOKENS.neutral[200], 0.5),
+    };
+  }
+
+  const palette = COLOR_TOKENS[variant as ColorPaletteName];
+  const outlineText =
+    variant === 'success' || variant === 'warning' ? palette[600] : palette[500];
+
+  return {
+    '--button-bg': 'transparent',
+    '--button-bg-hover': palette[50],
+    '--button-text': outlineText,
+    '--button-bg-disabled': 'transparent',
+    '--button-text-disabled': hexToRgba(palette[500], 0.5),
+    '--button-border': palette[500],
+    '--button-border-hover': palette[600],
+    '--button-border-disabled': hexToRgba(palette[500], 0.5),
+  };
+}
+
+function getButtonStyles(
+  variant: ButtonVariant,
+  outline: boolean,
+): Omit<ButtonCssVariables, '--button-font-size'> {
+  return outline ? getOutlineStyles(variant) : BUTTON_FILLED_STYLES[variant];
+}
+
+const BUTTON_BORDER_RADIUS: Record<ButtonSize, string> = {
+  '32': BORDER_RADIUS_TOKENS[4],
+  '40': BORDER_RADIUS_TOKENS[4],
+  '48': BORDER_RADIUS_TOKENS[8],
+  '64': BORDER_RADIUS_TOKENS[8],
+  '80': BORDER_RADIUS_TOKENS[12],
+};
+
 const BUTTON_SIZE_CLASS_NAMES: Record<ButtonSize, string> = {
-  '32': 'h-[32px] rounded-[8px] px-[12px] gap-[6px]',
-  '40': 'h-[40px] rounded-[10px] px-[16px] gap-[8px]',
-  '48': 'h-[48px] rounded-[12px] px-[20px] gap-[8px]',
-  '64': 'h-[64px] rounded-[16px] px-[28px] gap-[10px]',
-  '80': 'h-[80px] rounded-[20px] px-[32px] gap-[12px]',
+  '32': 'h-[32px] px-[12px] gap-[6px]',
+  '40': 'h-[40px] px-[16px] gap-[8px]',
+  '48': 'h-[48px] px-[20px] gap-[8px]',
+  '64': 'h-[64px] px-[28px] gap-[10px]',
+  '80': 'h-[80px] px-[32px] gap-[12px]',
 };
 
 const BUTTON_FONT_SIZE_TOKENS: Record<ButtonSize, string> = {
@@ -141,12 +232,14 @@ const ICON_SIZE_CLASS_NAMES: Record<ButtonSize, string> = {
 
 const baseClassName = [
   'inline-flex items-center justify-center',
-  "font-['Quicksand'] font-bold leading-none text-[length:var(--button-font-size)]",
+  'rounded-[length:var(--button-border-radius)]',
+  'border border-[length:1px] border-[var(--button-border)]',
+  "font-sans font-bold leading-none text-[length:var(--button-font-size)]",
   'bg-[var(--button-bg)] text-[var(--button-text)]',
-  'transition-colors',
-  'hover:enabled:bg-[var(--button-bg-hover)]',
+  'cursor-pointer transition-colors',
+  'hover:enabled:bg-[var(--button-bg-hover)] hover:enabled:border-[var(--button-border-hover)]',
   'disabled:cursor-not-allowed',
-  'disabled:bg-[var(--button-bg-disabled)] disabled:text-[var(--button-text-disabled)]',
+  'disabled:bg-[var(--button-bg-disabled)] disabled:text-[var(--button-text-disabled)] disabled:border-[var(--button-border-disabled)]',
   'focus-visible:outline-none',
 ].join(' ');
 
@@ -161,6 +254,7 @@ function getIconSlotClassName(size: ButtonSize) {
 export function Button({
   children,
   variant = 'primary',
+  outline = false,
   size = '48',
   fullWidth = false,
   leftIcon,
@@ -176,8 +270,9 @@ export function Button({
     <button
       type={type}
       style={{
-        ...BUTTON_VARIANT_STYLES[variant],
+        ...getButtonStyles(variant, outline),
         '--button-font-size': BUTTON_FONT_SIZE_TOKENS[size],
+        '--button-border-radius': BUTTON_BORDER_RADIUS[size],
         ...style,
       }}
       className={[
@@ -191,7 +286,7 @@ export function Button({
       {...buttonProps}
     >
       {leftIcon ? <span className={iconSlotClassName}>{leftIcon}</span> : null}
-      <span className="min-w-0 truncate">{children}</span>
+      <span className={[TEXT_TRIM_CLASS_NAME, 'min-w-0'].join(' ')}>{children}</span>
       {rightIcon ? <span className={iconSlotClassName}>{rightIcon}</span> : null}
     </button>
   );

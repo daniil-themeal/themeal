@@ -73,11 +73,11 @@ function DiscountBadge({
 }) {
   return (
     <div className="flex items-center gap-[6px]">
-      <span className="flex flex-col items-start rounded-[40px] bg-[var(--duration-discount-bg)] p-[2px] font-['Quicksand'] text-[length:var(--duration-meta-font-size)] font-bold leading-[130%] text-[var(--duration-discount-text)]">
+      <span className="flex flex-col items-start rounded-[40px] bg-[var(--duration-discount-bg)] p-[2px] font-sans text-[length:var(--duration-meta-font-size)] font-bold leading-[130%] text-[var(--duration-discount-text)]">
         {pct}
       </span>
 
-      <p className="font-['Quicksand'] text-[length:var(--duration-meta-font-size)] font-bold leading-[130%] text-[var(--duration-save-text)]">
+      <p className="font-sans text-[length:var(--duration-meta-font-size)] font-bold leading-[130%] text-[var(--duration-save-text)]">
         {save}
       </p>
     </div>
@@ -131,7 +131,7 @@ function DurationCard({
       <div className="flex flex-col items-end gap-[12px] p-[20px] md:px-[24px]">
         <div className="flex w-full items-center gap-[12px]">
           <div className="flex flex-[1_0_0] flex-col items-start gap-[4px]">
-            <p className="font-['Quicksand'] text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)] md:text-[length:var(--duration-card-title-font-size-md)]">
+            <p className="font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)] md:text-[length:var(--duration-card-title-font-size-md)]">
               {meta.label}
             </p>
 
@@ -141,12 +141,12 @@ function DurationCard({
           </div>
 
           <div className="flex flex-col items-end gap-[4px]">
-            <p className="whitespace-nowrap text-right font-['Quicksand'] text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-active)] md:text-[length:var(--duration-card-title-font-size-md)]">
+            <p className="whitespace-nowrap text-right font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-active)] md:text-[length:var(--duration-card-title-font-size-md)]">
               AED {formatPricePerDay(price.pricePerDay)}/day
             </p>
 
             {price.pricePerMonth ? (
-              <p className="whitespace-nowrap text-right font-['Quicksand'] text-[length:var(--duration-meta-font-size)] font-medium leading-[130%] text-[var(--duration-muted)] md:text-[length:var(--duration-meta-font-size-md)]">
+              <p className="whitespace-nowrap text-right font-sans text-[length:var(--duration-meta-font-size)] font-medium leading-[130%] text-[var(--duration-muted)] md:text-[length:var(--duration-meta-font-size-md)]">
                 {duration === '2months' ? '≈ ' : ''}
                 {formatAedWithCurrency(price.pricePerMonth)} per month
               </p>
@@ -176,7 +176,7 @@ export function DurationBlock({
       className="flex w-full flex-col items-start gap-[16px]"
       style={durationBlockStyle}
     >
-      <p className="w-full px-[4px] font-['Quicksand'] text-[length:var(--duration-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)] md:text-[length:var(--duration-title-font-size-md)]">
+      <p className="w-full px-[4px] font-sans text-[length:var(--duration-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)] md:text-[length:var(--duration-title-font-size-md)]">
         Subscription duration
       </p>
 

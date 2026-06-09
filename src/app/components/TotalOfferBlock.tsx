@@ -15,7 +15,7 @@ export default function TotalOfferBlock({
       <div className="relative z-[10] flex flex-col items-center rounded-[inherit] maxWidth size-full">
         <div className="content-stretch flex flex-col gap-[180px] md:gap-[48px] lg:gap-[64px] md:items-start items-center md:pr-[160px] relative size-full">
           {/* Offer Container */}
-          <div className="[word-break:break-word] content-stretch flex flex-col font-['Quicksand:Bold',sans-serif] gap-[24px] md:items-start items-center not-italic relative shrink-0 w-full">
+          <div className="[word-break:break-word] content-stretch flex flex-col font-quicksand-bold gap-[24px] md:items-start items-center not-italic relative shrink-0 w-full">
             <div className="min-w-full relative shrink-0 text-[#383e48] text-center md:text-left w-[min-content]">
               <h2 className="h2-title mb-0">
                 Order&nbsp;a month&apos;s worth of&nbsp;food{" "}
@@ -27,7 +27,7 @@ export default function TotalOfferBlock({
           {/* CTA Button */}
           <button
             onClick={onOrderClick}
-            className="btn flex items-center justify-center gap-[6px] px-[28px] lg:px-[40px] bg-[#9a38ef] hover:bg-[#8C33D9] transition-all duration-200 shadow-[0_4px_20px_rgba(140,51,217,0.35)] hover:shadow-[0_8px_32px_rgba(140,51,217,0.55)] hover:-translate-y-[2px] relative rounded-[8px] shrink-0 w-full sm:w-auto cursor-pointer [text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-none not-italic text-[20px] lg:text-[25px] text-center text-white whitespace-nowrap"
+            className="btn flex items-center justify-center gap-[6px] px-[28px] lg:px-[40px] bg-[#9a38ef] hover:bg-[#8C33D9] transition-all duration-200 shadow-[0_4px_20px_rgba(140,51,217,0.35)] hover:shadow-[0_8px_32px_rgba(140,51,217,0.55)] hover:-translate-y-[2px] relative rounded-[8px] shrink-0 w-full sm:w-auto cursor-pointer [text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold leading-none not-italic text-[20px] lg:text-[25px] text-center text-white whitespace-nowrap"
           >
             Make an Order
           </button>

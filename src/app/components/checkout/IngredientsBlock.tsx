@@ -111,11 +111,11 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
       style={ingredientsBlockStyle}
     >
       <div className="flex w-full flex-col gap-[2px] px-[4px]">
-        <p className="font-['Quicksand'] text-[length:var(--ingredients-title-font-size)] font-bold leading-[130%] text-[var(--ingredients-text)] md:text-[length:var(--ingredients-title-font-size-md)]">
+        <p className="font-sans text-[length:var(--ingredients-title-font-size)] font-bold leading-[130%] text-[var(--ingredients-text)] md:text-[length:var(--ingredients-title-font-size-md)]">
           Exclude ingredients
         </p>
 
-        <p className="font-['Quicksand'] text-[length:var(--ingredients-subtitle-font-size)] font-medium leading-[130%] text-[var(--ingredients-text)] md:text-[length:var(--ingredients-subtitle-font-size-md)]">
+        <p className="font-sans text-[length:var(--ingredients-subtitle-font-size)] font-medium leading-[130%] text-[var(--ingredients-text)] md:text-[length:var(--ingredients-subtitle-font-size-md)]">
           Optional. Select all that apply
         </p>
       </div>
@@ -130,7 +130,7 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
               type="button"
               onClick={() => onToggle(item.key)}
               className={[
-                'relative w-full rounded-[12px] text-left transition-colors duration-150',
+                'relative w-full cursor-pointer rounded-[12px] text-left transition-colors duration-150',
                 checked
                   ? 'bg-[var(--ingredients-active-bg)]'
                   : 'bg-[var(--ingredients-card-bg)]',
@@ -152,13 +152,13 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
                       : 'text-[var(--ingredients-text)]',
                   ].join(' ')}
                 >
-                  <p className="font-['Quicksand'] text-[length:var(--ingredients-item-title-font-size)] font-bold leading-[130%] md:text-[length:var(--ingredients-item-title-font-size-md)]">
+                  <p className="font-sans text-[length:var(--ingredients-item-title-font-size)] font-bold leading-[130%] md:text-[length:var(--ingredients-item-title-font-size-md)]">
                     {item.label}
                   </p>
 
                   <p
                     className={[
-                      'font-["Quicksand"] text-[length:var(--ingredients-item-description-font-size)] font-medium leading-[130%]',
+                      'font-sans text-[length:var(--ingredients-item-description-font-size)] font-medium leading-[130%]',
                       checked
                         ? 'text-[var(--ingredients-active)]'
                         : 'text-[var(--ingredients-muted)]',

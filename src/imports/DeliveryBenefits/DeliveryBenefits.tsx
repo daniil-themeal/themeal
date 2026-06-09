@@ -20,7 +20,7 @@ function Frame() {
   return (
     <div className="bg-[#f029a8] content-stretch flex gap-[6px] items-center justify-center px-[24px] py-[11px] relative rounded-[80px] shrink-0">
       <Frame5 />
-      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-[1.2] not-italic relative shrink-0 text-[24px] text-center text-white uppercase w-[110px]">Any time</p>
+      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold leading-[1.2] not-italic relative shrink-0 text-[24px] text-center text-white uppercase w-[110px]">Any time</p>
     </div>
   );
 }
@@ -45,7 +45,7 @@ function Frame1() {
   return (
     <div className="bg-[#fcde02] content-stretch flex gap-[6px] items-center justify-center px-[12px] py-[11px] relative rounded-[80px] shrink-0">
       <Frame4 />
-      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-[1.2] not-italic relative shrink-0 text-[#383e48] text-[24px] text-center uppercase whitespace-nowrap">Twice a week</p>
+      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold leading-[1.2] not-italic relative shrink-0 text-[#383e48] text-[24px] text-center uppercase whitespace-nowrap">Twice a week</p>
     </div>
   );
 }
@@ -70,7 +70,7 @@ function Frame2() {
   return (
     <div className="bg-[#383e48] content-stretch flex gap-[6px] items-center justify-center px-[24px] py-[11px] relative rounded-[80px] shrink-0">
       <Frame3 />
-      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-[1.2] not-italic relative shrink-0 text-[24px] text-center text-white uppercase whitespace-nowrap">Any Place</p>
+      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold leading-[1.2] not-italic relative shrink-0 text-[24px] text-center text-white uppercase whitespace-nowrap">Any Place</p>
     </div>
   );
 }

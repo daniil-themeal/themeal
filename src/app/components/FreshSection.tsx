@@ -31,19 +31,19 @@ function H2TitleContaner() {
         </svg>
       </span>
 
-      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] not-italic relative shrink-0 text-center text-white whitespace-nowrap h2-title">
+      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold not-italic relative shrink-0 text-center text-white whitespace-nowrap h2-title">
         food
       </span>
 
-      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] not-italic relative shrink-0 text-center text-white whitespace-nowrap h2-title">
+      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold not-italic relative shrink-0 text-center text-white whitespace-nowrap h2-title">
         is
       </span>
 
-      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] not-italic relative shrink-0 text-center text-white whitespace-nowrap h2-title">
+      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold not-italic relative shrink-0 text-center text-white whitespace-nowrap h2-title">
         always
       </span>
 
-      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] not-italic relative shrink-0 text-center text-white whitespace-nowrap h2-title">
+      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold not-italic relative shrink-0 text-center text-white whitespace-nowrap h2-title">
         fresh
       </span>
     </h2>
@@ -455,11 +455,11 @@ function FreshStages() {
         >
           <div className="flex flex-col items-center size-full">
             <div className="content-stretch flex flex-col sm:flex-row md:flex-col gap-[32px] sm:gap-[20px] md:gap-[32px] items-center p-[28px_24px] sm:p-[20px_24px] md:p-[28px_24px] relative size-full">
-              <span className="absolute top-[16px] left-[16px] font-['Quicksand:Bold',sans-serif] text-[20px] text-[#AE60F2] leading-none">
+              <span className="absolute top-[16px] left-[16px] font-quicksand-bold text-[20px] text-[#AE60F2] leading-none">
                 {index + 1}
               </span>
               <div className="shrink-0">{item.icon}</div>
-              <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-[1.5] not-italic relative text-[#f5ebfd] text-[20px] md:text-[20px] w-full sm:flex-1 sm:min-w-0 md:flex-none md:w-full">
+              <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold leading-[1.5] not-italic relative text-[#f5ebfd] text-[20px] md:text-[20px] w-full sm:flex-1 sm:min-w-0 md:flex-none md:w-full">
                 {item.text}
               </p>
             </div>

@@ -2,6 +2,7 @@ import type { CSSProperties, KeyboardEvent } from 'react';
 
 import { COLOR_TOKENS } from '../../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../../common/fontSizeTokens';
+import { TEXT_TRIM_CLASS_NAME } from '../../common/textTrimTokens';
 
 import { ClearIcon } from './addressIcons';
 
@@ -55,7 +56,10 @@ export function AddressSearchInput({
         onKeyDown={onKeyDown}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="w-full bg-transparent font-['Quicksand:SemiBold',sans-serif] text-[length:var(--address-search-font-size)] leading-[1.4] text-[var(--address-search-text)] outline-none placeholder:text-[var(--address-search-placeholder)]"
+        className={[
+          TEXT_TRIM_CLASS_NAME,
+          'w-full bg-transparent font-quicksand-semibold text-[length:var(--address-search-font-size)] leading-[1.4] text-[var(--address-search-text)] outline-none placeholder:text-[var(--address-search-placeholder)]',
+        ].join(' ')}
       />
 
       {value ? (

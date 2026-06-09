@@ -4,7 +4,7 @@ import HeroMealsSection from './HeroMealsSection';
 
 function MainOffer() {
   return (
-    <span className="bg-[#fcde02] content-stretch flex font-['Quicksand:Bold',sans-serif] gap-[2px] items-start not-italic px-[8px] sm:px-[16px] md:px-[24px] py-[10px] sm:py-[12px] md:py-[20px] relative rounded-[999px] text-[#411864] whitespace-nowrap">
+    <span className="bg-[#fcde02] content-stretch flex font-quicksand-bold gap-[2px] items-start not-italic px-[8px] sm:px-[16px] md:px-[24px] py-[10px] sm:py-[12px] md:py-[20px] relative rounded-[999px] text-[#411864] whitespace-nowrap">
       <span className="[text-decoration-skip-ink:none] [text-underline-position:from-font] decoration-from-font decoration-solid leading-[0.9] line-through relative shrink-0 text-[16px] sm:text-[20px] md:text-[25px] tracking-[-0.6px]">
         1596
       </span>
@@ -21,7 +21,7 @@ function MainOffer() {
 function Currency() {
   return (
     <div className="h-[9.469px] relative shrink-0 w-[24.709px]">
-      <p className="font-['Quicksand:Bold',sans-serif] leading-[0.9] not-italic text-[11px] sm:text-[13px] text-white tracking-[-0.22px] whitespace-nowrap">
+      <p className="font-quicksand-bold leading-[0.9] not-italic text-[11px] sm:text-[13px] text-white tracking-[-0.22px] whitespace-nowrap">
         AED
       </p>
     </div>
@@ -31,7 +31,7 @@ function Currency() {
 function Price() {
   return (
     <div className="content-stretch flex gap-[2.149px] items-start relative shrink-0">
-      <p className="font-['Quicksand:Bold',sans-serif] leading-[0.9] not-italic relative shrink-0 text-[18px] sm:text-[25px] lg:text-[32px] text-white tracking-[-0.72px] whitespace-nowrap">
+      <p className="font-quicksand-bold leading-[0.9] not-italic relative shrink-0 text-[18px] sm:text-[25px] lg:text-[32px] text-white tracking-[-0.72px] whitespace-nowrap">
         799
       </p>
       <Currency />
@@ -43,7 +43,7 @@ function OfferInfo() {
   return (
     <span className="content-stretch flex flex-col gap-[4.297px] items-start relative shrink-0">
       <Price />
-      <p className="font-['Quicksand:Bold',sans-serif] leading-[0.8] not-italic relative shrink-0 text-[11px] sm:text-[13px] text-white whitespace-nowrap">
+      <p className="font-quicksand-bold leading-[0.8] not-italic relative shrink-0 text-[11px] sm:text-[13px] text-white whitespace-nowrap">
         2 meals/day
       </p>
     </span>
@@ -110,7 +110,7 @@ function PriceBlock() {
 function OfferElement() {
   return (
     <span className="content-stretch flex gap-[8px] md:gap-[16px] items-center justify-center relative shrink-0">
-      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:Bold',sans-serif] leading-[1.5] not-italic relative shrink-0 text-[#fcde02] tracking-[-0.56px] whitespace-nowrap hero-title">
+      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-bold leading-[1.5] not-italic relative shrink-0 text-[#fcde02] tracking-[-0.56px] whitespace-nowrap hero-title">
         Only
       </span>
 
@@ -124,7 +124,7 @@ function H1Container() {
     <div className="relative shrink-0 w-full">
       <div className="flex flex-col items-center size-full">
         <h1 className="hero-title-block content-stretch flex flex-col items-center relative size-full max-w-[900px] sm:max-w-[600px] md:max-w-[800px] xl:max-w-[1000px]">
-          <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:Bold',sans-serif] min-w-full not-italic relative shrink-0 text-center text-white w-[min-content] hero-title">
+          <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-bold min-w-full not-italic relative shrink-0 text-center text-white w-[min-content] hero-title">
             Tasty ready-to-eat meals for&nbsp;a&nbsp;month
           </span>
 
@@ -137,7 +137,7 @@ function H1Container() {
 
 function HeroBenefits() {
   return (
-    <div className="content-stretch flex font-['Quicksand:Bold',sans-serif] gap-[16px] items-center leading-[1.3] not-italic relative shrink-0 text-[16px] sm:text-[20px] md:text-[25px] text-center text-shadow-[0px_4px_4px_rgba(0,0,0,0)] text-white max-w-[600px] w-full">
+    <div className="content-stretch flex font-quicksand-bold gap-[16px] items-center leading-[1.3] not-italic relative shrink-0 text-[16px] sm:text-[20px] md:text-[25px] text-center text-shadow-[0px_4px_4px_rgba(0,0,0,0)] text-white max-w-[600px] w-full">
       <p className="flex-[1_0_0] min-w-px relative [text-shadow:0_4px_4px_rgba(0,0,0,0.20)]">
         Up to
         <br aria-hidden="true" /> 112&nbsp;meals/mo
@@ -162,7 +162,7 @@ function HeroActionBlock({ onOrderClick }: { onOrderClick?: () => void }) {
       <div className="content-stretch flex flex-col gap-[24px] md:gap-[32px] lg:gap-[44px] items-center justify-center max-w-[900px] relative size-full">
         <button
           onClick={onOrderClick}
-          className="btn flex items-center justify-center gap-[6px] px-[28px] lg:px-[40px] bg-[#f029a8] hover:bg-[#DA2599] transition-all duration-200 shadow-[0_4px_20px_rgba(240,41,168,0.35)] hover:shadow-[0_8px_32px_rgba(218,37,153,0.55)] hover:-translate-y-[2px] relative rounded-[8px] shrink-0 w-full sm:w-auto cursor-pointer [text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:Bold',sans-serif] leading-none not-italic text-[20px] lg:text-[25px] text-center text-white whitespace-nowrap"
+          className="btn flex items-center justify-center gap-[6px] px-[28px] lg:px-[40px] bg-[#f029a8] hover:bg-[#DA2599] transition-all duration-200 shadow-[0_4px_20px_rgba(240,41,168,0.35)] hover:shadow-[0_8px_32px_rgba(218,37,153,0.55)] hover:-translate-y-[2px] relative rounded-[8px] shrink-0 w-full sm:w-auto cursor-pointer [text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-bold leading-none not-italic text-[20px] lg:text-[25px] text-center text-white whitespace-nowrap"
         >
           View menu &amp; order
         </button>

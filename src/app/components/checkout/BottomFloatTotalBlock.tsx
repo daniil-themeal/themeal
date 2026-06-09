@@ -22,6 +22,7 @@ import {
 import { getMealsForPlan, testMenuDays, type LightMealOption } from '../../data/testMeals';
 import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
+import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 
 import { MealDetailModal } from './MealDetailModal';
@@ -357,7 +358,7 @@ export function BottomFloatTotalBlock({
             onClick={toggleMenu}
             className="flex h-[32px] cursor-pointer items-center justify-center gap-[4px] rounded-tl-[4px] rounded-tr-[4px] bg-[var(--checkout-float-menu-toggle-bg)] px-[16px]"
           >
-            <p className="text-center font-['Quicksand'] text-[length:var(--checkout-float-font-size-sm)] font-bold leading-[18px] text-[var(--checkout-float-muted)]">
+            <p className="text-center font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-[18px] text-[var(--checkout-float-muted)]">
               {menuOpen ? 'Hide menu' : 'Show menu'}
             </p>
 
@@ -449,7 +450,7 @@ export function BottomFloatTotalBlock({
                             >
                               <div className="flex w-full flex-col items-center gap-[4px]">
                                 <p
-                                  className={`font-['Quicksand'] text-[length:var(--checkout-float-font-size-md)] font-bold leading-none tracking-[-0.16px] ${
+                                  className={`font-sans text-[length:var(--checkout-float-font-size-md)] font-bold leading-none tracking-[-0.16px] ${
                                     active
                                       ? 'text-[var(--checkout-float-active)]'
                                       : 'text-[var(--checkout-float-text)]'
@@ -459,7 +460,7 @@ export function BottomFloatTotalBlock({
                                 </p>
 
                                 <p
-                                  className={`font-['Quicksand'] text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none tracking-[-0.12px] ${
+                                  className={`font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none tracking-[-0.12px] ${
                                     active
                                       ? 'text-[var(--checkout-float-active)]'
                                       : 'text-[var(--checkout-float-text)]'
@@ -470,7 +471,7 @@ export function BottomFloatTotalBlock({
                               </div>
 
                               <p
-                                className={`font-['Quicksand'] text-[length:var(--checkout-float-font-size-sm)] font-medium leading-none tracking-[-0.12px] ${
+                                className={`font-sans text-[length:var(--checkout-float-font-size-sm)] font-medium leading-none tracking-[-0.12px] ${
                                   active
                                     ? 'text-[var(--checkout-float-active-muted)]'
                                     : 'text-[var(--checkout-float-muted)]'
@@ -539,7 +540,12 @@ export function BottomFloatTotalBlock({
                           />
                         </div>
 
-                        <p className="w-[150px] overflow-hidden text-ellipsis font-['Quicksand'] text-[length:var(--checkout-float-font-size-md)] font-semibold leading-[1.4] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)]">
+                        <p
+                          className={[
+                            TEXT_TRIM_CLASS_NAME,
+                            'w-[150px] font-sans text-[length:var(--checkout-float-font-size-md)] font-semibold leading-[1.4] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)]',
+                          ].join(' ')}
+                        >
                           {meal.name}
                         </p>
                       </button>
@@ -558,21 +564,21 @@ export function BottomFloatTotalBlock({
                   <div className="flex flex-1 flex-col items-center gap-[2px]">
                     <div className="flex items-end gap-[4px]">
                       {pricing.oldPeriodPrice ? (
-                        <p className="font-['Quicksand'] text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-muted)] line-through">
+                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-muted)] line-through">
                           {formatAed(pricing.oldPeriodPrice)}
                         </p>
                       ) : null}
 
-                      <p className="font-['Quicksand'] text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
+                      <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
                         AED
                       </p>
 
-                      <p className="font-['Quicksand'] text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
+                      <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
                         {formatAed(pricing.periodPrice)}
                       </p>
                     </div>
 
-                    <p className="font-['Quicksand'] text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
+                    <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
                       AED {formatPricePerDay(pricing.pricePerDay)}/day
                     </p>
                   </div>
@@ -582,7 +588,7 @@ export function BottomFloatTotalBlock({
                     onClick={onOrder}
                     className="flex h-[40px] flex-1 cursor-pointer items-center justify-center rounded-[4px] bg-[var(--checkout-float-button-bg)]"
                   >
-                    <p className="font-['Quicksand'] text-[length:var(--checkout-float-font-size-sm)] font-bold leading-[18px] text-[var(--checkout-float-button-text)]">
+                    <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-[18px] text-[var(--checkout-float-button-text)]">
                       Order
                     </p>
                   </button>

@@ -6,6 +6,7 @@ import type { Plan } from '../../data/checkoutPricing';
 import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { MealDetailModal } from './MealDetailModal';
 import { CloseIcon } from '../ui/icons/CloseIcon';
 
@@ -17,6 +18,27 @@ const MOUSE_DRAG_CLICK_THRESHOLD = 6;
 const EXIT_ANIMATION_FALLBACK_MS = 260;
 
 type SlideDirection = 'left' | 'right';
+
+type FullMenuDayPillCssVariables = CSSProperties & {
+  '--full-menu-day-bg': string;
+  '--full-menu-day-bg-hover': string;
+  '--full-menu-day-border': string;
+  '--full-menu-day-border-hover': string;
+};
+
+const FULL_MENU_DAY_PILL_SELECTED_STYLE: FullMenuDayPillCssVariables = {
+  '--full-menu-day-bg': COLOR_TOKENS.primary[50],
+  '--full-menu-day-bg-hover': COLOR_TOKENS.primary[75],
+  '--full-menu-day-border': COLOR_TOKENS.primary[500],
+  '--full-menu-day-border-hover': COLOR_TOKENS.primary[600],
+};
+
+const FULL_MENU_DAY_PILL_DEFAULT_STYLE: FullMenuDayPillCssVariables = {
+  '--full-menu-day-bg': COLOR_TOKENS.base.white,
+  '--full-menu-day-bg-hover': COLOR_TOKENS.neutral[50],
+  '--full-menu-day-border': COLOR_TOKENS.neutral[100],
+  '--full-menu-day-border-hover': COLOR_TOKENS.neutral[300],
+};
 
 type FullMenuModalCssVariables = CSSProperties & {
   '--full-menu-bg': string;
@@ -314,7 +336,9 @@ export function FullMenuModal({
 
   return (
     <div
-      className="fixed inset-0 z-[300] flex items-end justify-center md:items-center"
+      className={`fixed inset-0 z-[300] flex items-end justify-center md:items-center ${
+        isClosing ? 'pointer-events-none' : ''
+      }`}
       style={fullMenuModalStyle}
     >
       <style>
@@ -366,7 +390,7 @@ export function FullMenuModal({
         }}
       >
         <div className="flex h-[56px] shrink-0 items-center justify-between border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
-          <p className="pl-[16px] font-['Quicksand'] text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px] md:text-[length:var(--full-menu-heading-font-size-md)]">
+          <p className="pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px] md:text-[length:var(--full-menu-heading-font-size-md)]">
             Full menu
           </p>
 
@@ -387,11 +411,11 @@ export function FullMenuModal({
         </div>
 
         <div className="shrink-0 border-b border-[var(--full-menu-border)] px-[8px] py-[12px]">
-          <div className="flex w-full items-stretch">
+          <div className="flex w-full items-stretch" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
             <button
               type="button"
               onClick={handlePrevDay}
-              className={`flex w-[40px] shrink-0 items-center justify-center rounded-[8px] text-[var(--full-menu-muted)] transition-colors hover:bg-[var(--full-menu-active-soft)] ${
+              className={`flex w-[40px] shrink-0 items-center justify-center rounded-[8px] text-[var(--full-menu-muted)] transition-colors hover:bg-[var(--full-menu-day-bg-hover)] ${
                 !canGoPrev ? 'pointer-events-none opacity-0' : 'cursor-pointer'
               }`}
               aria-label="Previous day"
@@ -429,37 +453,27 @@ export function FullMenuModal({
                       }}
                       type="button"
                       onClick={() => handleDayClick(d.absoluteDayIndex)}
-                      className={`relative flex flex-[0_0_calc(100%/14)] cursor-pointer flex-col items-center justify-center gap-[6px] rounded-[8px] py-[8px] hover:bg-[var(--full-menu-active-soft)] ${
-                        active ? 'bg-[var(--full-menu-active-soft)]' : ''
-                      }`}
+                      className={[
+                        'relative flex flex-[0_0_calc(100%/14)] cursor-pointer flex-col items-center justify-center gap-[6px]',
+                        'rounded-[8px] border border-[length:1px] border-[var(--full-menu-day-border)] bg-[var(--full-menu-day-bg)] py-[8px]',
+                        'transition-colors',
+                        'hover:enabled:border-[var(--full-menu-day-border-hover)] hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
+                      ].join(' ')}
+                      style={active ? FULL_MENU_DAY_PILL_SELECTED_STYLE : FULL_MENU_DAY_PILL_DEFAULT_STYLE}
                     >
                       <div className="flex w-full flex-col items-center gap-[4px]">
-                        <p
-                          className={`font-['Quicksand'] text-[length:var(--full-menu-day-date-font-size)] font-bold leading-none tracking-[-0.16px] ${
-                            active
-                              ? 'text-[var(--full-menu-active)]'
-                              : 'text-[var(--full-menu-title)]'
-                          }`}
-                        >
+                        <p className="font-sans text-[length:var(--full-menu-day-date-font-size)] font-bold leading-none tracking-[-0.16px] text-[var(--full-menu-title)]">
                           {d.date}
                         </p>
 
-                        <p
-                          className={`font-['Quicksand'] text-[length:var(--full-menu-day-meta-font-size)] font-bold leading-none tracking-[-0.12px] ${
-                            active
-                              ? 'text-[var(--full-menu-active)]'
-                              : 'text-[var(--full-menu-title)]'
-                          }`}
-                        >
+                        <p className="font-sans text-[length:var(--full-menu-day-meta-font-size)] font-bold leading-none tracking-[-0.12px] text-[var(--full-menu-title)]">
                           {d.month}
                         </p>
                       </div>
 
                       <p
-                        className={`font-['Quicksand'] text-[length:var(--full-menu-day-meta-font-size)] font-medium leading-none tracking-[-0.12px] ${
-                          active
-                            ? 'text-[var(--full-menu-active-muted)]'
-                            : 'text-[var(--full-menu-muted)]'
+                        className={`font-sans text-[length:var(--full-menu-day-meta-font-size)] font-medium leading-none tracking-[-0.12px] ${
+                          active ? 'text-[var(--full-menu-title)]' : 'text-[var(--full-menu-muted)]'
                         }`}
                       >
                         {d.day}
@@ -473,7 +487,7 @@ export function FullMenuModal({
             <button
               type="button"
               onClick={handleNextDay}
-              className={`flex w-[40px] shrink-0 items-center justify-center rounded-[8px] text-[var(--full-menu-muted)] transition-colors hover:bg-[var(--full-menu-active-soft)] ${
+              className={`flex w-[40px] shrink-0 items-center justify-center rounded-[8px] text-[var(--full-menu-muted)] transition-colors hover:bg-[var(--full-menu-day-bg-hover)] ${
                 !canGoNext ? 'pointer-events-none opacity-0' : 'cursor-pointer'
               }`}
               aria-label="Next day"
@@ -527,11 +541,21 @@ export function FullMenuModal({
                   </div>
 
                   <div className="flex w-[150px] flex-col gap-[4px] md:w-[160px]">
-                    <p className="w-[150px] overflow-hidden text-ellipsis whitespace-nowrap font-['Quicksand'] text-[length:var(--full-menu-meal-meta-font-size)] font-medium leading-[140%] text-[var(--full-menu-muted)] md:w-[160px]">
+                    <p
+                      className={[
+                        TEXT_TRIM_CLASS_NAME,
+                        'w-[150px] font-sans text-[length:var(--full-menu-meal-meta-font-size)] font-medium leading-[140%] text-[var(--full-menu-muted)] md:w-[160px]',
+                      ].join(' ')}
+                    >
                       {meal.kcal} kcal • {meal.weight}g • {meal.type}
                     </p>
 
-                    <p className="w-[150px] overflow-hidden text-ellipsis whitespace-nowrap font-['Quicksand'] text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)] md:w-[160px]">
+                    <p
+                      className={[
+                        TEXT_TRIM_CLASS_NAME,
+                        'w-[150px] font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)] md:w-[160px]',
+                      ].join(' ')}
+                    >
                       {meal.name}
                     </p>
                   </div>

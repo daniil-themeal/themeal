@@ -10,7 +10,9 @@ import {
 
 import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
+import { FONT_FAMILY_TOKENS } from '../common/fontFamilyTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import {
   searchTestUaeAddresses,
   testDeliveryZones,
@@ -421,7 +423,7 @@ function MapArtwork({
         y="360"
         fill="#3F5D7A"
         opacity="0.72"
-        fontFamily="Quicksand, sans-serif"
+        fontFamily={FONT_FAMILY_TOKENS.sans}
         fontWeight="700"
         fontSize="44"
       >
@@ -438,7 +440,7 @@ function MapArtwork({
         y="450"
         fill="#E92FA1"
         opacity="0.8"
-        fontFamily="Quicksand, sans-serif"
+        fontFamily={FONT_FAMILY_TOKENS.sans}
         fontWeight="700"
         fontSize="38"
       >
@@ -456,7 +458,7 @@ function MapArtwork({
         y="657"
         textAnchor="middle"
         fill="#456079"
-        fontFamily="Quicksand, sans-serif"
+        fontFamily={FONT_FAMILY_TOKENS.sans}
         fontWeight="700"
         fontSize="22"
       >
@@ -469,7 +471,7 @@ function MapArtwork({
         y="864"
         textAnchor="middle"
         fill="#456079"
-        fontFamily="Quicksand, sans-serif"
+        fontFamily={FONT_FAMILY_TOKENS.sans}
         fontWeight="700"
         fontSize="22"
       >
@@ -566,7 +568,7 @@ function AddressSearchInput({
         onKeyDown={onKeyDown}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
-        className="w-full bg-transparent font-['Quicksand'] text-[length:var(--delivery-address-input-font-size)] font-semibold leading-[140%] text-[var(--delivery-address-text)] outline-none placeholder:text-[var(--delivery-address-placeholder)]"
+        className="w-full bg-transparent font-sans text-[length:var(--delivery-address-input-font-size)] font-semibold leading-[140%] text-[var(--delivery-address-text)] outline-none placeholder:text-[var(--delivery-address-placeholder)]"
       />
 
       {value ? (
@@ -619,14 +621,20 @@ function SuggestionRow({
       <div className="min-w-0 flex-1">
         <p
           className={[
-            "truncate font-['Quicksand'] text-[length:var(--delivery-address-title-font-size)] leading-[125%] text-[var(--delivery-address-text)]",
+            TEXT_TRIM_CLASS_NAME,
+            'min-w-0 font-sans text-[length:var(--delivery-address-title-font-size)] leading-[125%] text-[var(--delivery-address-text)]',
             strong || isActive ? 'font-bold' : 'font-semibold',
           ].join(' ')}
         >
           {suggestion.title}
         </p>
 
-        <p className="mt-[2px] truncate font-['Quicksand'] text-[length:var(--delivery-address-subtitle-font-size)] font-semibold leading-[130%] text-[var(--delivery-address-muted)]">
+        <p
+          className={[
+            TEXT_TRIM_CLASS_NAME,
+            'mt-[2px] min-w-0 font-sans text-[length:var(--delivery-address-subtitle-font-size)] font-semibold leading-[130%] text-[var(--delivery-address-muted)]',
+          ].join(' ')}
+        >
           {suggestion.subtitle}
         </p>
       </div>
@@ -656,7 +664,7 @@ function SelectedAddressBlock({
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="font-['Quicksand'] text-[length:var(--delivery-address-title-font-size)] font-semibold leading-[135%] text-[var(--delivery-address-muted)]">
+        <p className="font-sans text-[length:var(--delivery-address-title-font-size)] font-semibold leading-[135%] text-[var(--delivery-address-muted)]">
           {address.title}, {address.subtitle}
         </p>
       </div>
@@ -926,7 +934,7 @@ export function DeliveryAddressScreen({
   const renderSuggestions = () => {
     if (visibleSuggestions.length === 0) {
       return (
-        <p className="px-[24px] py-[18px] font-['Quicksand'] text-[length:var(--delivery-address-empty-font-size)] font-semibold leading-[140%] text-[var(--delivery-address-muted)] md:px-[24px]">
+        <p className="px-[24px] py-[18px] font-sans text-[length:var(--delivery-address-empty-font-size)] font-semibold leading-[140%] text-[var(--delivery-address-muted)] md:px-[24px]">
           No UAE addresses found
         </p>
       );
@@ -949,7 +957,7 @@ export function DeliveryAddressScreen({
 
   return (
     <div
-      className="relative h-full min-h-full overflow-hidden bg-[var(--delivery-address-page-bg)]"
+      className="relative h-full min-h-full overflow-hidden bg-white lg:bg-[var(--delivery-address-page-bg)]"
       style={deliveryAddressScreenStyle}
     >
       <style>
@@ -1043,7 +1051,7 @@ export function DeliveryAddressScreen({
               onClick={() => setMobileSearchOpen(false)}
               className="mt-[20px] flex w-full cursor-pointer items-center justify-between px-[36px] py-[8px] text-left text-[var(--delivery-address-muted)]"
             >
-              <span className="font-['Quicksand'] text-[length:var(--delivery-address-title-font-size)] font-bold leading-[140%]">
+              <span className="font-sans text-[length:var(--delivery-address-title-font-size)] font-bold leading-[140%]">
                 Back to map
               </span>
 

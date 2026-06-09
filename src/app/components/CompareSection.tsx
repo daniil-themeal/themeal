@@ -32,7 +32,7 @@ function CardTitle() {
         </div>
       </div>
 
-      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-[1.34] min-w-full not-italic relative shrink-0 text-[#ec221f] text-[32px] md:text-[32px] lg:text-[40px] text-center w-[min-content]">
+      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold leading-[1.34] min-w-full not-italic relative shrink-0 text-[#ec221f] text-[32px] md:text-[32px] lg:text-[40px] text-center w-[min-content]">
         Tired of wasting time, money and energy on food?
       </p>
     </div>
@@ -151,7 +151,7 @@ function CompareItem({ src, text }: { src: string; text: string }) {
         />
       </div>
 
-      <p className="[word-break:break-word] flex-[1_0_0] font-['Quicksand:Bold',sans-serif] leading-[1.2] min-w-px not-italic relative text-[#383e48] text-[16px] sm:text-[20px] tracking-[0.16px]">
+      <p className="[word-break:break-word] flex-[1_0_0] font-quicksand-bold leading-[1.2] min-w-px not-italic relative text-[#383e48] text-[16px] sm:text-[20px] tracking-[0.16px]">
         {text}
       </p>
     </div>
@@ -189,45 +189,45 @@ function CompareCardsContainer() {
 function CompareBlockTotal() {
   return (
     <div className="[word-break:break-word] content-stretch text-[16px] md:text-[20px] flex flex-col gap-[12px] md:gap-[20px] items-center not-italic relative shrink-0 text-center max-w-[400px] md:max-w-[560px] w-full">
-      <p className="font-['Quicksand:SemiBold',sans-serif] leading-[0] relative shrink-0 text-[#383e48] w-full">
-        <span className="font-['Quicksand:Bold',sans-serif] leading-[1.4]">
+      <p className="font-quicksand-semibold leading-[0] relative shrink-0 text-[#383e48] w-full">
+        <span className="font-quicksand-bold leading-[1.4]">
           {`* `}
         </span>
-        <span className="font-['Quicksand:Bold',sans-serif] leading-[1.4]">
+        <span className="font-quicksand-bold leading-[1.4]">
           {`The best value in UAE — from just `}
         </span>
-        <span className="font-['Quicksand:Bold',sans-serif] leading-[1.4] text-[#9a38ef]">
+        <span className="font-quicksand-bold leading-[1.4] text-[#9a38ef]">
           14.3 AED
         </span>
-        <span className="font-['Quicksand:Bold',sans-serif] leading-[1.4]">
+        <span className="font-quicksand-bold leading-[1.4]">
           {` per meal`}
         </span>
       </p>
 
       <div className="content-stretch flex gap-[20px] items-start justify-center leading-[1.2] relative shrink-0 w-full">
         <div className="content-stretch flex flex-[1_0_0] flex-col gap-[12px] items-center justify-center min-w-px relative">
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:SemiBold',sans-serif] relative shrink-0 text-[#383e48] w-full">
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-semibold relative shrink-0 text-[#383e48] w-full">
             Supermarket
           </p>
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:Bold',sans-serif] relative shrink-0 text-[#a81816] w-full">
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-bold relative shrink-0 text-[#a81816] w-full">
             15–40 AED
           </p>
         </div>
 
         <div className="content-stretch flex flex-[1_0_0] flex-col gap-[12px] items-center justify-center min-w-px relative">
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:SemiBold',sans-serif] relative shrink-0 text-[#383e48] w-full">
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-semibold relative shrink-0 text-[#383e48] w-full">
             Delivery apps
           </p>
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:Bold',sans-serif] relative shrink-0 text-[#a81816] w-full">
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-bold relative shrink-0 text-[#a81816] w-full">
             20–60 AED
           </p>
         </div>
 
         <div className="content-stretch flex flex-[1_0_0] flex-col gap-[12px] items-center justify-center min-w-px relative">
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:SemiBold',sans-serif] relative shrink-0 text-[#383e48] w-full">
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-semibold relative shrink-0 text-[#383e48] w-full">
             Other plans
           </p>
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:Bold',sans-serif] relative shrink-0 text-[#a81816] w-full">
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-bold relative shrink-0 text-[#a81816] w-full">
             30–60 AED
           </p>
         </div>

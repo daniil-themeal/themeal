@@ -250,7 +250,7 @@ export default function WhatYouEatEveryDaySection({
   return (
     <div className="bg-white relative shrink-0 justify-center w-full flex section-spacing-y section-spacing-x">
       <div className="content-stretch flex flex-col gap-[32px] md:gap-[48px] lg:gap-[64px] items-center relative size-full maxWidth">
-        <h2 className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Bold',sans-serif] not-italic relative shrink-0 text-[#383e48] h2-title text-center w-full">
+        <h2 className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-bold not-italic relative shrink-0 text-[#383e48] h2-title text-center w-full">
           What you&apos;ll eat every day
         </h2>
 
@@ -270,7 +270,7 @@ export default function WhatYouEatEveryDaySection({
                 >
                   <div className="flex flex-col items-center justify-center size-full">
                     <p
-                      className={`[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:SemiBold',sans-serif] leading-[1.3] not-italic text-[14px] md:text-[16px] text-center w-full transition-colors duration-150 ${
+                      className={`[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-semibold leading-[1.3] not-italic text-[14px] md:text-[16px] text-center w-full transition-colors duration-150 ${
                         isActive ? "text-[#9a38ef]" : "text-[#383e48]"
                       } font-normal`}
                     >
@@ -307,17 +307,17 @@ export default function WhatYouEatEveryDaySection({
                   <div className="content-stretch flex flex-col gap-[8px] items-start px-[3px] relative w-full">
                     <div className="content-stretch flex gap-[8px] items-baseline relative shrink-0 w-full">
                       {meal.kcal && (
-                        <p className="font-['Quicksand:Medium',sans-serif] leading-normal not-italic relative shrink-0 text-[#8594ac] text-[12px] sm:text-[14px] whitespace-nowrap">
+                        <p className="font-quicksand-medium leading-normal not-italic relative shrink-0 text-[#8594ac] text-[12px] sm:text-[14px] whitespace-nowrap">
                           {meal.kcal} kcal • {meal.g} g
                         </p>
                       )}
 
-                      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-['Quicksand:Medium',sans-serif] leading-normal not-italic relative shrink-0 text-[#8594ac] text-[12px] sm:text-[14px] whitespace-nowrap">
+                      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-medium leading-normal not-italic relative shrink-0 text-[#8594ac] text-[12px] sm:text-[14px] whitespace-nowrap">
                         {meal.type}
                       </p>
                     </div>
 
-                    <p className="font-['Quicksand:Bold',sans-serif] leading-[1.4] not-italic relative shrink-0 text-[#383e48] w-full text-[16px] sm:text-[20px]">
+                    <p className="font-quicksand-bold leading-[1.4] not-italic relative shrink-0 text-[#383e48] w-full text-[16px] sm:text-[20px]">
                       {meal.title}
                     </p>
                   </div>
@@ -329,7 +329,7 @@ export default function WhatYouEatEveryDaySection({
 
         <div className="gap-[24px] flex flex-col w-full">
           <div className="content-stretch flex flex-col gap-[18px] items-center relative shrink-0 w-full">
-            <p className="[word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-[1.5] not-italic relative shrink-0 text-[#383e48] text-[20px] text-center w-full">
+            <p className="[word-break:break-word] font-quicksand-bold leading-[1.5] not-italic relative shrink-0 text-[#383e48] text-[20px] text-center w-full">
               ⭐️⭐️⭐️⭐️⭐
               <br />
               <br />
@@ -339,7 +339,7 @@ export default function WhatYouEatEveryDaySection({
             <button
               type="button"
               onClick={onOrderClick}
-              className="btn flex flex-col items-center justify-center gap-[12px] px-[40px] lg:px-[56px] py-[12px] lg:py-[16px] bg-[#9a38ef] hover:bg-[#8C33D9] transition-all duration-200 shadow-[0_4px_20px_rgba(140,51,217,0.35)] hover:shadow-[0_8px_32px_rgba(140,51,217,0.55)] hover:-translate-y-[2px] relative rounded-[8px] shrink-0 w-full sm:w-auto cursor-pointer [word-break:break-word] font-['Quicksand:Bold',sans-serif] leading-none not-italic text-center text-white"
+              className="btn flex flex-col items-center justify-center gap-[12px] px-[40px] lg:px-[56px] py-[12px] lg:py-[16px] bg-[#9a38ef] hover:bg-[#8C33D9] transition-all duration-200 shadow-[0_4px_20px_rgba(140,51,217,0.35)] hover:shadow-[0_8px_32px_rgba(140,51,217,0.55)] hover:-translate-y-[2px] relative rounded-[8px] shrink-0 w-full sm:w-auto cursor-pointer [word-break:break-word] font-quicksand-bold leading-none not-italic text-center text-white"
             >
               <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] relative shrink-0 text-[20px] lg:text-[25px] w-full">
                 Choose My Plan
@@ -386,7 +386,7 @@ export default function WhatYouEatEveryDaySection({
                   </div>
                 </div>
 
-                <p className="[word-break:break-word] flex-[1_0_0] font-['Quicksand:Medium',sans-serif] leading-[1.3] min-w-px not-italic relative text-[#383e48] text-[20px]">
+                <p className="[word-break:break-word] flex-[1_0_0] font-quicksand-medium leading-[1.3] min-w-px not-italic relative text-[#383e48] text-[20px]">
                   {text}
                 </p>
               </div>

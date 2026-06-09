@@ -1,0 +1,388 @@
+import { useEffect, useMemo, useRef } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
+
+import type { DayOption, Duration } from '../../data/checkoutPricing';
+import { BORDER_RADIUS_TOKENS } from '../common/borderRadiusTokens';
+import { COLOR_TOKENS } from '../common/colorTokens';
+import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { FormSectionHeading } from '../common/FormSectionHeading';
+import { DeliveryIcon } from '../common/icons';
+import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
+
+import {
+  addDays,
+  getCalendarWeeks,
+  getMealDayRadiusByIndex,
+  getMealDayRadiusClassName,
+  getSubscriptionDays,
+  getUpcomingDeliveryDates,
+  isDeliveryDay,
+  isInPeriod,
+  isSameDay,
+  isSubscriptionMealDay,
+  MONTH_ABBR,
+  WEEKDAY_SHORT,
+  type MealDayRadiusPosition,
+} from './mealCalendarUtils';
+
+type MealCalendarCssVariables = CSSProperties & {
+  '--calendar-date-fs': string;
+  '--calendar-month-fs': string;
+  '--calendar-weekday-fs': string;
+};
+
+const mealCalendarStyle: MealCalendarCssVariables = {
+  '--calendar-date-fs': FONT_SIZE_TOKENS[16],
+  '--calendar-month-fs': FONT_SIZE_TOKENS[12],
+  '--calendar-weekday-fs': FONT_SIZE_TOKENS[14],
+};
+
+type DatePillCssVariables = CSSProperties & {
+  '--date-pill-bg': string;
+  '--date-pill-bg-hover': string;
+  '--date-pill-border': string;
+  '--date-pill-border-hover': string;
+};
+
+const DATE_PILL_SELECTED_STYLE: DatePillCssVariables = {
+  '--date-pill-bg': COLOR_TOKENS.primary[50],
+  '--date-pill-bg-hover': COLOR_TOKENS.primary[75],
+  '--date-pill-border': COLOR_TOKENS.primary[500],
+  '--date-pill-border-hover': COLOR_TOKENS.primary[600],
+};
+
+const DATE_PILL_DEFAULT_STYLE: DatePillCssVariables = {
+  '--date-pill-bg': COLOR_TOKENS.base.white,
+  '--date-pill-bg-hover': COLOR_TOKENS.neutral[50],
+  '--date-pill-border': COLOR_TOKENS.neutral[100],
+  '--date-pill-border-hover': COLOR_TOKENS.neutral[300],
+};
+
+type DatePillProps = {
+  date: Date;
+  selected: boolean;
+  onClick: () => void;
+};
+
+function DatePill({ date, selected, onClick }: DatePillProps) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={[
+        'flex h-[64px] w-[56px] shrink-0 cursor-pointer flex-col items-center justify-center',
+        'border border-[length:1px] border-[var(--date-pill-border)] bg-[var(--date-pill-bg)]',
+        'transition-colors',
+        'hover:enabled:border-[var(--date-pill-border-hover)] hover:enabled:bg-[var(--date-pill-bg-hover)]',
+      ].join(' ')}
+      style={{
+        borderRadius: BORDER_RADIUS_TOKENS[12],
+        ...(selected ? DATE_PILL_SELECTED_STYLE : DATE_PILL_DEFAULT_STYLE),
+      }}
+    >
+      <span
+        className="font-sans text-[18px] font-bold leading-none"
+        style={{ color: COLOR_TOKENS.neutral[900] }}
+      >
+        {date.getDate()}
+      </span>
+      <span
+        className="mt-[4px] font-sans text-[12px] font-semibold leading-none"
+        style={{ color: COLOR_TOKENS.neutral[900] }}
+      >
+        {MONTH_ABBR[date.getMonth()]}
+      </span>
+    </button>
+  );
+}
+
+type CalendarCellProps = {
+  date: Date;
+  startDate: Date;
+  endDate: Date;
+  dayOption: DayOption;
+  mealRadiusPosition?: MealDayRadiusPosition | null;
+};
+
+function CalendarCell({
+  date,
+  startDate,
+  endDate,
+  dayOption,
+  mealRadiusPosition = null,
+}: CalendarCellProps) {
+  const inPeriod = isInPeriod(date, startDate, endDate);
+  const deliveryDay = inPeriod && isDeliveryDay(date);
+  const mealDay = isSubscriptionMealDay({ date, startDate, endDate, dayOption });
+  const textColor = inPeriod ? COLOR_TOKENS.neutral[900] : COLOR_TOKENS.neutral[300];
+
+  return (
+    <div
+      className={[
+        'relative flex h-[48px] flex-col items-center justify-center gap-[6px]',
+        mealRadiusPosition ? getMealDayRadiusClassName(mealRadiusPosition) : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      style={{ backgroundColor: mealDay ? COLOR_TOKENS.primary[50] : 'transparent' }}
+    >
+      {deliveryDay ? (
+        <span
+          className="absolute right-[clamp(2px,8%,8px)] top-[4px] h-fit"
+          style={{ color: COLOR_TOKENS.neutral[900] }}
+        >
+          <DeliveryIcon size={16} />
+        </span>
+      ) : null}
+
+      <span
+        className={[
+          TEXT_TRIM_CLASS_NAME,
+          'font-sans text-[length:var(--calendar-date-fs)] font-bold leading-none',
+        ].join(' ')}
+        style={{ color: textColor }}
+      >
+        {date.getDate()}
+      </span>
+
+      <span
+        className={[
+          TEXT_TRIM_CLASS_NAME,
+          'font-sans text-[length:var(--calendar-month-fs)] font-bold leading-none',
+        ].join(' ')}
+        style={{ color: textColor }}
+      >
+        {MONTH_ABBR[date.getMonth()]}
+      </span>
+    </div>
+  );
+}
+
+type MealCalendarGridProps = {
+  startDate: Date;
+  duration: Duration;
+  dayOption: DayOption;
+};
+
+function MealCalendarGrid({ startDate, duration, dayOption }: MealCalendarGridProps) {
+  const weeks = useMemo(() => getCalendarWeeks(startDate, duration), [startDate, duration]);
+  const endDate = useMemo(
+    () => addDays(startDate, getSubscriptionDays(duration)),
+    [startDate, duration],
+  );
+
+  return (
+    <div className="flex flex-col gap-[8px]">
+      <div className="grid grid-cols-7">
+        {WEEKDAY_SHORT.map((day) => (
+          <div key={day} className="flex items-center justify-center py-[4px]">
+            <span
+              className={[
+                TEXT_TRIM_CLASS_NAME,
+                'font-sans text-[length:var(--calendar-weekday-fs)] font-medium leading-none',
+              ].join(' ')}
+              style={{ color: COLOR_TOKENS.neutral[900] }}
+            >
+              {day}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      {weeks.map((week, weekIndex) => {
+        const mealRadiusByIndex = getMealDayRadiusByIndex({
+          week,
+          startDate,
+          endDate,
+          dayOption,
+        });
+
+        return (
+          <div key={weekIndex} className="grid grid-cols-7">
+            {week.map((date, dayIndex) => (
+              <CalendarCell
+                key={dayIndex}
+                date={date}
+                startDate={startDate}
+                endDate={endDate}
+                dayOption={dayOption}
+                mealRadiusPosition={mealRadiusByIndex[dayIndex]}
+              />
+            ))}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function MealCalendarLegend() {
+  return (
+    <div className="flex items-center gap-[20px]">
+      <div className="flex items-center gap-[6px]">
+        <div
+          className="h-[14px] w-[14px] rounded-[3px]"
+          style={{ backgroundColor: COLOR_TOKENS.primary[50] }}
+        />
+        <span
+          className={[TEXT_TRIM_CLASS_NAME, 'font-sans text-[12px] font-semibold'].join(' ')}
+          style={{ color: COLOR_TOKENS.neutral[600] }}
+        >
+          Meal days
+        </span>
+      </div>
+
+      <div className="flex items-center gap-[6px]">
+        <span style={{ color: COLOR_TOKENS.neutral[900] }}>
+          <DeliveryIcon size={16} />
+        </span>
+        <span
+          className={[TEXT_TRIM_CLASS_NAME, 'font-sans text-[12px] font-semibold'].join(' ')}
+          style={{ color: COLOR_TOKENS.neutral[600] }}
+        >
+          Delivery days
+        </span>
+      </div>
+    </div>
+  );
+}
+
+export type MealCalendarProps = {
+  duration: Duration;
+  dayOption: DayOption;
+  selectedDate: Date;
+  onSelectedDateChange: (date: Date) => void;
+  availableDates?: Date[];
+  withinDays?: number;
+  title?: ReactNode;
+  subtitle?: ReactNode;
+  className?: string;
+};
+
+export function MealCalendar({
+  duration,
+  dayOption,
+  selectedDate,
+  onSelectedDateChange,
+  availableDates,
+  withinDays = 60,
+  title = 'Choose the preferred first delivery date',
+  subtitle = 'We deliver Wednesdays and Sundays — pick your start date',
+  className = '',
+}: MealCalendarProps) {
+  const deliveryDates = useMemo(
+    () => availableDates ?? getUpcomingDeliveryDates(withinDays),
+    [availableDates, withinDays],
+  );
+
+  const datePillsScrollRef = useRef<HTMLDivElement>(null);
+  const datePillsDragStartXRef = useRef(0);
+  const datePillsDragMovedRef = useRef(false);
+
+  useEffect(() => {
+    const scrollElement = datePillsScrollRef.current;
+    if (!scrollElement) return;
+
+    const handleWheel = (event: WheelEvent) => {
+      if (scrollElement.scrollWidth <= scrollElement.clientWidth) return;
+
+      const delta =
+        Math.abs(event.deltaY) >= Math.abs(event.deltaX) ? event.deltaY : event.deltaX;
+
+      scrollElement.scrollLeft += delta;
+      event.preventDefault();
+    };
+
+    scrollElement.addEventListener('wheel', handleWheel, { passive: false });
+
+    return () => {
+      scrollElement.removeEventListener('wheel', handleWheel);
+    };
+  }, [deliveryDates.length]);
+
+  return (
+    <div
+      className={['flex min-w-0 flex-col gap-[16px]', className].filter(Boolean).join(' ')}
+      style={mealCalendarStyle}
+    >
+      {title ? <FormSectionHeading title={title} subtitle={subtitle} /> : null}
+
+      <div className="-mx-[20px] md:-mx-[32px]">
+        <div
+          ref={datePillsScrollRef}
+          className="flex w-full min-w-0 cursor-grab touch-pan-x select-none gap-[8px] overflow-x-auto px-[20px] pb-[4px] scrollbar-hide active:cursor-grabbing md:px-[32px]"
+            onMouseDown={(event) => {
+              const scrollElement = event.currentTarget;
+              const startX = event.pageX - scrollElement.offsetLeft;
+              const scrollLeft = scrollElement.scrollLeft;
+              datePillsDragStartXRef.current = event.pageX;
+              datePillsDragMovedRef.current = false;
+
+              const onMouseMove = (moveEvent: MouseEvent) => {
+                if (Math.abs(moveEvent.pageX - datePillsDragStartXRef.current) > 6) {
+                  datePillsDragMovedRef.current = true;
+                }
+
+                scrollElement.scrollLeft =
+                  scrollLeft - (moveEvent.pageX - scrollElement.offsetLeft - startX);
+              };
+
+              const onMouseUp = () => {
+                document.removeEventListener('mousemove', onMouseMove);
+                document.removeEventListener('mouseup', onMouseUp);
+                window.setTimeout(() => {
+                  datePillsDragMovedRef.current = false;
+                }, 80);
+              };
+
+              document.addEventListener('mousemove', onMouseMove);
+              document.addEventListener('mouseup', onMouseUp);
+            }}
+            onTouchStart={(event) => {
+              const scrollElement = event.currentTarget;
+              const startX = event.touches[0].pageX - scrollElement.offsetLeft;
+              const scrollLeft = scrollElement.scrollLeft;
+              datePillsDragStartXRef.current = event.touches[0].pageX;
+              datePillsDragMovedRef.current = false;
+
+              const onTouchMove = (moveEvent: TouchEvent) => {
+                if (Math.abs(moveEvent.touches[0].pageX - datePillsDragStartXRef.current) > 6) {
+                  datePillsDragMovedRef.current = true;
+                }
+
+                scrollElement.scrollLeft =
+                  scrollLeft - (moveEvent.touches[0].pageX - scrollElement.offsetLeft - startX);
+              };
+
+              const onTouchEnd = () => {
+                document.removeEventListener('touchmove', onTouchMove);
+                document.removeEventListener('touchend', onTouchEnd);
+                window.setTimeout(() => {
+                  datePillsDragMovedRef.current = false;
+                }, 80);
+              };
+
+              document.addEventListener('touchmove', onTouchMove, { passive: true });
+              document.addEventListener('touchend', onTouchEnd);
+            }}
+          >
+            {deliveryDates.map((date, index) => (
+              <DatePill
+                key={index}
+                date={date}
+                selected={isSameDay(date, selectedDate)}
+                onClick={() => {
+                  if (datePillsDragMovedRef.current) return;
+                  onSelectedDateChange(date);
+                }}
+              />
+            ))}
+        </div>
+      </div>
+
+      <MealCalendarLegend />
+
+      <MealCalendarGrid startDate={selectedDate} duration={duration} dayOption={dayOption} />
+    </div>
+  );
+}

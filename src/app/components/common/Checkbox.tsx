@@ -1,45 +1,48 @@
 import type { CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
-import { FONT_SIZE_TOKENS } from './fontSizeTokens';
+import {
+  CHECKBOX_SIZE_CONFIG,
+  getCheckboxSizeStyle,
+  type CheckboxSize,
+} from './checkboxSizeTokens';
+import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
 type CheckboxCssVariables = CSSProperties & {
   '--checkbox-box-bg': string;
   '--checkbox-check-color': string;
   '--checkbox-label-color': string;
-  '--checkbox-label-font-size': string;
 };
 
-const CHECKBOX_STYLES: Record<'unchecked' | 'checked' | 'disabled-unchecked' | 'disabled-checked', CheckboxCssVariables> = {
+const CHECKBOX_STYLES: Record<
+  'unchecked' | 'checked' | 'disabled-unchecked' | 'disabled-checked',
+  CheckboxCssVariables
+> = {
   unchecked: {
     '--checkbox-box-bg': COLOR_TOKENS.neutral[75],
     '--checkbox-check-color': COLOR_TOKENS.base.white,
     '--checkbox-label-color': COLOR_TOKENS.neutral[900],
-    '--checkbox-label-font-size': FONT_SIZE_TOKENS[16],
   },
   checked: {
     '--checkbox-box-bg': COLOR_TOKENS.primary[500],
     '--checkbox-check-color': COLOR_TOKENS.base.white,
     '--checkbox-label-color': COLOR_TOKENS.neutral[900],
-    '--checkbox-label-font-size': FONT_SIZE_TOKENS[16],
   },
   'disabled-unchecked': {
     '--checkbox-box-bg': COLOR_TOKENS.neutral[75],
     '--checkbox-check-color': COLOR_TOKENS.neutral[200],
     '--checkbox-label-color': COLOR_TOKENS.neutral[200],
-    '--checkbox-label-font-size': FONT_SIZE_TOKENS[16],
   },
   'disabled-checked': {
     '--checkbox-box-bg': COLOR_TOKENS.neutral[75],
     '--checkbox-check-color': COLOR_TOKENS.neutral[200],
     '--checkbox-label-color': COLOR_TOKENS.neutral[200],
-    '--checkbox-label-font-size': FONT_SIZE_TOKENS[16],
   },
 };
 
-function CheckMark() {
+function CheckMark({ size }: { size: number }) {
   return (
-    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden>
+    <svg width={size} height={size} viewBox="0 0 12 12" fill="none" aria-hidden>
       <path
         d="M2 6l3 3 5-5"
         stroke="var(--checkbox-check-color)"
@@ -55,6 +58,7 @@ type CheckboxProps = {
   checked: boolean;
   onChange: (checked: boolean) => void;
   label?: ReactNode;
+  size?: CheckboxSize;
   id?: string;
   disabled?: boolean;
   className?: string;
@@ -64,26 +68,35 @@ export function Checkbox({
   checked,
   onChange,
   label,
+  size = 'large',
   id,
   disabled = false,
   className = '',
 }: CheckboxProps) {
   const styleKey = disabled
-    ? checked ? 'disabled-checked' : 'disabled-unchecked'
-    : checked ? 'checked' : 'unchecked';
-  const style = CHECKBOX_STYLES[styleKey];
+    ? checked
+      ? 'disabled-checked'
+      : 'disabled-unchecked'
+    : checked
+      ? 'checked'
+      : 'unchecked';
+  const stateStyle = CHECKBOX_STYLES[styleKey];
+  const checkMarkSize = CHECKBOX_SIZE_CONFIG[size].checkMarkSizePx;
 
   return (
     <label
       htmlFor={id}
       className={[
-        'flex select-none items-center gap-[8px]',
+        'flex select-none items-center gap-[length:var(--checkbox-gap)]',
         disabled ? 'cursor-not-allowed' : 'cursor-pointer',
         className,
       ]
         .filter(Boolean)
         .join(' ')}
-      style={style}
+      style={{
+        ...getCheckboxSizeStyle(size),
+        ...stateStyle,
+      }}
     >
       <input
         id={id}
@@ -94,18 +107,19 @@ export function Checkbox({
         className="sr-only"
       />
 
-      {/* Box */}
       <div
-        className="flex h-[20px] w-[20px] shrink-0 items-center justify-center rounded-[5px] transition-colors"
+        className="flex h-[length:var(--checkbox-box-size)] w-[length:var(--checkbox-box-size)] shrink-0 items-center justify-center rounded-[length:var(--checkbox-border-radius)] transition-colors"
         style={{ backgroundColor: 'var(--checkbox-box-bg)' }}
       >
-        {checked ? <CheckMark /> : null}
+        {checked ? <CheckMark size={checkMarkSize} /> : null}
       </div>
 
-      {/* Label */}
       {label ? (
         <span
-          className="overflow-hidden text-ellipsis font-['Quicksand'] text-[length:var(--checkbox-label-font-size)] font-semibold leading-[130%]"
+          className={[
+            TEXT_TRIM_CLASS_NAME,
+            'min-w-0 font-sans text-[length:var(--checkbox-label-font-size)] font-semibold leading-[130%]',
+          ].join(' ')}
           style={{ color: 'var(--checkbox-label-color)' }}
         >
           {label}

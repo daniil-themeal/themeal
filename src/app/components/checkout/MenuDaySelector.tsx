@@ -278,7 +278,7 @@ export function MenuDaySelector({
                 >
                   <div className="flex w-full flex-col items-center gap-[4px]">
                     <p
-                      className={`font-['Quicksand'] text-[length:var(--menu-day-selector-date-font-size)] font-bold leading-none tracking-[-0.16px] transition-colors duration-200 ${
+                      className={`font-sans text-[length:var(--menu-day-selector-date-font-size)] font-bold leading-none tracking-[-0.16px] transition-colors duration-200 ${
                         active
                           ? 'text-[var(--menu-day-selector-active)]'
                           : 'text-[var(--menu-day-selector-text)]'
@@ -288,7 +288,7 @@ export function MenuDaySelector({
                     </p>
 
                     <p
-                      className={`font-['Quicksand'] text-[length:var(--menu-day-selector-meta-font-size)] font-bold leading-none tracking-[-0.12px] transition-colors duration-200 ${
+                      className={`font-sans text-[length:var(--menu-day-selector-meta-font-size)] font-bold leading-none tracking-[-0.12px] transition-colors duration-200 ${
                         active
                           ? 'text-[var(--menu-day-selector-active)]'
                           : 'text-[var(--menu-day-selector-text)]'
@@ -299,7 +299,7 @@ export function MenuDaySelector({
                   </div>
 
                   <p
-                    className={`font-['Quicksand'] text-[length:var(--menu-day-selector-meta-font-size)] font-medium leading-none tracking-[-0.12px] transition-colors duration-200 ${
+                    className={`font-sans text-[length:var(--menu-day-selector-meta-font-size)] font-medium leading-none tracking-[-0.12px] transition-colors duration-200 ${
                       active
                         ? 'text-[var(--menu-day-selector-active-muted)]'
                         : 'text-[var(--menu-day-selector-muted)]'

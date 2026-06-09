@@ -1,6 +1,12 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  --font-family-quicksand: Quicksand;
+  --font-family-arial: Arial;
+  --font-family-sans: Quicksand, Arial, sans-serif;
+  --font-family-quicksand-medium: "Quicksand:Medium", Arial, sans-serif;
+  --font-family-quicksand-semibold: "Quicksand:SemiBold", Arial, sans-serif;
+  --font-family-quicksand-bold: "Quicksand:Bold", Arial, sans-serif;
   --font-size: 16px;
   --background: #ffffff;
   --foreground: oklch(0.145 0 0);
@@ -92,6 +98,11 @@
 
 
 @theme inline {
+  --font-sans: var(--font-family-sans);
+  --font-arial: var(--font-family-arial), sans-serif;
+  --font-quicksand-medium: var(--font-family-quicksand-medium);
+  --font-quicksand-semibold: var(--font-family-quicksand-semibold);
+  --font-quicksand-bold: var(--font-family-quicksand-bold);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -138,7 +149,7 @@
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background font-sans text-foreground;
   }
 
   /**

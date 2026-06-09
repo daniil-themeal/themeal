@@ -98,7 +98,7 @@ export default function Footer() {
           <div className="content-stretch flex  flex-col md:flex-1  gap-[24px] pt-[0px] sm:pt-[16px] sm:gap-[56px] items-start relative shrink-0 w-full">
             
             {/* Nav links */}
-            <div className="[word-break:break-word] content-stretch flex flex-wrap justify-between font-['Quicksand:SemiBold',sans-serif] gap-[16px_24px] items-center leading-[1.5] not-italic relative shrink-0 text-[16px] lg:text-[20px] text-center lg:text-left md:justify-left text-white tracking-[-0.32px] w-full max-w-[800px]">
+            <div className="[word-break:break-word] content-stretch flex flex-wrap justify-between font-quicksand-semibold gap-[16px_24px] items-center leading-[1.5] not-italic relative shrink-0 text-[16px] lg:text-[20px] text-center lg:text-left md:justify-left text-white tracking-[-0.32px] w-full max-w-[800px]">
               <a href="#price" className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] relative shrink-0 hover:text-[#BB7AF4] transition-colors duration-150">Price</a>
               <a href="#qa" className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] relative shrink-0 hover:text-[#BB7AF4] transition-colors duration-150">Q&A</a>
               <a href="#delivery" className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] relative shrink-0 hover:text-[#BB7AF4] transition-colors duration-150">Delivery</a>
@@ -131,7 +131,7 @@ export default function Footer() {
           {/* end: Messenger / contact icons */}
 
           {/* Legal info */}
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-['Quicksand:Medium',sans-serif] leading-[1.5] not-italic relative shrink-0 text-[16px] text-center text-white tracking-[-0.32px] md:flex-1 md:text-left md:w-auto w-full">YUMGOODS-FZCO CIF: DSO-FZCO-21291 License Number: 22986 Address: United Arab Emirates, Dubai, IFZA Business Park, DDP, PO Box 342001</p>
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] font-quicksand-medium leading-[1.5] not-italic relative shrink-0 text-[16px] text-center text-white tracking-[-0.32px] md:flex-1 md:text-left md:w-auto w-full">YUMGOODS-FZCO CIF: DSO-FZCO-21291 License Number: 22986 Address: United Arab Emirates, Dubai, IFZA Business Park, DDP, PO Box 342001</p>
           {/* end: Legal info */}
 </div>
         </div>

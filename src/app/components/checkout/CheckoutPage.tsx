@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 
 import { CheckoutHeader } from './CheckoutHeader';
+import type { CheckoutHeaderStep } from './CheckoutHeader';
 import { PlanSelectorBlock } from './PlanSelectorBlock';
 import { IngredientsBlock } from './IngredientsBlock';
 import { DaysBlock } from './DaysBlock';
@@ -12,12 +13,13 @@ import { FullMenuModal } from './FullMenuModal';
 import { SmsCodeScreen } from './SmsCodeScreen';
 import { DeliveryAddressScreen } from './DeliveryAddressScreen';
 import { DeliveryDetailsScreen } from './DeliveryDetailsScreen';
+import { createInitialDeliveryDetails } from './deliveryDetailsTypes';
+import type { DeliveryDetailsData } from './deliveryDetailsTypes';
+import { PaymentScreen } from './PaymentScreen';
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
 import type { TestAddress } from '../../data/testAddresses';
-import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
-import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 
 type CheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment';
 type DeliveryStep = 'address' | 'details';
@@ -31,32 +33,14 @@ type CheckoutPageProps = {
 
 type CheckoutPageCssVariables = CSSProperties & {
   '--checkout-page-bg': string;
-  '--checkout-payment-title-font-size': string;
-  '--checkout-payment-title-font-size-md': string;
-  '--checkout-payment-description-font-size': string;
 };
-
-function hexToRgba(hex: string, alpha: number) {
-  const normalizedHex = hex.replace('#', '');
-
-  const red = Number.parseInt(normalizedHex.slice(0, 2), 16);
-  const green = Number.parseInt(normalizedHex.slice(2, 4), 16);
-  const blue = Number.parseInt(normalizedHex.slice(4, 6), 16);
-
-  return `rgba(${red},${green},${blue},${alpha})`;
-}
 
 const checkoutPageStyle: CheckoutPageCssVariables = {
   '--checkout-page-bg': COLOR_TOKENS.neutral[50],
-  '--checkout-payment-title-font-size': FONT_SIZE_TOKENS[32],
-  '--checkout-payment-title-font-size-md': FONT_SIZE_TOKENS[40],
-  '--checkout-payment-description-font-size': FONT_SIZE_TOKENS[16],
 };
 
-const paymentCardStyle: CSSProperties = {
-  backgroundColor: COLOR_TOKENS.base.white,
-  boxShadow: `0 12px 36px ${hexToRgba(COLOR_TOKENS.neutral[900], 0.08)}`,
-};
+const checkoutStepScrollClassName =
+  'flex-1 overflow-y-auto bg-white md:bg-[var(--checkout-page-bg)] scrollbar-hide';
 
 export function CheckoutPage({
   isOpen,
@@ -77,6 +61,9 @@ export function CheckoutPage({
   const [summaryVisible, setSummaryVisible] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<TestAddress | null>(null);
+  const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetailsData>(() =>
+    createInitialDeliveryDetails(),
+  );
 
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
@@ -178,6 +165,44 @@ export function CheckoutPage({
     scrollBodyToTop();
   };
 
+  const handleDeliveryDetailsChange = (patch: Partial<DeliveryDetailsData>) => {
+    setDeliveryDetails((current) => ({ ...current, ...patch }));
+  };
+
+  const handleEditPlan = () => {
+    setCheckoutStep('plan');
+    setMenuOpen(false);
+    setSummaryVisible(true);
+    scrollBodyToTop();
+  };
+
+  const handleEditDelivery = () => {
+    setCheckoutStep('delivery');
+    setDeliveryStep('details');
+    scrollBodyToTop();
+  };
+
+  const handleDevStepSelect = (step: CheckoutHeaderStep) => {
+    setMenuOpen(false);
+
+    if (step === 'plan') {
+      setCheckoutStep('plan');
+      setSummaryVisible(true);
+      scrollBodyToTop();
+      return;
+    }
+
+    if (step === 'delivery') {
+      setCheckoutStep('delivery');
+      setDeliveryStep('details');
+      scrollBodyToTop();
+      return;
+    }
+
+    setCheckoutStep('payment');
+    scrollBodyToTop();
+  };
+
   const handleBack = () => {
     if (checkoutStep === 'payment') {
       setCheckoutStep('delivery');
@@ -216,7 +241,12 @@ export function CheckoutPage({
 
   return (
     <div className="fixed inset-0 z-[200] flex flex-col" style={checkoutPageStyle}>
-      <CheckoutHeader step={headerStep} onBack={handleBack} onClose={onClose} />
+      <CheckoutHeader
+        step={headerStep}
+        onBack={handleBack}
+        onClose={onClose}
+        onStepSelect={import.meta.env.DEV ? handleDevStepSelect : undefined}
+      />
 
       {checkoutStep === 'plan' ? (
         <>
@@ -250,7 +280,7 @@ export function CheckoutPage({
 
               <div
                 ref={rightRef}
-                className="w-full p-[104px_0_120px] md:sticky md:top-[24px] md:mt-[56px] md:w-[380px] md:shrink-0 md:self-start md:p-[0_0_120px]"
+                className="w-full md:sticky md:top-[24px] md:w-[380px] md:shrink-0 md:self-start md:pb-[120px]"
               >
                 <OrderSummary
                   plan={plan}
@@ -284,10 +314,7 @@ export function CheckoutPage({
           />
         </>
       ) : checkoutStep === 'verification' ? (
-        <div
-          ref={bodyRef}
-          className="flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide"
-        >
+        <div ref={bodyRef} className={checkoutStepScrollClassName}>
           <SmsCodeScreen
             onChangeNumber={() => {
               setCheckoutStep('plan');
@@ -299,10 +326,7 @@ export function CheckoutPage({
           />
         </div>
       ) : checkoutStep === 'delivery' && deliveryStep === 'address' ? (
-        <div
-          ref={bodyRef}
-          className="flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide"
-        >
+        <div ref={bodyRef} className={checkoutStepScrollClassName}>
           <DeliveryAddressScreen
             selectedAddress={selectedAddress}
             onSelectedAddressChange={setSelectedAddress}
@@ -310,12 +334,11 @@ export function CheckoutPage({
           />
         </div>
       ) : checkoutStep === 'delivery' && deliveryStep === 'details' ? (
-        <div
-          ref={bodyRef}
-          className="flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide"
-        >
+        <div ref={bodyRef} className={checkoutStepScrollClassName}>
           <DeliveryDetailsScreen
             selectedAddress={selectedAddress}
+            deliveryDetails={deliveryDetails}
+            onDeliveryDetailsChange={handleDeliveryDetailsChange}
             onChangeAddress={handleChangeAddress}
             days={days}
             duration={duration}
@@ -323,43 +346,19 @@ export function CheckoutPage({
           />
         </div>
       ) : (
-        <div
-          ref={bodyRef}
-          className="flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide"
-        >
-          <div className="mx-auto flex min-h-full w-full max-w-[760px] flex-col items-center justify-center px-[20px] py-[48px] text-center">
-            <div
-              className="rounded-[18px] px-[24px] py-[32px] md:px-[40px]"
-              style={paymentCardStyle}
-            >
-              <h1
-                className="font-['Quicksand'] text-[length:var(--checkout-payment-title-font-size)] font-bold leading-[115%] md:text-[length:var(--checkout-payment-title-font-size-md)]"
-                style={{ color: COLOR_TOKENS.neutral[900] }}
-              >
-                Payment step
-              </h1>
-
-              <p
-                className="mt-[12px] font-['Quicksand'] text-[length:var(--checkout-payment-description-font-size)] font-semibold leading-[145%]"
-                style={{ color: COLOR_TOKENS.neutral[500] }}
-              >
-                Payment screen is not implemented yet.
-              </p>
-
-              <Button
-                type="button"
-                variant="primary"
-                size="48"
-                className="mt-[24px]"
-                onClick={() => {
-                  setCheckoutStep('delivery');
-                  setDeliveryStep('details');
-                }}
-              >
-                Back to delivery details
-              </Button>
-            </div>
-          </div>
+        <div ref={bodyRef} className={checkoutStepScrollClassName}>
+          <PaymentScreen
+            plan={plan}
+            days={days}
+            duration={duration}
+            ingredients={ingredients}
+            lightMealOption={lightMealOption}
+            persons={persons}
+            selectedAddress={selectedAddress}
+            deliveryDetails={deliveryDetails}
+            onEditPlan={handleEditPlan}
+            onEditDelivery={handleEditDelivery}
+          />
         </div>
       )}
     </div>

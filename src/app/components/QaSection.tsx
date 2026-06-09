@@ -191,7 +191,7 @@ export default function QaSection() {
   return (
     <section className="relative w-full bg-white section-spacing-y section-spacing-x">
       <div className="mx-auto flex w-full maxWidth flex-col items-center gap-[32px] md:gap-[48px] lg:gap-[64px]">
-        <h2 className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] w-full text-center font-['Quicksand:Bold',sans-serif] h2-title text-[#383e48]">
+        <h2 className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] w-full text-center font-quicksand-bold h2-title text-[#383e48]">
           Any questions?
         </h2>
 
@@ -216,7 +216,7 @@ export default function QaSection() {
                 >
                   <span
                     className={[
-                      "w-full text-center font-['Quicksand:SemiBold',sans-serif] text-[20px] leading-[1.3] transition-colors duration-150",
+                      "w-full text-center font-quicksand-semibold text-[20px] leading-[1.3] transition-colors duration-150",
                       isActive ? "text-[#9a38ef]" : "text-[#383e48]",
                     ].join(" ")}
                   >
@@ -249,7 +249,7 @@ export default function QaSection() {
                     className="flex w-full items-center justify-between gap-[16px] px-[20px] py-[12px] text-left md:pl-[24px] md:pr-[16px]"
                     aria-expanded={isOpen}
                   >
-                    <span className="[word-break:break-word] py-[6px] font-['Quicksand:Bold',sans-serif] text-[20px] leading-[1.4] text-[#383e48] transition-colors duration-200 group-hover:text-[#9A38EF] sm:text-[25px]">
+                    <span className="[word-break:break-word] py-[6px] font-quicksand-bold text-[20px] leading-[1.4] text-[#383e48] transition-colors duration-200 group-hover:text-[#9A38EF] sm:text-[25px]">
                       {item.question}
                     </span>
 
@@ -290,11 +290,11 @@ export default function QaSection() {
                           <span className="mt-[11px] size-[6px] flex-none rounded-full bg-[#383E48]" />
 
                           <div className="[word-break:break-word] flex min-w-0 flex-1 flex-col gap-[2px] text-[#383e48]">
-                            <p className="font-['Quicksand:SemiBold',sans-serif] text-[16px] leading-[1.4]">
+                            <p className="font-quicksand-semibold text-[16px] leading-[1.4]">
                               {bullet.title}
                             </p>
 
-                            <p className="font-['Quicksand:Medium',sans-serif] text-[16px] leading-[1.4]">
+                            <p className="font-quicksand-medium text-[16px] leading-[1.4]">
                               {bullet.text}
                             </p>
                           </div>

@@ -3,6 +3,7 @@ import type {
   DeliveryAvailability,
   TestAddress,
 } from '../../../data/testAddresses';
+import { TEXT_TRIM_CLASS_NAME } from '../../common/textTrimTokens';
 import {
   DeliveryAvailableIcon,
   DeliveryUnavailableIcon,
@@ -43,14 +44,23 @@ function SuggestionRow({
 
       <div className="min-w-0 flex-1">
         <p
-          className={`truncate font-['Quicksand:SemiBold',sans-serif] text-[16px] leading-[1.25] text-[#383e48] ${
-            strong || isActive ? "font-['Quicksand:Bold',sans-serif]" : ''
-          }`}
+          className={[
+            TEXT_TRIM_CLASS_NAME,
+            'min-w-0 font-quicksand-semibold text-[16px] leading-[1.25] text-[#383e48]',
+            strong || isActive ? 'font-quicksand-bold' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
         >
           {suggestion.title}
         </p>
 
-        <p className="mt-[2px] truncate font-['Quicksand:SemiBold',sans-serif] text-[12px] leading-[1.3] text-[#8594ac]">
+        <p
+          className={[
+            TEXT_TRIM_CLASS_NAME,
+            'mt-[2px] min-w-0 font-quicksand-semibold text-[12px] leading-[1.3] text-[#8594ac]',
+          ].join(' ')}
+        >
           {suggestion.subtitle}
         </p>
       </div>
@@ -79,7 +89,7 @@ export function AddressSuggestions({
 }: AddressSuggestionsProps) {
   if (suggestions.length === 0) {
     return (
-      <p className="px-[24px] py-[18px] font-['Quicksand:SemiBold',sans-serif] text-[14px] leading-[1.4] text-[#8594ac] md:px-[24px]">
+      <p className="px-[24px] py-[18px] font-quicksand-semibold text-[14px] leading-[1.4] text-[#8594ac] md:px-[24px]">
         No UAE addresses found
       </p>
     );

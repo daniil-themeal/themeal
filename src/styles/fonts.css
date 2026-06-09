@@ -1,7 +1,7 @@
 /* Load Quicksand from Google Fonts (browser picks optimal format) */
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&display=swap');
 
-/* Aliases so Figma-style class names like font-['Quicksand:Bold'] resolve correctly */
+/* Figma weight aliases; Arial is the project-wide fallback via FONT_FAMILY_TOKENS / --font-family-* */
 @font-face {
   font-family: 'Quicksand:Medium';
   src: url('https://fonts.gstatic.com/s/quicksand/v37/6xK-dSZaM9iE8KbpRA_LJ3z8mH9BOJvgkM0o18E.ttf') format('truetype');

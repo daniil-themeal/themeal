@@ -1,8 +1,13 @@
 import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
-import { FONT_SIZE_TOKENS } from './fontSizeTokens';
+import {
+  FIELD_SIZE_CONFIG,
+  getFieldSizeStyle,
+  type FieldSize,
+} from './fieldSizeTokens';
 import { FormLabel } from './FormLabel';
+import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
 export const TEXT_AREA_STATES = ['default', 'focus', 'success', 'error'] as const;
 
@@ -10,6 +15,7 @@ export type TextAreaState = (typeof TEXT_AREA_STATES)[number];
 
 type TextAreaProps = {
   label: ReactNode;
+  size?: FieldSize;
   error?: ReactNode;
   hint?: ReactNode;
   counter?: ReactNode;
@@ -28,20 +34,8 @@ type TextAreaCssVariables = CSSProperties & {
   '--text-area-placeholder': string;
 };
 
-type TextAreaTypographyVariables = CSSProperties & {
-  '--text-area-font-size': string;
-  '--text-area-supporting-font-size': string;
-};
-
-const TEXT_AREA_FONT_SIZE_PX = 16;
 const TEXT_AREA_LINE_HEIGHT_RATIO = 1.3;
-const TEXT_AREA_VERTICAL_PADDING_PX = 14;
 const TEXT_AREA_DEFAULT_ROWS = 4;
-
-const textAreaTypographyStyle: TextAreaTypographyVariables = {
-  '--text-area-font-size': FONT_SIZE_TOKENS[16],
-  '--text-area-supporting-font-size': FONT_SIZE_TOKENS[12],
-};
 
 const FIELD_STATE_STYLES: Record<TextAreaState, TextAreaCssVariables> = {
   default: {
@@ -78,23 +72,25 @@ const FIELD_STATE_STYLES: Record<TextAreaState, TextAreaCssVariables> = {
 };
 
 const fieldBaseClassName = [
-  'w-full overflow-hidden rounded-[8px] border',
+  'w-full rounded-[length:var(--field-border-radius)] border',
   'border-[var(--text-area-border)] bg-[var(--text-area-bg)]',
   'transition-colors',
   'focus-within:border-[var(--text-area-focus-border)]',
 ].join(' ');
 
 const textareaBaseClassName = [
-  "w-full resize-none bg-transparent px-[16px] py-[14px] font-['Quicksand']",
-  'text-[length:var(--text-area-font-size)] font-semibold leading-[130%] text-[var(--text-area-text)]',
+  TEXT_TRIM_CLASS_NAME,
+  "w-full resize-none bg-transparent px-[length:var(--field-horizontal-padding)] py-[length:var(--field-textarea-vertical-padding)] font-sans",
+  'text-[length:var(--field-font-size)] font-semibold leading-[130%] text-[var(--text-area-text)]',
   'outline-none placeholder:text-[var(--text-area-placeholder)]',
   'disabled:cursor-not-allowed',
 ].join(' ');
 
-function getMinHeightForRows(rows: number) {
-  const lineHeightPx = TEXT_AREA_FONT_SIZE_PX * TEXT_AREA_LINE_HEIGHT_RATIO;
+function getMinHeightForRows(size: FieldSize, rows: number) {
+  const config = FIELD_SIZE_CONFIG[size];
+  const lineHeightPx = config.fontSizePx * TEXT_AREA_LINE_HEIGHT_RATIO;
 
-  return rows * lineHeightPx + TEXT_AREA_VERTICAL_PADDING_PX * 2;
+  return rows * lineHeightPx + config.textareaVerticalPaddingPx * 2;
 }
 
 function getSafeRows(rows: ComponentPropsWithoutRef<'textarea'>['rows']) {
@@ -133,6 +129,7 @@ function getFieldClassName({
 
 export function TextArea({
   label,
+  size = 'large',
   error,
   hint,
   counter,
@@ -157,7 +154,7 @@ export function TextArea({
       className={['flex w-full flex-col gap-[8px]', containerClassName]
         .filter(Boolean)
         .join(' ')}
-      style={textAreaTypographyStyle}
+      style={getFieldSizeStyle(size)}
     >
       <div className="flex items-baseline gap-[3px] px-[2px]">
         <FormLabel
@@ -169,7 +166,7 @@ export function TextArea({
 
         {counter ? (
           <span
-            className="font-['Quicksand'] text-[length:var(--text-area-supporting-font-size)] font-semibold leading-[120%] tracking-[0.12px]"
+            className="shrink-0 font-sans text-[length:var(--field-supporting-font-size)] font-semibold leading-[120%] tracking-[0.12px]"
             style={{ color: COLOR_TOKENS.neutral[500] }}
           >
             {counter}
@@ -192,7 +189,7 @@ export function TextArea({
           aria-describedby={descriptionId}
           className={[textareaBaseClassName, className].filter(Boolean).join(' ')}
           style={{
-            minHeight: getMinHeightForRows(safeRows),
+            minHeight: getMinHeightForRows(size, safeRows),
             ...style,
           }}
           {...textareaProps}
@@ -202,7 +199,10 @@ export function TextArea({
       {error || hint ? (
         <p
           id={descriptionId}
-          className="px-[2px] font-['Quicksand'] text-[length:var(--text-area-supporting-font-size)] font-semibold leading-[150%]"
+          className={[
+            TEXT_TRIM_CLASS_NAME,
+            'px-[2px] font-sans text-[length:var(--field-supporting-font-size)] font-semibold leading-[150%]',
+          ].join(' ')}
           style={{
             color: hasError ? COLOR_TOKENS.danger[400] : COLOR_TOKENS.neutral[500],
           }}

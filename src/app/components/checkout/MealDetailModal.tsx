@@ -35,7 +35,7 @@ const mealDetailModalStyle: MealDetailModalCssVariables = {
 function DottedRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex w-full items-end gap-[6px]">
-      <p className="shrink-0 whitespace-nowrap font-['Quicksand'] text-[length:var(--meal-detail-body-font-size)] font-medium leading-[150%] text-[var(--meal-detail-text)]">
+      <p className="shrink-0 whitespace-nowrap font-sans text-[length:var(--meal-detail-body-font-size)] font-medium leading-[150%] text-[var(--meal-detail-text)]">
         {label}
       </p>
 
@@ -44,7 +44,7 @@ function DottedRow({ label, value }: { label: string; value: string }) {
         style={{ borderBottom: `1px dashed ${COLOR_TOKENS.neutral[500]}` }}
       />
 
-      <p className="shrink-0 whitespace-nowrap font-['Quicksand'] text-[length:var(--meal-detail-body-font-size)] font-medium leading-[150%] text-[var(--meal-detail-text)]">
+      <p className="shrink-0 whitespace-nowrap font-sans text-[length:var(--meal-detail-body-font-size)] font-medium leading-[150%] text-[var(--meal-detail-text)]">
         {value}
       </p>
     </div>
@@ -159,12 +159,12 @@ export function MealDetailModal({
           </div>
 
           <div className="rounded-tl-[12px] rounded-tr-[12px] bg-[var(--meal-detail-card-bg)]">
-            <div className="flex flex-col gap-[32px] px-[24px] py-[28px] pb-[48px]">
-              <p className="w-full font-['Quicksand'] text-[length:var(--meal-detail-title-font-size)] font-bold leading-[130%] text-[var(--meal-detail-text)]">
+            <div className="flex flex-col gap-[32px] px-[24px] py-[28px] pb-[32px]">
+              <p className="w-full font-sans text-[length:var(--meal-detail-title-font-size)] font-bold leading-[130%] text-[var(--meal-detail-text)]">
                 {meal.name}
               </p>
 
-              <div className="flex w-full flex-col gap-[16px]">
+              <div className="flex w-full flex-col gap-[8px]">
                 <DottedRow label="Weight" value={`${meal.weight} g`} />
                 <DottedRow label="Calories" value={`${meal.kcal} kCal`} />
                 <DottedRow label="Proteins" value={`${meal.proteins} g`} />
@@ -172,22 +172,22 @@ export function MealDetailModal({
                 <DottedRow label="Carbohydrates" value={`${meal.carbs} g`} />
               </div>
 
-              <div className="flex w-full flex-col gap-[16px]">
-                <p className="font-['Quicksand'] text-[length:var(--meal-detail-body-font-size)] font-bold leading-[150%] text-[var(--meal-detail-text)]">
+              <div className="flex w-full flex-col gap-[8px]">
+                <p className="font-sans text-[length:var(--meal-detail-body-font-size)] font-bold leading-[150%] text-[var(--meal-detail-text)]">
                   Ingredients
                 </p>
 
-                <p className="font-['Quicksand'] text-[length:var(--meal-detail-body-font-size)] font-medium leading-[140%] text-[var(--meal-detail-text)]">
+                <p className="font-sans text-[length:var(--meal-detail-body-font-size)] font-medium leading-[140%] text-[var(--meal-detail-text)]">
                   {meal.ingredients}
                 </p>
               </div>
 
-              <div className="flex w-full flex-col gap-[16px]">
-                <p className="font-['Quicksand'] text-[length:var(--meal-detail-body-font-size)] font-bold leading-[150%] text-[var(--meal-detail-text)]">
+              <div className="flex w-full flex-col gap-[8px]">
+                <p className="font-sans text-[length:var(--meal-detail-body-font-size)] font-bold leading-[150%] text-[var(--meal-detail-text)]">
                   Allergens
                 </p>
 
-                <p className="font-['Quicksand'] text-[length:var(--meal-detail-body-font-size)] font-medium leading-[140%] text-[var(--meal-detail-text)]">
+                <p className="font-sans text-[length:var(--meal-detail-body-font-size)] font-medium leading-[140%] text-[var(--meal-detail-text)]">
                   {meal.allergens}
                 </p>
               </div>

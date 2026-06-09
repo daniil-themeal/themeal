@@ -5,7 +5,7 @@ function Frame17() {
     <div className="flex-[1_0_0] h-[48px] min-w-px relative">
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex items-center px-[16px] relative size-full">
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-['Quicksand:SemiBold',sans-serif] leading-[1.3] min-w-px not-italic overflow-hidden relative text-[#383e48] text-[16px] text-ellipsis whitespace-nowrap">email@themeal.menu</p>
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-quicksand-semibold leading-[1.3] min-w-px not-italic overflow-hidden relative text-[#383e48] text-[16px] text-ellipsis whitespace-nowrap">email@themeal.menu</p>
         </div>
       </div>
     </div>
@@ -27,7 +27,7 @@ function Frame12() {
     <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-full">
       <div className="relative shrink-0 w-full" data-name="InputTitle">
         <div className="content-stretch flex gap-[3px] items-baseline px-[2px] relative size-full">
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-['Quicksand:SemiBold',sans-serif] leading-[1.2] min-w-px not-italic relative text-[#9da9bd] text-[14px] tracking-[0.14px] uppercase">E-mail *</p>
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-quicksand-semibold leading-[1.2] min-w-px not-italic relative text-[#9da9bd] text-[14px] tracking-[0.14px] uppercase">E-mail *</p>
         </div>
       </div>
       <Frame />
@@ -40,7 +40,7 @@ function Frame18() {
     <div className="flex-[1_0_0] h-[48px] min-w-px relative">
       <div className="flex flex-row items-center size-full">
         <div className="content-stretch flex items-center px-[16px] relative size-full">
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-['Quicksand:SemiBold',sans-serif] leading-[1.3] min-w-px not-italic overflow-hidden relative text-[#383e48] text-[16px] text-ellipsis whitespace-nowrap">email@themeal.menu</p>
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-quicksand-semibold leading-[1.3] min-w-px not-italic overflow-hidden relative text-[#383e48] text-[16px] text-ellipsis whitespace-nowrap">email@themeal.menu</p>
         </div>
       </div>
     </div>
@@ -82,7 +82,7 @@ function Frame13() {
     <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-full">
       <div className="relative shrink-0 w-full" data-name="InputTitle">
         <div className="content-stretch flex gap-[3px] items-baseline px-[2px] relative size-full">
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-['Quicksand:SemiBold',sans-serif] leading-[1.2] min-w-px not-italic relative text-[#9da9bd] text-[14px] tracking-[0.14px] uppercase">E-mail *</p>
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-quicksand-semibold leading-[1.2] min-w-px not-italic relative text-[#9da9bd] text-[14px] tracking-[0.14px] uppercase">E-mail *</p>
         </div>
       </div>
       <Frame1 />
@@ -112,7 +112,7 @@ function Frame6() {
 function Frame19() {
   return (
     <div className="content-stretch flex flex-[1_0_0] h-[48px] items-center min-w-px relative">
-      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-['Quicksand:SemiBold',sans-serif] leading-[1.3] min-w-px not-italic overflow-hidden relative text-[#c7ced9] text-[16px] text-ellipsis whitespace-nowrap">email@themeal.menu</p>
+      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-quicksand-semibold leading-[1.3] min-w-px not-italic overflow-hidden relative text-[#c7ced9] text-[16px] text-ellipsis whitespace-nowrap">email@themeal.menu</p>
     </div>
   );
 }
@@ -150,7 +150,7 @@ function Frame14() {
     <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-full">
       <div className="relative shrink-0 w-full" data-name="InputTitle">
         <div className="content-stretch flex gap-[3px] items-baseline px-[2px] relative size-full">
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-['Quicksand:SemiBold',sans-serif] leading-[1.2] min-w-px not-italic relative text-[#9da9bd] text-[14px] tracking-[0.14px] uppercase">E-mail *</p>
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-quicksand-semibold leading-[1.2] min-w-px not-italic relative text-[#9da9bd] text-[14px] tracking-[0.14px] uppercase">E-mail *</p>
         </div>
       </div>
       <Frame2 />
@@ -180,7 +180,7 @@ function Frame8() {
 function Frame20() {
   return (
     <div className="content-stretch flex flex-[1_0_0] h-[48px] items-center min-w-px relative">
-      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-['Quicksand:SemiBold',sans-serif] leading-[1.3] min-w-px not-italic overflow-hidden relative text-[#383e48] text-[16px] text-ellipsis whitespace-nowrap">email@themeal.menu</p>
+      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-quicksand-semibold leading-[1.3] min-w-px not-italic overflow-hidden relative text-[#383e48] text-[16px] text-ellipsis whitespace-nowrap">email@themeal.menu</p>
     </div>
   );
 }
@@ -221,7 +221,7 @@ function Frame15() {
     <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-full">
       <div className="relative shrink-0 w-full" data-name="InputTitle">
         <div className="content-stretch flex gap-[3px] items-baseline px-[2px] relative size-full">
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-['Quicksand:SemiBold',sans-serif] leading-[1.2] min-w-px not-italic relative text-[#9da9bd] text-[14px] tracking-[0.14px] uppercase">E-mail *</p>
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-quicksand-semibold leading-[1.2] min-w-px not-italic relative text-[#9da9bd] text-[14px] tracking-[0.14px] uppercase">E-mail *</p>
         </div>
       </div>
       <Frame3 />
@@ -251,7 +251,7 @@ function Frame10() {
 function Frame21() {
   return (
     <div className="content-stretch flex flex-[1_0_0] h-[48px] items-center min-w-px relative">
-      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-['Quicksand:SemiBold',sans-serif] leading-[1.3] min-w-px not-italic overflow-hidden relative text-[#383e48] text-[16px] text-ellipsis whitespace-nowrap">email@themeal.menu</p>
+      <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-quicksand-semibold leading-[1.3] min-w-px not-italic overflow-hidden relative text-[#383e48] text-[16px] text-ellipsis whitespace-nowrap">email@themeal.menu</p>
     </div>
   );
 }
@@ -291,7 +291,7 @@ function Frame16() {
   return (
     <div className="content-stretch flex flex-col gap-[8px] items-start relative shrink-0 w-full">
       <div className="relative shrink-0 w-full" data-name="InputTitle">
-        <div className="[word-break:break-word] content-stretch flex font-['Quicksand:SemiBold',sans-serif] gap-[3px] items-baseline leading-[1.2] not-italic px-[2px] relative size-full">
+        <div className="[word-break:break-word] content-stretch flex font-quicksand-semibold gap-[3px] items-baseline leading-[1.2] not-italic px-[2px] relative size-full">
           <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] flex-[1_0_0] min-w-px relative text-[#9da9bd] text-[14px] tracking-[0.14px] uppercase">E-mail *</p>
           <p className="relative shrink-0 text-[#8594ac] text-[11px] text-right tracking-[0.11px] whitespace-nowrap">0/500</p>
         </div>
@@ -299,7 +299,7 @@ function Frame16() {
       <Frame4 />
       <div className="relative shrink-0 w-full" data-name="Error">
         <div className="content-stretch flex items-start p-[2px] relative size-full">
-          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-['Quicksand:SemiBold',sans-serif] leading-[1.5] min-w-px not-italic relative text-[#f04e4c] text-[12px]">Delivery address</p>
+          <p className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] flex-[1_0_0] font-quicksand-semibold leading-[1.5] min-w-px not-italic relative text-[#f04e4c] text-[12px]">Delivery address</p>
         </div>
       </div>
     </div>

@@ -1,17 +1,24 @@
-import type { CSSProperties } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { CloseIcon } from '../ui/icons/CloseIcon';
 
 const steps = ['Plan', 'Delivery', 'Payment'] as const;
 
 type CheckoutHeaderStep = 'plan' | 'delivery' | 'payment';
 
+export type { CheckoutHeaderStep };
+
 type CheckoutHeaderProps = {
-  step: CheckoutHeaderStep;
+  step?: CheckoutHeaderStep;
+  title?: ReactNode;
+  closeAriaLabel?: string;
   onBack: () => void;
   onClose: () => void;
+  /** Temporary dev-only step switching from the header stepper. */
+  onStepSelect?: (step: CheckoutHeaderStep) => void;
 };
 
 type CheckoutHeaderCssVariables = CSSProperties & {
@@ -61,58 +68,87 @@ function getStepStatus(index: number, current: number) {
   return 'idle';
 }
 
-function Stepper({ current }: { current: number }) {
+function getHeaderStepByIndex(index: number): CheckoutHeaderStep {
+  if (index === 0) return 'plan';
+  if (index === 1) return 'delivery';
+
+  return 'payment';
+}
+
+function Stepper({
+  current,
+  onStepSelect,
+}: {
+  current: number;
+  onStepSelect?: (step: CheckoutHeaderStep) => void;
+}) {
   return (
     <div className="flex items-center justify-center gap-0 px-[0px] py-[16px] sm:px-[8px] md:px-[16px]">
       {steps.map((step, index) => {
         const status = getStepStatus(index, current);
         const isActive = status === 'active';
         const isCompleted = status === 'completed';
+        const headerStep = getHeaderStepByIndex(index);
+
+        const stepLabel = (
+          <div className="flex items-center gap-[4px] sm:gap-[8px]">
+            <div
+              className="hidden size-[20px] items-center justify-center rounded-full font-sans text-[length:var(--checkout-header-step-font-size)] font-bold xs:flex sm:size-[24px]"
+              style={{
+                backgroundColor: isActive
+                  ? 'var(--checkout-header-step-active-bg)'
+                  : isCompleted
+                    ? 'var(--checkout-header-step-completed-bg)'
+                    : 'var(--checkout-header-step-idle-bg)',
+                color: isActive
+                  ? 'var(--checkout-header-step-active-text)'
+                  : isCompleted
+                    ? 'var(--checkout-header-step-completed-text)'
+                    : 'var(--checkout-header-step-idle-text)',
+              }}
+            >
+              {isCompleted ? (
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                  <path
+                    d="M2 6L5 9L10 4"
+                    stroke="currentColor"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              ) : (
+                index + 1
+              )}
+            </div>
+
+            <p
+              className="font-sans text-[length:var(--checkout-header-label-font-size)] font-semibold leading-[130%] sm:text-[length:var(--checkout-header-label-font-size-sm)]"
+              style={{
+                color: isActive
+                  ? 'var(--checkout-header-text-active)'
+                  : 'var(--checkout-header-text-muted)',
+              }}
+            >
+              {step}
+            </p>
+          </div>
+        );
 
         return (
           <div key={step} className="flex items-center">
-            <div className="flex items-center gap-[4px] sm:gap-[8px]">
-              <div
-                className="hidden size-[20px] items-center justify-center rounded-full font-['Quicksand'] text-[length:var(--checkout-header-step-font-size)] font-bold xs:flex sm:size-[24px]"
-                style={{
-                  backgroundColor: isActive
-                    ? 'var(--checkout-header-step-active-bg)'
-                    : isCompleted
-                      ? 'var(--checkout-header-step-completed-bg)'
-                      : 'var(--checkout-header-step-idle-bg)',
-                  color: isActive
-                    ? 'var(--checkout-header-step-active-text)'
-                    : isCompleted
-                      ? 'var(--checkout-header-step-completed-text)'
-                      : 'var(--checkout-header-step-idle-text)',
-                }}
+            {onStepSelect ? (
+              <button
+                type="button"
+                onClick={() => onStepSelect(headerStep)}
+                className="flex cursor-pointer items-center rounded-[6px] transition-opacity hover:opacity-80"
+                aria-label={`Switch to ${step} step`}
               >
-                {isCompleted ? (
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path
-                      d="M2 6L5 9L10 4"
-                      stroke="currentColor"
-                      strokeWidth="1.6"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ) : (
-                  index + 1
-                )}
-              </div>
-
-              <p
-                className="font-['Quicksand'] text-[length:var(--checkout-header-label-font-size)] font-semibold leading-[130%] sm:text-[length:var(--checkout-header-label-font-size-sm)]"
-                style={{
-                  color: isActive
-                    ? 'var(--checkout-header-text-active)'
-                    : 'var(--checkout-header-text-muted)',
-                }}
-              >
-                {step}
-              </p>
-            </div>
+                {stepLabel}
+              </button>
+            ) : (
+              stepLabel
+            )}
 
             {index < steps.length - 1 ? (
               <div className="mx-[8px] h-px w-[4px] bg-[var(--checkout-header-border)] sm:w-[12px]" />
@@ -166,9 +202,16 @@ function ChevronLeftIcon() {
   );
 }
 
-export function CheckoutHeader({ step, onBack, onClose }: CheckoutHeaderProps) {
+export function CheckoutHeader({
+  step = 'plan',
+  title,
+  closeAriaLabel = 'Close checkout',
+  onBack,
+  onClose,
+  onStepSelect,
+}: CheckoutHeaderProps) {
   const currentStepperIndex = step === 'plan' ? 0 : step === 'delivery' ? 1 : 2;
-  const showBackButton = step !== 'plan';
+  const showBackButton = !title && step !== 'plan';
 
   return (
     <div
@@ -198,15 +241,26 @@ export function CheckoutHeader({ step, onBack, onClose }: CheckoutHeaderProps) {
           )}
         </div>
 
-        <div className="flex flex-1 items-center justify-center">
-          <Stepper current={currentStepperIndex} />
+        <div className="flex flex-1 items-center justify-center px-[8px]">
+          {title ? (
+            <p
+              className={[
+                TEXT_TRIM_CLASS_NAME,
+                'min-w-0 font-sans text-[length:var(--checkout-header-label-font-size-sm)] font-bold leading-[130%] text-[var(--checkout-header-text-active)]',
+              ].join(' ')}
+            >
+              {title}
+            </p>
+          ) : (
+            <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
+          )}
         </div>
 
         <button
           type="button"
           onClick={onClose}
           className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
-          aria-label="Close checkout"
+          aria-label={closeAriaLabel}
         >
           <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--checkout-header-close-bg)] transition-colors duration-150 group-hover:bg-[var(--checkout-header-close-bg-hover)]">
             <CloseIcon

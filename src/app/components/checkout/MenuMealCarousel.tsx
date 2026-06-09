@@ -81,7 +81,7 @@ export function SmsCodeScreen({
       <div className="mx-auto flex w-full max-w-[1200px] flex-col px-[20px] pt-[56px] pb-[120px] md:px-[24px] lg:px-[32px]">
         <div className="mx-auto flex w-full max-w-[420px] flex-col items-center">
           <div className="w-full rounded-[16px] bg-white px-[20px] py-[32px] md:px-[24px] md:py-[40px]">
-            <h1 className="font-['Quicksand:Bold',sans-serif] text-[24px] leading-[1.2] text-[#383e48] text-center md:text-[28px]">
+            <h1 className="font-quicksand-bold text-[24px] leading-[1.2] text-[#383e48] text-center md:text-[28px]">
               Enter the code from SMS
             </h1>
 
@@ -100,19 +100,19 @@ export function SmsCodeScreen({
                   onPaste={handlePaste}
                   onKeyDown={(event) => handleKeyDown(index, event)}
                   aria-label={`SMS code digit ${index + 1}`}
-                  className="h-[56px] w-[56px] rounded-[12px] bg-[#f3f4f7] text-center font-['Quicksand:Bold',sans-serif] text-[24px] leading-[1.3] text-[#383e48] outline-none ring-1 ring-transparent transition-shadow focus:ring-2 focus:ring-[#9a38ef] md:h-[64px] md:w-[64px]"
+                  className="h-[56px] w-[56px] rounded-[12px] bg-[#f3f4f7] text-center font-quicksand-bold text-[24px] leading-[1.3] text-[#383e48] outline-none ring-1 ring-transparent transition-shadow focus:ring-2 focus:ring-[#9a38ef] md:h-[64px] md:w-[64px]"
                 />
               ))}
             </div>
 
-            <p className="mt-[24px] text-center font-['Quicksand:Medium',sans-serif] text-[14px] leading-[1.4] text-[#8594ac]">
+            <p className="mt-[24px] text-center font-quicksand-medium text-[14px] leading-[1.4] text-[#8594ac]">
               Send again the code after 60 seconds
             </p>
 
             <button
               type="button"
               onClick={onChangeNumber}
-              className="mt-[12px] w-full cursor-pointer text-center font-['Quicksand:Bold',sans-serif] text-[14px] leading-[1.4] text-[#9a38ef]"
+              className="mt-[12px] w-full cursor-pointer text-center font-quicksand-bold text-[14px] leading-[1.4] text-[#9a38ef]"
             >
               Change number in UAE
             </button>

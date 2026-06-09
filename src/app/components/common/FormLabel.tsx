@@ -2,6 +2,7 @@ import type { ComponentPropsWithoutRef, CSSProperties, ElementType, ReactNode } 
 
 import { COLOR_TOKENS } from './colorTokens';
 import { FONT_SIZE_TOKENS } from './fontSizeTokens';
+import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
 type FormLabelElement = 'label' | 'legend' | 'span' | 'div';
 
@@ -30,10 +31,12 @@ export function FormLabel<TElement extends FormLabelElement = 'label'>({
   const Component = (as ?? 'label') as ElementType;
 
   const labelClassName = [
-    "font-['Quicksand']",
+    TEXT_TRIM_CLASS_NAME,
+    'block',
+    "font-sans",
     'text-[length:var(--form-label-font-size)]',
     'font-semibold',
-    'leading-[120%]',
+    'leading-none',
     'tracking-[0.14px]',
     'uppercase',
     className,
