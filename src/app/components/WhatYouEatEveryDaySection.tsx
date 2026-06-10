@@ -333,7 +333,7 @@ export default function WhatYouEatEveryDaySection({
               ⭐️⭐️⭐️⭐️⭐
               <br />
               <br />
-              Trusted by 5000+ customers in UAE
+              Trusted by 10 000+ customers in UAE
             </p>
 
             <button

@@ -140,8 +140,9 @@ function HeroBenefits() {
   return (
     <div className="content-stretch flex font-quicksand-bold gap-[16px] items-center leading-[1.3] not-italic relative shrink-0 text-[16px] sm:text-[20px] md:text-[25px] text-center text-shadow-[0px_4px_4px_rgba(0,0,0,0)] text-white max-w-[600px] w-full">
       <p className="flex-[1_0_0] min-w-px relative [text-shadow:0_4px_4px_rgba(0,0,0,0.20)]">
-        Up to
-        <br aria-hidden="true" /> 112&nbsp;meals/mo
+        Customize
+        <br aria-hidden="true" />
+        your menu
       </p>
       <p className="flex-[1_0_0] min-w-px relative">
         Free
@@ -149,9 +150,9 @@ function HeroBenefits() {
         delivery
       </p>
       <p className="flex-[1_0_0] min-w-px relative">
-        From
+        Pause
         <br aria-hidden="true" />
-        39.9&nbsp;AED/day
+        anytime
       </p>
     </div>
   );

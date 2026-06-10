@@ -125,7 +125,7 @@ function Stage1() {
     <div className="content-stretch flex flex-col flex-1 gap-[12px] items-center relative shrink-0 w-full">
       <Stage2Icon />
       <p className="[word-break:break-word] font-quicksand-bold leading-[1.4] min-w-full not-italic relative shrink-0 text-[#383e48] text-[20px] sm:text-[20px] md:text-[25px] text-center w-[min-content]">
-        We deliver free of charge within 3-hour slots twice a week
+        We deliver fresh meals in 3-hour slots, multiple times a week
       </p>
     </div>
   );

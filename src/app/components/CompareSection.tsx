@@ -197,7 +197,7 @@ function CompareBlockTotal() {
           {`The best value in UAE — from just `}
         </span>
         <span className="font-quicksand-bold leading-[1.4] text-[#9a38ef]">
-          14.3 AED
+          14.9 AED
         </span>
         <span className="font-quicksand-bold leading-[1.4]">
           {` per meal`}
