@@ -3,38 +3,34 @@ import type { CSSProperties } from 'react';
 import svgPaths from '../../imports/svgPaths';
 
 import { COLOR_TOKENS } from './common/designTokens';
-import { DeliveryIcon } from './common/icons/DeliveryIcon';
+import {
+  DeliveryIcon,
+  DesignSystemIcon,
+  MessageCircleIcon,
+  UserIcon,
+} from './common/icons';
+import type { IconSize } from './common/icons/iconSize';
+
+const HEADER_ICON_SIZE = 24 as const satisfies IconSize;
+
+const headerIconClassName =
+  'text-white transition-colors duration-200 group-hover:text-[var(--header-icon-hover)]';
 
 type HeaderCssVariables = CSSProperties & {
   '--header-icon-hover': string;
 };
 
-function SupportButton() {
+function SupportButton({ onClick }: { onClick: () => void }) {
   return (
-    <div
-      className="relative size-[56px] shrink-0"
+    <button
+      type="button"
+      onClick={onClick}
+      className="group relative flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
       data-name="SupportButton"
-      aria-hidden="true"
+      aria-label="Open payment success"
     >
-      <div className="absolute left-[calc(50%+0.03px)] top-1/2 size-[24.774px] -translate-x-1/2 -translate-y-1/2">
-        <div className="absolute inset-[-0.4%_-0.4%_-0.39%_-0.4%]">
-          <svg
-            className="block size-full"
-            fill="none"
-            preserveAspectRatio="none"
-            viewBox="0 0 24.9697 24.9698"
-          >
-            <g id="Frame 2685">
-              <path
-                d={svgPaths.p8ea0700}
-                fill={COLOR_TOKENS.base.white}
-                id="Vector (Stroke)"
-              />
-            </g>
-          </svg>
-        </div>
-      </div>
-    </div>
+      <MessageCircleIcon size={HEADER_ICON_SIZE} className={headerIconClassName} />
+    </button>
   );
 }
 
@@ -47,10 +43,7 @@ function DeliveryDetailsButton({ onClick }: { onClick: () => void }) {
       data-name="DeliveryDetailsButton"
       aria-label="Open delivery details"
     >
-      <DeliveryIcon
-        size={24}
-        className="text-white transition-colors duration-200 group-hover:text-[var(--header-icon-hover)]"
-      />
+      <DeliveryIcon size={HEADER_ICON_SIZE} className={headerIconClassName} />
     </button>
   );
 }
@@ -93,31 +86,29 @@ function PaymentButton({ onClick }: { onClick: () => void }) {
   );
 }
 
-function MyAccountButton({ onClick }: { onClick: () => void }) {
+function DesignSystemButton({ onClick }: { onClick: () => void }) {
   return (
     <button
       type="button"
       onClick={onClick}
-      className="group relative size-[56px] shrink-0 cursor-pointer"
-      data-name="MyAccountButton"
+      className="group relative flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
+      data-name="DesignSystemButton"
       aria-label="Open design system"
     >
-      <svg
-        className="absolute inset-0 block size-full"
-        fill="none"
-        preserveAspectRatio="none"
-        viewBox="0 0 56 56"
-      >
-        <g id="MyAccountButton">
-          <path
-            d={svgPaths.p1503fac0}
-            className="transition-colors duration-200 group-hover:fill-[var(--header-icon-hover)]"
-            fill={COLOR_TOKENS.base.white}
-            id="Icon (Stroke)"
-          />
-        </g>
-      </svg>
+      <DesignSystemIcon size={HEADER_ICON_SIZE} className={headerIconClassName} />
     </button>
+  );
+}
+
+function UserButton() {
+  return (
+    <div
+      className="relative flex size-[56px] shrink-0 items-center justify-center"
+      data-name="UserButton"
+      aria-hidden="true"
+    >
+      <UserIcon size={HEADER_ICON_SIZE} className="text-white" />
+    </div>
   );
 }
 
@@ -128,7 +119,7 @@ function ScrollToFooterButton() {
       className="group relative flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
       aria-label="Scroll to footer"
     >
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+      <svg className="block size-[24px]" viewBox="0 0 24 24" fill="none" aria-hidden>
         <path
           d="M12 5v14M5 12l7 7 7-7"
           stroke={COLOR_TOKENS.base.white}
@@ -145,19 +136,22 @@ function ScrollToFooterButton() {
 function ActionButtons({
   onDeliveryDetailsClick,
   onPaymentClick,
-  onUserClick,
+  onSuccessClick,
+  onDesignSystemClick,
 }: {
   onDeliveryDetailsClick: () => void;
   onPaymentClick: () => void;
-  onUserClick: () => void;
+  onSuccessClick: () => void;
+  onDesignSystemClick: () => void;
 }) {
   return (
     <div className="flex shrink-0 items-center">
-      <ScrollToFooterButton />
-      <SupportButton />
+      <DesignSystemButton onClick={onDesignSystemClick} />
       <DeliveryDetailsButton onClick={onDeliveryDetailsClick} />
       <PaymentButton onClick={onPaymentClick} />
-      <MyAccountButton onClick={onUserClick} />
+      <ScrollToFooterButton />
+      <SupportButton onClick={onSuccessClick} />
+      <UserButton />
     </div>
   );
 }
@@ -165,11 +159,13 @@ function ActionButtons({
 export default function Header({
   onDeliveryDetailsClick,
   onPaymentClick,
-  onUserClick,
+  onSuccessClick,
+  onDesignSystemClick,
 }: {
   onDeliveryDetailsClick: () => void;
   onPaymentClick: () => void;
-  onUserClick: () => void;
+  onSuccessClick: () => void;
+  onDesignSystemClick: () => void;
 }) {
   const headerStyle: HeaderCssVariables = {
     backgroundColor: COLOR_TOKENS.primary[900],
@@ -208,7 +204,8 @@ export default function Header({
       <ActionButtons
         onDeliveryDetailsClick={onDeliveryDetailsClick}
         onPaymentClick={onPaymentClick}
-        onUserClick={onUserClick}
+        onSuccessClick={onSuccessClick}
+        onDesignSystemClick={onDesignSystemClick}
       />
     </div>
   );

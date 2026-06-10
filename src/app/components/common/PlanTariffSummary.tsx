@@ -33,40 +33,52 @@ export function PlanTariffSummary({
   onAction,
   className = '',
 }: PlanTariffSummaryProps) {
-  return (
-    <div
-      className={['flex h-fit flex-col gap-[12px]', className].filter(Boolean).join(' ')}
-      style={planTariffSummaryStyle}
-    >
-      <div className="flex h-fit items-center justify-between gap-[12px]">
-        <p
-          className={[
-            TEXT_TRIM_FIT_CLASS_NAME,
-            'min-w-0 w-full font-sans text-[length:var(--plan-tariff-title-fs)] font-bold leading-[130%] text-[var(--plan-tariff-title-color)] md:text-[length:var(--plan-tariff-title-fs-md)]',
-          ].join(' ')}
-        >
-          {title}
-        </p>
+  const hasAction = Boolean(actionLabel && onAction);
 
-        {actionLabel && onAction ? (
-          <Button
-            type="button"
-            variant="neutral"
-            outline
-            size="32"
-            onClick={onAction}
-            className="shrink-0"
-          >
-            {actionLabel}
-          </Button>
-        ) : null}
-      </div>
+  const content = (
+    <div className="flex min-w-0 flex-1 flex-col gap-[12px]">
+      <p
+        className={[
+          TEXT_TRIM_FIT_CLASS_NAME,
+          'w-full font-sans text-[length:var(--plan-tariff-title-fs)] font-bold leading-[130%] text-[var(--plan-tariff-title-color)] md:text-[length:var(--plan-tariff-title-fs-md)]',
+        ].join(' ')}
+      >
+        {title}
+      </p>
 
       <div className="flex w-full flex-wrap gap-[6px]">
         {chips.map((chip) => (
           <Chip key={chip}>{chip}</Chip>
         ))}
       </div>
+    </div>
+  );
+
+  return (
+    <div
+      className={[
+        'flex h-fit w-full',
+        hasAction ? 'items-start justify-between gap-[12px]' : 'flex-col gap-[12px]',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      style={planTariffSummaryStyle}
+    >
+      {content}
+
+      {hasAction ? (
+        <Button
+          type="button"
+          variant="neutral"
+          outline
+          size="x-small"
+          onClick={onAction}
+          className="shrink-0"
+        >
+          {actionLabel}
+        </Button>
+      ) : null}
     </div>
   );
 }

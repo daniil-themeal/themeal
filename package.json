@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "dev": "vite"
+    "dev": "vite",
+    "icons:import": "node scripts/import-feather-icons.mjs",
+    "icons:generate": "node scripts/generate-feather-icon-components.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

@@ -2,11 +2,8 @@ import type {
   DeliveryAvailability,
   TestAddress,
 } from '../../../data/testAddresses';
-import {
-  DeliveryAvailableIcon,
-  DeliveryUnavailableIcon,
-  LocationIcon,
-} from './addressIcons';
+import { MapPinIcon } from '../../common/icons';
+import { DeliveryAvailableIcon, DeliveryUnavailableIcon } from './addressIcons';
 
 type SelectedAddressBlockProps = {
   address: TestAddress;
@@ -23,8 +20,8 @@ export function SelectedAddressBlock({
 
   return (
     <div className={`flex gap-[12px] ${className}`}>
-      <div className="mt-[2px] shrink-0">
-        <LocationIcon />
+      <div className="mt-[2px] shrink-0 text-[#8594AC]">
+        <MapPinIcon size={16} />
       </div>
 
       <div className="min-w-0 flex-1">

@@ -3,7 +3,8 @@ import type { CSSProperties, ReactNode } from 'react';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
-import { CloseIcon } from '../ui/icons/CloseIcon';
+import { XIcon } from '../common/icons';
+import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 
 const steps = ['Plan', 'Delivery', 'Payment'] as const;
 
@@ -17,7 +18,6 @@ type CheckoutHeaderProps = {
   closeAriaLabel?: string;
   onBack: () => void;
   onClose: () => void;
-  /** Temporary dev-only step switching from the header stepper. */
   onStepSelect?: (step: CheckoutHeaderStep) => void;
 };
 
@@ -263,11 +263,12 @@ export function CheckoutHeader({
           aria-label={closeAriaLabel}
         >
           <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--checkout-header-close-bg)] transition-colors duration-150 group-hover:bg-[var(--checkout-header-close-bg-hover)]">
-            <CloseIcon
-              size={12}
-              color={COLOR_TOKENS.neutral[900]}
-              strokeWidth={1.8}
-            />
+            <span
+              className={iconColorClassName.emphasis}
+              style={iconColorStyle.emphasis}
+            >
+              <XIcon size={16} />
+            </span>
           </span>
         </button>
       </div>

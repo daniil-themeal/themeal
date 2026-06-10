@@ -10,6 +10,7 @@ import {
 
 import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
+import { MapPinIcon } from '../common/icons';
 import { FONT_FAMILY_TOKENS } from '../common/fontFamilyTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
@@ -103,27 +104,6 @@ function hexToRgba(hex: string, alpha: number) {
   const blue = Number.parseInt(normalizedHex.slice(4, 6), 16);
 
   return `rgba(${red},${green},${blue},${alpha})`;
-}
-
-function LocationIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        d="M8 14C8 14 12.5 10.2 12.5 6.8C12.5 4.31 10.49 2.3 8 2.3C5.51 2.3 3.5 4.31 3.5 6.8C3.5 10.2 8 14 8 14Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-      <circle cx="8" cy="6.8" r="1.45" stroke="currentColor" strokeWidth="1.5" />
-    </svg>
-  );
 }
 
 function DeliveryAvailableIcon() {
@@ -615,7 +595,7 @@ function SuggestionRow({
       ].join(' ')}
     >
       <div className="mt-[2px] shrink-0 text-[var(--delivery-address-muted)]">
-        <LocationIcon />
+        <MapPinIcon size={16} />
       </div>
 
       <div className="min-w-0 flex-1">
@@ -660,7 +640,7 @@ function SelectedAddressBlock({
   return (
     <div className={`flex gap-[12px] ${className}`}>
       <div className="mt-[2px] shrink-0 text-[var(--delivery-address-muted)]">
-        <LocationIcon />
+        <MapPinIcon size={16} />
       </div>
 
       <div className="min-w-0 flex-1">
@@ -1009,7 +989,7 @@ export function DeliveryAddressScreen({
           <Button
             type="button"
             variant="primary"
-            size="48"
+            size="medium"
             disabled={!canContinue}
             className="w-[140px] shrink-0"
             onClick={handleContinue}
@@ -1090,7 +1070,7 @@ export function DeliveryAddressScreen({
                 <Button
                   type="button"
                   variant="primary"
-                  size="48"
+                  size="medium"
                   disabled={!canContinue}
                   className="w-full sm:w-[140px] sm:shrink-0"
                   onClick={handleContinue}

@@ -1,0 +1,3733 @@
+[
+  {
+    "index": 0,
+    "figmaName": "Activity",
+    "slug": "activity",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 1,
+    "figmaName": "Airplay",
+    "slug": "airplay",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 2,
+    "figmaName": "Alert circle",
+    "slug": "alert-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 3,
+    "figmaName": "Alert octagon",
+    "slug": "alert-octagon",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 4,
+    "figmaName": "Alert triangle",
+    "slug": "alert-triangle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 5,
+    "figmaName": "Align center",
+    "slug": "align-center",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 6,
+    "figmaName": "Align justify",
+    "slug": "align-justify",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 7,
+    "figmaName": "Align left",
+    "slug": "align-left",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 8,
+    "figmaName": "Align right",
+    "slug": "align-right",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 9,
+    "figmaName": "Anchor",
+    "slug": "anchor",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 10,
+    "figmaName": "Aperture",
+    "slug": "aperture",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 11,
+    "figmaName": "Archive",
+    "slug": "archive",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 12,
+    "figmaName": "Arrow down circle",
+    "slug": "arrow-down-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 13,
+    "figmaName": "Arrow down-left",
+    "slug": "arrow-down-left",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 14,
+    "figmaName": "Arrow down-right",
+    "slug": "arrow-down-right",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 15,
+    "figmaName": "Arrow down",
+    "slug": "arrow-down",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 16,
+    "figmaName": "Arrow left-circle",
+    "slug": "arrow-left-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 17,
+    "figmaName": "Arrow left",
+    "slug": "arrow-left",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 18,
+    "figmaName": "Arrow right-circle",
+    "slug": "arrow-right-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 19,
+    "figmaName": "Arrow right",
+    "slug": "arrow-right",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 20,
+    "figmaName": "Arrow up-circle",
+    "slug": "arrow-up-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 21,
+    "figmaName": "Arrow up-left",
+    "slug": "arrow-up-left",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 22,
+    "figmaName": "Arrow up-right",
+    "slug": "arrow-up-right",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 23,
+    "figmaName": "Arrow up",
+    "slug": "arrow-up",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 24,
+    "figmaName": "At sign",
+    "slug": "at-sign",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 25,
+    "figmaName": "Award",
+    "slug": "award",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 26,
+    "figmaName": "Bar chart-2",
+    "slug": "bar-chart-2",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 27,
+    "figmaName": "Bar chart",
+    "slug": "bar-chart",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 28,
+    "figmaName": "Battery charging",
+    "slug": "battery-charging",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 29,
+    "figmaName": "Battery",
+    "slug": "battery",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 30,
+    "figmaName": "Bell off",
+    "slug": "bell-off",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 31,
+    "figmaName": "Bell",
+    "slug": "bell",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 32,
+    "figmaName": "Bluetooth",
+    "slug": "bluetooth",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 33,
+    "figmaName": "Bold",
+    "slug": "bold",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 34,
+    "figmaName": "Book open",
+    "slug": "book-open",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 35,
+    "figmaName": "Book",
+    "slug": "book",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 36,
+    "figmaName": "Bookmark",
+    "slug": "bookmark",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 37,
+    "figmaName": "Box",
+    "slug": "box",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 38,
+    "figmaName": "Briefcase",
+    "slug": "briefcase",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 39,
+    "figmaName": "Calendar",
+    "slug": "calendar",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 40,
+    "figmaName": "Camera off",
+    "slug": "camera-off",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 41,
+    "figmaName": "Camera",
+    "slug": "camera",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 42,
+    "figmaName": "Cast",
+    "slug": "cast",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 43,
+    "figmaName": "Check circle",
+    "slug": "check-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 44,
+    "figmaName": "Check square",
+    "slug": "check-square",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 45,
+    "figmaName": "Check",
+    "slug": "check",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 46,
+    "figmaName": "Chevron down",
+    "slug": "chevron-down",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 47,
+    "figmaName": "Chevron left",
+    "slug": "chevron-left",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 48,
+    "figmaName": "Chevron right",
+    "slug": "chevron-right",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 49,
+    "figmaName": "Chevron up",
+    "slug": "chevron-up",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 50,
+    "figmaName": "Chevrons down",
+    "slug": "chevrons-down",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 51,
+    "figmaName": "Chevrons left",
+    "slug": "chevrons-left",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 52,
+    "figmaName": "Chevrons right",
+    "slug": "chevrons-right",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 53,
+    "figmaName": "Chevrons up",
+    "slug": "chevrons-up",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 54,
+    "figmaName": "Chrome",
+    "slug": "chrome",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 55,
+    "figmaName": "Circle",
+    "slug": "circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 56,
+    "figmaName": "Clipboard",
+    "slug": "clipboard",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 57,
+    "figmaName": "Clock",
+    "slug": "clock",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 58,
+    "figmaName": "Cloud drizzle",
+    "slug": "cloud-drizzle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 59,
+    "figmaName": "Cloud lightning",
+    "slug": "cloud-lightning",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 60,
+    "figmaName": "Cloud off",
+    "slug": "cloud-off",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 61,
+    "figmaName": "Cloud rain",
+    "slug": "cloud-rain",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 62,
+    "figmaName": "Cloud snow",
+    "slug": "cloud-snow",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 63,
+    "figmaName": "Cloud",
+    "slug": "cloud",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 64,
+    "figmaName": "Code",
+    "slug": "code",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 65,
+    "figmaName": "Codepen",
+    "slug": "codepen",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 66,
+    "figmaName": "Codesandbox",
+    "slug": "codesandbox",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 67,
+    "figmaName": "Coffee",
+    "slug": "coffee",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 68,
+    "figmaName": "Columns",
+    "slug": "columns",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 69,
+    "figmaName": "Command",
+    "slug": "command",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 70,
+    "figmaName": "Compass",
+    "slug": "compass",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 71,
+    "figmaName": "Copy",
+    "slug": "copy",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 72,
+    "figmaName": "Corner down-left",
+    "slug": "corner-down-left",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 73,
+    "figmaName": "Corner down-right",
+    "slug": "corner-down-right",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 74,
+    "figmaName": "Corner left-down",
+    "slug": "corner-left-down",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 75,
+    "figmaName": "Corner left-up",
+    "slug": "corner-left-up",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 76,
+    "figmaName": "Corner right-down",
+    "slug": "corner-right-down",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 77,
+    "figmaName": "Corner right-up",
+    "slug": "corner-right-up",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 78,
+    "figmaName": "Corner up-left",
+    "slug": "corner-up-left",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 79,
+    "figmaName": "Corner up-right",
+    "slug": "corner-up-right",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 80,
+    "figmaName": "Cpu",
+    "slug": "cpu",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 81,
+    "figmaName": "Credit card",
+    "slug": "credit-card",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 82,
+    "figmaName": "Crop",
+    "slug": "crop",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 83,
+    "figmaName": "Crosshair",
+    "slug": "crosshair",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 84,
+    "figmaName": "Database",
+    "slug": "database",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 85,
+    "figmaName": "Delete",
+    "slug": "delete",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 86,
+    "figmaName": "Disc",
+    "slug": "disc",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 87,
+    "figmaName": "Divide circle",
+    "slug": "divide-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 88,
+    "figmaName": "Divide square",
+    "slug": "divide-square",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 89,
+    "figmaName": "Divide",
+    "slug": "divide",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 90,
+    "figmaName": "Dollar sign",
+    "slug": "dollar-sign",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 91,
+    "figmaName": "Download cloud",
+    "slug": "download-cloud",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 92,
+    "figmaName": "Download",
+    "slug": "download",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 93,
+    "figmaName": "Dribbble",
+    "slug": "dribbble",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 94,
+    "figmaName": "Droplet",
+    "slug": "droplet",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 95,
+    "figmaName": "Edit 2",
+    "slug": "edit-2",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 96,
+    "figmaName": "Edit 3",
+    "slug": "edit-3",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 97,
+    "figmaName": "Edit",
+    "slug": "edit",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 98,
+    "figmaName": "External link",
+    "slug": "external-link",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 99,
+    "figmaName": "Eye off",
+    "slug": "eye-off",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 100,
+    "figmaName": "Eye",
+    "slug": "eye",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 101,
+    "figmaName": "Facebook",
+    "slug": "facebook",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 102,
+    "figmaName": "Fast forward",
+    "slug": "fast-forward",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 103,
+    "figmaName": "Feather",
+    "slug": "feather",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 104,
+    "figmaName": "Figma",
+    "slug": "figma",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 105,
+    "figmaName": "File minus",
+    "slug": "file-minus",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 106,
+    "figmaName": "File plus",
+    "slug": "file-plus",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 107,
+    "figmaName": "File text",
+    "slug": "file-text",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 108,
+    "figmaName": "File",
+    "slug": "file",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 109,
+    "figmaName": "Film",
+    "slug": "film",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 110,
+    "figmaName": "Filter",
+    "slug": "filter",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 111,
+    "figmaName": "Flag",
+    "slug": "flag",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 112,
+    "figmaName": "Folder minus",
+    "slug": "folder-minus",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 113,
+    "figmaName": "Folder plus",
+    "slug": "folder-plus",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 114,
+    "figmaName": "Folder",
+    "slug": "folder",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 115,
+    "figmaName": "Framer",
+    "slug": "framer",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 116,
+    "figmaName": "Frown",
+    "slug": "frown",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 117,
+    "figmaName": "Gift",
+    "slug": "gift",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 118,
+    "figmaName": "Git branch",
+    "slug": "git-branch",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 119,
+    "figmaName": "Git commit",
+    "slug": "git-commit",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 120,
+    "figmaName": "Git merge",
+    "slug": "git-merge",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 121,
+    "figmaName": "Git pull-request",
+    "slug": "git-pull-request",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 122,
+    "figmaName": "Github",
+    "slug": "github",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 123,
+    "figmaName": "Gitlab",
+    "slug": "gitlab",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 124,
+    "figmaName": "Globe",
+    "slug": "globe",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 125,
+    "figmaName": "Grid",
+    "slug": "grid",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 126,
+    "figmaName": "Hard drive",
+    "slug": "hard-drive",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 127,
+    "figmaName": "Hash",
+    "slug": "hash",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 128,
+    "figmaName": "Headphones",
+    "slug": "headphones",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 129,
+    "figmaName": "Heart",
+    "slug": "heart",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 130,
+    "figmaName": "Help circle",
+    "slug": "help-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 131,
+    "figmaName": "Hexagon",
+    "slug": "hexagon",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 132,
+    "figmaName": "Home",
+    "slug": "home",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 133,
+    "figmaName": "Image",
+    "slug": "image",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 134,
+    "figmaName": "Inbox",
+    "slug": "inbox",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 135,
+    "figmaName": "Info",
+    "slug": "info",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 136,
+    "figmaName": "Instagram",
+    "slug": "instagram",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 137,
+    "figmaName": "Italic",
+    "slug": "italic",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 138,
+    "figmaName": "Key",
+    "slug": "key",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 139,
+    "figmaName": "Layers",
+    "slug": "layers",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 140,
+    "figmaName": "Layout",
+    "slug": "layout",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 141,
+    "figmaName": "Life buoy",
+    "slug": "life-buoy",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 142,
+    "figmaName": "Link 2",
+    "slug": "link-2",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 143,
+    "figmaName": "Link",
+    "slug": "link",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 144,
+    "figmaName": "Linkedin",
+    "slug": "linkedin",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 145,
+    "figmaName": "List",
+    "slug": "list",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 146,
+    "figmaName": "Loader",
+    "slug": "loader",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 147,
+    "figmaName": "Lock",
+    "slug": "lock",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 148,
+    "figmaName": "Log in",
+    "slug": "log-in",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 149,
+    "figmaName": "Log out",
+    "slug": "log-out",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 150,
+    "figmaName": "Mail",
+    "slug": "mail",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 151,
+    "figmaName": "Map pin",
+    "slug": "map-pin",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 152,
+    "figmaName": "Map",
+    "slug": "map",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 153,
+    "figmaName": "Maximize 2",
+    "slug": "maximize-2",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 154,
+    "figmaName": "Maximize",
+    "slug": "maximize",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 155,
+    "figmaName": "Meh",
+    "slug": "meh",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 156,
+    "figmaName": "Menu",
+    "slug": "menu",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 157,
+    "figmaName": "Message circle",
+    "slug": "message-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 158,
+    "figmaName": "Message square",
+    "slug": "message-square",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 159,
+    "figmaName": "Mic off",
+    "slug": "mic-off",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 160,
+    "figmaName": "Mic",
+    "slug": "mic",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 161,
+    "figmaName": "Minimize 2",
+    "slug": "minimize-2",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 162,
+    "figmaName": "Minimize",
+    "slug": "minimize",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 163,
+    "figmaName": "Minus circle",
+    "slug": "minus-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 164,
+    "figmaName": "Minus square",
+    "slug": "minus-square",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 165,
+    "figmaName": "Minus",
+    "slug": "minus",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 166,
+    "figmaName": "Monitor",
+    "slug": "monitor",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 167,
+    "figmaName": "Moon",
+    "slug": "moon",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 168,
+    "figmaName": "More horizontal",
+    "slug": "more-horizontal",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 169,
+    "figmaName": "More vertical",
+    "slug": "more-vertical",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 170,
+    "figmaName": "Mouse pointer",
+    "slug": "mouse-pointer",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 171,
+    "figmaName": "Move",
+    "slug": "move",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 172,
+    "figmaName": "Music",
+    "slug": "music",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 173,
+    "figmaName": "Navigation 2",
+    "slug": "navigation-2",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 174,
+    "figmaName": "Navigation",
+    "slug": "navigation",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 175,
+    "figmaName": "Octagon",
+    "slug": "octagon",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 176,
+    "figmaName": "Package",
+    "slug": "package",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 177,
+    "figmaName": "Paperclip",
+    "slug": "paperclip",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 178,
+    "figmaName": "Pause circle",
+    "slug": "pause-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 179,
+    "figmaName": "Pause",
+    "slug": "pause",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 180,
+    "figmaName": "Pen tool",
+    "slug": "pen-tool",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 181,
+    "figmaName": "Percent",
+    "slug": "percent",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 182,
+    "figmaName": "Phone call",
+    "slug": "phone-call",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 183,
+    "figmaName": "Phone forwarded",
+    "slug": "phone-forwarded",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 184,
+    "figmaName": "Phone incoming",
+    "slug": "phone-incoming",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 185,
+    "figmaName": "Phone missed",
+    "slug": "phone-missed",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 186,
+    "figmaName": "Phone off",
+    "slug": "phone-off",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 187,
+    "figmaName": "Phone outgoing",
+    "slug": "phone-outgoing",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 188,
+    "figmaName": "Phone",
+    "slug": "phone",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 189,
+    "figmaName": "Pie chart",
+    "slug": "pie-chart",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 190,
+    "figmaName": "Play circle",
+    "slug": "play-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 191,
+    "figmaName": "Play",
+    "slug": "play",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 192,
+    "figmaName": "Plus circle",
+    "slug": "plus-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 193,
+    "figmaName": "Plus square",
+    "slug": "plus-square",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 194,
+    "figmaName": "Plus",
+    "slug": "plus",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 195,
+    "figmaName": "Pocket",
+    "slug": "pocket",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 196,
+    "figmaName": "Power",
+    "slug": "power",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 197,
+    "figmaName": "Printer",
+    "slug": "printer",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 198,
+    "figmaName": "Radio",
+    "slug": "radio",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 199,
+    "figmaName": "Refresh ccw",
+    "slug": "refresh-ccw",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 200,
+    "figmaName": "Refresh cw",
+    "slug": "refresh-cw",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 201,
+    "figmaName": "Repeat",
+    "slug": "repeat",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 202,
+    "figmaName": "Rewind",
+    "slug": "rewind",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 203,
+    "figmaName": "Rotate ccw",
+    "slug": "rotate-ccw",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 204,
+    "figmaName": "Rotate cw",
+    "slug": "rotate-cw",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 205,
+    "figmaName": "Rss",
+    "slug": "rss",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 206,
+    "figmaName": "Save",
+    "slug": "save",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 207,
+    "figmaName": "Scissors",
+    "slug": "scissors",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 208,
+    "figmaName": "Search",
+    "slug": "search",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 209,
+    "figmaName": "Send",
+    "slug": "send",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 210,
+    "figmaName": "Server",
+    "slug": "server",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 211,
+    "figmaName": "Settings",
+    "slug": "settings",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 212,
+    "figmaName": "Share 2",
+    "slug": "share-2",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 213,
+    "figmaName": "Share",
+    "slug": "share",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 214,
+    "figmaName": "Shield off",
+    "slug": "shield-off",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 215,
+    "figmaName": "Shield",
+    "slug": "shield",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 216,
+    "figmaName": "Shopping bag",
+    "slug": "shopping-bag",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 217,
+    "figmaName": "Shopping cart",
+    "slug": "shopping-cart",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 218,
+    "figmaName": "Shuffle",
+    "slug": "shuffle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 219,
+    "figmaName": "Sidebar",
+    "slug": "sidebar",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 220,
+    "figmaName": "Skip back",
+    "slug": "skip-back",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 221,
+    "figmaName": "Skip forward",
+    "slug": "skip-forward",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 222,
+    "figmaName": "Slack",
+    "slug": "slack",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 223,
+    "figmaName": "Slash",
+    "slug": "slash",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 224,
+    "figmaName": "Sliders",
+    "slug": "sliders",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 225,
+    "figmaName": "Smartphone",
+    "slug": "smartphone",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 226,
+    "figmaName": "Smile",
+    "slug": "smile",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 227,
+    "figmaName": "Speaker",
+    "slug": "speaker",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 228,
+    "figmaName": "Square",
+    "slug": "square",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 229,
+    "figmaName": "Star",
+    "slug": "star",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 230,
+    "figmaName": "Stop circle",
+    "slug": "stop-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 231,
+    "figmaName": "Sun",
+    "slug": "sun",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 232,
+    "figmaName": "Sunrise",
+    "slug": "sunrise",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 233,
+    "figmaName": "Sunset",
+    "slug": "sunset",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 234,
+    "figmaName": "Table",
+    "slug": "table",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 235,
+    "figmaName": "Tablet",
+    "slug": "tablet",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 236,
+    "figmaName": "Tag",
+    "slug": "tag",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 237,
+    "figmaName": "Target",
+    "slug": "target",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 238,
+    "figmaName": "Terminal",
+    "slug": "terminal",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 239,
+    "figmaName": "Thermometer",
+    "slug": "thermometer",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 240,
+    "figmaName": "Thumbs down",
+    "slug": "thumbs-down",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 241,
+    "figmaName": "Thumbs up",
+    "slug": "thumbs-up",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 242,
+    "figmaName": "Toggle left",
+    "slug": "toggle-left",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 243,
+    "figmaName": "Toggle right",
+    "slug": "toggle-right",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 244,
+    "figmaName": "Tool",
+    "slug": "tool",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 245,
+    "figmaName": "Trash 2",
+    "slug": "trash-2",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 246,
+    "figmaName": "Trash",
+    "slug": "trash",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 247,
+    "figmaName": "Trello",
+    "slug": "trello",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 248,
+    "figmaName": "Trending down",
+    "slug": "trending-down",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 249,
+    "figmaName": "Trending up",
+    "slug": "trending-up",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 250,
+    "figmaName": "Triangle",
+    "slug": "triangle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 251,
+    "figmaName": "Truck",
+    "slug": "truck",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 252,
+    "figmaName": "Tv",
+    "slug": "tv",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 253,
+    "figmaName": "Twitch",
+    "slug": "twitch",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 254,
+    "figmaName": "Twitter",
+    "slug": "twitter",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 255,
+    "figmaName": "Type",
+    "slug": "type",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 256,
+    "figmaName": "Umbrella",
+    "slug": "umbrella",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 257,
+    "figmaName": "Underline",
+    "slug": "underline",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 258,
+    "figmaName": "Unlock",
+    "slug": "unlock",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 259,
+    "figmaName": "Upload cloud",
+    "slug": "upload-cloud",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 260,
+    "figmaName": "Upload",
+    "slug": "upload",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 261,
+    "figmaName": "User check",
+    "slug": "user-check",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 262,
+    "figmaName": "User minus",
+    "slug": "user-minus",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 263,
+    "figmaName": "User plus",
+    "slug": "user-plus",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 264,
+    "figmaName": "User x",
+    "slug": "user-x",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 265,
+    "figmaName": "User",
+    "slug": "user",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 266,
+    "figmaName": "Users",
+    "slug": "users",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 267,
+    "figmaName": "Video off",
+    "slug": "video-off",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 268,
+    "figmaName": "Video",
+    "slug": "video",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 269,
+    "figmaName": "Voicemail",
+    "slug": "voicemail",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 270,
+    "figmaName": "Volume 1",
+    "slug": "volume-1",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 271,
+    "figmaName": "Volume 2",
+    "slug": "volume-2",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 272,
+    "figmaName": "Volume x",
+    "slug": "volume-x",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 273,
+    "figmaName": "Volume",
+    "slug": "volume",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 274,
+    "figmaName": "Watch",
+    "slug": "watch",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 275,
+    "figmaName": "Wifi off",
+    "slug": "wifi-off",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 276,
+    "figmaName": "Wifi",
+    "slug": "wifi",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 277,
+    "figmaName": "Wind",
+    "slug": "wind",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 278,
+    "figmaName": "X circle",
+    "slug": "x-circle",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 279,
+    "figmaName": "X octagon",
+    "slug": "x-octagon",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 280,
+    "figmaName": "X square",
+    "slug": "x-square",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 281,
+    "figmaName": "X",
+    "slug": "x",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 282,
+    "figmaName": "Youtube",
+    "slug": "youtube",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 283,
+    "figmaName": "Zap off",
+    "slug": "zap-off",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 284,
+    "figmaName": "Zap",
+    "slug": "zap",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 285,
+    "figmaName": "Zoom in",
+    "slug": "zoom-in",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  },
+  {
+    "index": 286,
+    "figmaName": "Zoom out",
+    "slug": "zoom-out",
+    "nativeSizes": [
+      16,
+      20,
+      24,
+      32,
+      40,
+      48
+    ]
+  }
+]

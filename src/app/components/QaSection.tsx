@@ -1,5 +1,6 @@
 import { useState } from "react";
 import svgPaths from "../../imports/svgPaths";
+import { TabPill } from "./common/TabPill";
 
 type Bullet = {
   title: string;
@@ -191,57 +192,19 @@ export default function QaSection() {
   return (
     <section className="relative w-full bg-white section-spacing-y section-spacing-x">
       <div className="mx-auto flex w-full maxWidth flex-col items-center gap-[32px] md:gap-[48px] lg:gap-[64px]">
-        <h2 className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] w-full text-center font-quicksand-bold h2-title text-[#383e48]">
+        <h2 className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] [word-break:break-word] w-full text-left font-quicksand-bold h2-title text-[#383e48]">
           Any questions?
         </h2>
 
-        <div className="flex w-full flex-col items-center gap-[24px] xl:max-w-[768px]">
-          <div className="flex w-full max-w-[640px] flex-col gap-[12px] sm:flex-row sm:gap-[16px]">
-            {tabs.map((tab) => {
-              const isActive = tab === activeTab;
-
-              return (
-                <button
-                  key={tab}
-                  type="button"
-                  onClick={() => handleTabChange(tab)}
-                  className={[
-                    "relative flex min-h-[56px] w-full items-center justify-center rounded-[8px] px-[16px] py-[12px]",
-                    "transition-colors duration-150",
-                    "sm:flex-1",
-                    isActive
-                      ? "bg-[#f5ebfd]"
-                      : "bg-[#F3F4F7] hover:bg-[#f5ebfd]/50",
-                  ].join(" ")}
-                >
-                  <span
-                    className={[
-                      "w-full text-center font-quicksand-semibold text-[20px] leading-[1.3] transition-colors duration-150",
-                      isActive ? "text-[#9a38ef]" : "text-[#383e48]",
-                    ].join(" ")}
-                  >
-                    {tab}
-                  </span>
-
-                  {isActive && (
-                    <span
-                      aria-hidden="true"
-                      className="pointer-events-none absolute inset-0 rounded-[8px] border border-[#d1a3f8]"
-                    />
-                  )}
-                </button>
-              );
-            })}
-          </div>
-
-          <div className="flex w-full flex-col gap-[8px] sm:gap-[12px]">
+        <div className="flex w-full flex-col gap-[24px] lg:flex-row lg:items-start lg:gap-[32px] xl:gap-[48px]">
+          <div className="order-2 flex min-w-0 w-full flex-1 flex-col gap-[8px] sm:gap-[12px] lg:order-1">
             {items.map((item, index) => {
               const isOpen = openIndex === index;
 
               return (
                 <div
                   key={item.question}
-                  className="group w-full rounded-[12px] border border-[#D9DEE5] bg-white transition-colors duration-200 hover:border-[#BB7AF4]"
+                  className="group w-full rounded-[16px] border border-[#D9DEE5] bg-white transition-colors duration-200 hover:border-[#BB7AF4]"
                 >
                   <button
                     type="button"
@@ -303,6 +266,25 @@ export default function QaSection() {
                     </div>
                   )}
                 </div>
+              );
+            })}
+          </div>
+
+          <div
+            className="order-1 flex min-w-0 w-full flex-col gap-[12px] lg:order-2 lg:w-1/4 lg:shrink-0"
+            role="tablist"
+            aria-label="FAQ categories"
+          >
+            {tabs.map((tab) => {
+              const isActive = tab === activeTab;
+
+              return (
+                <TabPill
+                  key={tab}
+                  label={tab}
+                  selected={isActive}
+                  onClick={() => handleTabChange(tab)}
+                />
               );
             })}
           </div>

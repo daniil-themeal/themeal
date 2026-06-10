@@ -1,23 +1,80 @@
 import type { DayOption, Duration } from '../../data/checkoutPricing';
 
-export const MONTH_ABBR = [
-  'Jan',
-  'Feb',
-  'Mar',
-  'Apr',
-  'May',
-  'Jun',
-  'Jul',
-  'Aug',
-  'Sep',
-  'Oct',
-  'Nov',
-  'Dec',
-] as const;
+import { MONTH_ABBR } from '../common/dateFormatTokens';
+
+export { MONTH_ABBR };
 
 export const WEEKDAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 
+// DatePill: w-[56px] + gap-[8px]
+const DATE_PILL_SCROLL_STEP = 64;
+
 export type MealDayRadiusPosition = 'start' | 'end' | 'single';
+
+function isElementVisibleInContainer(container: HTMLElement, element: HTMLElement): boolean {
+  const containerRect = container.getBoundingClientRect();
+  const elementRect = element.getBoundingClientRect();
+
+  return elementRect.right > containerRect.left && elementRect.left < containerRect.right;
+}
+
+function getVisibleEdgeIndices(
+  container: HTMLElement,
+  pills: Array<HTMLElement | null>,
+): { firstVisible: number; lastVisible: number } | null {
+  let firstVisible = -1;
+  let lastVisible = -1;
+
+  pills.forEach((pill, index) => {
+    if (!pill || !isElementVisibleInContainer(container, pill)) return;
+
+    if (firstVisible === -1) firstVisible = index;
+    lastVisible = index;
+  });
+
+  if (firstVisible === -1) return null;
+
+  return { firstVisible, lastVisible };
+}
+
+export function scrollDatePillsOnEdgeClick(
+  container: HTMLElement,
+  pills: Array<HTMLElement | null>,
+  clickedIndex: number,
+): void {
+  const edges = getVisibleEdgeIndices(container, pills);
+  if (!edges) return;
+
+  const maxScrollLeft = container.scrollWidth - container.clientWidth;
+  const { firstVisible, lastVisible } = edges;
+
+  const isInRightScrollZone =
+    clickedIndex >= lastVisible - 1 && clickedIndex <= lastVisible;
+  const isInLeftScrollZone =
+    clickedIndex >= firstVisible && clickedIndex <= firstVisible + 1;
+
+  if (isInRightScrollZone && clickedIndex < pills.length - 1) {
+    container.scrollTo({
+      left: Math.min(container.scrollLeft + DATE_PILL_SCROLL_STEP, maxScrollLeft),
+      behavior: 'smooth',
+    });
+    return;
+  }
+
+  if (isInLeftScrollZone && clickedIndex > 0) {
+    container.scrollTo({
+      left: Math.max(container.scrollLeft - DATE_PILL_SCROLL_STEP, 0),
+      behavior: 'smooth',
+    });
+  }
+}
+
+export function isDatePillVisibleInContainer(
+  container: HTMLElement,
+  pill: HTMLElement,
+): boolean {
+  return isElementVisibleInContainer(container, pill);
+}
 
 export function addDays(date: Date, days: number): Date {
   const nextDate = new Date(date);

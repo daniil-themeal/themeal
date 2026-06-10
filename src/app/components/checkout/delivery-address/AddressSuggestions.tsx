@@ -3,12 +3,9 @@ import type {
   DeliveryAvailability,
   TestAddress,
 } from '../../../data/testAddresses';
+import { MapPinIcon } from '../../common/icons';
 import { TEXT_TRIM_CLASS_NAME } from '../../common/textTrimTokens';
-import {
-  DeliveryAvailableIcon,
-  DeliveryUnavailableIcon,
-  LocationIcon,
-} from './addressIcons';
+import { DeliveryAvailableIcon, DeliveryUnavailableIcon } from './addressIcons';
 
 type SuggestionRowProps = {
   suggestion: TestAddress;
@@ -38,8 +35,8 @@ function SuggestionRow({
         isActive ? 'bg-[#f3f4f7]' : 'hover:bg-[#f7f8fa]'
       }`}
     >
-      <div className="mt-[2px] shrink-0">
-        <LocationIcon />
+      <div className="mt-[2px] shrink-0 text-[#8594AC]">
+        <MapPinIcon size={16} />
       </div>
 
       <div className="min-w-0 flex-1">

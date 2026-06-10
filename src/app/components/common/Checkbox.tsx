@@ -68,7 +68,7 @@ export function Checkbox({
   checked,
   onChange,
   label,
-  size = 'large',
+  size = 'medium',
   id,
   disabled = false,
   className = '',

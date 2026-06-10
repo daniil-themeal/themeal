@@ -8,7 +8,7 @@ import { COLOR_TOKENS } from '../common/colorTokens';
 import { Divider } from '../common/Divider';
 import { Dropdown } from '../common/Dropdown';
 import { getFieldSizeStyle } from '../common/fieldSizeTokens';
-import { PayMethodCard } from '../common/PayMethodCard';
+import { DeliveryAddressCard } from '../common/DeliveryAddressCard';
 import { TextArea } from '../common/TextArea';
 import { TextInput } from '../common/TextInput';
 
@@ -21,20 +21,6 @@ import { MealCalendar } from './MealCalendar';
 import { getUpcomingDeliveryDates } from './mealCalendarUtils';
 
 const TIME_SLOTS = ['07:00 – 11:00', '12:00 – 16:00', '18:00 – 22:00'];
-
-function PinIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
-      <path
-        d="M10 1.667A5.833 5.833 0 0 0 4.167 7.5C4.167 12.083 10 18.333 10 18.333s5.833-6.25 5.833-10.833A5.833 5.833 0 0 0 10 1.667Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        fill="none"
-      />
-      <circle cx="10" cy="7.5" r="2" stroke="currentColor" strokeWidth="1.5" fill="none" />
-    </svg>
-  );
-}
 
 function InfoIcon() {
   return (
@@ -99,13 +85,10 @@ export function DeliveryDetailsScreen({
 
         <div className={CHECKOUT_STEP_PAGE_LAYOUT.card}>
           <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionTop}>
-            <PayMethodCard
+            <DeliveryAddressCard
               title={addressTitle}
               subtitle={addressSub}
-              actionLabel="Change"
-              leftIcon={<PinIcon />}
               onClick={onChangeAddress}
-              aria-label={`Change delivery address: ${addressTitle}`}
             />
 
             <TextInput
@@ -184,7 +167,7 @@ export function DeliveryDetailsScreen({
 
             <InfoBox />
 
-            <Button type="button" variant="primary" size="48" fullWidth onClick={onContinue}>
+            <Button type="button" variant="primary" size="medium" fullWidth onClick={onContinue}>
               Continue
             </Button>
           </div>

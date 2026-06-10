@@ -81,9 +81,8 @@ const fieldBaseClassName = [
 ].join(' ');
 
 const inputBaseClassName = [
-  TEXT_TRIM_CLASS_NAME,
-  "h-[length:var(--field-height)] min-w-0 flex-1 bg-transparent font-sans",
-  'text-[length:var(--field-font-size)] font-semibold leading-[130%] text-[var(--text-input-text)]',
+  'h-[length:var(--field-height)] min-w-0 flex-1 bg-transparent font-sans',
+  'text-[length:var(--field-font-size)] font-semibold leading-normal text-[var(--text-input-text)]',
   'outline-none placeholder:text-[var(--text-input-placeholder)]',
   'disabled:cursor-not-allowed',
 ].join(' ');

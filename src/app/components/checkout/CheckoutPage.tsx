@@ -16,12 +16,14 @@ import { DeliveryDetailsScreen } from './DeliveryDetailsScreen';
 import { createInitialDeliveryDetails } from './deliveryDetailsTypes';
 import type { DeliveryDetailsData } from './deliveryDetailsTypes';
 import { PaymentScreen } from './PaymentScreen';
+import { PaymentSuccessScreen } from './PaymentSuccessScreen';
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
 import type { TestAddress } from '../../data/testAddresses';
 import { COLOR_TOKENS } from '../common/colorTokens';
+import { formatUaePhoneInput, validateUaePhone } from './phoneValidation';
 
-type CheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment';
+type CheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment' | 'success';
 type DeliveryStep = 'address' | 'details';
 
 type CheckoutPageProps = {
@@ -29,6 +31,7 @@ type CheckoutPageProps = {
   onClose: () => void;
   initialCheckoutStep?: CheckoutStep;
   initialDeliveryStep?: DeliveryStep;
+  initialPhone?: string;
 };
 
 type CheckoutPageCssVariables = CSSProperties & {
@@ -47,6 +50,7 @@ export function CheckoutPage({
   onClose,
   initialCheckoutStep = 'plan',
   initialDeliveryStep = 'address',
+  initialPhone,
 }: CheckoutPageProps) {
   const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>(initialCheckoutStep);
   const [deliveryStep, setDeliveryStep] = useState<DeliveryStep>(initialDeliveryStep);
@@ -64,6 +68,8 @@ export function CheckoutPage({
   const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetailsData>(() =>
     createInitialDeliveryDetails(),
   );
+  const [phone, setPhone] = useState('');
+  const [phoneError, setPhoneError] = useState<string | undefined>();
 
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
@@ -83,6 +89,15 @@ export function CheckoutPage({
       setDeliveryStep(initialDeliveryStep);
       setMenuOpen(false);
       setSummaryVisible(initialCheckoutStep !== 'plan');
+      setPhoneError(undefined);
+
+      if (initialPhone) {
+        const digits = initialPhone.replace(/\D/g, '').replace(/^971/, '').slice(-9);
+        setPhone(formatUaePhoneInput(digits));
+      } else if (initialCheckoutStep === 'plan') {
+        setPhone('');
+      }
+
       return;
     }
 
@@ -95,7 +110,7 @@ export function CheckoutPage({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen, initialCheckoutStep, initialDeliveryStep]);
+  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone]);
 
   useEffect(() => {
     if (!isOpen || checkoutStep !== 'plan') return;
@@ -125,9 +140,31 @@ export function CheckoutPage({
     bodyRef.current?.scrollTo({ top: 0 });
   };
 
+  const handlePhoneChange = (value: string) => {
+    setPhone(formatUaePhoneInput(value));
+    setPhoneError(undefined);
+  };
+
+  const handleScrollToSummary = () => {
+    setMenuOpen(false);
+    rightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  };
+
   const handleContinueFromPlan = () => {
     setMenuOpen(false);
     setSummaryVisible(true);
+
+    const phoneValidation = validateUaePhone(phone);
+
+    if (!phoneValidation.isValid) {
+      setPhoneError(phoneValidation.error);
+      handleScrollToSummary();
+      return;
+    }
+
+    if (phoneValidation.formatted) {
+      setPhone(phoneValidation.formatted);
+    }
 
     if (isPhoneVerified) {
       setCheckoutStep('delivery');
@@ -165,6 +202,15 @@ export function CheckoutPage({
     scrollBodyToTop();
   };
 
+  const handlePay = () => {
+    setCheckoutStep('success');
+    scrollBodyToTop();
+  };
+
+  const handleGoToMain = () => {
+    onClose();
+  };
+
   const handleDeliveryDetailsChange = (patch: Partial<DeliveryDetailsData>) => {
     setDeliveryDetails((current) => ({ ...current, ...patch }));
   };
@@ -182,7 +228,7 @@ export function CheckoutPage({
     scrollBodyToTop();
   };
 
-  const handleDevStepSelect = (step: CheckoutHeaderStep) => {
+  const handleStepSelect = (step: CheckoutHeaderStep) => {
     setMenuOpen(false);
 
     if (step === 'plan') {
@@ -241,12 +287,14 @@ export function CheckoutPage({
 
   return (
     <div className="fixed inset-0 z-[200] flex flex-col" style={checkoutPageStyle}>
-      <CheckoutHeader
-        step={headerStep}
-        onBack={handleBack}
-        onClose={onClose}
-        onStepSelect={import.meta.env.DEV ? handleDevStepSelect : undefined}
-      />
+      {checkoutStep !== 'success' ? (
+        <CheckoutHeader
+          step={headerStep}
+          onBack={handleBack}
+          onClose={onClose}
+          onStepSelect={handleStepSelect}
+        />
+      ) : null}
 
       {checkoutStep === 'plan' ? (
         <>
@@ -292,6 +340,9 @@ export function CheckoutPage({
                   onPersonsChange={setPersons}
                   onOpenMenu={() => setMenuOpen(true)}
                   onOrder={handleContinueFromPlan}
+                  phone={phone}
+                  onPhoneChange={handlePhoneChange}
+                  phoneError={phoneError}
                 />
               </div>
             </div>
@@ -309,13 +360,15 @@ export function CheckoutPage({
             days={days}
             duration={duration}
             lightMealOption={lightMealOption}
-            onOrder={handleContinueFromPlan}
+            onScrollToSummary={handleScrollToSummary}
             hidden={summaryVisible}
           />
         </>
       ) : checkoutStep === 'verification' ? (
         <div ref={bodyRef} className={checkoutStepScrollClassName}>
           <SmsCodeScreen
+            phone={phone}
+            onPhoneChange={handlePhoneChange}
             onChangeNumber={() => {
               setCheckoutStep('plan');
               setMenuOpen(false);
@@ -345,7 +398,7 @@ export function CheckoutPage({
             onContinue={handleDeliveryDetailsContinue}
           />
         </div>
-      ) : (
+      ) : checkoutStep === 'payment' ? (
         <div ref={bodyRef} className={checkoutStepScrollClassName}>
           <PaymentScreen
             plan={plan}
@@ -358,6 +411,17 @@ export function CheckoutPage({
             deliveryDetails={deliveryDetails}
             onEditPlan={handleEditPlan}
             onEditDelivery={handleEditDelivery}
+            onPay={handlePay}
+          />
+        </div>
+      ) : (
+        <div ref={bodyRef} className={checkoutStepScrollClassName}>
+          <PaymentSuccessScreen
+            days={days}
+            duration={duration}
+            startDate={deliveryDetails.selectedDate}
+            onClose={onClose}
+            onGoToMain={handleGoToMain}
           />
         </div>
       )}

@@ -14,8 +14,12 @@ import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { Divider } from '../common/Divider';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { FIELD_SIZE_CONFIG } from '../common/fieldSizeTokens';
+import { FormLabel } from '../common/FormLabel';
+import { InputButtonRow } from '../common/InputButtonRow';
 import { MapPinIcon, PackageIcon, SmileIcon, TruckIcon } from '../common/icons';
-import { PromoCodeBlock } from '../common/PromoCodeBlock';
+import { PromoCodeIcon } from '../common/icons/PromoCodeIcon';
+import { TextInput } from '../common/TextInput';
 import {
   PAYMENT_METHODS,
   PaymentMethodSelector,
@@ -33,8 +37,8 @@ import {
   CHECKOUT_STEP_PAGE_LAYOUT,
   CHECKOUT_STEP_PAGE_VARS,
 } from './checkoutStepPageLayoutTokens';
-import { IconTextRow } from './IconTextRow';
-import { ICON_TEXT_ROW_LAYOUT } from './iconTextRowLayoutTokens';
+import { IconTextRow } from '../common/IconTextRow';
+import { ICON_TEXT_ROW_LAYOUT } from '../common/iconTextRowLayoutTokens';
 
 const SESSION_SECONDS = 8 * 60 + 59;
 
@@ -104,7 +108,7 @@ function SectionHeader({
           type="button"
           variant="neutral"
           outline
-          size="32"
+          size="x-small"
           onClick={onAction}
           className="shrink-0"
         >
@@ -303,7 +307,7 @@ export function PaymentScreen({
 
           <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
-          <div className={ICON_TEXT_ROW_LAYOUT.section}>
+          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap16}>
             <SectionHeader title="Delivery information" actionLabel="Edit" onAction={onEditDelivery} />
 
             <div className={ICON_TEXT_ROW_LAYOUT.list}>
@@ -338,10 +342,35 @@ export function PaymentScreen({
           <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
           <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap12}>
-            <PromoCodeBlock
-              id="payment-promo-code"
-              value={promoCode}
-              onChange={setPromoCode}
+            <FormLabel as="span">Have a promo code?</FormLabel>
+
+            <InputButtonRow
+              input={
+                <TextInput
+                  id="payment-promo-code"
+                  label=""
+                  aria-label="Promo code"
+                  value={promoCode}
+                  onChange={(event) => setPromoCode(event.target.value)}
+                  placeholder="Add promocode"
+                  leftIcon={
+                    <PromoCodeIcon
+                      size={FIELD_SIZE_CONFIG.large.iconSizePx as 20 | 24}
+                    />
+                  }
+                />
+              }
+              action={
+                <Button
+                  type="button"
+                  variant="neutral"
+                  size="medium"
+                  disabled={!promoCode.trim()}
+                  className="w-full sm:w-[140px]"
+                >
+                  Activate
+                </Button>
+              }
             />
           </div>
 
@@ -371,7 +400,7 @@ export function PaymentScreen({
 
           <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardFooter}>
             <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionInner}>
-              <Button type="button" variant="primary" size="48" fullWidth onClick={onPay}>
+              <Button type="button" variant="primary" size="medium" fullWidth onClick={onPay}>
                 Pay AED {formatAed(pricing.periodPrice)}
               </Button>
 

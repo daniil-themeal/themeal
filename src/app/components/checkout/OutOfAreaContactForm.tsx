@@ -66,7 +66,7 @@ export function OutOfAreaContactNotice({
           Not in your area yet. Leave your details, and we’ll contact you when we deliver there.
         </p>
 
-        <Button type="button" variant="primary" size="40" onClick={onContactMe}>
+        <Button type="button" variant="primary" size="small" onClick={onContactMe}>
           Contact me
         </Button>
       </div>
@@ -164,7 +164,7 @@ export function OutOfAreaContactForm({ isOpen, onClose }: OutOfAreaContactFormPr
             placeholder="Type your e-mail"
           />
 
-          <Button type="button" variant="neutral" size="48" fullWidth disabled className="mt-[4px]">
+          <Button type="button" variant="neutral" size="medium" fullWidth disabled className="mt-[4px]">
             Send
           </Button>
         </form>

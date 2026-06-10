@@ -1,9 +1,9 @@
 import { useState } from "react";
 import svgPaths from "../../imports/svgPaths";
-import imgBreakfast from "../../imports/images/62b020c5d45fcf81b97d6ac960d8933eabac8e76.avif";
-import imgLunch from "../../imports/images/6b30caceed13b066fc33b8a01a42a6df76ed3861.avif";
-import imgDinner from "../../imports/images/4e9547eb8191c23d59cdc7e065a7add41ab481be.avif";
-import imgSoup from "../../imports/images/ac9ccfc091874f2213372b4440fd9dc1c6aa56ed.avif";
+import imgBreakfast from "../../imports/images/62b020c5d45fcf81b97d6ac960d8933eabac8e76.png";
+import imgLunch from "../../imports/images/6b30caceed13b066fc33b8a01a42a6df76ed3861.png";
+import imgDinner from "../../imports/images/4e9547eb8191c23d59cdc7e065a7add41ab481be.png";
+import imgSoup from "../../imports/images/ac9ccfc091874f2213372b4440fd9dc1c6aa56ed.png";
 
 type Meal = {
   img: string;

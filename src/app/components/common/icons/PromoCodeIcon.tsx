@@ -1,6 +1,5 @@
 import type { CSSProperties } from 'react';
 
-import { COLOR_TOKENS } from '../colorTokens';
 import promocodeIcon from './promocode-24x24.png';
 import type { IconSize } from './iconSize';
 import { iconSizeClassName } from './iconSize';
@@ -32,7 +31,7 @@ export function PromoCodeIcon({ size = 24, className = '' }: PromoCodeIconProps)
       ]
         .filter(Boolean)
         .join(' ')}
-      style={{ ...maskStyle, color: COLOR_TOKENS.neutral[200] }}
+      style={maskStyle}
     />
   );
 }

@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
 import type { DayOption, Duration } from '../../data/checkoutPricing';
-import { BORDER_RADIUS_TOKENS } from '../common/borderRadiusTokens';
+import { DatePill } from '../common/DatePill';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { FormSectionHeading } from '../common/FormSectionHeading';
@@ -16,11 +16,13 @@ import {
   getMealDayRadiusClassName,
   getSubscriptionDays,
   getUpcomingDeliveryDates,
+  isDatePillVisibleInContainer,
   isDeliveryDay,
   isInPeriod,
   isSameDay,
   isSubscriptionMealDay,
   MONTH_ABBR,
+  scrollDatePillsOnEdgeClick,
   WEEKDAY_SHORT,
   type MealDayRadiusPosition,
 } from './mealCalendarUtils';
@@ -36,65 +38,6 @@ const mealCalendarStyle: MealCalendarCssVariables = {
   '--calendar-month-fs': FONT_SIZE_TOKENS[12],
   '--calendar-weekday-fs': FONT_SIZE_TOKENS[14],
 };
-
-type DatePillCssVariables = CSSProperties & {
-  '--date-pill-bg': string;
-  '--date-pill-bg-hover': string;
-  '--date-pill-border': string;
-  '--date-pill-border-hover': string;
-};
-
-const DATE_PILL_SELECTED_STYLE: DatePillCssVariables = {
-  '--date-pill-bg': COLOR_TOKENS.primary[50],
-  '--date-pill-bg-hover': COLOR_TOKENS.primary[75],
-  '--date-pill-border': COLOR_TOKENS.primary[500],
-  '--date-pill-border-hover': COLOR_TOKENS.primary[600],
-};
-
-const DATE_PILL_DEFAULT_STYLE: DatePillCssVariables = {
-  '--date-pill-bg': COLOR_TOKENS.base.white,
-  '--date-pill-bg-hover': COLOR_TOKENS.neutral[50],
-  '--date-pill-border': COLOR_TOKENS.neutral[100],
-  '--date-pill-border-hover': COLOR_TOKENS.neutral[300],
-};
-
-type DatePillProps = {
-  date: Date;
-  selected: boolean;
-  onClick: () => void;
-};
-
-function DatePill({ date, selected, onClick }: DatePillProps) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={[
-        'flex h-[64px] w-[56px] shrink-0 cursor-pointer flex-col items-center justify-center',
-        'border border-[length:1px] border-[var(--date-pill-border)] bg-[var(--date-pill-bg)]',
-        'transition-colors',
-        'hover:enabled:border-[var(--date-pill-border-hover)] hover:enabled:bg-[var(--date-pill-bg-hover)]',
-      ].join(' ')}
-      style={{
-        borderRadius: BORDER_RADIUS_TOKENS[12],
-        ...(selected ? DATE_PILL_SELECTED_STYLE : DATE_PILL_DEFAULT_STYLE),
-      }}
-    >
-      <span
-        className="font-sans text-[18px] font-bold leading-none"
-        style={{ color: COLOR_TOKENS.neutral[900] }}
-      >
-        {date.getDate()}
-      </span>
-      <span
-        className="mt-[4px] font-sans text-[12px] font-semibold leading-none"
-        style={{ color: COLOR_TOKENS.neutral[900] }}
-      >
-        {MONTH_ABBR[date.getMonth()]}
-      </span>
-    </button>
-  );
-}
 
 type CalendarCellProps = {
   date: Date;
@@ -216,7 +159,40 @@ function MealCalendarGrid({ startDate, duration, dayOption }: MealCalendarGridPr
   );
 }
 
-function MealCalendarLegend() {
+type MealCalendarLegendVariant = 'default' | 'success';
+
+function MealCalendarLegend({ variant = 'default' }: { variant?: MealCalendarLegendVariant }) {
+  if (variant === 'success') {
+    return (
+      <div className="flex flex-wrap items-center justify-center gap-[16px] pb-[8px] w-full">
+        <div className="flex items-center gap-[4px]">
+          <div
+            className="size-[16px] shrink-0 rounded-[4px]"
+            style={{ backgroundColor: COLOR_TOKENS.primary[50] }}
+          />
+          <span
+            className={[TEXT_TRIM_CLASS_NAME, 'font-sans text-[14px] font-normal leading-[150%]'].join(' ')}
+            style={{ color: COLOR_TOKENS.neutral[900] }}
+          >
+            Meal days
+          </span>
+        </div>
+
+        <div className="flex items-center gap-[4px]">
+          <span style={{ color: COLOR_TOKENS.neutral[900] }}>
+            <DeliveryIcon size={16} />
+          </span>
+          <span
+            className={[TEXT_TRIM_CLASS_NAME, 'font-sans text-[14px] font-normal leading-[150%]'].join(' ')}
+            style={{ color: COLOR_TOKENS.neutral[900] }}
+          >
+            Delivery days
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center gap-[20px]">
       <div className="flex items-center gap-[6px]">
@@ -243,6 +219,30 @@ function MealCalendarLegend() {
           Delivery days
         </span>
       </div>
+    </div>
+  );
+}
+
+export type MealCalendarPreviewProps = {
+  startDate: Date;
+  duration: Duration;
+  dayOption: DayOption;
+  className?: string;
+};
+
+export function MealCalendarPreview({
+  startDate,
+  duration,
+  dayOption,
+  className = '',
+}: MealCalendarPreviewProps) {
+  return (
+    <div
+      className={['flex w-full flex-col gap-[12px]', className].filter(Boolean).join(' ')}
+      style={mealCalendarStyle}
+    >
+      <MealCalendarLegend variant="success" />
+      <MealCalendarGrid startDate={startDate} duration={duration} dayOption={dayOption} />
     </div>
   );
 }
@@ -276,8 +276,39 @@ export function MealCalendar({
   );
 
   const datePillsScrollRef = useRef<HTMLDivElement>(null);
+  const datePillRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const datePillsDragStartXRef = useRef(0);
   const datePillsDragMovedRef = useRef(false);
+
+  const handleDatePillClick = (index: number, date: Date) => {
+    if (datePillsDragMovedRef.current) return;
+
+    onSelectedDateChange(date);
+
+    const container = datePillsScrollRef.current;
+    if (!container) return;
+
+    window.requestAnimationFrame(() => {
+      scrollDatePillsOnEdgeClick(container, datePillRefs.current, index);
+    });
+  };
+
+  useLayoutEffect(() => {
+    const container = datePillsScrollRef.current;
+    if (!container) return;
+
+    const selectedIndex = deliveryDates.findIndex((date) => isSameDay(date, selectedDate));
+    if (selectedIndex < 0) return;
+
+    const selectedPill = datePillRefs.current[selectedIndex];
+    if (!selectedPill || isDatePillVisibleInContainer(container, selectedPill)) return;
+
+    selectedPill.scrollIntoView({
+      behavior: 'auto',
+      block: 'nearest',
+      inline: 'nearest',
+    });
+  }, [deliveryDates, selectedDate]);
 
   useEffect(() => {
     const scrollElement = datePillsScrollRef.current;
@@ -307,7 +338,7 @@ export function MealCalendar({
     >
       {title ? <FormSectionHeading title={title} subtitle={subtitle} /> : null}
 
-      <div className="-mx-[20px] md:-mx-[32px]">
+      <div className="relative -mx-[20px] md:-mx-[32px]">
         <div
           ref={datePillsScrollRef}
           className="flex w-full min-w-0 cursor-grab touch-pan-x select-none gap-[8px] overflow-x-auto px-[20px] pb-[4px] scrollbar-hide active:cursor-grabbing md:px-[32px]"
@@ -369,15 +400,28 @@ export function MealCalendar({
             {deliveryDates.map((date, index) => (
               <DatePill
                 key={index}
+                ref={(element) => {
+                  datePillRefs.current[index] = element;
+                }}
                 date={date}
                 selected={isSameDay(date, selectedDate)}
-                onClick={() => {
-                  if (datePillsDragMovedRef.current) return;
-                  onSelectedDateChange(date);
-                }}
+                onClick={() => handleDatePillClick(index, date)}
               />
             ))}
         </div>
+
+        <div
+          className="pointer-events-none absolute bottom-[4px] left-0 top-0 w-[20px] md:w-[32px]"
+          style={{
+            background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})`,
+          }}
+        />
+        <div
+          className="pointer-events-none absolute bottom-[4px] right-0 top-0 w-[20px] md:w-[32px]"
+          style={{
+            background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})`,
+          }}
+        />
       </div>
 
       <MealCalendarLegend />

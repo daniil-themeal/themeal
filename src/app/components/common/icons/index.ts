@@ -1,15 +1,13 @@
-export { BoxIcon } from './BoxIcon';
-export { ChevronRightIcon } from './ChevronRightIcon';
+export * from './feather';
+export { FEATHER_ICON_CATALOG_ENTRIES } from './feather/iconCatalog';
+export type { FeatherIconCatalogEntry } from './feather/iconCatalog';
+export type { IconProps } from './iconProps';
 export { ClearIcon } from './ClearIcon';
 export { DeliveryIcon } from './DeliveryIcon';
-export { LocationIcon } from './LocationIcon';
-export { MapPinIcon } from './MapPinIcon';
-export { PackageIcon } from './PackageIcon';
-export { TruckIcon } from './TruckIcon';
-export { SmileIcon } from './SmileIcon';
+export { SuccessIcon } from './SuccessIcon';
+export { DesignSystemIcon } from './DesignSystemIcon';
 export { PromoCodeIcon } from './PromoCodeIcon';
 export { RadioCheckIcon } from './RadioCheckIcon';
-export { SuccessIcon } from './SuccessIcon';
 export {
   PaymentMethodIcon,
   PaymentMethodBrandIcon,
@@ -25,3 +23,8 @@ export type {
   PaymentMethodIconId,
 } from './PaymentMethodIcons';
 export type { IconSize } from './iconSize';
+export {
+  FEATHER_NATIVE_SIZES_BY_SLUG,
+  getNativeIconSizes,
+  hasNativeIconSize,
+} from './iconNativeSizes';

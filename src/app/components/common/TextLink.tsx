@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
 import { FONT_SIZE_TOKENS } from './fontSizeTokens';
-import { ChevronRightIcon } from './icons/ChevronRightIcon';
+import { ChevronRightIcon } from './icons';
 
 export const TEXT_LINK_SIZES = ['12', '14'] as const;
 

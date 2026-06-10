@@ -131,12 +131,15 @@ export default function GallerySection() {
             onMouseLeave={e => isDragging && onDragEnd(e.clientX)}
           >
             <div
-              className={animated && !isDragging ? "flex transition-transform duration-500 ease-in-out" : "flex"}
+              className={[
+                'flex w-full',
+                animated && !isDragging ? 'transition-transform duration-500 ease-in-out' : '',
+              ].join(' ')}
               style={{ transform: `translateX(calc(-${index * 100}% + ${dragOffset}%))` }}
               onTransitionEnd={handleTransitionEnd}
             >
               {extended.map((img, i) => (
-                <div key={i} className="w-full shrink-0 aspect-[16/9]">
+                <div key={i} className="aspect-[16/9] min-w-full shrink-0 basis-full">
                   <img
                     src={img.src}
                     alt={img.alt}
@@ -149,7 +152,9 @@ export default function GallerySection() {
 
             {/* Prev / Next arrows */}
             <button
-              onClick={() => !isDragging && handleNav(index - 1)}
+              type="button"
+              onMouseDown={e => e.stopPropagation()}
+              onClick={() => handleNav(index - 1)}
               className="group absolute left-0 top-0 bottom-0 w-[80px] flex items-center justify-start pl-[12px] cursor-pointer"
               aria-label="Previous"
             >
@@ -160,7 +165,9 @@ export default function GallerySection() {
               </div>
             </button>
             <button
-              onClick={() => !isDragging && handleNav(index + 1)}
+              type="button"
+              onMouseDown={e => e.stopPropagation()}
+              onClick={() => handleNav(index + 1)}
               className="group absolute right-0 top-0 bottom-0 w-[80px] flex items-center justify-end pr-[12px] cursor-pointer"
               aria-label="Next"
             >

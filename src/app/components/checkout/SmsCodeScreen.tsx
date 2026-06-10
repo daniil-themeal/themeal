@@ -4,11 +4,14 @@ import type { CSSProperties } from 'react';
 import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { PhoneInput } from '../common/PhoneInput';
+import { validateUaePhone } from './phoneValidation';
 
 const CODE_LENGTH = 4;
-const INITIAL_PHONE = '51 251 2215';
 
 type SmsCodeScreenProps = {
+  phone: string;
+  onPhoneChange: (value: string) => void;
   error?: string;
   isVerifying?: boolean;
   onChangeNumber: () => void;
@@ -67,17 +70,6 @@ const smsCodeScreenStyle: SmsCodeScreenCssVariables = {
   '--sms-code-phone-font-size': FONT_SIZE_TOKENS[20],
 };
 
-function UaeFlag() {
-  return (
-    <svg className="h-[12px] w-[20px]" fill="none" viewBox="0 0 20 12">
-      <rect width="20" height="12" fill="#00732F" />
-      <rect y="4" width="20" height="8" fill="white" />
-      <rect y="8" width="20" height="4" fill="black" />
-      <rect width="6" height="12" fill="#FF0000" />
-    </svg>
-  );
-}
-
 function getDigitInputRingColor({
   hasError,
   isActive,
@@ -99,20 +91,22 @@ function getDigitInputRingColor({
 }
 
 export function SmsCodeScreen({
+  phone,
+  onPhoneChange,
   error,
   isVerifying = false,
+  onChangeNumber,
   onContinue,
   onCodeChange,
   onCodeComplete,
 }: SmsCodeScreenProps) {
   const [mode, setMode] = useState<SmsCodeMode>('code');
-  const [phone, setPhone] = useState(INITIAL_PHONE);
+  const [phoneError, setPhoneError] = useState<string | undefined>();
   const [code, setCode] = useState<string[]>(Array(CODE_LENGTH).fill(''));
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [isAllSelected, setIsAllSelected] = useState(false);
 
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const phoneInputRef = useRef<HTMLInputElement | null>(null);
 
   const joinedCode = useMemo(() => code.join(''), [code]);
   const formattedPhone = `+971 ${phone}`;
@@ -122,10 +116,7 @@ export function SmsCodeScreen({
   useEffect(() => {
     if (mode === 'code') {
       inputRefs.current[0]?.focus();
-      return;
     }
-
-    phoneInputRef.current?.focus();
   }, [mode]);
 
   useEffect(() => {
@@ -356,18 +347,26 @@ export function SmsCodeScreen({
   const handleChangeNumberClick = () => {
     setMode('phone');
     setIsAllSelected(false);
+    setPhoneError(undefined);
   };
 
   const handlePhoneChange = (value: string) => {
-    const nextPhone = value
-      .replace(/[^\d\s]/g, '')
-      .replace(/\s+/g, ' ')
-      .trimStart();
-
-    setPhone(nextPhone);
+    onPhoneChange(value);
+    setPhoneError(undefined);
   };
 
   const handleContinueWithPhone = () => {
+    const phoneValidation = validateUaePhone(phone);
+
+    if (!phoneValidation.isValid) {
+      setPhoneError(phoneValidation.error);
+      return;
+    }
+
+    if (phoneValidation.formatted) {
+      onPhoneChange(phoneValidation.formatted);
+    }
+
     setMode('code');
     setCode(Array(CODE_LENGTH).fill(''));
     setFocusedIndex(0);
@@ -479,7 +478,7 @@ export function SmsCodeScreen({
               <Button
                 type="button"
                 variant="primary"
-                size="48"
+                size="medium"
                 fullWidth
                 disabled={isVerifying}
                 className="mt-[40px] max-w-[420px]"
@@ -490,39 +489,17 @@ export function SmsCodeScreen({
             </>
           ) : (
             <div className="mt-[32px] flex w-full max-w-[420px] flex-col gap-[16px]">
-              <div className="flex items-center gap-[12px]">
-                <div
-                  className="flex h-[48px] shrink-0 items-center overflow-hidden rounded-[8px] bg-[var(--sms-code-field-bg)] ring-1"
-                  style={{ '--tw-ring-color': COLOR_TOKENS.neutral[200] } as RingColorStyle}
-                >
-                  <div className="flex size-[48px] items-center justify-center">
-                    <UaeFlag />
-                  </div>
-
-                  <p className="pr-[16px] font-sans text-[length:var(--sms-code-phone-font-size)] font-semibold leading-[130%] text-[var(--sms-code-text)]">
-                    +971
-                  </p>
-                </div>
-
-                <div
-                  className="flex h-[48px] flex-[1_0_0] items-center rounded-[8px] bg-[var(--sms-code-field-bg)] px-[16px] ring-1 focus-within:ring-2"
-                  style={{ '--tw-ring-color': COLOR_TOKENS.neutral[200] } as RingColorStyle}
-                >
-                  <input
-                    ref={phoneInputRef}
-                    type="tel"
-                    value={phone}
-                    onChange={(event) => handlePhoneChange(event.target.value)}
-                    placeholder="Type your phone"
-                    className="w-full bg-transparent font-sans text-[length:var(--sms-code-phone-font-size)] font-semibold text-[var(--sms-code-text)] outline-none placeholder:text-[var(--sms-code-placeholder)]"
-                  />
-                </div>
-              </div>
+              <PhoneInput
+                id="sms-code-phone"
+                value={phone}
+                onChange={handlePhoneChange}
+                error={phoneError}
+              />
 
               <Button
                 type="button"
                 variant="primary"
-                size="48"
+                size="medium"
                 fullWidth
                 onClick={handleContinueWithPhone}
               >

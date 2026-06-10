@@ -4,6 +4,7 @@ import HeroSection from './components/HeroSection';
 import CompareSection from './components/CompareSection';
 import HowDoesTheMealWorkSection from './components/HowDoesTheMealWorkSection';
 import WhatYouEatEveryDaySection from './components/WhatYouEatEveryDaySection';
+import { WhatsAppMenuSection } from './components/WhatsAppMenuSection';
 import CustomersSection from './components/CustomersSection';
 import FreshSection from './components/FreshSection';
 import GallerySection from './components/GallerySection';
@@ -15,7 +16,7 @@ import Footer from './components/Footer';
 import { CheckoutPage } from './components/checkout/CheckoutPage';
 import DesignSystemDemo from './components/DesignSystemDemo';
 
-type InitialCheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment';
+type InitialCheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment' | 'success';
 type InitialDeliveryStep = 'address' | 'details';
 
 export default function App() {
@@ -27,6 +28,7 @@ export default function App() {
     useState<InitialCheckoutStep>('plan');
   const [initialDeliveryStep, setInitialDeliveryStep] =
     useState<InitialDeliveryStep>('address');
+  const [checkoutInitialPhone, setCheckoutInitialPhone] = useState<string | undefined>();
 
   const lastScrollY = useRef(0);
 
@@ -49,7 +51,15 @@ export default function App() {
   }, []);
 
   const openCheckout = () => {
+    setCheckoutInitialPhone(undefined);
     setInitialCheckoutStep('plan');
+    setInitialDeliveryStep('address');
+    setCheckoutOpen(true);
+  };
+
+  const openCheckoutFromWhatsApp = (phone: string) => {
+    setCheckoutInitialPhone(phone);
+    setInitialCheckoutStep('verification');
     setInitialDeliveryStep('address');
     setCheckoutOpen(true);
   };
@@ -62,6 +72,13 @@ export default function App() {
 
   const openPayment = () => {
     setInitialCheckoutStep('payment');
+    setInitialDeliveryStep('details');
+    setCheckoutOpen(true);
+  };
+
+  const openSuccess = () => {
+    setCheckoutInitialPhone(undefined);
+    setInitialCheckoutStep('success');
     setInitialDeliveryStep('details');
     setCheckoutOpen(true);
   };
@@ -101,7 +118,8 @@ export default function App() {
           <Header
             onDeliveryDetailsClick={openDeliveryDetails}
             onPaymentClick={openPayment}
-            onUserClick={openDesignSystem}
+            onSuccessClick={openSuccess}
+            onDesignSystemClick={openDesignSystem}
           />
         </div>
       </div>
@@ -110,6 +128,7 @@ export default function App() {
       <CompareSection />
       <HowDoesTheMealWorkSection />
       <WhatYouEatEveryDaySection onOrderClick={openCheckout} />
+      <WhatsAppMenuSection onGetMenuClick={openCheckoutFromWhatsApp} />
       <CustomersSection />
       <FreshSection />
       <GallerySection />
@@ -124,6 +143,7 @@ export default function App() {
         onClose={closeCheckout}
         initialCheckoutStep={initialCheckoutStep}
         initialDeliveryStep={initialDeliveryStep}
+        initialPhone={checkoutInitialPhone}
       />
     </div>
   );

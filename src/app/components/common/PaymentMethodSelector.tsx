@@ -109,7 +109,7 @@ export function PaymentMethodSelector({
 
       <PaymentMethodIcon
         method={method}
-        cardVariant={method === 'card' && selected && !disabled ? 'primary' : 'neutral'}
+        cardVariant={method === 'card' ? 'primary' : 'neutral'}
         className="relative z-[3]"
       />
 

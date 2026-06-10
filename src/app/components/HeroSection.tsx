@@ -20,20 +20,18 @@ function MainOffer() {
 
 function Currency() {
   return (
-    <div className="h-[9.469px] relative shrink-0 w-[24.709px]">
-      <p className="font-quicksand-bold leading-[0.9] not-italic text-[11px] sm:text-[13px] text-white tracking-[-0.22px] whitespace-nowrap">
-        AED
-      </p>
-    </div>
+    <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-bold leading-none not-italic relative shrink-0 text-[11px] sm:text-[13px] text-white tracking-[-0.22px] whitespace-nowrap">
+      AED
+    </span>
   );
 }
 
 function Price() {
   return (
     <div className="content-stretch flex gap-[2.149px] items-start relative shrink-0">
-      <p className="font-quicksand-bold leading-[0.9] not-italic relative shrink-0 text-[18px] sm:text-[25px] lg:text-[32px] text-white tracking-[-0.72px] whitespace-nowrap">
-        799
-      </p>
+      <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] font-quicksand-bold leading-none not-italic relative shrink-0 text-[18px] sm:text-[25px] lg:text-[32px] text-white tracking-[-0.72px] whitespace-nowrap">
+        39,9
+      </span>
       <Currency />
     </div>
   );
@@ -44,7 +42,7 @@ function OfferInfo() {
     <span className="content-stretch flex flex-col gap-[4.297px] items-start relative shrink-0">
       <Price />
       <p className="font-quicksand-bold leading-[0.8] not-italic relative shrink-0 text-[11px] sm:text-[13px] text-white whitespace-nowrap">
-        2 meals/day
+        per day
       </p>
     </span>
   );
@@ -158,7 +156,7 @@ function HeroBenefits() {
 
 function HeroActionBlock({ onOrderClick }: { onOrderClick?: () => void }) {
   return (
-    <div className="relative shrink-0 w-full flex items-center justify-center">
+    <div className="relative shrink-0 w-full flex items-center justify-center pointer-events-auto">
       <div className="content-stretch flex flex-col gap-[24px] md:gap-[32px] lg:gap-[44px] items-center justify-center max-w-[900px] relative size-full">
         <button
           onClick={onOrderClick}
@@ -193,7 +191,7 @@ export default function HeroSection({
         <HeroMealsSection />
       </div>
 
-      <div className="relative z-[1] flex flex-col justify-between items-center size-full gap-[clamp(16px,3vh,48px)]">
+      <div className="pointer-events-none relative z-[1] flex flex-col justify-between items-center size-full gap-[clamp(16px,3vh,48px)]">
         <div className="flex-1 flex items-center justify-center w-full">
           <div className="hero-animate-1 w-full justify-center">
             <H1Container />

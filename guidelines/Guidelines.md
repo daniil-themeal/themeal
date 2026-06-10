@@ -1,61 +1,68 @@
-**Add your own guidelines here**
-<!--
-
-System Guidelines
-
-Use this file to provide the AI with rules and guidelines you want it to follow.
-This template outlines a few examples of things you can add. You can add your own sections and format it to suit your needs
-
-TIP: More context isn't always better. It can confuse the LLM. Try and add the most important rules you need
-
 # General guidelines
 
-Any general rules you want the AI to follow.
-For example:
-
-* Only use absolute positioning when necessary. Opt for responsive and well structured layouts that use flexbox and grid by default
-* Refactor code as you go to keep code clean
-* Keep file sizes small and put helper functions and components in their own files.
-
---------------
+* Prefer responsive layouts with flexbox and grid; use absolute positioning only when necessary.
+* Keep components small; extract helpers and reusable pieces into their own files under `src/app/components/common/`.
+* Use design tokens from `src/app/components/common/` instead of hardcoded colors, spacing, and typography.
 
 # Design system guidelines
-Rules for how the AI should make generations look like your company's design system
 
-Additionally, if you select a design system to use in the prompt box, you can reference
-your design system's components, tokens, variables and components.
-For example:
+The live reference is `DesignSystemDemo` (`src/app/components/DesignSystemDemo.tsx`). Tokens are exported from `designTokens.tsx`.
 
-* Use a base font-size of 14px
-* Date formats should always be in the format “Jun 10”
-* The bottom toolbar should only ever have a maximum of 4 items
-* Never use the floating action button with the bottom toolbar
-* Chips should always come in sets of 3 or more
-* Don't use a dropdown if there are 2 or fewer options
+## Icons
 
-You can also create sub sections and add more specific details
-For example:
+Icons are **monochrome primitives** — they do not own a color.
 
+* SVG icons use `currentColor` for stroke/fill.
+* PNG-mask icons use `bg-current` with a CSS mask.
+* **Do not** hardcode `fill`/`stroke` colors inside icon components (except brand payment method PNGs).
 
-## Button
-The Button component is a fundamental interactive element in our design system, designed to trigger actions or navigate
-users through the application. It provides visual feedback and clear affordances to enhance user experience.
+### Color strategy (variant A: tokens + wrapper)
 
-### Usage
-Buttons should be used for important actions that users need to take, such as form submissions, confirming choices,
-or initiating processes. They communicate interactivity and should have clear, action-oriented labels.
+| Context | Token | Value |
+|---------|-------|-------|
+| Design System catalog | `ICON_COLOR_TOKENS.catalog` | `neutral[900]` |
+| Inline / secondary UI | `ICON_COLOR_TOKENS.inline` | `neutral[500]` |
+| Emphasis | `ICON_COLOR_TOKENS.emphasis` | `neutral[900]` |
 
-### Variants
-* Primary Button
-  * Purpose : Used for the main action in a section or page
-  * Visual Style : Bold, filled with the primary brand color
-  * Usage : One primary button per section to guide users toward the most important action
-* Secondary Button
-  * Purpose : Used for alternative or supporting actions
-  * Visual Style : Outlined with the primary color, transparent background
-  * Usage : Can appear alongside a primary button for less important actions
-* Tertiary Button
-  * Purpose : Used for the least important actions
-  * Visual Style : Text-only with no border, using primary color
-  * Usage : For actions that should be available but not emphasized
--->
+**In the catalog:** always show icons at `neutral[900]` so the glyph shape is the reference.
+
+**In product UI:** set color **only on the wrapper or container**, not on the icon component:
+
+```tsx
+// One-off usage
+<span className={iconColorClassName.inline} style={iconColorStyle.inline}>
+  <MapPinIcon size={20} />
+</span>
+
+// Pattern component (IconTextRow)
+// Container sets --icon-text-row-icon from ICON_COLOR_TOKENS.inline
+```
+
+Use `ICON_COLOR_TOKENS` / `iconColorClassName` / `iconColorStyle` from `iconColorTokens.ts`.
+
+### Feather icon library
+
+Full set (287 icons × sizes **16–48**) lives in `src/app/components/common/icons/svg/` as `{slug}-{size}.svg`.
+
+Components in `feather/` import every existing `{slug}-{size}.svg` and pick the native file via `SVG_BY_SIZE[size]`, falling back to `-20.svg` when needed.
+
+* **React components:** `src/app/components/common/icons/feather/` — one file per icon (`ActivityIcon`, `MapPinIcon`, `TruckIcon`, …), same pattern as `BoxIcon`.
+* Import: `import { SearchIcon, MapPinIcon } from './common/icons'`
+* Regenerate components after manifest/import changes: `npm run icons:generate`
+* Manifest: `iconManifest.ts` / `icon-manifest.json` (Figma grid order).
+* Re-import SVG assets: `npm run icons:import` (also regenerates `iconNativeSizes.ts` and `nativeSizes` in manifest)
+* Check native sizes: `hasNativeIconSize(slug, size)` / `getNativeIconSizes(slug)` from `iconNativeSizes.ts`
+* Checkout aliases: `ClearIcon` → `XIcon`, `SuccessIcon` → `CheckCircleIcon`, `DeliveryIcon` → `TruckIcon`
+
+### Exceptions
+
+* **Payment method icons** are brand raster assets — they keep their own colors and are not recolored via `currentColor`.
+* **PromoCodeIcon**, **RadioCheckIcon**, **DesignSystemIcon** — custom, not in Feather set.
+* A dedicated `IconSlot` / `IconTone` wrapper is **deferred**; revisit if inline wrappers become repetitive.
+
+## Neutral palette roles
+
+See `NEUTRAL_USAGE_ROLES` in `neutralUsageTokens.ts`. Icon roles are split:
+
+* `iconCatalog` — reference display in the DS catalog (`neutral[900]`)
+* `iconInline` — icons paired with body text, hints, rows (`neutral[500]`)

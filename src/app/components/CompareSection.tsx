@@ -1,12 +1,12 @@
 import svgPaths from "../../imports/svgPaths";
-import imgFaceWithSpiralEyes from "../../imports/images/f44eac7acc54c09b2973055b483234453c76f44f.avif";
-import imgMoneyWithWings from "../../imports/images/0ba3b99be375b46bbb0dfce60cd5890b2cb684f5.avif";
-import imgExplodingHead from "../../imports/images/61c68d33a27c961fcc1a0414a5f6f323583b5a35.avif";
-import imgFrenchFries from "../../imports/images/9be908c8de3339ddbb0a8fe6c16f94e1308bc244.avif";
-import imgFaceSavoringFood from "../../imports/images/4274ecd698ec08b6bb332c0ecb1e53cd0177cf23.avif";
-import img from "../../imports/images/a0900e6a3960ec4a9b013952c232a3d756dbb112.avif";
-import imgFridge from "../../imports/images/d4a6033f5e95c3e49ed9a2e732003fedd10c3dcb.avif";
-import imgPersonInLotusPosition from "../../imports/images/adbac9d5314d1222a2a24bd37de5382dea4650ec.avif";
+import imgFaceWithSpiralEyes from "../../imports/images/f44eac7acc54c09b2973055b483234453c76f44f.png";
+import imgMoneyWithWings from "../../imports/images/0ba3b99be375b46bbb0dfce60cd5890b2cb684f5.png";
+import imgExplodingHead from "../../imports/images/61c68d33a27c961fcc1a0414a5f6f323583b5a35.png";
+import imgFrenchFries from "../../imports/images/9be908c8de3339ddbb0a8fe6c16f94e1308bc244.png";
+import imgFaceSavoringFood from "../../imports/images/4274ecd698ec08b6bb332c0ecb1e53cd0177cf23.png";
+import img from "../../imports/images/a0900e6a3960ec4a9b013952c232a3d756dbb112.png";
+import imgFridge from "../../imports/images/d4a6033f5e95c3e49ed9a2e732003fedd10c3dcb.png";
+import imgPersonInLotusPosition from "../../imports/images/adbac9d5314d1222a2a24bd37de5382dea4650ec.png";
 
 function CardTitle() {
   return (

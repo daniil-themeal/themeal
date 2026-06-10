@@ -601,7 +601,7 @@ export function BottomFloatTotalBlock({
                   <Button
                     type="button"
                     variant="primary"
-                    size="40"
+                    size="small"
                     fullWidth
                     onClick={onOrder}
                   >

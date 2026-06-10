@@ -17,27 +17,6 @@ function StatusIconFrame({
   );
 }
 
-export function LocationIcon() {
-  return (
-    <svg
-      width="16"
-      height="16"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        d="M8 14C8 14 12.5 10.2 12.5 6.8C12.5 4.31 10.49 2.3 8 2.3C5.51 2.3 3.5 4.31 3.5 6.8C3.5 10.2 8 14 8 14Z"
-        stroke="#8594AC"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-      <circle cx="8" cy="6.8" r="1.45" stroke="#8594AC" strokeWidth="1.5" />
-    </svg>
-  );
-}
-
 export function DeliveryAvailableIcon() {
   return (
     <StatusIconFrame className="bg-[#abc604]">

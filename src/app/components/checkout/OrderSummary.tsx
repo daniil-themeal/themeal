@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import type { CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 
 import { Button } from '../common/Button';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
+import { PhoneInput } from '../common/PhoneInput';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import {
@@ -12,7 +13,6 @@ import {
 } from '../common/planTariffSummaryUtils';
 import { PlanTariffSummary } from '../common/PlanTariffSummary';
 import { TextLink } from '../common/TextLink';
-import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import {
   getMealsForPlan,
   testMenuDays,
@@ -121,6 +121,9 @@ export function OrderSummary({
   onPersonsChange,
   onOpenMenu,
   onOrder,
+  phone,
+  onPhoneChange,
+  phoneError,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
 }: {
   plan: Plan;
@@ -132,9 +135,11 @@ export function OrderSummary({
   onPersonsChange: (n: number) => void;
   onOpenMenu?: () => void;
   onOrder?: () => void;
+  phone: string;
+  onPhoneChange: (value: string) => void;
+  phoneError?: ReactNode;
   pricingTable?: CheckoutPricingTable;
 }) {
-  const [phone, setPhone] = useState('');
   const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
 
   const dragStartXRef = useRef(0);
@@ -229,12 +234,7 @@ export function OrderSummary({
                   {previewMeals.map((meal) => (
                     <button key={meal.id} type="button" onClick={() => { if (dragMovedRef.current) return; setSelectedMeal(meal); }} className="group flex shrink-0 cursor-pointer flex-col items-start gap-[12px] text-left">
                       <div className="h-[108px] w-[150px] overflow-hidden rounded-[8px]"><img src={meal.img} alt={meal.name} className="pointer-events-none h-full w-full object-cover transition-transform duration-200 group-hover:scale-105" /></div>
-                      <p
-                        className={[
-                          TEXT_TRIM_CLASS_NAME,
-                          'line-clamp-2 w-[150px] font-sans text-[length:var(--order-summary-body-font-size)] font-semibold leading-[140%] text-[var(--order-summary-text)] transition-colors group-hover:text-[var(--order-summary-primary)]',
-                        ].join(' ')}
-                      >
+                      <p className="line-clamp-2 w-[150px] font-sans text-[length:var(--order-summary-body-font-size)] font-semibold leading-[140%] text-[var(--order-summary-text)] transition-colors group-hover:text-[var(--order-summary-primary)]">
                         {meal.name}
                       </p>
                     </button>
@@ -264,17 +264,14 @@ export function OrderSummary({
             </div>
 
             <div className="flex flex-col gap-[12px] px-[20px] md:px-[24px]">
-              <div className="flex items-center gap-[12px]">
-                <div className="flex h-[48px] shrink-0 items-center overflow-hidden rounded-[8px] bg-[var(--order-summary-field-bg)]">
-                  <div className="flex size-[48px] items-center justify-center"><svg className="h-[12px] w-[20px]" fill="none" viewBox="0 0 20 12"><rect width="20" height="12" fill="#00732F" /><rect y="4" width="20" height="8" fill="white" /><rect y="8" width="20" height="4" fill="black" /><rect width="6" height="12" fill="#FF0000" /></svg></div>
-                  <p className="pr-[16px] font-sans text-[length:var(--order-summary-price-font-size)] font-semibold leading-[130%] text-[var(--order-summary-text)]">+971</p>
-                </div>
-                <div className="flex h-[48px] flex-[1_0_0] items-center rounded-[8px] bg-[var(--order-summary-field-bg)] px-[16px]">
-                  <input type="tel" value={phone} onChange={(event) => setPhone(event.target.value)} placeholder="Type your phone" className="w-full bg-transparent font-sans text-[length:var(--order-summary-price-font-size)] font-semibold text-[var(--order-summary-text)] outline-none placeholder:text-[var(--order-summary-subtle)]" />
-                </div>
-              </div>
+              <PhoneInput
+                id="order-summary-phone"
+                value={phone}
+                onChange={onPhoneChange}
+                error={phoneError}
+              />
 
-              <Button type="button" variant="primary" size="48" fullWidth onClick={onOrder}>Continue to Delivery</Button>
+              <Button type="button" variant="primary" size="medium" fullWidth onClick={onOrder}>Continue to Delivery</Button>
 
               <p className="text-center font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[140%] text-[var(--order-summary-muted)]">By continuing, you accept our <span className="underline">Terms</span> and <span className="underline">Privacy Policy</span></p>
             </div>

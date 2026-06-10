@@ -92,7 +92,7 @@ export function BottomFloatTotalBlock({
   days,
   duration,
   lightMealOption,
-  onOrder,
+  onScrollToSummary,
   hidden = false,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
 }: {
@@ -100,7 +100,7 @@ export function BottomFloatTotalBlock({
   days: DayOption;
   duration: Duration;
   lightMealOption: LightMealOption;
-  onOrder: () => void;
+  onScrollToSummary: () => void;
   hidden?: boolean;
   pricingTable?: CheckoutPricingTable;
 }) {
@@ -183,6 +183,14 @@ export function BottomFloatTotalBlock({
     }
 
     openMenu();
+  };
+
+  const handleScrollToSummary = () => {
+    if (menuOpen) {
+      requestMenuClose();
+    }
+
+    onScrollToSummary();
   };
 
   const scrollSelectedDayIntoView = (dayIndex: number) => {
@@ -585,7 +593,7 @@ export function BottomFloatTotalBlock({
 
                   <button
                     type="button"
-                    onClick={onOrder}
+                    onClick={handleScrollToSummary}
                     className="flex h-[40px] flex-1 cursor-pointer items-center justify-center rounded-[4px] bg-[var(--checkout-float-button-bg)]"
                   >
                     <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-[18px] text-[var(--checkout-float-button-text)]">

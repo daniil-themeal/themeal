@@ -16,14 +16,22 @@ export const BUTTON_VARIANTS = [
   'blue',
 ] as const;
 
-export const BUTTON_SIZES = ['32', '40', '48', '64', '80'] as const;
+export const BUTTON_SIZES = ['x-small', 'small', 'medium', 'large', 'x-large'] as const;
 
 export const BUTTON_SIZE_LABELS: Record<(typeof BUTTON_SIZES)[number], string> = {
-  '32': 'Small',
-  '40': 'Medium',
-  '48': 'Large',
-  '64': 'Extra large',
-  '80': 'Hero',
+  'x-small': 'X-small',
+  small: 'Small',
+  medium: 'Medium',
+  large: 'Large',
+  'x-large': 'X-large',
+};
+
+export const BUTTON_SIZE_HEIGHT_PX: Record<(typeof BUTTON_SIZES)[number], number> = {
+  'x-small': 32,
+  small: 40,
+  medium: 48,
+  large: 64,
+  'x-large': 80,
 };
 
 export type ButtonVariant = (typeof BUTTON_VARIANTS)[number];
@@ -199,35 +207,35 @@ function getButtonStyles(
 }
 
 const BUTTON_BORDER_RADIUS: Record<ButtonSize, string> = {
-  '32': BORDER_RADIUS_TOKENS[4],
-  '40': BORDER_RADIUS_TOKENS[4],
-  '48': BORDER_RADIUS_TOKENS[8],
-  '64': BORDER_RADIUS_TOKENS[8],
-  '80': BORDER_RADIUS_TOKENS[12],
+  'x-small': BORDER_RADIUS_TOKENS[8],
+  small: BORDER_RADIUS_TOKENS[8],
+  medium: BORDER_RADIUS_TOKENS[12],
+  large: BORDER_RADIUS_TOKENS[16],
+  'x-large': BORDER_RADIUS_TOKENS[20],
 };
 
 const BUTTON_SIZE_CLASS_NAMES: Record<ButtonSize, string> = {
-  '32': 'h-[32px] px-[12px] gap-[6px]',
-  '40': 'h-[40px] px-[16px] gap-[8px]',
-  '48': 'h-[48px] px-[20px] gap-[8px]',
-  '64': 'h-[64px] px-[28px] gap-[10px]',
-  '80': 'h-[80px] px-[32px] gap-[12px]',
+  'x-small': 'h-[32px] px-[12px] gap-[6px]',
+  small: 'h-[40px] px-[16px] gap-[8px]',
+  medium: 'h-[48px] px-[20px] gap-[8px]',
+  large: 'h-[64px] px-[28px] gap-[10px]',
+  'x-large': 'h-[80px] px-[32px] gap-[12px]',
 };
 
 const BUTTON_FONT_SIZE_TOKENS: Record<ButtonSize, string> = {
-  '32': FONT_SIZE_TOKENS[12],
-  '40': FONT_SIZE_TOKENS[14],
-  '48': FONT_SIZE_TOKENS[16],
-  '64': FONT_SIZE_TOKENS[20],
-  '80': FONT_SIZE_TOKENS[25],
+  'x-small': FONT_SIZE_TOKENS[12],
+  small: FONT_SIZE_TOKENS[14],
+  medium: FONT_SIZE_TOKENS[16],
+  large: FONT_SIZE_TOKENS[20],
+  'x-large': FONT_SIZE_TOKENS[25],
 };
 
 const ICON_SIZE_CLASS_NAMES: Record<ButtonSize, string> = {
-  '32': '[&>svg]:size-[16px] [&>img]:size-[16px]',
-  '40': '[&>svg]:size-[16px] [&>img]:size-[16px]',
-  '48': '[&>svg]:size-[24px] [&>img]:size-[24px]',
-  '64': '[&>svg]:size-[24px] [&>img]:size-[24px]',
-  '80': '[&>svg]:size-[32px] [&>img]:size-[32px]',
+  'x-small': '[&>svg]:size-[16px] [&>img]:size-[16px]',
+  small: '[&>svg]:size-[16px] [&>img]:size-[16px]',
+  medium: '[&>svg]:size-[24px] [&>img]:size-[24px]',
+  large: '[&>svg]:size-[24px] [&>img]:size-[24px]',
+  'x-large': '[&>svg]:size-[32px] [&>img]:size-[32px]',
 };
 
 const baseClassName = [
@@ -255,7 +263,7 @@ export function Button({
   children,
   variant = 'primary',
   outline = false,
-  size = '48',
+  size = 'medium',
   fullWidth = false,
   leftIcon,
   rightIcon,

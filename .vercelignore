@@ -1,0 +1,7 @@
+Landing_20.05_TEST.rar
+*.rar
+*.rar.bak
+*.log
+*.err
+node_modules
+.git

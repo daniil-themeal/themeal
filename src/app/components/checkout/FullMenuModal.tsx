@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 
 import { getMealsForPlan, testMenuDays, type LightMealOption } from '../../data/testMeals';
@@ -6,17 +6,18 @@ import type { Plan } from '../../data/checkoutPricing';
 import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { ModalShell } from '../common/ModalShell';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
+import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { MealDetailModal } from './MealDetailModal';
-import { CloseIcon } from '../ui/icons/CloseIcon';
+import { XIcon } from '../common/icons';
+import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 const MENU_DAYS_COUNT = testMenuDays.length;
 const MOUSE_DRAG_CLICK_THRESHOLD = 6;
-const EXIT_ANIMATION_FALLBACK_MS = 260;
-
 type SlideDirection = 'left' | 'right';
 
 type FullMenuDayPillCssVariables = CSSProperties & {
@@ -111,7 +112,6 @@ export function FullMenuModal({
   const [isDraggingDays, setIsDraggingDays] = useState(false);
   const [isDraggingMeals, setIsDraggingMeals] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
-  const [isClosing, setIsClosing] = useState(false);
 
   const dayRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const daysScrollRef = useRef<HTMLDivElement | null>(null);
@@ -125,9 +125,6 @@ export function FullMenuModal({
   const mealDragStartScrollLeftRef = useRef(0);
   const suppressMealClickRef = useRef(false);
 
-  const isClosingRef = useRef(false);
-  const fallbackTimerRef = useRef<number | null>(null);
-
   const canGoPrev = selectedDayIndex > 0;
   const canGoNext = selectedDayIndex < MENU_DAYS_COUNT - 1;
 
@@ -137,29 +134,6 @@ export function FullMenuModal({
     plan,
     lightMealOption,
   );
-
-  const clearFallbackTimer = useCallback(() => {
-    if (fallbackTimerRef.current !== null) {
-      window.clearTimeout(fallbackTimerRef.current);
-      fallbackTimerRef.current = null;
-    }
-  }, []);
-
-  const finishClose = useCallback(() => {
-    clearFallbackTimer();
-    onClose();
-  }, [clearFallbackTimer, onClose]);
-
-  const requestClose = useCallback(() => {
-    if (isClosingRef.current) return;
-
-    isClosingRef.current = true;
-    setIsClosing(true);
-
-    fallbackTimerRef.current = window.setTimeout(() => {
-      finishClose();
-    }, EXIT_ANIMATION_FALLBACK_MS);
-  }, [finishClose]);
 
   const scrollSelectedDayIntoView = (dayIndex: number) => {
     const selectedButton = dayRefs.current[dayIndex];
@@ -290,33 +264,8 @@ export function FullMenuModal({
   useEffect(() => {
     if (!isOpen) return;
 
-    isClosingRef.current = false;
-    setIsClosing(false);
     setSelectedMeal(null);
-
-    return () => {
-      clearFallbackTimer();
-    };
-  }, [clearFallbackTimer, isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const onKey = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        if (selectedMeal) {
-          setSelectedMeal(null);
-          return;
-        }
-
-        requestClose();
-      }
-    };
-
-    document.addEventListener('keydown', onKey);
-
-    return () => document.removeEventListener('keydown', onKey);
-  }, [isOpen, requestClose, selectedMeal]);
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -332,64 +281,61 @@ export function FullMenuModal({
     });
   }, [isOpen, selectedDayIndex]);
 
-  if (!isOpen) return null;
-
   return (
-    <div
-      className={`fixed inset-0 z-[300] flex items-end justify-center md:items-center ${
-        isClosing ? 'pointer-events-none' : ''
-      }`}
-      style={fullMenuModalStyle}
-    >
-      <style>
-        {`
-          @keyframes mealsSlideFromRight {
-            from {
-              opacity: 0;
-              transform: translateX(36px);
-            }
-            to {
-              opacity: 1;
-              transform: translateX(0);
-            }
+    <>
+      <ModalShell
+        isOpen={isOpen}
+        onClose={onClose}
+        variant="bottom-sheet"
+        zIndex={Z_INDEX_TOKENS.overlay}
+        overlayClassName={
+          selectedMeal ? 'pointer-events-none opacity-0 transition-opacity duration-150' : 'transition-opacity duration-150'
+        }
+        panelClassName={[
+          'relative flex max-h-[88svh] w-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-2xl transition-opacity duration-150',
+          'md:mx-[24px] md:max-h-[85vh] md:max-w-[780px] md:rounded-[20px]',
+          selectedMeal ? 'invisible opacity-0' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        onEscape={() => {
+          if (selectedMeal) {
+            setSelectedMeal(null);
+            return true;
           }
 
-          @keyframes mealsSlideFromLeft {
-            from {
-              opacity: 0;
-              transform: translateX(-36px);
-            }
-            to {
-              opacity: 1;
-              transform: translateX(0);
-            }
-          }
-        `}
-      </style>
-
-      <div
-        className={`absolute inset-0 bg-black/40 transition-opacity duration-150 ${
-          selectedMeal ? 'pointer-events-none opacity-0' : ''
-        }`}
-        onClick={requestClose}
-      />
-
-      <div
-        className={`${
-          isClosing ? 'modal-exit-responsive' : 'modal-enter-responsive'
-        } relative flex max-h-[88svh] w-full flex-col overflow-hidden rounded-t-[20px] bg-[var(--full-menu-bg)] shadow-2xl transition-opacity duration-150 md:mx-[24px] md:max-h-[85vh] md:max-w-[780px] md:rounded-[20px] ${
-          selectedMeal ? 'invisible opacity-0' : ''
-        }`}
-        onClick={(event) => event.stopPropagation()}
-        onAnimationEnd={(event) => {
-          if (event.currentTarget !== event.target) return;
-
-          if (isClosingRef.current) {
-            finishClose();
-          }
+          return false;
         }}
       >
-        <div className="flex h-[56px] shrink-0 items-center justify-between border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
+        {(requestClose) => (
+          <div style={fullMenuModalStyle} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            <style>
+              {`
+                @keyframes mealsSlideFromRight {
+                  from {
+                    opacity: 0;
+                    transform: translateX(36px);
+                  }
+                  to {
+                    opacity: 1;
+                    transform: translateX(0);
+                  }
+                }
+
+                @keyframes mealsSlideFromLeft {
+                  from {
+                    opacity: 0;
+                    transform: translateX(-36px);
+                  }
+                  to {
+                    opacity: 1;
+                    transform: translateX(0);
+                  }
+                }
+              `}
+            </style>
+
+            <div className="flex h-[56px] shrink-0 items-center justify-between border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
           <p className="pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px] md:text-[length:var(--full-menu-heading-font-size-md)]">
             Full menu
           </p>
@@ -401,11 +347,12 @@ export function FullMenuModal({
             aria-label="Close"
           >
             <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--full-menu-close-bg)] transition-colors duration-150 group-hover:bg-[var(--full-menu-close-bg-hover)]">
-              <CloseIcon
-                size={12}
-                color={COLOR_TOKENS.neutral[900]}
-                strokeWidth={1.8}
-              />
+              <span
+                className={iconColorClassName.emphasis}
+                style={iconColorStyle.emphasis}
+              >
+                <XIcon size={16} />
+              </span>
             </span>
           </button>
         </div>
@@ -441,7 +388,7 @@ export function FullMenuModal({
                 isDraggingDays ? 'cursor-grabbing' : 'cursor-default'
               }`}
             >
-              <div className="relative flex w-[200%]">
+              <div className="relative flex w-[200%] gap-[8px]">
                 {menuDays.map((d) => {
                   const active = d.absoluteDayIndex === selectedDayIndex;
 
@@ -454,7 +401,7 @@ export function FullMenuModal({
                       type="button"
                       onClick={() => handleDayClick(d.absoluteDayIndex)}
                       className={[
-                        'relative flex flex-[0_0_calc(100%/14)] cursor-pointer flex-col items-center justify-center gap-[6px]',
+                        'relative flex flex-[0_0_calc((100%-104px)/14)] cursor-pointer flex-col items-center justify-center gap-[6px]',
                         'rounded-[8px] border border-[length:1px] border-[var(--full-menu-day-border)] bg-[var(--full-menu-day-bg)] py-[8px]',
                         'transition-colors',
                         'hover:enabled:border-[var(--full-menu-day-border-hover)] hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
@@ -529,7 +476,7 @@ export function FullMenuModal({
                   key={meal.id}
                   type="button"
                   onClick={() => handleMealClick(meal)}
-                  className="group flex shrink-0 cursor-pointer flex-col gap-[8px] text-left"
+                  className="group flex shrink-0 cursor-pointer flex-col gap-[12px] text-left"
                 >
                   <div className="relative h-[108px] w-[150px] overflow-hidden rounded-[8px] md:h-[116px] md:w-[160px]">
                     <img
@@ -540,7 +487,7 @@ export function FullMenuModal({
                     />
                   </div>
 
-                  <div className="flex w-[150px] flex-col gap-[4px] md:w-[160px]">
+                  <div className="flex w-[150px] flex-col gap-[12px] md:w-[160px]">
                     <p
                       className={[
                         TEXT_TRIM_CLASS_NAME,
@@ -576,10 +523,12 @@ export function FullMenuModal({
               }}
             />
           </div>
-        </div>
-      </div>
+            </div>
+          </div>
+        )}
+      </ModalShell>
 
       <MealDetailModal meal={selectedMeal} onClose={() => setSelectedMeal(null)} />
-    </div>
+    </>
   );
 }
