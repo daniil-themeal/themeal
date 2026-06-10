@@ -54,21 +54,23 @@ export function PaymentFailedScreen({
           </div>
         </div>
 
-        <div className="mx-auto flex w-full max-w-[688px] flex-col gap-[12px] sm:flex-row">
+        <div className="mx-auto inline-grid grid-cols-2 gap-[12px]">
           <Button
             type="button"
             variant="primary"
             size="medium"
             fullWidth
+            className="whitespace-nowrap"
             onClick={onRepeatPayment}
           >
             Repeat payment
           </Button>
           <Button
             type="button"
-            variant="secondary"
+            variant="neutral"
             size="medium"
             fullWidth
+            className="whitespace-nowrap"
             onClick={onChangePaymentMethod}
           >
             Change payment method
