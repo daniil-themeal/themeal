@@ -16,6 +16,8 @@ import { DeliveryDetailsScreen } from './DeliveryDetailsScreen';
 import { createInitialDeliveryDetails } from './deliveryDetailsTypes';
 import type { DeliveryDetailsData } from './deliveryDetailsTypes';
 import { PaymentScreen } from './PaymentScreen';
+import { PaymentFailedScreen } from './PaymentFailedScreen';
+import type { PaymentResultTab } from './PaymentResultHeader';
 import { PaymentSuccessScreen } from './PaymentSuccessScreen';
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
@@ -23,7 +25,7 @@ import type { TestAddress } from '../../data/testAddresses';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { formatUaePhoneInput, validateUaePhone } from './phoneValidation';
 
-type CheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment' | 'success';
+type CheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment' | 'success' | 'failed';
 type DeliveryStep = 'address' | 'details';
 
 type CheckoutPageProps = {
@@ -211,6 +213,16 @@ export function CheckoutPage({
     onClose();
   };
 
+  const handleResultTabChange = (tab: PaymentResultTab) => {
+    setCheckoutStep(tab);
+    scrollBodyToTop();
+  };
+
+  const handleReturnToPayment = () => {
+    setCheckoutStep('payment');
+    scrollBodyToTop();
+  };
+
   const handleDeliveryDetailsChange = (patch: Partial<DeliveryDetailsData>) => {
     setDeliveryDetails((current) => ({ ...current, ...patch }));
   };
@@ -287,7 +299,7 @@ export function CheckoutPage({
 
   return (
     <div className="fixed inset-0 z-[200] flex flex-col" style={checkoutPageStyle}>
-      {checkoutStep !== 'success' ? (
+      {checkoutStep !== 'success' && checkoutStep !== 'failed' ? (
         <CheckoutHeader
           step={headerStep}
           onBack={handleBack}
@@ -414,14 +426,24 @@ export function CheckoutPage({
             onPay={handlePay}
           />
         </div>
-      ) : (
+      ) : checkoutStep === 'success' ? (
         <div ref={bodyRef} className={checkoutStepScrollClassName}>
           <PaymentSuccessScreen
             days={days}
             duration={duration}
             startDate={deliveryDetails.selectedDate}
             onClose={onClose}
+            onTabChange={handleResultTabChange}
             onGoToMain={handleGoToMain}
+          />
+        </div>
+      ) : (
+        <div ref={bodyRef} className={checkoutStepScrollClassName}>
+          <PaymentFailedScreen
+            onClose={onClose}
+            onTabChange={handleResultTabChange}
+            onRepeatPayment={handleReturnToPayment}
+            onChangePaymentMethod={handleReturnToPayment}
           />
         </div>
       )}

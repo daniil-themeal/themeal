@@ -34,6 +34,36 @@ function SupportButton({ onClick }: { onClick: () => void }) {
   );
 }
 
+function FailedPaymentButton({ onClick }: { onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="group relative flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
+      data-name="FailedPaymentButton"
+      aria-label="Open payment failed"
+    >
+      <svg className="block size-[24px]" fill="none" viewBox="0 0 24 24" aria-hidden>
+        <circle
+          cx="12"
+          cy="12"
+          r="9"
+          stroke={COLOR_TOKENS.base.white}
+          strokeWidth="1.75"
+          className="transition-colors duration-200 group-hover:stroke-[var(--header-icon-hover)]"
+        />
+        <path
+          d="M9 9L15 15M15 9L9 15"
+          stroke={COLOR_TOKENS.base.white}
+          strokeWidth="1.75"
+          strokeLinecap="round"
+          className="transition-colors duration-200 group-hover:stroke-[var(--header-icon-hover)]"
+        />
+      </svg>
+    </button>
+  );
+}
+
 function DeliveryDetailsButton({ onClick }: { onClick: () => void }) {
   return (
     <button
@@ -137,11 +167,13 @@ function ActionButtons({
   onDeliveryDetailsClick,
   onPaymentClick,
   onSuccessClick,
+  onFailedClick,
   onDesignSystemClick,
 }: {
   onDeliveryDetailsClick: () => void;
   onPaymentClick: () => void;
   onSuccessClick: () => void;
+  onFailedClick: () => void;
   onDesignSystemClick: () => void;
 }) {
   return (
@@ -151,6 +183,7 @@ function ActionButtons({
       <PaymentButton onClick={onPaymentClick} />
       <ScrollToFooterButton />
       <SupportButton onClick={onSuccessClick} />
+      <FailedPaymentButton onClick={onFailedClick} />
       <UserButton />
     </div>
   );
@@ -160,11 +193,13 @@ export default function Header({
   onDeliveryDetailsClick,
   onPaymentClick,
   onSuccessClick,
+  onFailedClick,
   onDesignSystemClick,
 }: {
   onDeliveryDetailsClick: () => void;
   onPaymentClick: () => void;
   onSuccessClick: () => void;
+  onFailedClick: () => void;
   onDesignSystemClick: () => void;
 }) {
   const headerStyle: HeaderCssVariables = {
@@ -205,6 +240,7 @@ export default function Header({
         onDeliveryDetailsClick={onDeliveryDetailsClick}
         onPaymentClick={onPaymentClick}
         onSuccessClick={onSuccessClick}
+        onFailedClick={onFailedClick}
         onDesignSystemClick={onDesignSystemClick}
       />
     </div>

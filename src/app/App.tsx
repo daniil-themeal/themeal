@@ -16,7 +16,13 @@ import Footer from './components/Footer';
 import { CheckoutPage } from './components/checkout/CheckoutPage';
 import DesignSystemDemo from './components/DesignSystemDemo';
 
-type InitialCheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment' | 'success';
+type InitialCheckoutStep =
+  | 'plan'
+  | 'verification'
+  | 'delivery'
+  | 'payment'
+  | 'success'
+  | 'failed';
 type InitialDeliveryStep = 'address' | 'details';
 
 export default function App() {
@@ -83,6 +89,13 @@ export default function App() {
     setCheckoutOpen(true);
   };
 
+  const openFailed = () => {
+    setCheckoutInitialPhone(undefined);
+    setInitialCheckoutStep('failed');
+    setInitialDeliveryStep('details');
+    setCheckoutOpen(true);
+  };
+
   const closeCheckout = () => {
     setCheckoutOpen(false);
   };
@@ -119,6 +132,7 @@ export default function App() {
             onDeliveryDetailsClick={openDeliveryDetails}
             onPaymentClick={openPayment}
             onSuccessClick={openSuccess}
+            onFailedClick={openFailed}
             onDesignSystemClick={openDesignSystem}
           />
         </div>

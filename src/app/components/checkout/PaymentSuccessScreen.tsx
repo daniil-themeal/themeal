@@ -1,17 +1,15 @@
-import type { CSSProperties } from 'react';
-
 import type { DayOption, Duration } from '../../data/checkoutPricing';
 import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { Divider } from '../common/Divider';
-import { XIcon } from '../common/icons';
-import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 
 import {
   CHECKOUT_STEP_PAGE_LAYOUT,
   CHECKOUT_STEP_PAGE_VARS,
 } from './checkoutStepPageLayoutTokens';
+import type { PaymentResultTab } from './PaymentResultHeader';
+import { PaymentResultHeader } from './PaymentResultHeader';
 import { MealCalendarPreview } from './MealCalendar';
 import {
   SuccessContactSection,
@@ -27,6 +25,7 @@ type PaymentSuccessScreenProps = {
   duration: Duration;
   startDate: Date;
   onClose: () => void;
+  onTabChange: (tab: PaymentResultTab) => void;
   onGoToMain: () => void;
 };
 
@@ -79,38 +78,6 @@ const SUCCESS_RULES: SuccessRule[] = [
       'Please return the box with iceblocks by leaving it at your door before next delivery — the courier will pick it up',
   },
 ];
-
-function PaymentSuccessHeader({ onClose }: { onClose: () => void }) {
-  return (
-    <div
-      className="h-[56px] shrink-0 border-b bg-white"
-      style={{ borderColor: COLOR_TOKENS.neutral[100] }}
-    >
-      <div className="flex h-full w-full items-stretch justify-end">
-        <button
-          type="button"
-          onClick={onClose}
-          className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
-          aria-label="Close checkout"
-        >
-          <span
-            className="flex size-[36px] items-center justify-center rounded-full bg-[var(--checkout-header-close-bg)] transition-colors duration-150 group-hover:bg-[var(--checkout-header-close-bg-hover)]"
-            style={
-              {
-                '--checkout-header-close-bg': COLOR_TOKENS.neutral[50],
-                '--checkout-header-close-bg-hover': COLOR_TOKENS.neutral[75],
-              } as CSSProperties
-            }
-          >
-            <span className={iconColorClassName.emphasis} style={iconColorStyle.emphasis}>
-              <XIcon size={16} />
-            </span>
-          </span>
-        </button>
-      </div>
-    </div>
-  );
-}
 
 function PaymentSuccessIcon() {
   return (
@@ -168,6 +135,7 @@ export function PaymentSuccessScreen({
   duration,
   startDate,
   onClose,
+  onTabChange,
   onGoToMain,
 }: PaymentSuccessScreenProps) {
   return (
@@ -175,7 +143,7 @@ export function PaymentSuccessScreen({
       className={CHECKOUT_STEP_PAGE_LAYOUT.page}
       style={{ ...CHECKOUT_STEP_PAGE_VARS, ...successContactSectionStyle }}
     >
-      <PaymentSuccessHeader onClose={onClose} />
+      <PaymentResultHeader activeTab="success" onTabChange={onTabChange} onClose={onClose} />
 
       <div className={CHECKOUT_STEP_PAGE_LAYOUT.container}>
         <div className={CHECKOUT_STEP_PAGE_LAYOUT.header}>
