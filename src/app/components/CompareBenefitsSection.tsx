@@ -279,7 +279,7 @@ const eatOutItems: CompareItemData[] = [
 ];
 
 const theMealItems: CompareItemData[] = [
-  { Icon: IconMealLogo, label: "Profitable", value: "AED 37.5D / day" },
+  { Icon: IconMealLogo, label: "Profitable", value: "AED 39.9 / day" },
   { Icon: IconScooter, label: "Comfortably", value: "Delivered where and when you need it" },
   { Icon: IconFruit, label: "Useful", value: "Quality natural food" },
 ];

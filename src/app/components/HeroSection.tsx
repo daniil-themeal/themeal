@@ -39,7 +39,10 @@ function Price() {
 
 function OfferInfo() {
   return (
-    <span className="content-stretch flex flex-col gap-[4.297px] items-start relative shrink-0">
+    <span className="content-stretch flex flex-col gap-[4.297px] items-start relative shrink-0 text-left">
+      <p className="font-quicksand-bold leading-[0.8] not-italic relative shrink-0 text-[11px] sm:text-[13px] text-white whitespace-nowrap">
+        from
+      </p>
       <Price />
       <p className="font-quicksand-bold leading-[0.8] not-italic relative shrink-0 text-[11px] sm:text-[13px] text-white whitespace-nowrap">
         per day
@@ -148,7 +151,7 @@ function HeroBenefits() {
       <p className="flex-[1_0_0] min-w-px relative">
         From
         <br aria-hidden="true" />
-        37.5&nbsp;AED/day
+        39.9&nbsp;AED/day
       </p>
     </div>
   );

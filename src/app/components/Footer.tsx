@@ -89,7 +89,7 @@ function PersonalProfile() {
 
 export default function Footer() {
   return (
-    <div id="footer" className="flex relative shrink-0 w-full items-center justify-center section-spacing-x bg-[#000] bg-[#282e37]">
+    <div id="footer" className="flex relative shrink-0 w-full items-center justify-center section-spacing-x bg-[#1c1e22]">
       <div className="flex flex-col  items-center size-full maxWidth">
         
         <div className="content-stretch flex flex-col md:flex-row gap-[32px] md:gap-[64px] lg:gap-[80px] items-center justify-center md:justify-between md:items-start relative size-full px-[0px] py-[24px]">

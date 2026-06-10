@@ -346,7 +346,7 @@ export default function WhatYouEatEveryDaySection({
               </span>
 
               <span className="[text-box-edge:cap_alphabetic] [text-box-trim:trim-both] relative shrink-0 text-[14px] opacity-80 lg:text-[16px] w-full">
-                from 37.5 AED/day
+                from 39.9 AED/day
               </span>
             </button>
           </div>
