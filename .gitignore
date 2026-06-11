@@ -8,3 +8,4 @@ dist/
 *.tar.gz
 
 preview-*.html
+.vercel
