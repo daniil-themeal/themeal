@@ -42,7 +42,6 @@ export function OrderFab({ t, onOrderClick, hidden }: OrderFabProps) {
     >
       <Icon.utensils size={24} />
       Order
-      <Icon.arrow size={24} className="flip" />
     </button>
   );
 }

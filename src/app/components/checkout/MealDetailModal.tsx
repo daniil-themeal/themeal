@@ -123,7 +123,7 @@ export function MealDetailModal({
                 </p>
               </div>
 
-              <div className="flex w-full flex-col gap-[8px]">
+              <div className="flex w-full flex-col gap-[4px]">
                 <p className="font-sans text-[length:var(--meal-detail-body-font-size)] font-bold leading-[150%] text-[var(--meal-detail-text)]">
                   Allergens
                 </p>

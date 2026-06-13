@@ -135,23 +135,6 @@ function Menu({ t, onOrder }) {
           @media (max-width: 900px) {
             .menu-head-title { white-space:normal; }
           }
-          .menu-day-tab {
-            flex:0 0 auto;
-            padding:10px 20px;
-            border-radius:var(--r-pill);
-            font-weight:600;
-            font-size:var(--fs-16);
-            color:var(--slate);
-            background:transparent;
-            border:1.5px solid transparent;
-            transition:background .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease);
-          }
-          .menu-day-tab.is-active {
-            font-weight:700;
-            color:var(--ink);
-            background:var(--brand-soft);
-            border-color:var(--brand);
-          }
           .menucard-shell {
             flex:0 0 auto;
             align-self:stretch;
@@ -212,7 +195,7 @@ function Menu({ t, onOrder }) {
             display:flex;
             align-items:flex-start;
             gap:8px;
-            margin:28px 0 0;
+            margin:0;
             font-size:var(--fs-14);
             text-align:left;
           }

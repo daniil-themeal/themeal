@@ -72,7 +72,7 @@ function FAQ({ t }) {
   const group = t.faq.groups[tab];
   const faqTabsScroll = useHorizontalScroll();
   return (
-    createElement('section', { className:'section section--cream2 faq-section', id:'qa' },
+    createElement('section', { className:'section section--cream faq-section', id:'qa' },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'faq-head', style:{ maxWidth:880, marginInline:'auto', width:'100%' } },
           createElement('div', { className:'center reveal', style:{ marginBottom:36 } },
@@ -90,7 +90,7 @@ function FAQ({ t }) {
         t.faq.tabs.map((tb,i)=>createElement('button', {
           key:i,
           type:'button',
-          className:`faq-tab${i===tab ? ' is-active' : ''}`,
+          className:`menu-day-tab${i===tab ? ' is-active' : ''}`,
           onClick: faqTabsScroll.guardClick(() => { setTab(i); setOpen(0); }),
         }, tb))
       ),

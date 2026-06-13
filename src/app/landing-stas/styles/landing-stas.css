@@ -447,12 +447,13 @@ body {
 /* ---- menu: horizontal scroll strips (day tabs + dish cards) ---- */
 .menu-section { overflow:visible; }
 .menu-grid-wrap {
-  padding-bottom:8px;
+  padding-bottom:16px;
   width:100%;
   max-width:var(--maxw);
   margin-inline:auto;
   padding-inline:var(--gutter);
   box-sizing:border-box;
+  overflow:visible;
 }
 .menu-grid-shell {
   width:100%;
@@ -469,6 +470,24 @@ body {
   padding-bottom:4px;
   margin-bottom:28px;
 }
+.menu-day-tab {
+  flex:0 0 auto;
+  padding:10px 20px;
+  border-radius:var(--r-pill);
+  font-weight:600;
+  font-size:var(--fs-16);
+  color:var(--slate);
+  background:transparent;
+  border:1.5px solid transparent;
+  transition:background .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease);
+  cursor:pointer;
+}
+.menu-day-tab.is-active {
+  font-weight:700;
+  color:var(--ink);
+  background:var(--brand-soft);
+  border-color:var(--brand);
+}
 .menu-section .menu-grid.menu-grid--cards {
   display:grid;
   grid-template-columns:repeat(12, minmax(0, 1fr));
@@ -477,7 +496,7 @@ body {
   width:100%;
   min-width:0;
   overflow:visible;
-  padding:8px 0 24px;
+  padding:12px 4px 32px;
 }
 .menu-section .menu-grid--cards > .menucard-shell {
   grid-column:span 3;
@@ -492,6 +511,14 @@ body {
   -webkit-user-drag:none;
   user-select:none;
   pointer-events:none;
+}
+@media (min-width: 900px) {
+  .menu-section .menu-grid-shell.h-scroll {
+    overflow:visible;
+    touch-action:auto;
+    user-select:auto;
+    cursor:default;
+  }
 }
 @media (max-width: 899px){
   .menu-grid-wrap {
@@ -519,7 +546,7 @@ body {
     gap:var(--grid-gap);
     width:max-content;
     min-width:100%;
-    padding:8px 0 16px;
+    padding:12px 4px 24px;
   }
   .menu-section .menu-grid--cards > .menucard-shell {
     flex:0 0 min(280px, calc(100cqw - var(--grid-gap)));
@@ -557,13 +584,14 @@ body {
 /* ---- delivery: bender-style map background ---- */
 .landing-stas #delivery.delivery-section {
   background: var(--brand-soft);
+  min-height: clamp(420px, 42vw, 560px);
 }
 .landing-stas #delivery .delivery-bg {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
   opacity: 0.6;
   pointer-events: none;
@@ -697,7 +725,7 @@ body {
   width:100%;
   max-width:100%;
   min-width:0;
-  gap:10px;
+  gap:8px;
   padding-bottom:4px;
   margin-bottom:28px;
   cursor:grab;
@@ -710,21 +738,4 @@ body {
   .faq-section .faq-tabs.gutter-x--center::before {
     display:none;
   }
-}
-.faq-tab {
-  flex:0 0 auto;
-  padding:11px 20px;
-  border-radius:var(--r-pill);
-  font-weight:700;
-  font-size:var(--fs-16);
-  transition:background .18s var(--ease), color .18s var(--ease), box-shadow .18s var(--ease);
-  background:#fff;
-  color:var(--slate);
-  box-shadow:var(--shadow-sm);
-  border:none;
-  cursor:pointer;
-}
-.faq-tab.is-active {
-  background:var(--plum-700);
-  color:#fff;
 }
