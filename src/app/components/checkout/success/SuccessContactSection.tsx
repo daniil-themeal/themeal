@@ -136,7 +136,11 @@ function SocialIconButton({
 
 const socialIconColor = COLOR_TOKENS.neutral[200];
 
-export function SuccessContactSection() {
+type SuccessContactSectionProps = {
+  showFollowUs?: boolean;
+};
+
+export function SuccessContactSection({ showFollowUs = true }: SuccessContactSectionProps) {
   return (
     <>
       <section className="flex w-full flex-col items-center gap-[20px] px-[32px]">
@@ -165,37 +169,39 @@ export function SuccessContactSection() {
         </div>
       </section>
 
-      <section className="flex w-full flex-col items-center gap-[16px]">
-        <p
-          className={[
-            TEXT_TRIM_CLASS_NAME,
-            'w-full text-center font-sans text-[20px] font-normal leading-[130%] tracking-[-0.4px]',
-          ].join(' ')}
-          style={{ color: COLOR_TOKENS.neutral[900] }}
-        >
-          Follow us
-        </p>
+      {showFollowUs ? (
+        <section className="flex w-full flex-col items-center gap-[16px]">
+          <p
+            className={[
+              TEXT_TRIM_CLASS_NAME,
+              'w-full text-center font-sans text-[20px] font-normal leading-[130%] tracking-[-0.4px]',
+            ].join(' ')}
+            style={{ color: COLOR_TOKENS.neutral[900] }}
+          >
+            Follow us
+          </p>
 
-        <div className="flex w-full items-center justify-center gap-[16px] px-[24px]">
-          <SocialIconButton label="Facebook">
-            <FacebookIcon size={40} className="text-[var(--success-social-icon)]" />
-          </SocialIconButton>
+          <div className="flex w-full items-center justify-center gap-[16px] px-[24px]">
+            <SocialIconButton label="Facebook">
+              <FacebookIcon size={40} className="text-[var(--success-social-icon)]" />
+            </SocialIconButton>
 
-          <SocialIconButton label="TikTok">
-            <div className="size-[40px] text-[var(--success-social-icon)]">
-              <TikTokIcon />
-            </div>
-          </SocialIconButton>
+            <SocialIconButton label="TikTok">
+              <div className="size-[40px] text-[var(--success-social-icon)]">
+                <TikTokIcon />
+              </div>
+            </SocialIconButton>
 
-          <SocialIconButton label="Instagram">
-            <InstagramIcon size={40} className="text-[var(--success-social-icon)]" />
-          </SocialIconButton>
+            <SocialIconButton label="Instagram">
+              <InstagramIcon size={40} className="text-[var(--success-social-icon)]" />
+            </SocialIconButton>
 
-          <SocialIconButton label="YouTube">
-            <YoutubeIcon size={40} className="text-[var(--success-social-icon)]" />
-          </SocialIconButton>
-        </div>
-      </section>
+            <SocialIconButton label="YouTube">
+              <YoutubeIcon size={40} className="text-[var(--success-social-icon)]" />
+            </SocialIconButton>
+          </div>
+        </section>
+      ) : null}
     </>
   );
 }

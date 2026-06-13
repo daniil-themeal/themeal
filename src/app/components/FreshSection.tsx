@@ -1,7 +1,4 @@
-import image_ProductionGallery from "../../imports/images/ProductionGallery.png";
-import image_Production_gallery_1 from "../../imports/images/Production_gallery_1.png";
 import svgPaths from "../../imports/svgPaths";
-import imgProductionGallery from "../../imports/images/bacda7a51227c52c2f4d131d769ab977f088b906.png";
 
 function H2TitleContaner() {
   return (

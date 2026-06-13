@@ -1,21 +1,21 @@
 import { useState, useEffect } from "react";
 
 import { COLOR_TOKENS } from "./common/colorTokens";
-import img0 from "../../imports/Meals-1/5e1602b3d213f8c0c5dbed5bfb50317ae7f27ab8.png";
-import img1 from "../../imports/Meals-1/56780a365aa45daafd050fc12b3a8115421d6655.png";
-import img2 from "../../imports/Meals-1/7e8feb09f54bcfba5cceb1290608a5fb1c745aaa.png";
-import img3 from "../../imports/Meals-1/fd9226e7ec7cd91471c0c318b8bff933c0680745.png";
-import img4 from "../../imports/Meals-1/c0cf0f7ecebec21dbb915f4c886f6b0fcf9ae929.png";
-import img5 from "../../imports/Meals-1/1941eddc8406411bb7efafff2a9cd2de1155ae63.png";
-import img6 from "../../imports/Meals-1/da67a743ccefc0b646f24399e01f02886e78146a.png";
-import img7 from "../../imports/Meals-1/cb3b298149cdf74ac3dce3890ed297128c3fa029.png";
-import img8 from "../../imports/Meals-1/9db8d32f0e633e8a41c0c83ab2d1cb95fb61f8c0.png";
-import img9 from "../../imports/Meals-1/14c1ccfe698cd468a5634658d43d3c8daf9e7c48.png";
-import img10 from "../../imports/Meals-1/a4419f45c37bce9e5445031b0fb94d6d7e393d5f.png";
-import img11 from "../../imports/Meals-1/34321367106cef1aa6c97cf97f61bbfb6c9aea6d.png";
-import img12 from "../../imports/Meals-1/4738670d742226f197b3cbb6d5595a8e6975e56e.png";
-import img13 from "../../imports/Meals-1/6391913b32e2c44e63a3b02c32daf8711ce1fb09.png";
-import img14 from "../../imports/Meals-1/e34c512e91fb64c0ebea87bd0470eadf5f5009c1.png";
+import img0 from "../../imports/Meals-1/5e1602b3d213f8c0c5dbed5bfb50317ae7f27ab8.avif";
+import img1 from "../../imports/Meals-1/56780a365aa45daafd050fc12b3a8115421d6655.avif";
+import img2 from "../../imports/Meals-1/7e8feb09f54bcfba5cceb1290608a5fb1c745aaa.avif";
+import img3 from "../../imports/Meals-1/fd9226e7ec7cd91471c0c318b8bff933c0680745.avif";
+import img4 from "../../imports/Meals-1/c0cf0f7ecebec21dbb915f4c886f6b0fcf9ae929.avif";
+import img5 from "../../imports/Meals-1/1941eddc8406411bb7efafff2a9cd2de1155ae63.avif";
+import img6 from "../../imports/Meals-1/da67a743ccefc0b646f24399e01f02886e78146a.avif";
+import img7 from "../../imports/Meals-1/cb3b298149cdf74ac3dce3890ed297128c3fa029.avif";
+import img8 from "../../imports/Meals-1/9db8d32f0e633e8a41c0c83ab2d1cb95fb61f8c0.avif";
+import img9 from "../../imports/Meals-1/14c1ccfe698cd468a5634658d43d3c8daf9e7c48.avif";
+import img10 from "../../imports/Meals-1/a4419f45c37bce9e5445031b0fb94d6d7e393d5f.avif";
+import img11 from "../../imports/Meals-1/34321367106cef1aa6c97cf97f61bbfb6c9aea6d.avif";
+import img12 from "../../imports/Meals-1/4738670d742226f197b3cbb6d5595a8e6975e56e.avif";
+import img13 from "../../imports/Meals-1/6391913b32e2c44e63a3b02c32daf8711ce1fb09.avif";
+import img14 from "../../imports/Meals-1/e34c512e91fb64c0ebea87bd0470eadf5f5009c1.avif";
 
 // Row A: 7 items (shifted, fewer)
 const rowA = [img0, img1, img2, img3, img4, img5, img6];

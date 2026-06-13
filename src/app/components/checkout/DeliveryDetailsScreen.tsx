@@ -9,6 +9,7 @@ import { Divider } from '../common/Divider';
 import { Dropdown } from '../common/Dropdown';
 import { getFieldSizeStyle } from '../common/fieldSizeTokens';
 import { DeliveryAddressCard } from '../common/DeliveryAddressCard';
+import { InfoIcon } from '../common/icons/feather';
 import { TextArea } from '../common/TextArea';
 import { TextInput } from '../common/TextInput';
 
@@ -22,27 +23,17 @@ import { getUpcomingDeliveryDates } from './mealCalendarUtils';
 
 const TIME_SLOTS = ['07:00 – 11:00', '12:00 – 16:00', '18:00 – 22:00'];
 
-function InfoIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
-      <circle cx="10" cy="10" r="8.5" stroke="currentColor" strokeWidth="1.5" />
-      <line x1="10" y1="9" x2="10" y2="14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-      <circle cx="10" cy="6.5" r="1" fill="currentColor" />
-    </svg>
-  );
-}
-
 function InfoBox() {
   return (
     <div
-      className="flex items-start gap-[12px] rounded-[12px] p-[16px]"
+      className="flex items-start justify-center gap-[12px] rounded-[12px] p-[16px]"
       style={{ backgroundColor: COLOR_TOKENS.warning[50] }}
     >
       <span className="mt-[1px] shrink-0" style={{ color: COLOR_TOKENS.warning[700] }}>
-        <InfoIcon />
+        <InfoIcon size={20} className="!w-fit !h-fit py-[3px] mb-0" />
       </span>
       <p
-        className="font-sans text-[13px] font-semibold leading-[150%]"
+        className="font-sans text-[16px] font-semibold leading-[150%]"
         style={{ color: COLOR_TOKENS.warning[800] }}
       >
         To keep your meals fresh in the UAE's hot climate, please place them in the refrigerator

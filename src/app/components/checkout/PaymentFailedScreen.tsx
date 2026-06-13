@@ -6,10 +6,7 @@ import {
   CHECKOUT_STEP_PAGE_VARS,
 } from './checkoutStepPageLayoutTokens';
 import { PaymentFailedIcon } from './failed/PaymentFailedIcon';
-import {
-  SuccessContactSection,
-  successContactSectionStyle,
-} from './success/SuccessContactSection';
+import { SuccessContactSection } from './success/SuccessContactSection';
 
 const DEFAULT_FAILED_MESSAGE =
   'The purchase amount is below the minimum amount required to use Tabby, try adding more items or use another payment method';
@@ -32,7 +29,7 @@ export function PaymentFailedScreen({
   return (
     <div
       className={CHECKOUT_STEP_PAGE_LAYOUT.page}
-      style={{ ...CHECKOUT_STEP_PAGE_VARS, ...successContactSectionStyle }}
+      style={CHECKOUT_STEP_PAGE_VARS}
     >
       <PaymentResultHeader activeTab="failed" onTabChange={onTabChange} onClose={onClose} />
 
@@ -77,7 +74,7 @@ export function PaymentFailedScreen({
           </Button>
         </div>
 
-        <SuccessContactSection />
+        <SuccessContactSection showFollowUs={false} />
       </div>
     </div>
   );
