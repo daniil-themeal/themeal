@@ -144,6 +144,27 @@ function createMeal(type: MealType, name: string, dayIndex: number): Meal {
   };
 }
 
+export function buildMealDetail(
+  type: MealType,
+  name: string,
+  img: string,
+  options?: { id?: string; kcal?: number; weight?: number },
+): Meal {
+  return {
+    id: options?.id ?? slugify(`${type}-${name}`),
+    type,
+    name,
+    img,
+    kcal: options?.kcal ?? kcalByType[type],
+    weight: options?.weight ?? weightByType[type],
+    proteins: proteinsByType[type],
+    fats: fatsByType[type],
+    carbs: carbsByType[type],
+    ingredients: ingredientsByType[type],
+    allergens: allergensByType[type],
+  };
+}
+
 function getDateString(offset: number) {
   const date = new Date();
   date.setDate(date.getDate() + offset);
