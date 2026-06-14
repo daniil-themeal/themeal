@@ -31,7 +31,7 @@ export const BUTTON_SIZE_HEIGHT_PX: Record<(typeof BUTTON_SIZES)[number], number
   small: 40,
   medium: 48,
   large: 64,
-  'x-large': 80,
+  'x-large': 72,
 };
 
 export type ButtonVariant = (typeof BUTTON_VARIANTS)[number];
@@ -219,7 +219,7 @@ const BUTTON_SIZE_CLASS_NAMES: Record<ButtonSize, string> = {
   small: 'h-[40px] px-[16px] gap-[8px]',
   medium: 'h-[48px] px-[20px] gap-[8px]',
   large: 'h-[64px] px-[28px] gap-[10px]',
-  'x-large': 'h-[80px] px-[32px] gap-[12px]',
+  'x-large': 'h-[72px] px-[32px] gap-[12px]',
 };
 
 const BUTTON_FONT_SIZE_TOKENS: Record<ButtonSize, string> = {

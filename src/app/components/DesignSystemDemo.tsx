@@ -1842,7 +1842,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           <DemoCard
             id="button-sizes"
             title="Button sizes"
-            description="Agreed size tokens: X-small 32 / Small 40 / Medium 48 / Large 64 / X-large 80. Border radius: X-small & Small 4 / Medium & Large 8 / X-large 12."
+            description="Agreed size tokens: X-small 32 / Small 40 / Medium 48 / Large 64 / X-large 72. Border radius: X-small & Small 4 / Medium & Large 8 / X-large 12."
           >
             <div className="flex flex-col gap-[16px]">
               {BUTTON_SIZES.map((size) => (

@@ -41,13 +41,13 @@ function Menu({ t, onOrder }) {
   }, [day]);
 
   return (
-    createElement('section', { className:'section section--cream menu-section', id:'menu', style:{ paddingBottom:'clamp(48px,6vw,84px)' } },
+    createElement('section', { className:'section section--cream menu-section', id:'menu', style:{ paddingBottom:'clamp(var(--space-48), 6vw, var(--space-80))' } },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'eyebrow menu-eyebrow reveal' }, t.menu.eyebrow),
         createElement('div', { className:'menu-head reveal' },
           createElement('div', { className:'menu-head-text' },
+            createElement('div', { className:'eyebrow menu-eyebrow' }, t.menu.eyebrow),
             createElement('h2', { className:'h2 menu-head-title' }, t.menu.title),
-            createElement('p', { className:'row menu-head-trusted', style:{ gap:8, margin:0, color:'var(--pink)', fontWeight:600, fontSize:'var(--fs-16)' } }, createElement(Icon.heart,{size:18,fill:'currentColor',sw:0}), t.menu.trusted)
+            createElement('p', { className:'row menu-head-trusted', style:{ gap:8, margin:0, color:'var(--pink)', fontWeight:600, fontSize:'var(--fs-16)', height:'fit-content' } }, createElement(Icon.heart,{size:18,fill:'currentColor',sw:0}), t.menu.trusted)
           ),
           createElement('button', {
             className:'btn btn-primary menu-head-cta',
@@ -64,48 +64,48 @@ function Menu({ t, onOrder }) {
         )
       ),
 
-      /* day tabs — align with .wrap via gutter-x */
-      createElement('div', {
-        ref: dayTabsScroll.ref,
-        onMouseDown: dayTabsScroll.onMouseDown,
-        className:'menu-days no-scrollbar h-scroll gutter-x reveal',
-      },
-        t.menu.days.map((d,i)=>createElement('button', {
-          key:i,
-          className:`menu-day-tab${i===day ? ' is-active' : ''}`,
-          onClick: dayTabsScroll.guardClick(() => setDay(i)),
-        }, d))
-      ),
-
-      /* meal cards — full-bleed scroll on mobile; grid in .wrap-width container on desktop */
-      createElement('div', { className:'menu-grid-wrap reveal' },
+      createElement('div', { className:'menu-content reveal' },
         createElement('div', {
-          ref: menuGridScroll.ref,
-          onMouseDown: menuGridScroll.onMouseDown,
-          className:'menu-grid-shell no-scrollbar h-scroll reveal',
+          ref: dayTabsScroll.ref,
+          onMouseDown: dayTabsScroll.onMouseDown,
+          className:'menu-days no-scrollbar h-scroll gutter-x',
         },
-          createElement('div', { className:'menu-grid menu-grid--cards' },
-            meals.map((m,i)=>createElement('div', { key:i, className:'menucard-shell' },
-              createElement('article', {
-                className:'menucard',
-                role:'button',
-                tabIndex:0,
-                onClick: menuGridScroll.guardClick(() => openMeal(m, i)),
-                onKeyDown: (e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    openMeal(m, i);
-                  }
-                },
-              },
-                createElement('img', { className:'menucard-img', src:imgs[i%imgs.length], alt:'', loading:'lazy', draggable:false }),
-                createElement('div', { className:'menucard-body' },
-                  createElement('p', { className:'menucard-meta' }, `${meta[i].kcal} ccal • ${meta[i].g} g ${t.menu.slots[i]}`),
-                  createElement('p', { className:'menucard-title' }, m))
+          t.menu.days.map((d,i)=>createElement('button', {
+            key:i,
+            className:`menu-day-tab${i===day ? ' is-active' : ''}`,
+            onClick: dayTabsScroll.guardClick(() => setDay(i)),
+          }, d))
+        ),
+
+        createElement('div', { className:'menu-grid-wrap reveal' },
+            createElement('div', {
+              ref: menuGridScroll.ref,
+              onMouseDown: menuGridScroll.onMouseDown,
+              className:'menu-grid-shell no-scrollbar h-scroll',
+            },
+              createElement('div', { className:'menu-grid menu-grid--cards' },
+                meals.map((m,i)=>createElement('div', { key:i, className:'menucard-shell' },
+                  createElement('article', {
+                    className:'menucard',
+                    role:'button',
+                    tabIndex:0,
+                    onClick: menuGridScroll.guardClick(() => openMeal(m, i)),
+                    onKeyDown: (e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openMeal(m, i);
+                      }
+                    },
+                  },
+                    createElement('img', { className:'menucard-img', src:imgs[i%imgs.length], alt:'', loading:'lazy', draggable:false }),
+                    createElement('div', { className:'menucard-body' },
+                      createElement('p', { className:'menucard-meta' }, `${meta[i].kcal} ccal • ${meta[i].g} g ${t.menu.slots[i]}`),
+                      createElement('p', { className:'menucard-title' }, m))
+                  )
+                ))
               )
-            ))
+            )
           )
-        )
       ),
 
       createElement('div', { className:'wrap', style:{ height:'fit-content' } },
@@ -113,7 +113,7 @@ function Menu({ t, onOrder }) {
           createElement(Icon.check, { size:18, sw:2.6, style:{ color:'var(--green)', flexShrink:0, marginTop:1 } }),
           t.menu.note),
         createElement('style', null, `
-          .menu-eyebrow { margin-bottom:14px; }
+          .menu-eyebrow { margin-bottom:var(--space-24); }
           @media (max-width: 640px) {
             .menu-eyebrow { text-align:center; }
           }
@@ -131,7 +131,7 @@ function Menu({ t, onOrder }) {
             width:100%;
           }
           .menu-head-title {
-            margin:0 0 8px;
+            margin:0 0 24px;
             width:100%;
           }
           .menucard-shell {
@@ -172,6 +172,7 @@ function Menu({ t, onOrder }) {
             flex:1;
             display:flex;
             flex-direction:column;
+            gap:8px;
             min-height:0;
           }
           .menucard-shell:hover .menucard-img { transform:scale(1.03); }
@@ -216,10 +217,10 @@ function Customers({ t }) {
   useTestimonialIframe(IFRAME_ID);
 
   return (
-    createElement('section', { className:'section section--yellow', id:'reviews', style:{ paddingBottom:'clamp(48px,6vw,80px)' } },
+    createElement('section', { className:'section section--yellow', id:'reviews', style:{ paddingBottom:'clamp(var(--space-48), 6vw, var(--space-80))' } },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'center reveal', style:{ marginBottom:36 } },
-          createElement('div', { className:'eyebrow', style:{ marginBottom:14, color:'var(--plum-700)' } }, t.customers.eyebrow),
+        createElement('div', { className:'center reveal section-intro--sm' },
+          createElement('div', { className:'eyebrow', style:{ color:'var(--pink)' } }, t.customers.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0, color:'var(--plum-800)' } }, t.customers.title)
         ),
         createElement('div', { className:'testimonial-wrapper reveal' },
@@ -292,9 +293,9 @@ function Fresh({ t }) {
             createElement('span', { style:{ width:10, height:10, borderRadius:'50%', background:'var(--blue-bright)', boxShadow:'0 0 0 4px var(--blue-soft)' } }), t.fresh.badge)
         ),
         createElement('div', null,
-          createElement('div', { className:'eyebrow reveal', style:{ marginBottom:14 } }, t.fresh.eyebrow),
-          createElement('h2', { className:'h2 reveal', style:{ margin:'0 0 32px' } }, t.fresh.title),
-          createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:22 } },
+          createElement('div', { className:'eyebrow reveal' }, t.fresh.eyebrow),
+          createElement('h2', { className:'h2 reveal', style:{ margin:'0 0 var(--space-64)' } }, t.fresh.title),
+          createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:'var(--space-24)' } },
             t.fresh.items.map((it,i)=>createElement('li', { key:i, className:'row reveal', 'data-d':String((i%3)+1), style:{ gap:16, alignItems:'center' } },
               createElement('span', { style:{ flex:'0 0 auto', width:44, height:44, borderRadius:'var(--r-md)', background:'var(--brand-soft)', color:'var(--brand)', display:'grid', placeItems:'center' } }, createElement(ic[i], { size:22 })),
               createElement('p', { style:{ margin:0, fontSize:'var(--fs-16)', color:'var(--slate)', fontWeight:600, lineHeight:1.45, paddingTop:0 } }, it)))
@@ -312,12 +313,12 @@ function Gallery({ t }) {
   return (
     createElement('section', { className:'section section--cream2', id:'gallery' },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'center reveal', style:{ marginBottom:40 } },
-          createElement('div', { className:'eyebrow', style:{ marginBottom:14 } }, t.gallery.eyebrow),
+        createElement('div', { className:'center reveal section-intro--sm' },
+          createElement('div', { className:'eyebrow' }, t.gallery.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.gallery.title)
         )
       ),
-      createElement('div', { className:'no-scrollbar reveal', style:{ display:'flex', gap:18, overflowX:'auto', paddingInline:'var(--gutter)', scrollSnapType:'x mandatory' } },
+      createElement('div', { className:'no-scrollbar reveal', style:{ display:'flex', gap:'var(--space-20)', overflowX:'auto', paddingInline:'var(--gutter)', scrollSnapType:'x mandatory' } },
         imgs.map((src,i)=>createElement('div', { key:i, style:{ flex:'0 0 auto', width:'clamp(260px,40vw,440px)', aspectRatio:'16/10', borderRadius:'var(--r-xl)', overflow:'hidden', boxShadow:'var(--shadow-md)', scrollSnapAlign:'center' } },
           createElement('img', { src, alt:'', loading:'lazy', style:{ width:'100%', height:'100%', objectFit:'cover' } })))
       )
@@ -343,21 +344,22 @@ function LeadCapture({ t, onWhatsAppClick }) {
     }
   };
   return (
-    createElement('section', { className:'section section--cream lead-section', id:'lead', style:{ paddingTop:0, paddingBottom:'clamp(56px,8vw,104px)' } },
+    createElement('section', { className:'section section--cream lead-section', id:'lead', style:{ paddingTop:0, paddingBottom:'clamp(var(--space-64), 8vw, var(--space-96))' } },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'reveal', style:{
           position:'relative', overflow:'hidden', borderRadius:'var(--r-2xl)',
           backgroundColor:'var(--card)',
-          padding:'clamp(28px,4vw,56px)', boxShadow:'var(--shadow-md)', border:'none',
+          padding:'clamp(var(--space-32), 4vw, var(--space-64))', boxShadow:'var(--shadow-md)', border:'none',
         } },
           createElement('div', { style:{ position:'absolute', top:-60, insetInlineEnd:-40, width:240, height:240, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.18), transparent 70%)', pointerEvents:'none' } }),
-          createElement('div', { style:{ position:'relative', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:'clamp(24px,4vw,56px)', alignItems:'center' } },
-            createElement('div', { className:'stack', style:{ gap:14 } },
-              createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'7px 14px' } },
+          createElement('div', { style:{ position:'relative', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:'clamp(var(--space-24), 4vw, var(--space-64))', alignItems:'start', height:'fit-content' } },
+            createElement('div', { className:'stack', style:{ gap:'var(--space-16)' } },
+              createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'8px 14px' } },
                 createElement(Icon.whatsapp,{size:15}), l.eyebrow),
-              createElement('h3', { className:'h3', style:{ margin:0 } }, l.title),
-              createElement('p', { className:'lead', style:{ margin:0 } }, l.sub),
-              createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)' } }, l.fine)),
+              createElement('div', { className:'stack', style:{ gap:'var(--space-16)' } },
+                createElement('h3', { className:'h3', style:{ margin:0 } }, l.title),
+                createElement('p', { className:'lead', style:{ margin:0 } }, l.sub),
+                createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)' } }, l.fine))),
 
             createElement('div', { className:'stack', style:{ gap:12 } },
                   createElement('form', { className:'lead-form', onSubmit: handleSubmit },

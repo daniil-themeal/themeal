@@ -58,20 +58,20 @@ export const mealContentEn = {
     "compare": [
       {
         "k": "theMeal",
-        "v": "From 14.9 AED",
+        "v": "From AED 14.9",
         "hot": true
       },
       {
         "k": "Supermarket",
-        "v": "15–40 AED"
+        "v": "AED 15–40"
       },
       {
         "k": "Delivery apps",
-        "v": "20–60 AED"
+        "v": "AED 20–60"
       },
       {
         "k": "Other plans",
-        "v": "30–60 AED"
+        "v": "AED 30–60"
       }
     ],
     "bestShort": "The best value in UAE"
@@ -298,7 +298,7 @@ export const mealContentEn = {
     "eyebrow": "Q&A",
     "title": "Any questions?",
     "tabs": [
-      "Meal plans",
+      "Meal plans basics",
       "Products & storage",
       "Payment & delivery"
     ],

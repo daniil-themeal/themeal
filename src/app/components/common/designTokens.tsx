@@ -51,7 +51,11 @@ export {
   type RadioSize,
 } from './checkboxSizeTokens';
 
-export { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
+export {
+  TEXT_TRIM_CLASS_NAME,
+  TEXT_TRIM_FIT_CLASS_NAME,
+  TEXT_TRIM_CSS,
+} from './textTrimTokens';
 
 export {
   TYPOGRAPHY_ROLES,

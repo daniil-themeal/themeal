@@ -8,6 +8,46 @@
     hyphens: none;
     word-break: normal;
   }
+
+  @supports (text-box-trim: trim-both) {
+    :where(
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      p,
+      span,
+      li,
+      label,
+      a,
+      button,
+      td,
+      th,
+      figcaption,
+      blockquote,
+      dt,
+      dd,
+      small,
+      strong,
+      em,
+      b,
+      i,
+      .eyebrow,
+      .display,
+      .h2,
+      .h3,
+      .lead,
+      .mono,
+      .label,
+      .compare-card-head,
+      .compare-card-head__badge
+    ) {
+      text-box-trim: trim-both;
+      text-box-edge: cap alphabetic;
+    }
+  }
 }
 
 @layer components {
@@ -149,7 +189,7 @@
   }
 
   .btn {
-    @apply h-[64px] lg:h-[80px];
+    @apply h-[64px] lg:h-[72px];
   }
 
   .badge {
