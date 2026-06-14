@@ -9,27 +9,26 @@ function Benefits({ t, onOrder }) {
   return (
     createElement('section', { className:'section section--cream', id:'benefits' },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'center reveal section-intro--md', style:{ maxWidth:680, marginInline:'auto', height:'fit-content', marginBottom:0 } },
-          createElement('div', { className:'eyebrow' }, t.benefits.eyebrow),
-          createElement('h2', { className:'h2', style:{ margin:0, height:'fit-content' } }, t.benefits.title)
+        createElement('div', { className:'center reveal', style:{ maxWidth:680, margin:'0 auto 48px' } },
+          createElement('div', { className:'eyebrow', style:{ marginBottom:14 } }, t.benefits.eyebrow),
+          createElement('h2', { className:'h2', style:{ margin:0 } }, t.benefits.title)
         ),
         createElement('div', { className:'grid-12 benefits-cards', style:{ alignItems:'stretch' } },
           t.benefits.cards.map((c,i)=>{
             const hot = c.k === 'meal';
             return createElement('div', { key:i, className:'card reveal', 'data-d':String(i+1), style:{
-              padding:'var(--space-32) var(--space-32) var(--space-32)', display:'flex', flexDirection:'column', gap:'var(--space-40)',
+              padding:'30px 28px 32px', display:'flex', flexDirection:'column', gap:20,
               background: hot ? 'linear-gradient(155deg, #6E34A2 0%, #4C1F77 100%)' : '#fff', color: hot ? '#fff' : 'var(--ink)',
               boxShadow: hot ? 'var(--shadow-lg)' : 'var(--shadow-sm)',
               position:'relative', overflow:'hidden',
-              ...(hot ? { borderRadius: '50px' } : {}),
             } },
               hot && createElement('span', { className:'chip', style:{ position:'absolute', top:16, insetInlineEnd:16, background:'var(--yellow)', color:'var(--plum-800)', fontWeight:700, fontSize:'var(--fs-12)', padding:'6px 12px', whiteSpace:'nowrap', lineHeight:1, letterSpacing:'.02em' } }, t.benefits.bestL),
               createElement('div', null,
                 createElement('h3', { className:'h3', style:{ margin:0, color: hot ? '#fff' : 'var(--ink)', display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' } },
                   hot ? [c.t.replace(' theMeal',' ').trim(), createElement(Logo,{key:'l',height:24})] : c.t),
-                createElement('p', { style:{ margin:'var(--space-8) 0 0', fontSize:'var(--fs-14)', fontWeight:600, color: hot ? 'rgba(255,255,255,.7)' : 'var(--stone)' } }, c.s)),
-              createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:20, flex:1 } },
-                c.items.map((it,j)=>createElement('li', { key:j, className:'row', style:{ justifyContent:'space-between', gap:8, paddingBottom:12, borderBottom:`1px solid ${hot?'rgba(255,255,255,.14)':'var(--ash)'}`, fontSize:'var(--fs-16)' } },
+                createElement('p', { style:{ margin:'6px 0 0', fontSize:'var(--fs-14)', fontWeight:600, color: hot ? 'rgba(255,255,255,.7)' : 'var(--stone)' } }, c.s)),
+              createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:12, flex:1 } },
+                c.items.map((it,j)=>createElement('li', { key:j, className:'row', style:{ justifyContent:'space-between', gap:12, paddingBottom:12, borderBottom:`1px solid ${hot?'rgba(255,255,255,.14)':'var(--ash)'}`, fontSize:'var(--fs-16)' } },
                   createElement('span', { style:{ color: hot ? 'rgba(255,255,255,.8)' : 'var(--slate)', fontWeight:600 } }, it[0]),
                   createElement('span', { className:'mono', style:{ fontWeight:500, color: hot ? 'var(--yellow)' : 'var(--ink)', textAlign:'end' } }, it[1])))),
               createElement('div', { className:'row', style:{ justifyContent:'space-between', alignItems:'baseline', gap:8 } },
@@ -38,8 +37,8 @@ function Benefits({ t, onOrder }) {
             );
           })
         ),
-        createElement('div', { className:'center reveal', style:{ marginTop:40, height:'fit-content' } },
-          createElement('p', { className:'lead', style:{ marginBottom:24 } }, t.benefits.bottom),
+        createElement('div', { className:'center reveal', style:{ marginTop:40 } },
+          createElement('p', { className:'lead', style:{ marginBottom:20 } }, t.benefits.bottom),
           createElement('button', { className:'btn btn-primary btn-lg benefits-cta', onClick:onOrder }, t.benefits.cta, createElement(Icon.arrow,{size:20,className:'flip'})))
       )
     )
@@ -49,14 +48,14 @@ function Benefits({ t, onOrder }) {
 /* ---------------- Delivery (full-bleed map) ---------------- */
 function Delivery({ t, onOrder }) {
   const feats = [[Icon.clock,t.delivery.anyTime,t.delivery.anyTimeD],[Icon.calendar,t.delivery.twice,t.delivery.twiceD],[Icon.pin,t.delivery.anyPlace,t.delivery.anyPlaceD]];
-  const featCards = feats.map(([ic,ti,de],i)=>createElement('div', { key:i, className:'row reveal delivery-feat-card', 'data-d':String(i+1), style:{ gap:'var(--space-16)', backdropFilter:'blur(8px)', borderRadius:'var(--r-md)', padding:'var(--space-16) 18px' } },
+  const featCards = feats.map(([ic,ti,de],i)=>createElement('div', { key:i, className:'row reveal delivery-feat-card', 'data-d':String(i+1), style:{ gap:16, backdropFilter:'blur(8px)', borderRadius:'var(--r-md)', padding:'14px 18px' } },
     createElement('span', { style:{ flex:'0 0 auto', width:46, height:46, borderRadius:'var(--r-md)', background:'var(--yellow)', color:'var(--plum-900)', display:'grid', placeItems:'center' } }, createElement(ic,{size:22})),
-    createElement('div', { className:'stack', style:{ gap:12 } },
+    createElement('div', { className:'stack' },
       createElement('span', { style:{ fontWeight:700, fontSize:'var(--fs-16)' } }, ti),
       createElement('span', { className:'delivery-feat-desc', style:{ fontSize:'var(--fs-14)' } }, de))));
   return createElement('section', { id:'delivery', className:'delivery-section', style:{ position:'relative', overflow:'hidden', display:'flex', alignItems:'center' } },
     createElement('img', { src:'/landing-stas/assets/map.jpg', alt:'', 'aria-hidden':true, className:'delivery-bg' }),
-    createElement('div', { className:'wrap', style:{ position:'relative', paddingBlock:'clamp(var(--space-64), 9vw, var(--space-128))' } },
+    createElement('div', { className:'wrap', style:{ position:'relative', paddingBlock:'clamp(64px,9vw,120px)' } },
       createElement('div', { className:'stack delivery-wrap', style:{ gap:20, width:'100%' } },
         createElement('div', { className:'delivery-eyebrow eyebrow reveal' }, t.delivery.eyebrow),
         createElement('div', { className:'delivery-main' },
@@ -74,43 +73,43 @@ function FAQ({ t }) {
   const faqTabsScroll = useHorizontalScroll();
   return (
     createElement('section', { className:'section section--cream faq-section', id:'qa' },
-      createElement('div', { className:'wrap faq-wrap' },
+      createElement('div', { className:'wrap' },
         createElement('div', { className:'faq-head', style:{ maxWidth:880, marginInline:'auto', width:'100%' } },
-        createElement('div', { className:'center reveal section-intro--sm' },
-            createElement('div', { className:'eyebrow' }, t.faq.eyebrow),
+          createElement('div', { className:'center reveal', style:{ marginBottom:36 } },
+            createElement('div', { className:'eyebrow', style:{ marginBottom:14 } }, t.faq.eyebrow),
             createElement('h2', { className:'h2', style:{ margin:0 } }, t.faq.title)
           )
-        ),
+        )
+      ),
 
-        createElement('div', { className:'faq-panel reveal', style:{ maxWidth:880, marginInline:'auto', width:'100%' } },
-          createElement('div', {
-            ref: faqTabsScroll.ref,
-            onMouseDown: faqTabsScroll.onMouseDown,
-            className:'faq-tabs no-scrollbar h-scroll',
-          },
-            t.faq.tabs.map((tb,i)=>createElement('button', {
-              key:i,
-              type:'button',
-              className:`menu-day-tab${i===tab ? ' is-active' : ''}`,
-              onClick: faqTabsScroll.guardClick(() => { setTab(i); setOpen(0); }),
-            }, tb))
-          ),
+      createElement('div', {
+        ref: faqTabsScroll.ref,
+        onMouseDown: faqTabsScroll.onMouseDown,
+        className:'faq-tabs no-scrollbar h-scroll gutter-x gutter-x--center reveal',
+      },
+        t.faq.tabs.map((tb,i)=>createElement('button', {
+          key:i,
+          type:'button',
+          className:`menu-day-tab${i===tab ? ' is-active' : ''}`,
+          onClick: faqTabsScroll.guardClick(() => { setTab(i); setOpen(0); }),
+        }, tb))
+      ),
 
-          createElement('div', { className:'faq-body' },
-            createElement('div', { className:'stack reveal', style:{ gap:12 } },
-              group.map(([q,a],i)=>{
-                const o = open === i;
-                return createElement('div', { key:i, className:'card', style:{ background:'#fff', overflow:'hidden', boxShadow:o?'var(--shadow-md)':'var(--shadow-sm)' } },
-                  createElement('button', { onClick:()=>setOpen(o?-1:i), className:'row',
-                    style:{ width:'100%', textAlign:'start', gap:16, justifyContent:'space-between', padding:'20px 24px', fontWeight:700, fontSize:'20px', color:'var(--ink)' } },
-                    q,
-                    createElement('span', { style:{ flex:'0 0 auto', color:'var(--brand)', transform:o?'rotate(180deg)':'none', transition:'transform .25s var(--ease)' } }, createElement(Icon.chevron,{size:22}))),
-                  createElement('div', { style:{ display:'grid', gridTemplateRows:o?'1fr':'0fr', transition:'grid-template-rows .28s var(--ease)' } },
-                    createElement('div', { style:{ overflow:'hidden' } },
-                      createElement('p', { style:{ margin:0, padding:'0 24px 24px', color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.55 } }, a)))
-                );
-              })
-            )
+      createElement('div', { className:'wrap' },
+        createElement('div', { className:'faq-body', style:{ maxWidth:880, marginInline:'auto', width:'100%' } },
+          createElement('div', { className:'stack reveal', style:{ gap:12 } },
+            group.map(([q,a],i)=>{
+              const o = open === i;
+              return createElement('div', { key:i, className:'card', style:{ background:'#fff', overflow:'hidden', boxShadow:o?'var(--shadow-md)':'var(--shadow-sm)' } },
+                createElement('button', { onClick:()=>setOpen(o?-1:i), className:'row',
+                  style:{ width:'100%', textAlign:'start', gap:16, justifyContent:'space-between', padding:'20px 24px', fontWeight:700, fontSize:'20px', color:'var(--ink)' } },
+                  q,
+                  createElement('span', { style:{ flex:'0 0 auto', color:'var(--brand)', transform:o?'rotate(180deg)':'none', transition:'transform .25s var(--ease)' } }, createElement(Icon.chevron,{size:22}))),
+                createElement('div', { style:{ display:'grid', gridTemplateRows:o?'1fr':'0fr', transition:'grid-template-rows .28s var(--ease)' } },
+                  createElement('div', { style:{ overflow:'hidden' } },
+                    createElement('p', { style:{ margin:0, padding:'0 24px 24px', color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.55 } }, a)))
+              );
+            })
           )
         )
       )
@@ -124,14 +123,15 @@ function FinalOffer({ t, onOrder }) {
   const traySizes = [160,185,210,232,210,185,160];
   const trayOffsets = [90,46,16,0,16,46,90];
   const trayRotations = [-9,-6,-3,0,3,6,9];
-  return createElement('section', { className:'section section--plum final-offer-section', style:{ textAlign:'center', position:'relative', paddingBottom:0 } },
-    createElement('div', { 'aria-hidden':true, className:'final-offer-glow' }),
-    createElement('div', { className:'wrap reveal', style:{ position:'relative', zIndex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:'var(--space-24)' } },
+  return createElement('section', { className:'section', style:{ color:'#fff', textAlign:'center', position:'relative', paddingBottom:0 } },
+    createElement('div', { 'aria-hidden':true, style:{ position:'absolute', inset:0, overflow:'hidden', background:'radial-gradient(120% 120% at 50% 0%, #5A2487, var(--plum-700) 55%, var(--plum-900))' } },
+      createElement('div', { style:{ position:'absolute', top:'-20%', insetInlineStart:'50%', transform:'translateX(-50%)', width:600, height:600, borderRadius:'50%', background:'radial-gradient(circle, rgba(240,41,168,.22), transparent 65%)' } })),
+    createElement('div', { className:'wrap reveal', style:{ position:'relative', display:'flex', flexDirection:'column', alignItems:'center', gap:22 } },
       createElement('h2', { className:'h2', style:{ margin:0, maxWidth:880 } },
         t.final.pre, ' ', createElement('span', { style:{ color:'var(--yellow)' } }, t.final.hi)),
       createElement(HeroStats, { stats:t.hero.stats }),
       createElement('button', { className:'btn btn-primary btn-lg', onClick:onOrder, style:{ marginTop:4 } }, t.final.cta, createElement(Icon.arrow,{size:20,className:'flip'}))),
-    createElement('div', { 'aria-hidden':true, style:{ position:'relative', zIndex:1, width:'100%', height:'clamp(160px,18vw,220px)', marginTop:'var(--space-16)', marginBottom:0 } },
+    createElement('div', { 'aria-hidden':true, style:{ position:'relative', zIndex:1, width:'100%', height:'clamp(160px,18vw,220px)', marginTop:14, marginBottom:0 } },
       createElement('div', { dir:'ltr', style:{ position:'absolute', left:-18, right:-18, top:0, display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:'clamp(4px,.8vw,14px)' } },
         trays.map((src,i)=>createElement('img', {
           key:i, src, alt:'', className:'final-tray',
@@ -150,13 +150,13 @@ function Footer({ t, lang, setLang }) {
   const links = [[t.nav.menu,'#menu'], [t.nav.delivery,'#delivery'], [t.nav.qa,'#qa'], [t.footer.privacy,'#'], [t.footer.terms,'#']];
   const socials = [['facebook','#'],['instagram','#'],['tiktok','#'],['youtube','#'],['whatsapp','#'],['telegram','#']];
   return (
-    createElement('footer', { style:{ position:'relative', zIndex:10, background:'var(--plum-950)', color:'rgba(255,255,255,.7)', paddingBlock:'var(--space-64) var(--space-40)' } },
+    createElement('footer', { style:{ position:'relative', zIndex:10, background:'var(--plum-950)', color:'rgba(255,255,255,.7)', paddingBlock:'56px 40px' } },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'footer-grid' },
           createElement('div', { className:'stack footer-brand' },
             createElement(Logo, { height:28 }),
             createElement('p', { style:{ margin:0, fontSize:'var(--fs-16)', lineHeight:1.5 } }, t.footer.tagline)),
-          createElement('div', { className:'stack', style:{ gap:'var(--space-20)', width:'100%', alignItems:'flex-start' } },
+          createElement('div', { className:'stack', style:{ gap:18, width:'100%', alignItems:'flex-start' } },
             createElement('nav', { style:{ display:'flex', flexWrap:'wrap', gap:'12px 28px', fontWeight:600, fontSize:'var(--fs-16)', width:'100%' } },
               links.map(([l,href],i)=>createElement('a', { key:i, href, style:{ color:'rgba(255,255,255,.75)', transition:'color .15s' },
                 onMouseEnter:e=>e.target.style.color='#fff', onMouseLeave:e=>e.target.style.color='rgba(255,255,255,.75)' }, l))),

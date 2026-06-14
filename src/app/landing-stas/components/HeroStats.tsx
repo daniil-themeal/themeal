@@ -7,7 +7,7 @@ export function HeroStats({ stats, className = 'hero-stats', style = {}, dataD }
     className,
     'data-d': dataD,
     style:{
-      display:'flex', gap:24, flexWrap:'nowrap', justifyContent:'center', width:'100%', whiteSpace:'nowrap', paddingRight:20,
+      display:'flex', gap:24, flexWrap:'nowrap', justifyContent:'center', width:'100%', whiteSpace:'nowrap', paddingRight:20, paddingRight:20,
       ...style,
     },
   },
