@@ -159,7 +159,7 @@ function Hero({ t, onOrder }) {
       createElement('div', { style:{ position:'absolute', top:'-10%', insetInlineEnd:'-8%', width:480, height:480, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.5), transparent 70%)', filter:'blur(20px)', pointerEvents:'none' } }),
       createElement('div', { style:{ position:'absolute', bottom:'18%', insetInlineStart:'-10%', width:420, height:420, borderRadius:'50%', background:'radial-gradient(circle, rgba(240,41,168,.28), transparent 70%)', filter:'blur(20px)', pointerEvents:'none' } }),
 
-      createElement('div', { className:'wrap', style:{ position:'relative', zIndex:2, flex:1, display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', justifyContent:'center', gap:'clamp(12px,2vh,22px)', paddingBottom:20 } },
+      createElement('div', { className:'wrap', style:{ position:'relative', zIndex:2, flex:1, display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', justifyContent:'center', gap:'clamp(var(--space-12), 2vh, var(--space-24))', paddingBottom:'var(--space-20)' } },
         /* headline merged with the price offer */
         createElement('h1', { className:'hero-title reveal' },
           createElement('span', { className:'hero-title__line' }, t.hero.title),
@@ -176,11 +176,11 @@ function Hero({ t, onOrder }) {
             className:'btn btn-primary menu-head-cta',
             onClick:onOrder,
             style:{
-              flexDirection:'column', alignItems:'center', justifyContent:'center', gap:7,
+              flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'var(--space-8)',
               whiteSpace:'normal', textAlign:'center',
             },
           },
-            createElement('span', { className:'stack', style:{ alignItems:'center', gap:7 } },
+            createElement('span', { className:'stack', style:{ alignItems:'center', gap:'var(--space-8)' } },
               t.hero.cta,
               createElement('span', { className:'mono', style:{ fontSize:'var(--fs-14)', fontWeight:500, opacity:.92 } }, t.hero.ctaSub))
           )
@@ -236,8 +236,8 @@ function Compare({ t }) {
   return (
     createElement('section', { className:'section section--cream', id:'why' },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'center reveal', style:{ maxWidth:760, margin:'0 auto 56px' } },
-          createElement('div', { className:'eyebrow', style:{ marginBottom:14 } }, t.compare.eyebrow),
+        createElement('div', { className:'center reveal section-intro', style:{ maxWidth:760, marginInline:'auto' } },
+          createElement('div', { className:'eyebrow' }, t.compare.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.compare.title)
         ),
         createElement('div', { className:'grid-12 compare-cards', style:{ alignItems:'stretch' } },
@@ -267,8 +267,8 @@ function Compare({ t }) {
           )
         ),
         /* price — cost per meal (compact) */
-        t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'clamp(22px,3vw,32px)', paddingTop:14, marginTop:24, height:'fit-content' } },
-          createElement('div', { style:{ marginBottom:8 } },
+        t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'clamp(var(--space-24), 3vw, var(--space-32))', paddingTop:'var(--space-16)', marginTop:'var(--space-24)', height:'fit-content' } },
+          createElement('div', { style:{ marginBottom:'var(--space-8)' } },
             createElement('span', { className:'label', style:{ color:'var(--stone)', fontSize:'14px', fontWeight:700, letterSpacing:'.12em', textTransform:'uppercase' } }, t.compare.costTitle)),
           createElement('div', { className:'compare-cost-grid' },
             t.compare.compare.map((c,i)=>createElement('div', { key:i, className:'stack' },
@@ -286,7 +286,7 @@ function Compare({ t }) {
             align-items:center;
             gap:10px;
             min-height:26px;
-            margin-bottom:24px;
+            margin-bottom:var(--space-24);
           }
           #why .compare-card-head--problems {
             color:var(--stone);
@@ -378,8 +378,8 @@ function HowItWorks({ t }) {
   return (
     createElement('section', { className:'section section--white', id:'how' },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'center reveal', style:{ maxWidth:680, margin:'0 auto 56px' } },
-          createElement('div', { className:'eyebrow', style:{ marginBottom:14 } }, t.how.eyebrow),
+        createElement('div', { className:'center reveal section-intro', style:{ maxWidth:680, marginInline:'auto' } },
+          createElement('div', { className:'eyebrow' }, t.how.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.how.title)
         ),
         createElement('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:24 } },
@@ -388,8 +388,8 @@ function HowItWorks({ t }) {
               createElement('span', { className:'mono', style:{ position:'static', fontSize:'12px', fontWeight:500, color:'var(--brand)', opacity:.7, marginInline:0, paddingInline:24 } }, s.n),
               createElement(HowIllu, { i })
             ),
-            createElement('div', { style:{ padding:'22px 24px 28px' } },
-              createElement('h3', { className:'h3', style:{ margin:'0 0 8px', color:'var(--ink)' } }, s.t),
+            createElement('div', { style:{ padding:'var(--space-24) var(--space-24) var(--space-32)' } },
+              createElement('h3', { className:'h3', style:{ margin:'0 0 var(--space-20)', color:'var(--ink)' } }, s.t),
               createElement('p', { style:{ margin:0, color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.5 } }, s.d))
           ))
         )

@@ -41,7 +41,7 @@ function Menu({ t, onOrder }) {
   }, [day]);
 
   return (
-    createElement('section', { className:'section section--cream menu-section', id:'menu', style:{ paddingBottom:'clamp(48px,6vw,84px)' } },
+    createElement('section', { className:'section section--cream menu-section', id:'menu', style:{ paddingBottom:'clamp(var(--space-48), 6vw, var(--space-80))' } },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'eyebrow menu-eyebrow reveal' }, t.menu.eyebrow),
         createElement('div', { className:'menu-head reveal' },
@@ -113,7 +113,7 @@ function Menu({ t, onOrder }) {
           createElement(Icon.check, { size:18, sw:2.6, style:{ color:'var(--green)', flexShrink:0, marginTop:1 } }),
           t.menu.note),
         createElement('style', null, `
-          .menu-eyebrow { margin-bottom:14px; }
+          .menu-eyebrow { margin-bottom:var(--space-24); }
           @media (max-width: 640px) {
             .menu-eyebrow { text-align:center; }
           }
@@ -131,7 +131,7 @@ function Menu({ t, onOrder }) {
             width:100%;
           }
           .menu-head-title {
-            margin:0 0 8px;
+            margin:0 0 24px;
             width:100%;
           }
           .menucard-shell {
@@ -216,10 +216,10 @@ function Customers({ t }) {
   useTestimonialIframe(IFRAME_ID);
 
   return (
-    createElement('section', { className:'section section--yellow', id:'reviews', style:{ paddingBottom:'clamp(48px,6vw,80px)' } },
+    createElement('section', { className:'section section--yellow', id:'reviews', style:{ paddingBottom:'clamp(var(--space-48), 6vw, var(--space-80))' } },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'center reveal', style:{ marginBottom:36 } },
-          createElement('div', { className:'eyebrow', style:{ marginBottom:14, color:'var(--plum-700)' } }, t.customers.eyebrow),
+        createElement('div', { className:'center reveal section-intro--sm' },
+          createElement('div', { className:'eyebrow', style:{ color:'var(--plum-700)' } }, t.customers.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0, color:'var(--plum-800)' } }, t.customers.title)
         ),
         createElement('div', { className:'testimonial-wrapper reveal' },
@@ -292,9 +292,9 @@ function Fresh({ t }) {
             createElement('span', { style:{ width:10, height:10, borderRadius:'50%', background:'var(--blue-bright)', boxShadow:'0 0 0 4px var(--blue-soft)' } }), t.fresh.badge)
         ),
         createElement('div', null,
-          createElement('div', { className:'eyebrow reveal', style:{ marginBottom:14 } }, t.fresh.eyebrow),
-          createElement('h2', { className:'h2 reveal', style:{ margin:'0 0 32px' } }, t.fresh.title),
-          createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:22 } },
+          createElement('div', { className:'eyebrow reveal' }, t.fresh.eyebrow),
+          createElement('h2', { className:'h2 reveal', style:{ margin:'0 0 var(--space-64)' } }, t.fresh.title),
+          createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:'var(--space-24)' } },
             t.fresh.items.map((it,i)=>createElement('li', { key:i, className:'row reveal', 'data-d':String((i%3)+1), style:{ gap:16, alignItems:'center' } },
               createElement('span', { style:{ flex:'0 0 auto', width:44, height:44, borderRadius:'var(--r-md)', background:'var(--brand-soft)', color:'var(--brand)', display:'grid', placeItems:'center' } }, createElement(ic[i], { size:22 })),
               createElement('p', { style:{ margin:0, fontSize:'var(--fs-16)', color:'var(--slate)', fontWeight:600, lineHeight:1.45, paddingTop:0 } }, it)))
@@ -312,8 +312,8 @@ function Gallery({ t }) {
   return (
     createElement('section', { className:'section section--cream2', id:'gallery' },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'center reveal', style:{ marginBottom:40 } },
-          createElement('div', { className:'eyebrow', style:{ marginBottom:14 } }, t.gallery.eyebrow),
+        createElement('div', { className:'center reveal section-intro--sm' },
+          createElement('div', { className:'eyebrow' }, t.gallery.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.gallery.title)
         )
       ),
@@ -343,16 +343,16 @@ function LeadCapture({ t, onWhatsAppClick }) {
     }
   };
   return (
-    createElement('section', { className:'section section--cream lead-section', id:'lead', style:{ paddingTop:0, paddingBottom:'clamp(56px,8vw,104px)' } },
+    createElement('section', { className:'section section--cream lead-section', id:'lead', style:{ paddingTop:0, paddingBottom:'clamp(var(--space-64), 8vw, var(--space-96))' } },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'reveal', style:{
           position:'relative', overflow:'hidden', borderRadius:'var(--r-2xl)',
           backgroundColor:'var(--card)',
-          padding:'clamp(28px,4vw,56px)', boxShadow:'var(--shadow-md)', border:'none',
+          padding:'clamp(var(--space-32), 4vw, var(--space-64))', boxShadow:'var(--shadow-md)', border:'none',
         } },
           createElement('div', { style:{ position:'absolute', top:-60, insetInlineEnd:-40, width:240, height:240, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.18), transparent 70%)', pointerEvents:'none' } }),
-          createElement('div', { style:{ position:'relative', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:'clamp(24px,4vw,56px)', alignItems:'center' } },
-            createElement('div', { className:'stack', style:{ gap:14 } },
+          createElement('div', { style:{ position:'relative', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:'clamp(var(--space-24), 4vw, var(--space-64))', alignItems:'center' } },
+            createElement('div', { className:'stack', style:{ gap:'var(--space-16)' } },
               createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'7px 14px' } },
                 createElement(Icon.whatsapp,{size:15}), l.eyebrow),
               createElement('h3', { className:'h3', style:{ margin:0 } }, l.title),
