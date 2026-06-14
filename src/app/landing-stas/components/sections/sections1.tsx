@@ -242,7 +242,7 @@ function Compare({ t }) {
         ),
         createElement('div', { className:'grid-12 compare-cards', style:{ alignItems:'stretch' } },
           /* problems */
-          createElement('div', { className:'card reveal', style:{ padding:'clamp(24px,3vw,40px)', paddingBottom:'48px', background:'var(--cream-2)', boxShadow:'none' } },
+          createElement('div', { className:'card reveal', style:{ padding:'clamp(24px,3vw,40px)', paddingBottom:'32px', background:'var(--cream-2)', boxShadow:'none' } },
             createElement('div', { className:'compare-card-head compare-card-head--problems' }, t.compare.problemsTitle),
             createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:16 } },
               t.compare.problems.map((p,i)=>createElement('li', { key:i, className:'row', style:{ gap:14, width:'100%', alignItems:'center', color:'var(--slate)', fontWeight:600, fontSize:'var(--fs-16)' } },
@@ -253,7 +253,7 @@ function Compare({ t }) {
             ),
           ),
           /* solutions */
-          createElement('div', { className:'card reveal', 'data-d':'1', style:{ padding:'clamp(24px,3vw,40px)', paddingTop:'32px', paddingBottom:'48px', background:'var(--plum-700)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'hidden' } },
+          createElement('div', { className:'card reveal', 'data-d':'1', style:{ padding:'clamp(24px,3vw,40px)', paddingTop:'20px', paddingBottom:'48px', background:'var(--plum-700)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'hidden' } },
             createElement('div', { className:'compare-card-head compare-card-head--solutions' },
               createElement('span', { className:'compare-card-head__badge' }, t.compare.bestShort, ' 🔥'),
               createElement(Logo, { tone: 'yellow' })),
@@ -267,8 +267,8 @@ function Compare({ t }) {
           )
         ),
         /* price — cost per meal (compact) */
-        t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'clamp(22px,3vw,32px)', paddingTop:14, marginTop:24 } },
-          createElement('div', { style:{ marginBottom:18 } },
+        t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'clamp(22px,3vw,32px)', paddingTop:14, marginTop:24, height:'fit-content' } },
+          createElement('div', { style:{ marginBottom:8 } },
             createElement('span', { className:'label', style:{ color:'var(--stone)', fontSize:'14px', fontWeight:700, letterSpacing:'.12em', textTransform:'uppercase' } }, t.compare.costTitle)),
           createElement('div', { className:'compare-cost-grid' },
             t.compare.compare.map((c,i)=>createElement('div', { key:i, className:'stack' },
@@ -286,7 +286,7 @@ function Compare({ t }) {
             align-items:center;
             gap:10px;
             min-height:26px;
-            margin-bottom:40px;
+            margin-bottom:24px;
           }
           #why .compare-card-head--problems {
             color:var(--stone);
@@ -374,7 +374,7 @@ function HowIllu({ i }) {
 }
 
 function HowItWorks({ t }) {
-  const cardBg = ['#FDF3FF', '#F6FBEF', '#FFF4FA'];
+  const cardBg = ['#FDF3FF', '#F6FBEF', 'var(--input-background)'];
   return (
     createElement('section', { className:'section section--white', id:'how' },
       createElement('div', { className:'wrap' },
@@ -383,9 +383,9 @@ function HowItWorks({ t }) {
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.how.title)
         ),
         createElement('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:24 } },
-          t.how.steps.map((s,i)=>createElement('div', { key:i, className:'card reveal', 'data-d':String(i+1), style:{ overflow:'hidden', background:cardBg[i], borderRadius:'50px', boxShadow:'none' } },
+          t.how.steps.map((s,i)=>createElement('div', { key:i, className:'card reveal', 'data-d':String(i+1), style:{ overflow:'hidden', background:cardBg[i], borderRadius:'50px', boxShadow:'none', color:'rgba(42, 34, 48, 1)' } },
             createElement('div', { style:{ position:'relative', aspectRatio:'5/4', overflow:'hidden', display:'grid', placeItems:'center' } },
-              createElement('span', { className:'mono', style:{ position:'absolute', top:16, insetInlineStart:18, fontSize:'var(--fs-14)', fontWeight:500, color:'var(--brand)', opacity:.7 } }, s.n + ' / 03'),
+              createElement('span', { className:'mono', style:{ position:'static', fontSize:'12px', fontWeight:500, color:'var(--brand)', opacity:.7, marginInline:0, paddingInline:24 } }, s.n),
               createElement(HowIllu, { i })
             ),
             createElement('div', { style:{ padding:'22px 24px 28px' } },

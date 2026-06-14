@@ -239,11 +239,11 @@ function Customers({ t }) {
 function Fresh({ t }) {
   const ic = [Icon.snow, Icon.truck, Icon.shield, Icon.leaf];
   const shots = [
-    '/landing-stas/assets/gallery/g3.jpg',
-    '/landing-stas/assets/production_2.png',
-    '/landing-stas/assets/gallery/g5.jpg',
-    '/landing-stas/assets/gallery/g6.jpg',
-    '/landing-stas/assets/production_1.png',
+    '/landing-stas/assets/gallery/g3.avif',
+    '/landing-stas/assets/production_2.avif',
+    '/landing-stas/assets/gallery/g5.avif',
+    '/landing-stas/assets/gallery/g6.avif',
+    '/landing-stas/assets/production_1.avif',
   ];
   const [idx, setIdx] = useState(0);
   const timerRef = useRef(null);
@@ -305,7 +305,7 @@ function Fresh({ t }) {
 
 /* ---------------- Gallery ---------------- */
 function Gallery({ t }) {
-  const imgs = ['/landing-stas/assets/gallery/g3.jpg','/landing-stas/assets/production_2.png','/landing-stas/assets/gallery/g5.jpg','/landing-stas/assets/gallery/g6.jpg','/landing-stas/assets/production_1.png'];
+  const imgs = ['/landing-stas/assets/gallery/g3.avif','/landing-stas/assets/production_2.avif','/landing-stas/assets/gallery/g5.avif','/landing-stas/assets/gallery/g6.avif','/landing-stas/assets/production_1.avif'];
   return (
     createElement('section', { className:'section section--cream2', id:'gallery' },
       createElement('div', { className:'wrap' },
@@ -358,7 +358,7 @@ function LeadCapture({ t, onWhatsAppClick }) {
 
             createElement('div', { className:'stack', style:{ gap:12 } },
                   createElement('form', { className:'lead-form', onSubmit: handleSubmit },
-                    createElement('div', { className:'lead-form-fields', style:{ display:'flex', gap:12, flexWrap:'nowrap' } },
+                    createElement('div', { className:'lead-form-fields' },
                       createElement('span', { className:'row', style:{ flex:'0 0 auto', gap:8, background:'#fff', borderRadius:'var(--r-md)', padding:'0 16px', fontWeight:700, fontSize:'var(--fs-16)', color:'var(--ink)', boxShadow:'var(--shadow-sm)', minHeight:58 } },
                         createElement('span', { style:{ fontSize:'var(--fs-20)' } }, '🇦🇪'), l.cc),
                       createElement('input', { type:'tel', required:true, value:phone, onChange:(e)=>{ setPhone(e.target.value); setError(''); }, placeholder:l.ph, dir:'ltr',

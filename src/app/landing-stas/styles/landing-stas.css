@@ -160,7 +160,7 @@ body {
 .landing-stas #top .hero-title__price {
   display:inline-flex;
   align-items:start;
-  gap:.12em;
+  gap:4px;
   padding:12px 14px;
   background:var(--yellow);
   color:var(--plum-800);
@@ -181,7 +181,7 @@ body {
 }
 .landing-stas #top .hero-title__now {
   letter-spacing:-.03em;
-  line-height:0.8;
+  line-height:80%;
 }
 .landing-stas #top .hero-title__cur {
   font-size:var(--hero-price-sub-fs);
@@ -203,23 +203,14 @@ body {
   gap: 12px;
 }
 .landing-stas .lead-form-fields {
+  display: flex;
+  gap: 12px;
+  flex-wrap: nowrap;
   min-width: 0;
+  width: 100%;
 }
 .landing-stas .lead-form-submit {
   width: 100%;
-}
-@media (min-width: 641px) {
-  .landing-stas .lead-form {
-    flex-direction: row;
-    align-items: stretch;
-  }
-  .landing-stas .lead-form-fields {
-    flex: 1 1 auto;
-  }
-  .landing-stas .lead-form-submit {
-    width: auto;
-    flex-shrink: 0;
-  }
 }
 .eyebrow {
   font-size:var(--fs-12); font-weight:700; letter-spacing:.16em; text-transform:uppercase;
@@ -439,6 +430,7 @@ body {
   column-gap: 14px;
   row-gap: 18px;
   width: 100%;
+  height: fit-content;
 }
 @media (min-width: 768px) {
   .landing-stas #why .compare-cost-grid {
@@ -578,9 +570,17 @@ body {
   transition:background .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease);
   cursor:pointer;
 }
+.menu-day-tab:hover:not(.is-active) {
+  color:var(--brand);
+  background:var(--brand-soft);
+  border-color:var(--brand-soft-2);
+}
+.menu-day-tab.is-active:hover {
+  background:var(--brand-soft-2);
+}
 .menu-day-tab.is-active {
   font-weight:700;
-  color:var(--ink);
+  color:var(--brand);
   background:var(--brand-soft);
   border-color:var(--brand);
 }

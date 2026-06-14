@@ -102,7 +102,7 @@ function FAQ({ t }) {
               const o = open === i;
               return createElement('div', { key:i, className:'card', style:{ background:'#fff', overflow:'hidden', boxShadow:o?'var(--shadow-md)':'var(--shadow-sm)' } },
                 createElement('button', { onClick:()=>setOpen(o?-1:i), className:'row',
-                  style:{ width:'100%', textAlign:'start', gap:16, justifyContent:'space-between', padding:'20px 24px', fontWeight:700, fontSize:'var(--fs-16)', color:'var(--ink)' } },
+                  style:{ width:'100%', textAlign:'start', gap:16, justifyContent:'space-between', padding:'20px 24px', fontWeight:700, fontSize:'20px', color:'var(--ink)' } },
                   q,
                   createElement('span', { style:{ flex:'0 0 auto', color:'var(--brand)', transform:o?'rotate(180deg)':'none', transition:'transform .25s var(--ease)' } }, createElement(Icon.chevron,{size:22}))),
                 createElement('div', { style:{ display:'grid', gridTemplateRows:o?'1fr':'0fr', transition:'grid-template-rows .28s var(--ease)' } },
