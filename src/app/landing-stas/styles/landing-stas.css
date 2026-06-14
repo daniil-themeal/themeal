@@ -156,7 +156,7 @@ body {
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:.12em;
+  gap:40px;
 }
 .landing-stas #top .hero-title__line {
   text-wrap:balance;
@@ -178,7 +178,7 @@ body {
   display:inline-flex;
   align-items:start;
   gap:4px;
-  padding:12px 14px;
+  padding:16px 14px;
   background:var(--yellow);
   color:var(--plum-800);
   border-radius:var(--r-pill);
@@ -688,10 +688,11 @@ body {
   min-width:0;
   gap:8px;
   padding-bottom:0;
-  margin-bottom:var(--space-32);
+  margin-bottom:var(--space-16);
 }
 .menu-day-tab {
   flex:0 0 auto;
+  height:48px;
   padding:10px 20px;
   border-radius:var(--r-pill);
   font-weight:600;
@@ -719,12 +720,12 @@ body {
 .menu-section .menu-grid.menu-grid--cards {
   display:grid;
   grid-template-columns:repeat(12, minmax(0, 1fr));
-  column-gap:var(--grid-gap);
+  column-gap:var(--space-16);
   align-items:stretch;
   width:100%;
   min-width:0;
   overflow:visible;
-  padding:12px 0 32px 4px;
+  padding:12px 0 12px 4px;
 }
 .menu-section .menu-grid--cards > .menucard-shell {
   grid-column:span 3;
@@ -765,12 +766,14 @@ body {
     touch-action:pan-x;
     cursor:grab;
     user-select:none;
+    padding-block:12px;
+    margin-block:-12px;
   }
   .menu-section .menu-grid-shell:active { cursor:grabbing; }
   .menu-section .menu-grid.menu-grid--cards {
     display:flex;
     flex-wrap:nowrap;
-    gap:var(--grid-gap);
+    gap:var(--space-16);
     width:max-content;
     min-width:100%;
     padding:12px 0 24px;
@@ -906,7 +909,7 @@ body {
 /* ---- hero-stats: compact below sm (576px) ---- */
 @media (max-width: 575px){
   .landing-stas .hero-stats {
-    gap: 8px !important;
+    gap: 12px !important;
     padding-inline: 0 !important;
     padding-right: 20px !important;
     flex-wrap: nowrap !important;
@@ -924,8 +927,12 @@ body {
     min-width: 0 !important;
     white-space: nowrap !important;
   }
-  .landing-stas .hero-stats .row > span:nth-child(n+2) {
-    font-size: clamp(11px, 3.2vw, 14px) !important;
+  .landing-stas .hero-stats .row > span.row-text {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .landing-stas .hero-stats .row > span.row-text span {
+    font-size: clamp(14px, 4vw, 17px) !important;
     white-space: nowrap !important;
   }
 }

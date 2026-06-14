@@ -110,7 +110,7 @@ function TrayBelt({ meals }) {
         const x = rect.left + m.l + m.w / 2;
         let t = (x - cx) / cx;
         t = Math.max(-1.2, Math.min(1.2, t));
-        m.im.style.transform = `translateY(${-4 + 28 * t * t}px) rotate(${7.5 * t}deg)`;
+        m.im.style.transform = `translateY(${-3.6 + 25.2 * t * t}px) rotate(${6.75 * t}deg)`;
       }
       frames++;
       if (reduced && frames > 2) return; // static fan for reduced motion
@@ -125,17 +125,17 @@ function TrayBelt({ meals }) {
   }, [meals]);
 
   return (
-    createElement('div', { 'aria-hidden':true, dir:'ltr', style:{ position:'relative', zIndex:1, height:'clamp(220px,28vh,300px)', marginTop:-7, overflow:'hidden' } },
-      createElement('div', { ref:trackRef, style:{ position:'absolute', bottom:14, left:0, display:'flex', alignItems:'flex-end', width:'max-content', willChange:'transform' } },
+    createElement('div', { 'aria-hidden':true, dir:'ltr', style:{ position:'relative', zIndex:1, height:'clamp(198px,25.2vh,270px)', marginTop:-6, overflow:'hidden' } },
+      createElement('div', { ref:trackRef, style:{ position:'absolute', bottom:13, left:0, display:'flex', alignItems:'flex-end', width:'max-content', willChange:'transform' } },
         [0,1].map(half =>
-          createElement('div', { key:half, style:{ display:'flex', alignItems:'flex-end', gap:'clamp(16px,2.4vw,36px)', paddingInlineEnd:'clamp(16px,2.4vw,36px)' } },
+          createElement('div', { key:half, style:{ display:'flex', alignItems:'flex-end', gap:'clamp(14px,2.16vw,32px)', paddingInlineEnd:'clamp(14px,2.16vw,32px)' } },
             Array.from({length:15}).map((_,i)=>
               createElement('img', {
                 key:`${half}-${i}`, src:meals[i % meals.length], alt:'',
                 style:{
-                  width:'clamp(150px, 17vw, 250px)',
-                  transform:`translateY(${[20,6,-2,6,20][i%5]}px) rotate(${[-6,-3,0,3,6][i%5]}deg)`,
-                  filter:'drop-shadow(0 18px 30px rgba(0,0,0,.4))',
+                  width:'clamp(135px, 15.3vw, 225px)',
+                  transform:`translateY(${[18,5,-2,5,18][i%5]}px) rotate(${[-6,-3,0,3,6][i%5]}deg)`,
+                  filter:'drop-shadow(0 16px 27px rgba(0,0,0,.4))',
                 }
               })
             )
@@ -186,7 +186,7 @@ function Hero({ t, onOrder }) {
           )
         ),
 
-        createElement(HeroStats, { stats:t.hero.stats, className:'reveal hero-stats', style:{ marginTop:2 }, dataD:'3' })
+        createElement(HeroStats, { stats:t.hero.stats, className:'reveal hero-stats', style:{ marginTop:24 }, dataD:'3' })
       ),
 
       /* conveyor of meal trays — seamless loop shaped as a fan/arc */
@@ -196,7 +196,7 @@ function Hero({ t, onOrder }) {
 }
 
 /* ---------------- Compare (problem / solution) ---------------- */
-const compareIconSize = 'clamp(44px, 5vw, 52px)';
+const compareIconSize = '40px';
 const compareMarkSize = 26;
 const compareMarkIcon = 16;
 
@@ -242,7 +242,7 @@ function Compare({ t }) {
         ),
         createElement('div', { className:'grid-12 compare-cards', style:{ alignItems:'stretch' } },
           /* problems */
-          createElement('div', { className:'card reveal', style:{ padding:'clamp(24px,3vw,40px)', paddingTop:'20px', paddingBottom:'32px', background:'var(--cream-2)', boxShadow:'none' } },
+          createElement('div', { className:'card reveal', style:{ padding:'24px 32px 32px', background:'var(--cream-2)', boxShadow:'none' } },
             createElement('div', { className:'compare-card-head compare-card-head--problems' }, t.compare.problemsTitle),
             createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:16 } },
               t.compare.problems.map((p,i)=>createElement('li', { key:i, className:'row', style:{ gap:14, width:'100%', alignItems:'center', color:'var(--slate)', fontWeight:600, fontSize:'var(--fs-16)' } },
@@ -253,7 +253,7 @@ function Compare({ t }) {
             ),
           ),
           /* solutions */
-          createElement('div', { className:'card reveal', 'data-d':'1', style:{ padding:'clamp(24px,3vw,40px)', paddingTop:'20px', paddingBottom:'32px', background:'var(--plum-700)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'visible' } },
+          createElement('div', { className:'card reveal', 'data-d':'1', style:{ padding:'24px 32px 32px', background:'var(--plum-700)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'visible' } },
             createElement('div', { className:'compare-card-head compare-card-head--solutions' },
               createElement('span', { className:'compare-card-head__badge' }, t.compare.bestShort, ' 🔥'),
               createElement(Logo, { tone: 'yellow' })),
@@ -267,7 +267,7 @@ function Compare({ t }) {
           )
         ),
         /* price — cost per meal (compact) */
-        t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'clamp(var(--space-24), 3vw, var(--space-32))', paddingTop:'var(--space-16)', marginTop:'var(--space-24)', height:'fit-content' } },
+        t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'clamp(var(--space-24), 3vw, var(--space-32))', paddingTop:'20px', marginTop:'var(--space-24)', height:'fit-content' } },
           createElement('div', { style:{ marginBottom:'var(--space-8)' } },
             createElement('span', { className:'label', style:{ color:'var(--stone)', fontSize:'14px', fontWeight:700, letterSpacing:'.12em', textTransform:'uppercase' } }, t.compare.costTitle)),
           createElement('div', { className:'compare-cost-grid' },
@@ -375,6 +375,7 @@ function HowIllu({ i }) {
 
 function HowItWorks({ t }) {
   const cardBg = ['#FDF3FF', '#F6FBEF', 'var(--input-background)'];
+  const stepColors = ['var(--brand)', 'var(--green)', 'var(--plum-700)'];
   return (
     createElement('section', { className:'section section--white', id:'how' },
       createElement('div', { className:'wrap' },
@@ -382,14 +383,14 @@ function HowItWorks({ t }) {
           createElement('div', { className:'eyebrow' }, t.how.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.how.title)
         ),
-        createElement('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:24 } },
+        createElement('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:16 } },
           t.how.steps.map((s,i)=>createElement('div', { key:i, className:'card reveal', 'data-d':String(i+1), style:{ overflow:'hidden', background:cardBg[i], borderRadius:'50px', boxShadow:'none', color:'rgba(42, 34, 48, 1)' } },
             createElement('div', { style:{ position:'relative', aspectRatio:'5/4', overflow:'hidden', display:'grid', placeItems:'center' } },
-              createElement('span', { className:'mono', style:{ position:'static', fontSize:'12px', fontWeight:500, color:'var(--brand)', opacity:.7, marginInline:0, paddingInline:24 } }, s.n),
+              createElement('span', { className:'mono', style:{ position:'static', fontSize:'12px', fontWeight:500, color:stepColors[i], opacity:.7, marginInline:0, paddingInline:32, width:'100%' } }, s.n),
               createElement(HowIllu, { i })
             ),
-            createElement('div', { style:{ padding:'var(--space-24) var(--space-24) var(--space-32)' } },
-              createElement('h3', { className:'h3', style:{ margin:'0 0 var(--space-20)', color:'var(--ink)' } }, s.t),
+            createElement('div', { style:{ padding:'var(--space-24) var(--space-32) 36px' } },
+              createElement('h3', { className:'h3', style:{ margin:'0 0 var(--space-12)', color:'var(--ink)' } }, s.t),
               createElement('p', { style:{ margin:0, color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.5 } }, s.d))
           ))
         )

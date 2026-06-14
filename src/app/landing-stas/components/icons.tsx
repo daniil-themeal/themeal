@@ -10,6 +10,7 @@ import {
   ClockIcon,
   FacebookIcon,
   HeartIcon,
+  InfoIcon,
   InstagramIcon,
   MapPinIcon,
   MinusIcon,
@@ -60,6 +61,7 @@ function fromFeather(Comp: ComponentType<IconProps>) {
 
 const Icon = {
   check: fromFeather(CheckIcon),
+  info: fromFeather(InfoIcon),
   arrow: fromFeather(ArrowRightIcon),
   chevron: fromFeather(ChevronDownIcon),
   clock: fromFeather(ClockIcon),

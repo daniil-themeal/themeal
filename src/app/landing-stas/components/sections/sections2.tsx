@@ -42,11 +42,13 @@ function Menu({ t, onOrder }) {
 
   return (
     createElement('section', { className:'section section--cream menu-section', id:'menu', style:{ paddingBottom:'clamp(var(--space-48), 6vw, var(--space-80))' } },
-      createElement('div', { className:'wrap' },
-        createElement('div', { className:'eyebrow menu-eyebrow reveal' }, t.menu.eyebrow),
+      createElement('div', { className:'wrap', style:{ height:'fit-content' } },
         createElement('div', { className:'menu-head reveal' },
           createElement('div', { className:'menu-head-text' },
-            createElement('h2', { className:'h2 menu-head-title' }, t.menu.title),
+            createElement('div', { className:'menu-head-intro' },
+              createElement('div', { className:'eyebrow menu-eyebrow' }, t.menu.eyebrow),
+              createElement('h2', { className:'h2 menu-head-title' }, t.menu.title),
+            ),
             createElement('p', { className:'row menu-head-trusted', style:{ gap:8, margin:0, color:'var(--pink)', fontWeight:600, fontSize:'var(--fs-16)' } }, createElement(Icon.heart,{size:18,fill:'currentColor',sw:0}), t.menu.trusted)
           ),
           createElement('button', {
@@ -110,12 +112,15 @@ function Menu({ t, onOrder }) {
 
       createElement('div', { className:'wrap', style:{ height:'fit-content' } },
         createElement('p', { className:'menu-note muted reveal' },
-          createElement(Icon.check, { size:18, sw:2.6, style:{ color:'var(--green)', flexShrink:0, marginTop:1 } }),
+          createElement(Icon.info, { size:18, style:{ color:'var(--green)', flexShrink:0, marginTop:1 } }),
           t.menu.note),
         createElement('style', null, `
+          .menu-head-intro {
+            width:100%;
+          }
           .menu-eyebrow { margin-bottom:var(--space-24); }
           @media (max-width: 640px) {
-            .menu-eyebrow { text-align:center; }
+            .menu-head-intro { text-align:center; }
           }
           .menu-head {
             display:flex;
@@ -123,7 +128,7 @@ function Menu({ t, onOrder }) {
             gap:16px;
             align-items:flex-start;
             justify-content:space-between;
-            margin-bottom:24px;
+            margin-bottom:64px;
           }
           .menu-head-text {
             flex:1 1 0;
@@ -151,7 +156,7 @@ function Menu({ t, onOrder }) {
             flex-direction:column;
             flex:1;
             flex-shrink:0;
-            gap:12px;
+            gap:24px;
             min-height:0;
             cursor:pointer;
           }
@@ -176,7 +181,7 @@ function Menu({ t, onOrder }) {
           }
           .menucard-shell:hover .menucard-img { transform:scale(1.03); }
           .menucard-meta {
-            margin:0;
+            margin:0 0 16px;
             font-size:var(--fs-14);
             font-weight:500;
             color:var(--stone);
@@ -351,9 +356,9 @@ function LeadCapture({ t, onWhatsAppClick }) {
           padding:'clamp(var(--space-32), 4vw, var(--space-64))', boxShadow:'var(--shadow-md)', border:'none',
         } },
           createElement('div', { style:{ position:'absolute', top:-60, insetInlineEnd:-40, width:240, height:240, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.18), transparent 70%)', pointerEvents:'none' } }),
-          createElement('div', { style:{ position:'relative', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:'clamp(var(--space-24), 4vw, var(--space-64))', alignItems:'center' } },
+          createElement('div', { style:{ position:'relative', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:'clamp(var(--space-24), 4vw, var(--space-64))', alignItems:'start' } },
             createElement('div', { className:'stack', style:{ gap:'var(--space-16)' } },
-              createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'7px 14px' } },
+              createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'8px 14px' } },
                 createElement(Icon.whatsapp,{size:15}), l.eyebrow),
               createElement('h3', { className:'h3', style:{ margin:0 } }, l.title),
               createElement('p', { className:'lead', style:{ margin:0 } }, l.sub),

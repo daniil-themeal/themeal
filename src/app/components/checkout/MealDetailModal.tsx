@@ -9,6 +9,7 @@ import { XIcon } from '../common/icons';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 
 type MealDetailModalCssVariables = CSSProperties & {
+  '--cream': string;
   '--meal-detail-page-bg': string;
   '--meal-detail-card-bg': string;
   '--meal-detail-border': string;
@@ -21,6 +22,7 @@ type MealDetailModalCssVariables = CSSProperties & {
 };
 
 const mealDetailModalStyle: MealDetailModalCssVariables = {
+  '--cream': '#FBF8F3',
   '--meal-detail-page-bg': COLOR_TOKENS.neutral[50],
   '--meal-detail-card-bg': COLOR_TOKENS.base.white,
   '--meal-detail-border': COLOR_TOKENS.neutral[100],
@@ -71,7 +73,7 @@ export function MealDetailModal({
     >
       {(requestClose) => (
         <div style={mealDetailModalStyle}>
-          <div className="sticky top-0 z-10 flex h-[56px] shrink-0 items-center justify-end border-b border-[var(--meal-detail-border)] bg-[var(--meal-detail-card-bg)] md:static md:z-auto">
+          <div className="sticky top-0 z-10 flex h-[56px] shrink-0 items-center justify-end bg-[var(--meal-detail-card-bg)] md:static md:z-auto">
             <button
               type="button"
               onClick={requestClose}
@@ -89,7 +91,7 @@ export function MealDetailModal({
             </button>
           </div>
 
-          <div className="flex shrink-0 items-center justify-center bg-[var(--meal-detail-page-bg)] py-[40px]">
+          <div className="flex shrink-0 items-center justify-center bg-[var(--cream)] py-[40px]">
             <div className="h-[223px] w-[310px] overflow-hidden">
               <img
                 src={meal.img}
@@ -105,7 +107,7 @@ export function MealDetailModal({
                 {meal.name}
               </p>
 
-              <div className="flex w-full flex-col gap-[8px]">
+              <div className="flex w-full flex-col gap-[12px]">
                 <DottedRow label="Weight" value={`${meal.weight} g`} />
                 <DottedRow label="Calories" value={`${meal.kcal} kCal`} />
                 <DottedRow label="Proteins" value={`${meal.proteins} g`} />
@@ -113,7 +115,7 @@ export function MealDetailModal({
                 <DottedRow label="Carbohydrates" value={`${meal.carbs} g`} />
               </div>
 
-              <div className="flex w-full flex-col gap-[8px]">
+              <div className="flex w-full flex-col gap-[12px]">
                 <p className="font-sans text-[length:var(--meal-detail-body-font-size)] font-bold leading-[150%] text-[var(--meal-detail-text)]">
                   Ingredients
                 </p>
@@ -123,7 +125,7 @@ export function MealDetailModal({
                 </p>
               </div>
 
-              <div className="flex w-full flex-col gap-[4px]">
+              <div className="flex w-full flex-col gap-[12px]">
                 <p className="font-sans text-[length:var(--meal-detail-body-font-size)] font-bold leading-[150%] text-[var(--meal-detail-text)]">
                   Allergens
                 </p>
