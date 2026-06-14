@@ -355,7 +355,9 @@ body {
 }
 .spacing-overlay__zone {
   position:fixed; left:0; right:0;
-  background:rgba(46, 15, 74, .3);
+  box-sizing:border-box;
+  border-top:1px solid rgba(46, 15, 74, .55);
+  border-bottom:1px solid rgba(46, 15, 74, .55);
 }
 .spacing-overlay__label {
   position:fixed; transform:translateY(-50%);

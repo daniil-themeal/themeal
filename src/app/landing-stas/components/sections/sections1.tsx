@@ -242,7 +242,7 @@ function Compare({ t }) {
         ),
         createElement('div', { className:'grid-12 compare-cards', style:{ alignItems:'stretch' } },
           /* problems */
-          createElement('div', { className:'card reveal', style:{ padding:'clamp(24px,3vw,40px)', paddingBottom:'32px', background:'var(--cream-2)', boxShadow:'none' } },
+          createElement('div', { className:'card reveal', style:{ padding:'clamp(24px,3vw,40px)', paddingTop:'20px', paddingBottom:'32px', background:'var(--cream-2)', boxShadow:'none' } },
             createElement('div', { className:'compare-card-head compare-card-head--problems' }, t.compare.problemsTitle),
             createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:16 } },
               t.compare.problems.map((p,i)=>createElement('li', { key:i, className:'row', style:{ gap:14, width:'100%', alignItems:'center', color:'var(--slate)', fontWeight:600, fontSize:'var(--fs-16)' } },
@@ -253,7 +253,7 @@ function Compare({ t }) {
             ),
           ),
           /* solutions */
-          createElement('div', { className:'card reveal', 'data-d':'1', style:{ padding:'clamp(24px,3vw,40px)', paddingTop:'20px', paddingBottom:'48px', background:'var(--plum-700)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'hidden' } },
+          createElement('div', { className:'card reveal', 'data-d':'1', style:{ padding:'clamp(24px,3vw,40px)', paddingTop:'20px', paddingBottom:'32px', background:'var(--plum-700)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'visible' } },
             createElement('div', { className:'compare-card-head compare-card-head--solutions' },
               createElement('span', { className:'compare-card-head__badge' }, t.compare.bestShort, ' 🔥'),
               createElement(Logo, { tone: 'yellow' })),
