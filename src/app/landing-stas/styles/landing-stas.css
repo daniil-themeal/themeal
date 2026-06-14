@@ -94,6 +94,7 @@ body {
 
   /* header balance: logo SVG 94×30, profile btn 42×42 */
   --hdr-logo-h: 26px;
+  --hdr-h: 64px;
   --hdr-profile-btn: 42px;
 
   background:var(--cream); color:var(--ink);
@@ -169,10 +170,9 @@ body {
   box-shadow:0 14px 44px rgba(252,222,2,.3);
   font-size:inherit;
   line-height:1;
-  --hero-price-sub-fs: calc(var(--landing-h1-fs) * 0.3125);
 }
 .landing-stas #top .hero-title__was {
-  font-size:var(--hero-price-sub-fs);
+  font-size:var(--fs-25);
   text-decoration:line-through;
   opacity:.5;
   font-weight:900;
@@ -184,7 +184,7 @@ body {
   line-height:80%;
 }
 .landing-stas #top .hero-title__cur {
-  font-size:var(--hero-price-sub-fs);
+  font-size:var(--fs-25);
   line-height:1;
   letter-spacing:-0.5px;
   font-weight:900;
@@ -208,6 +208,39 @@ body {
   flex-wrap: nowrap;
   min-width: 0;
   width: 100%;
+}
+.landing-stas .lead-form-prefix,
+.landing-stas .lead-form-input {
+  min-height: 58px;
+  border-radius: var(--r-md);
+  background: #F3F4F7;
+  border: 1px solid #C7CED9;
+  color: var(--ink);
+  font-size: var(--fs-16);
+  font-weight: 600;
+  box-shadow: none;
+  outline: none;
+  transition: border-color .2s var(--ease);
+}
+.landing-stas .lead-form-prefix {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  font-weight: 700;
+}
+.landing-stas .lead-form-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: 0 18px;
+  font: inherit;
+}
+.landing-stas .lead-form-input::placeholder {
+  color: #ADB7C7;
+}
+.landing-stas .lead-form-input:focus {
+  border-color: #ADB7C7;
 }
 .landing-stas .lead-form-submit {
   width: 100%;
@@ -515,20 +548,53 @@ body {
 }
 
 /* ---- header nav: hide links on small screens ---- */
+.hdr-logo {
+  align-self: stretch;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+}
+.hdr-nav {
+  align-self: stretch;
+  gap: 0;
+}
+.hdr-nav .navlink {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding-inline: 24px;
+}
 .hdr-profile {
-  padding-left:max(0px, calc(94 / 30 * var(--hdr-logo-h) - var(--hdr-profile-btn)));
+  align-self: stretch;
+  padding-left:max(0px, calc(94 / 30 * var(--hdr-logo-h) - var(--hdr-h)));
 }
-.hdr-profile .btn-secondary {
-  box-shadow:none;
-  border:2px solid rgba(255,255,255,.3);
-  background:unset;
-  background-image:none;
-  color:rgba(255, 255, 255, 1);
+.hdr-profile-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
 }
-.hdr-profile .btn-secondary:hover {
-  box-shadow:none;
-  background:rgba(255,255,255,.1);
-  transform:none;
+.hdr-profile-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--hdr-profile-btn);
+  height: var(--hdr-profile-btn);
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.3);
+  color: rgba(255, 255, 255, 1);
+  background: unset;
+  box-shadow: none;
+  transition: background .15s;
+}
+.hdr-profile-btn:hover .hdr-profile-icon {
+  background: rgba(255,255,255,.1);
 }
 @media (max-width: 880px){ .hdr-nav { display: none !important; } }
 
@@ -774,19 +840,23 @@ body {
 /* ---- hero-stats: compact below sm (576px) ---- */
 @media (max-width: 575px){
   .landing-stas .hero-stats {
-    gap: clamp(6px, 2.5vw, 12px) !important;
-    padding-right: 0 !important;
-    flex-wrap: nowrap !important;
-    justify-content: center !important;
+    gap: 32px !important;
+    padding-inline: 32px !important;
+    flex-wrap: wrap !important;
+    justify-content: space-between !important;
+    white-space: normal !important;
   }
   .landing-stas .hero-stats .row > span:first-child {
     display: none !important;
   }
   .landing-stas .hero-stats .row {
-    gap: 0.12em !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 0 !important;
+    white-space: normal !important;
   }
   .landing-stas .hero-stats .row > span:nth-child(n+2) {
-    font-size: clamp(10px, 2.7vw, 13px) !important;
+    font-size: 16px !important;
     white-space: nowrap !important;
   }
 }

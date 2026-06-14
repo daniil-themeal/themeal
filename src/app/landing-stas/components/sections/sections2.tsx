@@ -188,7 +188,7 @@ function Menu({ t, onOrder }) {
             font-weight:700;
             font-size:var(--fs-16);
             line-height:1.35;
-            color:var(--ink);
+            color:var(--primary);
           }
           .menu-note {
             display:flex;
@@ -268,8 +268,11 @@ function Fresh({ t }) {
         /* carousel */
         createElement('div', { className:'reveal', style:{ position:'relative' } },
           createElement('div', { style:{ position:'relative', borderRadius:'var(--r-2xl)', overflow:'hidden', boxShadow:'var(--shadow-lg)', aspectRatio:'4/5', background:'var(--cream-2)' } },
-            shots.map((src,i)=>createElement('img', { key:i, src, alt:'', loading:i?'lazy':'eager',
-              style:{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', opacity:i===idx?1:0, transition:'opacity .8s var(--ease)' } })),
+            shots.map((src,i)=>{
+              const offset = i === 3 ? { top:0, left:-2 } : i === 4 ? { top:2, left:-201 } : { top:0, left:0 };
+              return createElement('img', { key:i, src, alt:'', loading:i?'lazy':'eager',
+                style:{ position:'absolute', top:offset.top, right:0, bottom:0, left:offset.left, width:'100%', height:'100%', objectFit:'cover', opacity:i===idx?1:0, transition:'opacity .8s var(--ease)' } });
+            }),
             createElement('div', { style:{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(34,10,56,.55), transparent 45%)', pointerEvents:'none' } }),
             /* inside the kitchen caption */
             createElement('div', { className:'row', style:{ position:'absolute', top:16, insetInlineStart:16, gap:8, background:'rgba(34,10,56,.55)', backdropFilter:'blur(8px)', color:'#fff', borderRadius:'var(--r-pill)', padding:'8px 14px', fontSize:'var(--fs-12)', fontWeight:700, letterSpacing:'.04em', textTransform:'uppercase' } },
@@ -344,8 +347,8 @@ function LeadCapture({ t, onWhatsAppClick }) {
       createElement('div', { className:'wrap' },
         createElement('div', { className:'reveal', style:{
           position:'relative', overflow:'hidden', borderRadius:'var(--r-2xl)',
-          background:'linear-gradient(135deg, var(--brand-soft) 0%, #FBF1FF 55%, var(--brand-soft-2) 100%)',
-          padding:'clamp(28px,4vw,56px)', boxShadow:'var(--shadow-md)',
+          backgroundColor:'var(--card)',
+          padding:'clamp(28px,4vw,56px)', boxShadow:'var(--shadow-md)', border:'none',
         } },
           createElement('div', { style:{ position:'absolute', top:-60, insetInlineEnd:-40, width:240, height:240, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.18), transparent 70%)', pointerEvents:'none' } }),
           createElement('div', { style:{ position:'relative', display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(280px,1fr))', gap:'clamp(24px,4vw,56px)', alignItems:'center' } },
@@ -359,11 +362,9 @@ function LeadCapture({ t, onWhatsAppClick }) {
             createElement('div', { className:'stack', style:{ gap:12 } },
                   createElement('form', { className:'lead-form', onSubmit: handleSubmit },
                     createElement('div', { className:'lead-form-fields' },
-                      createElement('span', { className:'row', style:{ flex:'0 0 auto', gap:8, background:'#fff', borderRadius:'var(--r-md)', padding:'0 16px', fontWeight:700, fontSize:'var(--fs-16)', color:'var(--ink)', boxShadow:'var(--shadow-sm)', minHeight:58 } },
+                      createElement('span', { className:'lead-form-prefix' },
                         createElement('span', { style:{ fontSize:'var(--fs-20)' } }, '🇦🇪'), l.cc),
-                      createElement('input', { type:'tel', required:true, value:phone, onChange:(e)=>{ setPhone(e.target.value); setError(''); }, placeholder:l.ph, dir:'ltr',
-                        style:{ flex:'1 1 auto', minWidth:0, font:'inherit', fontSize:'var(--fs-16)', fontWeight:600, padding:'0 18px', minHeight:58, borderRadius:'var(--r-md)', border:'none', background:'#fff', color:'var(--ink)', boxShadow:'var(--shadow-sm)', outline:'none' },
-                        onFocus:(e)=>e.target.style.boxShadow='0 0 0 3px rgba(154,56,239,.22)', onBlur:(e)=>e.target.style.boxShadow='var(--shadow-sm)' })),
+                      createElement('input', { type:'tel', required:true, className:'lead-form-input', value:phone, onChange:(e)=>{ setPhone(e.target.value); setError(''); }, placeholder:l.ph, dir:'ltr' })),
                     createElement('button', { type:'submit', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 } }, l.cta)),
                   error ? createElement('span', { style:{ fontSize:'var(--fs-14)', textAlign:'center', color:'var(--pink)' } }, error) : null,
                   createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center' } }, l.hint))

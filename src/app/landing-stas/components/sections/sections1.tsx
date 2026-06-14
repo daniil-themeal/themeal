@@ -45,11 +45,11 @@ function Header({ t, lang, setLang, onOrder, dark }) {
           boxShadow: solid ? 'inset 0 -1px 0 rgba(255,255,255,.1)' : 'none',
         }
       },
-      createElement('div', { className:'wrap row', style:{ height:74, gap:24, justifyContent:'space-between' } },
-        createElement('a', { href:'#top', className:'row hdr-logo', style:{ gap:10 } },
+      createElement('div', { className:'wrap row', style:{ height:64, gap:24, justifyContent:'space-between' } },
+        createElement('a', { href:'#top', className:'row hdr-logo' },
           createElement(Logo, { tone: 'yellow' })
         ),
-        createElement('nav', { className:'row hdr-nav', style:{ gap:48, fontWeight:600, fontSize:'var(--fs-16)', color:txt } },
+        createElement('nav', { className:'row hdr-nav', style:{ fontWeight:600, fontSize:'var(--fs-16)', color:txt } },
           links.map(([h, l]) => createElement('a', {
             key:h, href:h, className:'navlink',
             style:{ color:txt, transition:'color .15s' },
@@ -57,15 +57,15 @@ function Header({ t, lang, setLang, onOrder, dark }) {
             onMouseLeave:(e)=>e.target.style.color = txt,
           }, l))
         ),
-        createElement('div', { className:'row', style:{ gap:12 } },
-          createElement('div', { className:'hdr-profile' },
-            createElement('button', {
-              title:t.nav.signin, 'aria-label':t.nav.signin,
-              className:'btn btn-secondary btn-sm',
-              style:{ width:42, height:42, padding:0, borderRadius:'50%',
-                color:onDark?'#fff':'var(--plum-700)',
-                boxShadow:'none', border:'2px solid rgba(255,255,255,.3)', background:'unset', backgroundImage:'none' },
-            }, createElement(Icon.user,{size:20}))
+        createElement('div', { className:'hdr-profile' },
+          createElement('button', {
+            type:'button',
+            title:t.nav.signin, 'aria-label':t.nav.signin,
+            className:'hdr-profile-btn',
+          },
+            createElement('span', { className:'hdr-profile-icon' },
+              createElement(Icon.user,{size:20})
+            )
           )
         )
       )
