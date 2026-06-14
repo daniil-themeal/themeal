@@ -253,7 +253,7 @@ function Compare({ t }) {
             ),
           ),
           /* solutions */
-          createElement('div', { className:'card reveal', 'data-d':'1', style:{ paddingTop:'var(--space-20)', paddingBottom:'var(--space-32)', paddingLeft:'40px', paddingRight:'40px', background:'var(--plum-700)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'visible' } },
+          createElement('div', { className:'card reveal', 'data-d':'1', style:{ padding:'32px 24px', background:'var(--plum-700)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'visible' } },
             createElement('div', { className:'compare-card-head compare-card-head--solutions' },
               createElement('span', { className:'compare-card-head__badge' }, t.compare.bestShort, ' 🔥'),
               createElement(Logo, { tone: 'yellow' })),

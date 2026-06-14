@@ -287,8 +287,8 @@ body {
 .wrap {
   width:100%;
   max-width:var(--maxw);
-  margin-inline:max(40px, calc((100% - min(100%, var(--maxw))) / 2));
-  padding-inline:min(64px, var(--gutter));
+  margin-inline:auto;
+  padding-inline:var(--gutter);
   display:grid;
   grid-template-columns:repeat(12, minmax(0, 1fr));
   column-gap:var(--grid-gap);
@@ -687,8 +687,8 @@ body {
   padding-bottom:16px;
   width:100%;
   max-width:var(--maxw);
-  margin-inline:max(40px, calc((100% - min(100%, var(--maxw))) / 2));
-  padding-inline:min(64px, var(--gutter));
+  margin-inline:auto;
+  padding-inline:var(--gutter);
   box-sizing:border-box;
   overflow:visible;
 }
