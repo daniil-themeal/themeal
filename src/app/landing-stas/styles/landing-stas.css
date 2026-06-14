@@ -59,8 +59,8 @@
   --shadow-secondary-hover:0 8px 22px rgba(42,34,48,.14), 0 16px 40px rgba(42,34,48,.12);
 
   --gutter:clamp(20px, 5vw, 80px);
-  --maxw:1200px;
-  --grid-gap:clamp(16px, 2vw, 24px);
+  --maxw:1280px;
+  --grid-gap:16px;
   --ease:cubic-bezier(.22,.61,.36,1);
 }
 
@@ -347,9 +347,13 @@ body {
 }
 .compare-cards > * { grid-column:span 6; }
 .benefits-cards > * { grid-column:span 4; }
-.compare-cards,
+.grid-12.compare-cards {
+  gap: var(--space-16);
+  column-gap: var(--space-16);
+  row-gap: var(--space-16);
+}
 .benefits-cards {
-  row-gap:var(--grid-gap);
+  gap:var(--space-16);
 }
 @media (max-width: 860px){
   .benefits-cards > * { grid-column:1 / -1; }
@@ -566,7 +570,7 @@ body {
   }
 }
 .landing-stas #why .compare-cost-grid .stack {
-  gap: var(--space-8);
+  gap: var(--space-12);
   min-width: 0;
   height: 100%;
   padding-right: clamp(12px, 2vw, 22px);
@@ -753,7 +757,7 @@ body {
   width:100%;
   max-width:100%;
   min-width:0;
-  gap:8px;
+  gap:0;
   padding-bottom:0;
   margin-bottom:var(--space-16);
 }
@@ -787,12 +791,12 @@ body {
 .menu-section .menu-grid.menu-grid--cards {
   display:grid;
   grid-template-columns:repeat(12, minmax(0, 1fr));
-  column-gap:var(--space-16);
+  column-gap:var(--grid-gap);
   align-items:stretch;
   width:100%;
   min-width:0;
   overflow:visible;
-  padding:12px 0 12px 4px;
+  padding-block:12px;
 }
 .menu-section .menu-grid--cards > .menucard-shell {
   grid-column:span 3;

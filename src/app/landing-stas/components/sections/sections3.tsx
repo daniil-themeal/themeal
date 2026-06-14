@@ -22,7 +22,7 @@ function Benefits({ t, onOrder }) {
               boxShadow: hot ? 'var(--shadow-lg)' : 'var(--shadow-sm)',
               position:'relative', overflow:'hidden',
             } },
-              hot && createElement('span', { className:'chip', style:{ position:'absolute', top:16, insetInlineEnd:16, background:'var(--yellow)', color:'var(--plum-800)', fontWeight:700, fontSize:'var(--fs-12)', padding:'6px 12px', whiteSpace:'nowrap', lineHeight:1, letterSpacing:'.02em' } }, t.benefits.bestL),
+              hot && createElement('span', { className:'chip', style:{ position:'absolute', top:16, insetInlineEnd:16, background:'var(--pink)', color:'#fff', fontWeight:700, fontSize:'var(--fs-12)', padding:'6px 12px', whiteSpace:'nowrap', lineHeight:1, letterSpacing:'.02em' } }, t.benefits.bestL),
               createElement('div', null,
                 createElement('h3', { className:'h3', style:{ margin:0, color: hot ? '#fff' : 'var(--ink)', display:'flex', alignItems:'center', gap:8, flexWrap:'wrap' } },
                   hot ? [c.t.replace(' theMeal',' ').trim(), createElement(Logo,{key:'l',height:24})] : c.t),

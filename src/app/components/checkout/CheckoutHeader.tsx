@@ -83,7 +83,7 @@ function Stepper({
   onStepSelect?: (step: CheckoutHeaderStep) => void;
 }) {
   return (
-    <div className="flex items-center justify-center gap-0 px-[0px] py-[16px] sm:px-[8px] md:px-[16px]">
+    <div className="flex h-full items-center justify-center gap-0 px-[0px] sm:px-[8px] md:px-[16px]">
       {steps.map((step, index) => {
         const status = getStepStatus(index, current);
         const isActive = status === 'active';
@@ -136,12 +136,12 @@ function Stepper({
         );
 
         return (
-          <div key={step} className="flex items-center">
+          <div key={step} className="flex h-full items-center">
             {onStepSelect ? (
               <button
                 type="button"
                 onClick={() => onStepSelect(headerStep)}
-                className="flex cursor-pointer items-center rounded-[6px] transition-opacity hover:opacity-80"
+                className="flex h-full cursor-pointer items-center rounded-[6px] px-[4px] transition-opacity hover:opacity-80 sm:px-[8px]"
                 aria-label={`Switch to ${step} step`}
               >
                 {stepLabel}
@@ -241,12 +241,12 @@ export function CheckoutHeader({
           )}
         </div>
 
-        <div className="flex flex-1 items-center justify-center px-[8px]">
+        <div className="flex h-full flex-1 items-stretch justify-center px-[8px]">
           {title ? (
             <p
               className={[
                 TEXT_TRIM_CLASS_NAME,
-                'min-w-0 font-sans text-[length:var(--checkout-header-label-font-size-sm)] font-bold leading-[130%] text-[var(--checkout-header-text-active)]',
+                'min-w-0 self-center font-sans text-[length:var(--checkout-header-label-font-size-sm)] font-bold leading-[130%] text-[var(--checkout-header-text-active)]',
               ].join(' ')}
             >
               {title}

@@ -107,7 +107,7 @@ export function MealDetailModal({
                 {meal.name}
               </p>
 
-              <div className="flex w-full flex-col gap-[12px]">
+              <div className="flex w-full flex-col gap-[16px]">
                 <DottedRow label="Weight" value={`${meal.weight} g`} />
                 <DottedRow label="Calories" value={`${meal.kcal} kCal`} />
                 <DottedRow label="Proteins" value={`${meal.proteins} g`} />
