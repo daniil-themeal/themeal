@@ -255,8 +255,8 @@ function Compare({ t }) {
           /* solutions */
           createElement('div', { className:'card reveal', 'data-d':'1', style:{ padding:'clamp(24px,3vw,40px)', paddingTop:'32px', paddingBottom:'48px', background:'var(--plum-700)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'hidden' } },
             createElement('div', { className:'compare-card-head compare-card-head--solutions' },
-              createElement(Logo, { color:'#fff', accent:'var(--green-bright)' }),
-              createElement('span', { className:'compare-card-head__badge' }, t.compare.bestShort, ' 🔥')),
+              createElement('span', { className:'compare-card-head__badge' }, t.compare.bestShort, ' 🔥'),
+              createElement(Logo, { tone: 'yellow' })),
             createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:16 } },
               t.compare.solutions.map((s,i)=>createElement('li', { key:i, className:'row', style:{ gap:14, width:'100%', alignItems:'center', fontWeight:600, fontSize:'var(--fs-16)' } },
                 createElement(CompareIcon, { src:s.icon }),
@@ -269,12 +269,9 @@ function Compare({ t }) {
         /* price — cost per meal (compact) */
         t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'clamp(22px,3vw,32px)', paddingTop:14, marginTop:24 } },
           createElement('div', { style:{ marginBottom:18 } },
-            createElement('span', { className:'label', style:{ color:'var(--stone)', fontSize:'var(--fs-12)', fontWeight:700, letterSpacing:'.12em', textTransform:'uppercase' } }, t.compare.costTitle)),
-          createElement('div', { style:{ display:'flex', flexWrap:'wrap', gap:'18px 0' } },
-            t.compare.compare.map((c,i)=>createElement('div', { key:i, className:'stack', style:{
-              flex:'1 1 130px', gap:6, paddingInline:'clamp(12px,2vw,22px)',
-              borderInlineStart: i ? '1px solid var(--ash)' : 'none',
-            } },
+            createElement('span', { className:'label', style:{ color:'var(--stone)', fontSize:'14px', fontWeight:700, letterSpacing:'.12em', textTransform:'uppercase' } }, t.compare.costTitle)),
+          createElement('div', { className:'compare-cost-grid' },
+            t.compare.compare.map((c,i)=>createElement('div', { key:i, className:'stack' },
               createElement('span', { style:{ fontSize:'var(--fs-16)', fontWeight:600, color: c.hot?'var(--brand)':'#8A8694', display:'flex', alignItems:'center', gap:6 } },
                 c.hot ? [createElement(Logo,{key:'l',height:16.8,color:'#9A38EF',accent:'#9A38EF'}), createElement('span',{key:'b',style:{color:'var(--pink)'}}, '★')] : c.k),
               createElement('span', { style:{ fontSize:'var(--fs-16)', fontWeight: c.hot ? 900 : 600, color: c.hot ? 'var(--brand)' : 'var(--slate)' } }, c.v)))
@@ -307,7 +304,7 @@ function Compare({ t }) {
             font-weight:700;
             font-size:16px;
             line-height:1;
-            text-align:end;
+            text-align:start;
           }
         `)
       )

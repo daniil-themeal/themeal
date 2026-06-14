@@ -3,7 +3,7 @@ import { useGridOverlay } from '../useGridOverlay';
 
 export function ViewportLabel() {
   const [size, setSize] = useState({ w: 0, h: 0 });
-  const { cols, rows, toggleCols, toggleRows } = useGridOverlay();
+  const { cols, rows, devLabelsVisible, toggleCols, toggleRows } = useGridOverlay();
 
   useEffect(() => {
     const update = () => setSize({ w: window.innerWidth, h: window.innerHeight });
@@ -12,20 +12,32 @@ export function ViewportLabel() {
     return () => window.removeEventListener('resize', update);
   }, []);
 
-  if (!size.w) return null;
+  if (!size.w || !devLabelsVisible) return null;
 
   return (
     <>
-      <button
-        type="button"
-        className={`dev-label grid-label grid-label--cols${cols ? ' is-on' : ''}`}
-        aria-pressed={cols}
-        aria-label="Toggle column grid"
-        title="Column grid · Shift+G"
-        onClick={toggleCols}
-      >
-        G
-      </button>
+      <div className="grid-labels">
+        <button
+          type="button"
+          className={`dev-label grid-label${cols ? ' is-on' : ''}`}
+          aria-pressed={cols}
+          aria-label="Toggle column grid"
+          title="Column grid · Shift+G"
+          onClick={toggleCols}
+        >
+          G
+        </button>
+        <button
+          type="button"
+          className={`dev-label grid-label${rows ? ' is-on' : ''}`}
+          aria-pressed={rows}
+          aria-label="Toggle row grid"
+          title="Row grid · Shift+H"
+          onClick={toggleRows}
+        >
+          H
+        </button>
+      </div>
 
       <div className="dev-label viewport-label" aria-hidden="true">
         <span className="viewport-label__value">{size.w}</span>
@@ -33,16 +45,6 @@ export function ViewportLabel() {
         <span className="viewport-label__value">{size.h}</span>
       </div>
 
-      <button
-        type="button"
-        className={`dev-label grid-label grid-label--rows${rows ? ' is-on' : ''}`}
-        aria-pressed={rows}
-        aria-label="Toggle row grid"
-        title="Row grid · Shift+H"
-        onClick={toggleRows}
-      >
-        H
-      </button>
     </>
   );
 }
