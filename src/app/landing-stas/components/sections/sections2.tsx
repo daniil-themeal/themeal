@@ -128,7 +128,7 @@ function Menu({ t, onOrder }) {
             gap:16px;
             align-items:flex-start;
             justify-content:space-between;
-            margin-bottom:64px;
+            margin-bottom:var(--section-intro-gap);
           }
           .menu-head-text {
             flex:1 1 0;
@@ -298,7 +298,7 @@ function Fresh({ t }) {
         ),
         createElement('div', null,
           createElement('div', { className:'eyebrow reveal' }, t.fresh.eyebrow),
-          createElement('h2', { className:'h2 reveal', style:{ margin:'0 0 var(--space-64)' } }, t.fresh.title),
+          createElement('h2', { className:'h2 reveal', style:{ margin:'0 0 var(--section-intro-gap)' } }, t.fresh.title),
           createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:'var(--space-24)' } },
             t.fresh.items.map((it,i)=>createElement('li', { key:i, className:'row reveal', 'data-d':String((i%3)+1), style:{ gap:16, alignItems:'center' } },
               createElement('span', { style:{ flex:'0 0 auto', width:44, height:44, borderRadius:'var(--r-md)', background:'var(--brand-soft)', color:'var(--brand)', display:'grid', placeItems:'center' } }, createElement(ic[i], { size:22 })),
