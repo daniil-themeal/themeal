@@ -272,8 +272,8 @@ function Compare({ t }) {
             createElement('span', { className:'label', style:{ color:'var(--stone)', fontSize:'14px', fontWeight:700, letterSpacing:'.12em', textTransform:'uppercase' } }, t.compare.costTitle)),
           createElement('div', { className:'compare-cost-grid' },
             t.compare.compare.map((c,i)=>createElement('div', { key:i, className:'stack' },
-              createElement('span', { style:{ fontSize:'var(--fs-16)', fontWeight:600, color: c.hot?'var(--brand)':'#8A8694', display:'flex', alignItems:'center', gap:6 } },
-                c.hot ? [createElement(Logo,{key:'l',height:16.8,color:'#9A38EF',accent:'#9A38EF'}), createElement('span',{key:'b',style:{color:'var(--pink)'}}, '★')] : c.k),
+              createElement('span', { style:{ fontSize:'var(--fs-16)', fontWeight:600, color: c.hot?'var(--brand)':'#8A8694', display:'flex', alignItems:'center', gap:12, height:18 } },
+                c.hot ? [createElement(Logo,{key:'l',height:18,color:'#9A38EF',accent:'#9A38EF'}), createElement('span',{key:'b',style:{color:'var(--pink)'}}, '★')] : c.k),
               createElement('span', { style:{ fontSize:'var(--fs-16)', fontWeight: c.hot ? 900 : 600, color: c.hot ? 'var(--brand)' : 'var(--slate)' } }, c.v)))
           )
         ),

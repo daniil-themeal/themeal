@@ -102,7 +102,9 @@ function Menu({ t, onOrder }) {
               },
                 createElement('img', { className:'menucard-img', src:imgs[i%imgs.length], alt:'', loading:'lazy', draggable:false }),
                 createElement('div', { className:'menucard-body' },
-                  createElement('p', { className:'menucard-meta' }, `${meta[i].kcal} ccal • ${meta[i].g} g ${t.menu.slots[i]}`),
+                  createElement('p', { className:'menucard-meta' },
+                    createElement('span', { className:'menucard-meta-nutrition' }, `${meta[i].kcal} ccal • ${meta[i].g} g`),
+                    createElement('span', { className:'menucard-meta-slot' }, t.menu.slots[i])),
                   createElement('p', { className:'menucard-title' }, m))
               )
             ))
@@ -182,6 +184,10 @@ function Menu({ t, onOrder }) {
           .menucard-shell:hover .menucard-img { transform:scale(1.03); }
           .menucard-meta {
             margin:0 0 16px;
+            display:flex;
+            flex-wrap:wrap;
+            align-items:center;
+            gap:0 0.35em;
             font-size:var(--fs-14);
             font-weight:500;
             color:var(--stone);
@@ -400,16 +406,16 @@ function LeadCapture({ t, onWhatsAppClick }) {
         } },
           createElement('div', { style:{ position:'absolute', top:-60, insetInlineEnd:-40, width:240, height:240, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.18), transparent 70%)', pointerEvents:'none' } }),
           createElement('div', { className:'lead-grid' },
-            createElement('div', { className:'stack lead-text', style:{ gap:'var(--space-16)' } },
-              createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'8px 14px' } },
-                l.eyebrow),
-              createElement('div', { className:'stack lead-copy', style:{ gap:'var(--space-16)' } },
+            createElement('div', { className:'stack lead-text', style:{ gap:'var(--space-24)' } },
+              createElement('div', { className:'stack lead-copy', style:{ gap:'var(--space-20)' } },
                 createElement('h3', { className:'h3 row lead-title', style:{ margin:0, gap:4, width:'100%' } },
                   ...leadTitleWordSpans(l.title),
                   createElement(LeadTitleWhatsAppIcon)),
                 createElement('p', { className:'lead', style:{ margin:0, width:'100%' } }, l.sub),
                 createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)' } }, l.fine)),
-              ),
+              createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'0 14px', height:32 } },
+                l.eyebrow),
+            ),
 
             createElement('div', { className:'stack', style:{ gap:12 } },
                   createElement('form', { className:'lead-form', onSubmit: handleSubmit },

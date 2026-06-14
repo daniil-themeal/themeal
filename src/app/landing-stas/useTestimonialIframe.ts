@@ -66,11 +66,13 @@ export function useTestimonialIframe(iframeId: string) {
     if (!iframe) return;
 
     const handleIframeLoad = () => {
+      iframe.classList.add('loaded');
       initIframeResizer(iframeId);
     };
 
-    const removeScriptListener = loadResizerScript(handleIframeLoad);
+    const removeScriptListener = loadResizerScript(() => initIframeResizer(iframeId));
     iframe.addEventListener('load', handleIframeLoad);
+    if (iframe.complete) handleIframeLoad();
 
     return () => {
       removeScriptListener();

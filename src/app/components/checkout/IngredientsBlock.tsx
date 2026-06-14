@@ -4,6 +4,7 @@ import imgMeat from '../../../imports/CheckoutContainer-3/8e481e06f103e33b1c5333
 import imgShrimp from '../../../imports/CheckoutContainer-3/6264db5ca4b4084cd123428e1c871e85b6e699eb.png';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 const SVG_BAN =
   'M22.1174 0.251038C22.4521 -0.0836881 22.9947 -0.0836707 23.3294 0.251038C23.6642 0.585773 23.6642 1.12836 23.3294 1.46309L1.46309 23.3294C1.12836 23.6642 0.585773 23.6642 0.251038 23.3294C-0.0836707 22.9947 -0.0836881 22.4521 0.251038 22.1174L22.1174 0.251038Z';
@@ -31,10 +32,6 @@ type IngredientsBlockProps = {
 };
 
 type IngredientsBlockCssVariables = CSSProperties & {
-  '--ingredients-title-font-size': string;
-  '--ingredients-title-font-size-md': string;
-  '--ingredients-subtitle-font-size': string;
-  '--ingredients-subtitle-font-size-md': string;
   '--ingredients-item-title-font-size': string;
   '--ingredients-item-title-font-size-md': string;
   '--ingredients-item-description-font-size': string;
@@ -50,10 +47,6 @@ type IngredientsBlockCssVariables = CSSProperties & {
 };
 
 const ingredientsBlockStyle: IngredientsBlockCssVariables = {
-  '--ingredients-title-font-size': FONT_SIZE_TOKENS[20],
-  '--ingredients-title-font-size-md': FONT_SIZE_TOKENS[25],
-  '--ingredients-subtitle-font-size': FONT_SIZE_TOKENS[12],
-  '--ingredients-subtitle-font-size-md': FONT_SIZE_TOKENS[14],
   '--ingredients-item-title-font-size': FONT_SIZE_TOKENS[16],
   '--ingredients-item-title-font-size-md': FONT_SIZE_TOKENS[20],
   '--ingredients-item-description-font-size': FONT_SIZE_TOKENS[14],
@@ -110,15 +103,11 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
       className="flex w-full flex-col items-start gap-[16px]"
       style={ingredientsBlockStyle}
     >
-      <div className="flex w-full flex-col gap-[2px] px-[4px]">
-        <p className="font-sans text-[length:var(--ingredients-title-font-size)] font-bold leading-[130%] text-[var(--ingredients-text)] md:text-[length:var(--ingredients-title-font-size-md)]">
-          Exclude ingredients
-        </p>
-
-        <p className="font-sans text-[length:var(--ingredients-subtitle-font-size)] font-medium leading-[130%] text-[var(--ingredients-text)] md:text-[length:var(--ingredients-subtitle-font-size-md)]">
-          Optional. Select all that apply
-        </p>
-      </div>
+      <CheckoutSectionHeader
+        title="Exclude ingredients"
+        subtitle="Optional. Select all that apply"
+        gap={2}
+      />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">
         {ingredients.map((item) => {
@@ -146,7 +135,7 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
               <div className="flex cursor-pointer items-center gap-[12px] px-[20px] md:px-[24px]">
                 <div
                   className={[
-                    'flex flex-[1_0_0] flex-col gap-[4px] py-[20px]',
+                    'flex flex-[1_0_0] flex-col gap-[12px] py-[24px]',
                     checked
                       ? 'text-[var(--ingredients-active)]'
                       : 'text-[var(--ingredients-text)]',

@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import type { DayOption } from '../../data/checkoutPricing';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -19,10 +20,6 @@ const options: { id: DayOption; label: string }[] = [
 ];
 
 type DaysBlockCssVariables = CSSProperties & {
-  '--days-title-font-size': string;
-  '--days-title-font-size-md': string;
-  '--days-description-font-size': string;
-  '--days-description-font-size-md': string;
   '--days-card-title-font-size': string;
   '--days-card-title-font-size-md': string;
   '--days-chip-font-size': string;
@@ -42,10 +39,6 @@ type DaysBlockCssVariables = CSSProperties & {
 };
 
 const daysBlockStyle: DaysBlockCssVariables = {
-  '--days-title-font-size': FONT_SIZE_TOKENS[20],
-  '--days-title-font-size-md': FONT_SIZE_TOKENS[25],
-  '--days-description-font-size': FONT_SIZE_TOKENS[12],
-  '--days-description-font-size-md': FONT_SIZE_TOKENS[14],
   '--days-card-title-font-size': FONT_SIZE_TOKENS[16],
   '--days-card-title-font-size-md': FONT_SIZE_TOKENS[20],
   '--days-chip-font-size': FONT_SIZE_TOKENS[12],
@@ -118,7 +111,7 @@ function DayCard({
           : 'border-transparent bg-[var(--days-card-bg)]',
       ].join(' ')}
     >
-      <div className="flex flex-col items-start gap-[8px] p-[20px] md:px-[24px]">
+      <div className="flex flex-col items-start gap-[12px] p-[20px] md:px-[24px]">
         <p
           className={[
             'w-full font-sans text-[length:var(--days-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--days-card-title-font-size-md)]',
@@ -152,18 +145,14 @@ export function DaysBlock({
 }) {
   return (
     <div
-      className="flex flex-col items-start gap-[16px]"
+      className="flex w-full flex-col items-start gap-[16px]"
       style={daysBlockStyle}
     >
-      <div className="flex w-full flex-col gap-[2px] px-[4px]">
-        <p className="font-sans text-[length:var(--days-title-font-size)] font-bold leading-[130%] text-[var(--days-text)] md:text-[length:var(--days-title-font-size-md)]">
-          Which days do you eat with us?
-        </p>
-
-        <p className="font-sans text-[length:var(--days-description-font-size)] font-medium leading-[130%] text-[var(--days-text)] md:text-[length:var(--days-description-font-size-md)]">
-          Pick the days you want meals ready. Custom days cost the same per day.
-        </p>
-      </div>
+      <CheckoutSectionHeader
+        title="Which days do you eat with us?"
+        subtitle="Pick the days you want meals ready. Custom days cost the same per day."
+        gap={2}
+      />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">
         {options.map((opt) => (

@@ -15,10 +15,9 @@ import { Badge } from '../common/Badge';
 import type { BadgeVariant } from '../common/Badge';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 type DurationBlockCssVariables = CSSProperties & {
-  '--duration-title-font-size': string;
-  '--duration-title-font-size-md': string;
   '--duration-card-title-font-size': string;
   '--duration-card-title-font-size-md': string;
   '--duration-meta-font-size': string;
@@ -38,8 +37,6 @@ type DurationBlockCssVariables = CSSProperties & {
 };
 
 const durationBlockStyle: DurationBlockCssVariables = {
-  '--duration-title-font-size': FONT_SIZE_TOKENS[20],
-  '--duration-title-font-size-md': FONT_SIZE_TOKENS[25],
   '--duration-card-title-font-size': FONT_SIZE_TOKENS[16],
   '--duration-card-title-font-size-md': FONT_SIZE_TOKENS[20],
   '--duration-meta-font-size': FONT_SIZE_TOKENS[12],
@@ -128,9 +125,9 @@ function DurationCard({
         <Badge variant={meta.badge} className="absolute right-[18px] top-[-4px] z-[1]" />
       ) : null}
 
-      <div className="flex flex-col items-end gap-[12px] p-[20px] md:px-[24px]">
+      <div className="flex flex-col items-end gap-[12px] px-[20px] py-[24px] md:px-[24px]">
         <div className="flex w-full items-center gap-[12px]">
-          <div className="flex flex-[1_0_0] flex-col items-start gap-[4px]">
+          <div className="flex flex-[1_0_0] flex-col items-start gap-[12px]">
             <p className="font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)] md:text-[length:var(--duration-card-title-font-size-md)]">
               {meta.label}
             </p>
@@ -140,7 +137,7 @@ function DurationCard({
             ) : null}
           </div>
 
-          <div className="flex flex-col items-end gap-[4px]">
+          <div className="flex flex-col items-end gap-[12px]">
             <p className="whitespace-nowrap text-right font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-active)] md:text-[length:var(--duration-card-title-font-size-md)]">
               AED {formatPricePerDay(price.pricePerDay)}/day
             </p>
@@ -176,9 +173,7 @@ export function DurationBlock({
       className="flex w-full flex-col items-start gap-[16px]"
       style={durationBlockStyle}
     >
-      <p className="w-full px-[4px] font-sans text-[length:var(--duration-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)] md:text-[length:var(--duration-title-font-size-md)]">
-        Subscription duration
-      </p>
+      <CheckoutSectionHeader title="Subscription duration" />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">
         {durations.map((duration) => (

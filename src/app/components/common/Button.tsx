@@ -67,6 +67,8 @@ type ButtonCssVariables = CSSProperties & {
   '--button-border-disabled': string;
   '--button-font-size': string;
   '--button-border-radius': string;
+  '--button-shadow': string;
+  '--button-shadow-hover': string;
 };
 
 function hexToRgba(hex: string, alpha: number) {
@@ -79,17 +81,35 @@ function hexToRgba(hex: string, alpha: number) {
   return `rgba(${red},${green},${blue},${alpha})`;
 }
 
+function getColoredButtonShadow(baseHex: string) {
+  return {
+    shadow: `0 6px 18px ${hexToRgba(baseHex, 0.32)}, 0 14px 40px ${hexToRgba(baseHex, 0.24)}`,
+    shadowHover: `0 10px 26px ${hexToRgba(baseHex, 0.4)}, 0 20px 52px ${hexToRgba(baseHex, 0.28)}`,
+  };
+}
+
+const NO_BUTTON_SHADOW = {
+  shadow: 'none',
+  shadowHover: 'none',
+} as const;
+
 const BUTTON_FILLED_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--button-font-size'>> = {
-  primary: {
-    '--button-bg': COLOR_TOKENS.primary[500],
-    '--button-bg-hover': COLOR_TOKENS.primary[600],
-    '--button-text': COLOR_TOKENS.base.white,
-    '--button-bg-disabled': hexToRgba(COLOR_TOKENS.primary[500], 0.5),
-    '--button-text-disabled': COLOR_TOKENS.base.white,
-    '--button-border': COLOR_TOKENS.primary[500],
-    '--button-border-hover': COLOR_TOKENS.primary[600],
-    '--button-border-disabled': hexToRgba(COLOR_TOKENS.primary[500], 0.5),
-  },
+  primary: (() => {
+    const { shadow, shadowHover } = getColoredButtonShadow(COLOR_TOKENS.primary[500]);
+
+    return {
+      '--button-bg': COLOR_TOKENS.primary[500],
+      '--button-bg-hover': COLOR_TOKENS.primary[600],
+      '--button-text': COLOR_TOKENS.base.white,
+      '--button-bg-disabled': hexToRgba(COLOR_TOKENS.primary[500], 0.5),
+      '--button-text-disabled': COLOR_TOKENS.base.white,
+      '--button-border': COLOR_TOKENS.primary[500],
+      '--button-border-hover': COLOR_TOKENS.primary[600],
+      '--button-border-disabled': hexToRgba(COLOR_TOKENS.primary[500], 0.5),
+      '--button-shadow': shadow,
+      '--button-shadow-hover': shadowHover,
+    };
+  })(),
 
   secondary: {
     '--button-bg': COLOR_TOKENS.secondary[500],
@@ -100,6 +120,8 @@ const BUTTON_FILLED_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--bu
     '--button-border': COLOR_TOKENS.secondary[500],
     '--button-border-hover': COLOR_TOKENS.secondary[600],
     '--button-border-disabled': hexToRgba(COLOR_TOKENS.secondary[500], 0.5),
+    '--button-shadow': NO_BUTTON_SHADOW.shadow,
+    '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
   },
 
   neutral: {
@@ -111,6 +133,8 @@ const BUTTON_FILLED_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--bu
     '--button-border': COLOR_TOKENS.neutral[75],
     '--button-border-hover': COLOR_TOKENS.neutral[200],
     '--button-border-disabled': COLOR_TOKENS.neutral[75],
+    '--button-shadow': NO_BUTTON_SHADOW.shadow,
+    '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
   },
 
   success: {
@@ -122,6 +146,8 @@ const BUTTON_FILLED_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--bu
     '--button-border': COLOR_TOKENS.success[500],
     '--button-border-hover': COLOR_TOKENS.success[600],
     '--button-border-disabled': hexToRgba(COLOR_TOKENS.success[500], 0.5),
+    '--button-shadow': NO_BUTTON_SHADOW.shadow,
+    '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
   },
 
   warning: {
@@ -133,6 +159,8 @@ const BUTTON_FILLED_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--bu
     '--button-border': COLOR_TOKENS.warning[500],
     '--button-border-hover': COLOR_TOKENS.warning[600],
     '--button-border-disabled': hexToRgba(COLOR_TOKENS.warning[500], 0.5),
+    '--button-shadow': NO_BUTTON_SHADOW.shadow,
+    '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
   },
 
   danger: {
@@ -144,6 +172,8 @@ const BUTTON_FILLED_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--bu
     '--button-border': COLOR_TOKENS.danger[500],
     '--button-border-hover': COLOR_TOKENS.danger[600],
     '--button-border-disabled': hexToRgba(COLOR_TOKENS.danger[500], 0.5),
+    '--button-shadow': NO_BUTTON_SHADOW.shadow,
+    '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
   },
 
   info: {
@@ -155,6 +185,8 @@ const BUTTON_FILLED_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--bu
     '--button-border': COLOR_TOKENS.info[500],
     '--button-border-hover': COLOR_TOKENS.info[600],
     '--button-border-disabled': hexToRgba(COLOR_TOKENS.info[500], 0.5),
+    '--button-shadow': NO_BUTTON_SHADOW.shadow,
+    '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
   },
 
   blue: {
@@ -166,6 +198,8 @@ const BUTTON_FILLED_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--bu
     '--button-border': COLOR_TOKENS.blue[500],
     '--button-border-hover': COLOR_TOKENS.blue[600],
     '--button-border-disabled': hexToRgba(COLOR_TOKENS.blue[500], 0.5),
+    '--button-shadow': NO_BUTTON_SHADOW.shadow,
+    '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
   },
 };
 
@@ -180,6 +214,8 @@ function getOutlineStyles(variant: ButtonVariant): Omit<ButtonCssVariables, '--b
       '--button-border': COLOR_TOKENS.neutral[200],
       '--button-border-hover': COLOR_TOKENS.neutral[300],
       '--button-border-disabled': hexToRgba(COLOR_TOKENS.neutral[200], 0.5),
+      '--button-shadow': NO_BUTTON_SHADOW.shadow,
+      '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
     };
   }
 
@@ -196,6 +232,8 @@ function getOutlineStyles(variant: ButtonVariant): Omit<ButtonCssVariables, '--b
     '--button-border': palette[500],
     '--button-border-hover': palette[600],
     '--button-border-disabled': hexToRgba(palette[500], 0.5),
+    '--button-shadow': NO_BUTTON_SHADOW.shadow,
+    '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
   };
 }
 
@@ -244,10 +282,11 @@ const baseClassName = [
   'border border-[length:1px] border-[var(--button-border)]',
   "font-sans font-bold leading-none text-[length:var(--button-font-size)]",
   'bg-[var(--button-bg)] text-[var(--button-text)]',
-  'cursor-pointer transition-colors',
-  'hover:enabled:bg-[var(--button-bg-hover)] hover:enabled:border-[var(--button-border-hover)]',
+  '[box-shadow:var(--button-shadow)]',
+  'cursor-pointer transition-[background-color,border-color,box-shadow]',
+  'hover:enabled:bg-[var(--button-bg-hover)] hover:enabled:border-[var(--button-border-hover)] hover:enabled:[box-shadow:var(--button-shadow-hover)]',
   'disabled:cursor-not-allowed',
-  'disabled:bg-[var(--button-bg-disabled)] disabled:text-[var(--button-text-disabled)] disabled:border-[var(--button-border-disabled)]',
+  'disabled:bg-[var(--button-bg-disabled)] disabled:text-[var(--button-text-disabled)] disabled:border-[var(--button-border-disabled)] disabled:[box-shadow:none]',
   'focus-visible:outline-none',
 ].join(' ');
 

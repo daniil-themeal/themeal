@@ -7,6 +7,7 @@ import type { BadgeVariant } from '../common/Badge';
 import { Chip } from '../common/Chip';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 const lightChipsByOption: Record<LightMealOption, string[]> = {
   'breakfast-main': ['Breakfast', 'Lunch'],
@@ -65,7 +66,6 @@ const plans = [
 ];
 
 type PlanSelectorBlockCssVariables = CSSProperties & {
-  '--plan-selector-title-font-size': string;
   '--plan-selector-card-title-font-size': string;
   '--plan-selector-card-title-font-size-md': string;
   '--plan-selector-card-meta-font-size': string;
@@ -84,7 +84,6 @@ type PlanSelectorBlockCssVariables = CSSProperties & {
 };
 
 const planSelectorBlockStyle: PlanSelectorBlockCssVariables = {
-  '--plan-selector-title-font-size': FONT_SIZE_TOKENS[32],
   '--plan-selector-card-title-font-size': FONT_SIZE_TOKENS[16],
   '--plan-selector-card-title-font-size-md': FONT_SIZE_TOKENS[20],
   '--plan-selector-card-meta-font-size': FONT_SIZE_TOKENS[12],
@@ -133,7 +132,7 @@ function PlanCard({
         <Badge variant={plan.badge} className="absolute right-[20px] top-[-4px] z-[1]" />
       ) : null}
 
-      <div className="flex flex-col items-start gap-[12px] p-[20px] md:px-[24px]">
+      <div className="flex flex-col items-start gap-[12px] px-[20px] py-[24px] md:px-[24px]">
         <div className="flex w-full items-start gap-[16px]">
           <div className="flex flex-[1_0_0] items-center gap-[4px]">
             <p
@@ -260,9 +259,7 @@ export function PlanSelectorBlock({
       className="flex w-full flex-col items-start gap-[16px]"
       style={planSelectorBlockStyle}
     >
-      <p className="w-full px-[4px] font-sans text-[length:var(--plan-selector-title-font-size)] font-bold leading-[130%] text-[var(--plan-selector-text)]">
-        Choose your plan
-      </p>
+      <CheckoutSectionHeader title="Choose your plan" />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">
         {plans.map((plan) => (
