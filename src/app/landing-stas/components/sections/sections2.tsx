@@ -269,7 +269,7 @@ function Fresh({ t }) {
   return (
     createElement('section', { className:'section section--white', id:'fresh' },
       createElement('div', { className:'wrap' },
-        createElement('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))', gap:'clamp(32px,5vw,72px)', alignItems:'start' } },
+        createElement('div', { className:'fresh-grid', style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))', gap:'clamp(32px,5vw,72px)', alignItems:'start' } },
         /* carousel */
         createElement('div', { className:'reveal', style:{ position:'relative' } },
           createElement('div', { style:{ position:'relative', borderRadius:'var(--r-2xl)', overflow:'hidden', boxShadow:'var(--shadow-lg)', aspectRatio:'4/5', background:'var(--cream-2)' } },
@@ -296,7 +296,7 @@ function Fresh({ t }) {
           createElement('div', { className:'row', style:{ position:'absolute', insetInlineEnd:-14, bottom:24, gap:10, background:'#fff', borderRadius:'var(--r-pill)', padding:'12px 18px', boxShadow:'var(--shadow-lg)', color:'var(--blue)', fontWeight:700, fontSize:'var(--fs-16)' } },
             createElement('span', { style:{ width:10, height:10, borderRadius:'50%', background:'var(--blue-bright)', boxShadow:'0 0 0 4px var(--blue-soft)' } }), t.fresh.badge)
         ),
-        createElement('div', null,
+        createElement('div', { className:'fresh-copy' },
           createElement('div', { className:'eyebrow reveal' }, t.fresh.eyebrow),
           createElement('h2', { className:'h2 reveal', style:{ margin:'0 0 var(--section-intro-gap)' } }, t.fresh.title),
           createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:'var(--space-24)' } },
@@ -360,6 +360,20 @@ function LeadTitleWhatsAppIcon() {
   );
 }
 
+function leadTitleWordSpans(title) {
+  const words = title.split(/\s+/);
+  const parts = [];
+  for (let i = 0; i < words.length; i++) {
+    if (words[i].toLowerCase() === 'in' && words[i + 1] === 'WhatsApp') {
+      parts.push('in WhatsApp');
+      i += 1;
+    } else {
+      parts.push(words[i]);
+    }
+  }
+  return parts.map((part, i) => createElement('span', { key: i }, part));
+}
+
 function LeadCapture({ t, onWhatsAppClick }) {
   const [error, setError] = useState('');
   const [phone, setPhone] = useState('');
@@ -379,19 +393,19 @@ function LeadCapture({ t, onWhatsAppClick }) {
   return (
     createElement('section', { className:'section section--cream lead-section', id:'lead', style:{ paddingTop:0, paddingBottom:'clamp(var(--space-64), 8vw, var(--space-96))' } },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'reveal', style:{
+        createElement('div', { className:'reveal lead-card', style:{
           position:'relative', overflow:'hidden', borderRadius:'var(--r-2xl)',
           backgroundColor:'var(--card)',
-          padding:'var(--space-32)', boxShadow:'var(--shadow-md)', border:'none',
+          boxShadow:'var(--shadow-md)', border:'none',
         } },
           createElement('div', { style:{ position:'absolute', top:-60, insetInlineEnd:-40, width:240, height:240, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.18), transparent 70%)', pointerEvents:'none' } }),
           createElement('div', { className:'lead-grid' },
             createElement('div', { className:'stack lead-text', style:{ gap:'var(--space-16)' } },
               createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'8px 14px' } },
-                createElement(Icon.whatsapp,{size:15}), l.eyebrow),
+                l.eyebrow),
               createElement('div', { className:'stack lead-copy', style:{ gap:'var(--space-16)' } },
-                createElement('h3', { className:'h3 row lead-title', style:{ margin:0, gap:10, width:'100%' } },
-                  l.title,
+                createElement('h3', { className:'h3 row lead-title', style:{ margin:0, gap:4, width:'100%' } },
+                  ...leadTitleWordSpans(l.title),
                   createElement(LeadTitleWhatsAppIcon)),
                 createElement('p', { className:'lead', style:{ margin:0, width:'100%' } }, l.sub),
                 createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)' } }, l.fine)),

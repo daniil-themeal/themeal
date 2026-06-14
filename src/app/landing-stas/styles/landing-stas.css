@@ -220,16 +220,32 @@ body {
 .lead-section .lead-grid {
   display: grid;
   gap: var(--space-24);
-  grid-template-columns: minmax(280px, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   width: 100%;
 }
 @media (min-width: 640px) {
   .lead-section .lead-grid {
-    grid-template-columns: minmax(340px, 1.4fr) minmax(280px, 1fr);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   }
 }
 .landing-stas .lead-text {
   width: 100%;
+  min-width: 0;
+}
+.lead-section .lead-grid > .stack {
+  min-width: 0;
+}
+.lead-section .lead-title {
+  flex-wrap: wrap;
+  align-items: center;
+}
+.lead-section .lead-card {
+  padding: var(--space-32);
+}
+@media (max-width: 640px) {
+  .lead-section .lead-card {
+    padding: var(--space-24);
+  }
 }
 /* ---- lead capture form ---- */
 .landing-stas .lead-form {
@@ -280,6 +296,15 @@ body {
 }
 .landing-stas .lead-form-submit {
   width: 100%;
+}
+@media (max-width: 390px) {
+  .landing-stas .lead-form-fields {
+    flex-direction: column;
+  }
+  .landing-stas .lead-form-prefix {
+    width: 100%;
+    justify-content: center;
+  }
 }
 .eyebrow {
   font-size:var(--fs-12); font-weight:700; letter-spacing:.16em; text-transform:uppercase;
@@ -587,6 +612,12 @@ body {
 /* ---- fresh section ---- */
 #fresh .eyebrow {
   margin-bottom: var(--space-24);
+}
+@media (max-width: 719px) {
+  #fresh .fresh-copy .eyebrow,
+  #fresh .fresh-copy .h2 {
+    text-align: center;
+  }
 }
 
 /* ---- fresh carousel nav (bender-style arrows) ---- */

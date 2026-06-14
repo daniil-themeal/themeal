@@ -267,7 +267,7 @@ function Compare({ t }) {
           )
         ),
         /* price — cost per meal (compact) */
-        t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'clamp(var(--space-24), 3vw, var(--space-32))', paddingTop:'20px', marginTop:'var(--space-24)', height:'fit-content' } },
+        t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'var(--space-24) var(--space-32) clamp(var(--space-24), 3vw, var(--space-32))', marginTop:'var(--space-24)', height:'fit-content' } },
           createElement('div', { style:{ marginBottom:'var(--space-8)' } },
             createElement('span', { className:'label', style:{ color:'var(--stone)', fontSize:'14px', fontWeight:700, letterSpacing:'.12em', textTransform:'uppercase' } }, t.compare.costTitle)),
           createElement('div', { className:'compare-cost-grid' },

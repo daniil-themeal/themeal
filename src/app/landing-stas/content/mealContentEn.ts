@@ -196,7 +196,7 @@ export const mealContentEn = {
   },
   "fresh": {
     "eyebrow": "Always fresh",
-    "title": "Fresh from our kitchen to your fridge",
+    "title": "Fresh from our kitchen to\u00A0your fridge",
     "items": [
       "Prepared the night before delivery and chilled — never frozen.",
       "A full cold chain, from kitchen to refrigerated van to your door.",
@@ -365,7 +365,7 @@ export const mealContentEn = {
   },
   "final": {
     "pre": "Order a month’s worth of food",
-    "hi": "for AED 999",
+    "hi": "for\u00A0AED\u00A0999",
     "sub": "Customize your menu · Free delivery · Pause anytime",
     "cta": "Make an order"
   },
