@@ -23,7 +23,7 @@ export const mealContentEn = {
     "stats": [
       {
         "v": "Customize",
-        "l": "your menu"
+        "l": "menu"
       },
       {
         "v": "Pause",
@@ -31,7 +31,7 @@ export const mealContentEn = {
       },
       {
         "v": "Free",
-        "l": "delivery, always"
+        "l": "delivery"
       }
     ]
   },

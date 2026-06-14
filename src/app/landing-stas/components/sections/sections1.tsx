@@ -125,7 +125,7 @@ function TrayBelt({ meals }) {
   }, [meals]);
 
   return (
-    createElement('div', { 'aria-hidden':true, dir:'ltr', style:{ position:'relative', zIndex:1, height:'clamp(220px,28vh,300px)', marginTop:-8, overflow:'hidden' } },
+    createElement('div', { 'aria-hidden':true, dir:'ltr', style:{ position:'relative', zIndex:1, height:'clamp(220px,28vh,300px)', marginTop:-7, overflow:'hidden' } },
       createElement('div', { ref:trackRef, style:{ position:'absolute', bottom:14, left:0, display:'flex', alignItems:'flex-end', width:'max-content', willChange:'transform' } },
         [0,1].map(half =>
           createElement('div', { key:half, style:{ display:'flex', alignItems:'flex-end', gap:'clamp(16px,2.4vw,36px)', paddingInlineEnd:'clamp(16px,2.4vw,36px)' } },
@@ -159,7 +159,7 @@ function Hero({ t, onOrder }) {
       createElement('div', { style:{ position:'absolute', top:'-10%', insetInlineEnd:'-8%', width:480, height:480, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.5), transparent 70%)', filter:'blur(20px)', pointerEvents:'none' } }),
       createElement('div', { style:{ position:'absolute', bottom:'18%', insetInlineStart:'-10%', width:420, height:420, borderRadius:'50%', background:'radial-gradient(circle, rgba(240,41,168,.28), transparent 70%)', filter:'blur(20px)', pointerEvents:'none' } }),
 
-      createElement('div', { className:'wrap', style:{ position:'relative', zIndex:2, flex:1, display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', justifyContent:'center', gap:'clamp(14px,2.4vh,26px)', paddingBottom:24 } },
+      createElement('div', { className:'wrap', style:{ position:'relative', zIndex:2, flex:1, display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', justifyContent:'center', gap:'clamp(12px,2vh,22px)', paddingBottom:20 } },
         /* headline merged with the price offer */
         createElement('h1', { className:'hero-title reveal' },
           createElement('span', { className:'hero-title__line' }, t.hero.title),
@@ -176,11 +176,11 @@ function Hero({ t, onOrder }) {
             className:'btn btn-primary menu-head-cta',
             onClick:onOrder,
             style:{
-              flexDirection:'column', alignItems:'center', justifyContent:'center', gap:8,
+              flexDirection:'column', alignItems:'center', justifyContent:'center', gap:7,
               whiteSpace:'normal', textAlign:'center',
             },
           },
-            createElement('span', { className:'stack', style:{ alignItems:'center', gap:8 } },
+            createElement('span', { className:'stack', style:{ alignItems:'center', gap:7 } },
               t.hero.cta,
               createElement('span', { className:'mono', style:{ fontSize:'var(--fs-14)', fontWeight:500, opacity:.92 } }, t.hero.ctaSub))
           )

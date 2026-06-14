@@ -2,26 +2,32 @@ import { useSyncExternalStore } from 'react';
 
 const COLS_KEY = 'landing-stas-grid-cols';
 const ROWS_KEY = 'landing-stas-grid-rows';
+const SPACING_KEY = 'landing-stas-grid-spacing';
 const LEGACY_KEY = 'landing-stas-grid';
 const LABELS_KEY = 'landing-stas-dev-labels';
 
-export type GridState = { cols: boolean; rows: boolean };
+export type GridState = { cols: boolean; rows: boolean; spacing: boolean };
 
 function readInitialState(): GridState {
-  if (typeof window === 'undefined') return { cols: false, rows: false };
+  if (typeof window === 'undefined') return { cols: false, rows: false, spacing: false };
 
   const params = new URLSearchParams(window.location.search);
+  if (params.get('spacing') === '1') {
+    return { cols: false, rows: false, spacing: true };
+  }
   if (params.has('grid')) {
     const mode = params.get('grid');
-    if (mode === 'rows' || mode === 'h') return { cols: false, rows: true };
-    if (mode === 'cols' || mode === 'v') return { cols: true, rows: false };
-    return { cols: true, rows: true };
+    if (mode === 'spacing' || mode === 's') return { cols: false, rows: false, spacing: true };
+    if (mode === 'rows' || mode === 'h') return { cols: false, rows: true, spacing: false };
+    if (mode === 'cols' || mode === 'v') return { cols: true, rows: false, spacing: false };
+    return { cols: true, rows: true, spacing: false };
   }
 
   const legacy = sessionStorage.getItem(LEGACY_KEY) === '1';
   return {
     cols: sessionStorage.getItem(COLS_KEY) === '1' || legacy,
     rows: sessionStorage.getItem(ROWS_KEY) === '1',
+    spacing: sessionStorage.getItem(SPACING_KEY) === '1',
   };
 }
 
@@ -67,7 +73,7 @@ function getSnapshot() {
 }
 
 function getServerSnapshot(): GridState {
-  return { cols: false, rows: false };
+  return { cols: false, rows: false, spacing: false };
 }
 
 function isTypingTarget(target: EventTarget | null) {
@@ -85,6 +91,12 @@ export function toggleGridCols() {
 export function toggleGridRows() {
   state = { ...state, rows: !state.rows };
   sessionStorage.setItem(ROWS_KEY, state.rows ? '1' : '0');
+  emit();
+}
+
+export function toggleGridSpacing() {
+  state = { ...state, spacing: !state.spacing };
+  sessionStorage.setItem(SPACING_KEY, state.spacing ? '1' : '0');
   emit();
 }
 
@@ -113,6 +125,12 @@ function onKeyDown(event: KeyboardEvent) {
   if (event.key === 'D') {
     event.preventDefault();
     toggleDevLabels();
+    return;
+  }
+
+  if (event.key === 'S') {
+    event.preventDefault();
+    toggleGridSpacing();
   }
 }
 
@@ -132,9 +150,11 @@ export function useGridOverlay() {
   return {
     cols: grid.cols,
     rows: grid.rows,
+    spacing: grid.spacing,
     devLabelsVisible,
     toggleCols: toggleGridCols,
     toggleRows: toggleGridRows,
+    toggleSpacing: toggleGridSpacing,
     toggleDevLabels,
   };
 }
