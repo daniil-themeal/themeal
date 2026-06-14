@@ -1,4 +1,4 @@
-/* ============================================================
+﻿/* ============================================================
    theMeal — redesign tokens & base (Landing Stas v4)
    ============================================================ */
 
@@ -212,11 +212,27 @@ body {
 .h3 { font-weight:700; line-height:1.15; letter-spacing:-.01em; font-size:clamp(var(--fs-20), 2vw, var(--fs-25)); }
 .lead { font-size:clamp(var(--fs-16), 1.4vw, var(--fs-20)); line-height:1.55; color:var(--slate); font-weight:500; }
 
+/* ---- lead capture grid ---- */
+.lead-section .lead-grid {
+  display: grid;
+  gap: var(--space-24);
+  grid-template-columns: minmax(280px, 1fr);
+  width: 100%;
+}
+@media (min-width: 640px) {
+  .lead-section .lead-grid {
+    grid-template-columns: minmax(340px, 1.4fr) minmax(280px, 1fr);
+  }
+}
+.landing-stas .lead-text {
+  width: 100%;
+}
 /* ---- lead capture form ---- */
 .landing-stas .lead-form {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
 }
 .landing-stas .lead-form-fields {
   display: flex;
@@ -741,7 +757,7 @@ body {
   user-select:none;
   pointer-events:none;
 }
-@media (min-width: 900px) {
+@media (min-width: 1024px) {
   .menu-section .menu-grid-shell.h-scroll {
     overflow:visible;
     touch-action:auto;
@@ -749,7 +765,7 @@ body {
     cursor:default;
   }
 }
-@media (max-width: 899px){
+@media (max-width: 1023px){
   .menu-section .menu-grid-wrap {
     --menu-inline-gutter:max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
     position:relative;

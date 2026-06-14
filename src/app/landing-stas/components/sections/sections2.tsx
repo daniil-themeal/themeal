@@ -190,7 +190,7 @@ function Menu({ t, onOrder }) {
           .menucard-title {
             margin:4px 0 0;
             flex:1;
-            font-weight:700;
+            font-weight:600;
             font-size:var(--fs-16);
             line-height:1.35;
             color:var(--primary);
@@ -393,7 +393,7 @@ function LeadCapture({ t, onWhatsAppClick }) {
                 createElement('h3', { className:'h3 row lead-title', style:{ margin:0, gap:10, width:'100%' } },
                   l.title,
                   createElement(LeadTitleWhatsAppIcon)),
-                createElement('p', { className:'lead', style:{ margin:0 } }, l.sub),
+                createElement('p', { className:'lead', style:{ margin:0, width:'100%' } }, l.sub),
                 createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)' } }, l.fine)),
               ),
 

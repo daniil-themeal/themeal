@@ -390,7 +390,7 @@ function HowItWorks({ t }) {
               createElement(HowIllu, { i })
             ),
             createElement('div', { style:{ padding:'var(--space-24) var(--space-32) 36px' } },
-              createElement('h3', { className:'h3', style:{ margin:'0 0 var(--space-12)', color:'var(--ink)' } }, s.t),
+              createElement('h3', { className:'h3', style:{ margin:'0 0 var(--space-16)', color:'var(--ink)' } }, s.t),
               createElement('p', { style:{ margin:0, color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.5 } }, s.d))
           ))
         )
