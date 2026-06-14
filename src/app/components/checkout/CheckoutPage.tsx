@@ -23,7 +23,7 @@ import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
 import type { TestAddress } from '../../data/testAddresses';
 import { COLOR_TOKENS } from '../common/colorTokens';
-import { formatUaePhoneInput, validateUaePhone } from './phoneValidation';
+import { formatUaePhoneInput } from './phoneValidation';
 
 type CheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment' | 'success' | 'failed';
 type DeliveryStep = 'address' | 'details';
@@ -156,17 +156,16 @@ export function CheckoutPage({
     setMenuOpen(false);
     setSummaryVisible(true);
 
-    const phoneValidation = validateUaePhone(phone);
+    const digits = phone.replace(/\D/g, '');
 
-    if (!phoneValidation.isValid) {
-      setPhoneError(phoneValidation.error);
+    if (!digits) {
+      setPhoneError('Enter your phone number');
       handleScrollToSummary();
       return;
     }
 
-    if (phoneValidation.formatted) {
-      setPhone(phoneValidation.formatted);
-    }
+    setPhoneError(undefined);
+    setPhone(formatUaePhoneInput(digits));
 
     if (isPhoneVerified) {
       setCheckoutStep('delivery');

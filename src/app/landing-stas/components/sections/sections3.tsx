@@ -39,7 +39,7 @@ function Benefits({ t, onOrder }) {
         ),
         createElement('div', { className:'center reveal', style:{ marginTop:40 } },
           createElement('p', { className:'lead', style:{ marginBottom:20 } }, t.benefits.bottom),
-          createElement('button', { className:'btn btn-primary btn-lg', onClick:onOrder }, t.benefits.cta, createElement(Icon.arrow,{size:20,className:'flip'})))
+          createElement('button', { className:'btn btn-primary btn-lg benefits-cta', onClick:onOrder }, t.benefits.cta, createElement(Icon.arrow,{size:20,className:'flip'})))
       )
     )
   );
@@ -119,7 +119,7 @@ function FAQ({ t }) {
 
 /* ---------------- Final offer ---------------- */
 function FinalOffer({ t, onOrder }) {
-  const trays = ['/landing-stas/assets/meals/meal_05.png','/landing-stas/assets/meals/meal_03.png','/landing-stas/assets/img/q1.png','/landing-stas/assets/meals/meal_04.png','/landing-stas/assets/img/p5.png','/landing-stas/assets/imgMeal_01.png','/landing-stas/assets/meals/meal_03.png'];
+  const trays = ['/landing-stas/assets/meals/meal-02.avif','/landing-stas/assets/meals/meal-04.avif','/landing-stas/assets/meals/meal-06.avif','/landing-stas/assets/meals/meal-08.avif','/landing-stas/assets/meals/meal-10.avif','/landing-stas/assets/meals/meal-12.avif','/landing-stas/assets/meals/meal-14.avif'];
   const traySizes = [160,185,210,232,210,185,160];
   const trayOffsets = [90,46,16,0,16,46,90];
   const trayRotations = [-9,-6,-3,0,3,6,9];

@@ -52,6 +52,8 @@
 
 ## Этап 1 — Токены (без видимых изменений)
 
+**Статус:** выполнен (2026-06-14)
+
 **Файл:** `landing-stas.css`
 
 Добавить в `.landing-stas`:
@@ -74,6 +76,8 @@
 
 ## Этап 2 — H2 для всех секций
 
+**Статус:** выполнен (2026-06-14)
+
 - Подключить `.h2` к `--landing-h2-*`.
 - Убрать `font-size` у `.menu-head-title` в `sections2.tsx` (inline style).
 - Упростить mobile override `.menu-section .menu-head-title`.
@@ -84,6 +88,8 @@
 
 ## Этап 3 — H1 в Hero
 
+**Статус:** выполнен (2026-06-14)
+
 - `#top .hero-title` → `--landing-h1-*`.
 - `.hero-title__offer` → `font-size: inherit`.
 - `hero-title__was` / `hero-title__cur` — без изменений.
@@ -92,9 +98,12 @@
 
 ## Этап 4 — Чистка и регрессия
 
-- `npm run build`.
-- DevTools: 375 / 768 / 1280px.
-- Не трогать: цвета, `lead-title`, checkout, design system.
+**Статус:** выполнен (2026-06-14)
+
+- `npm run build` — OK.
+- DevTools: **390** / 768 / 1280px (390 — базовая ширина iPhone в макете, не 375).
+- `.display` не используется в landing-stas — без изменений.
+- Не трогали: цвета, `lead-title`, checkout, design system.
 
 ---
 

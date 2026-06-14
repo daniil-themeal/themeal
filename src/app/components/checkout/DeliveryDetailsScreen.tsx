@@ -165,7 +165,7 @@ export function DeliveryDetailsScreen({
               </div>
             </div>
 
-            <InfoBox />
+            {deliveryDetails.leaveAtDoor ? <InfoBox /> : null}
 
             <Button type="button" variant="primary" size="medium" fullWidth onClick={onContinue}>
               Continue

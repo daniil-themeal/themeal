@@ -47,7 +47,7 @@ function Header({ t, lang, setLang, onOrder, dark }) {
       },
       createElement('div', { className:'wrap row', style:{ height:74, gap:24, justifyContent:'space-between' } },
         createElement('a', { href:'#top', className:'row hdr-logo', style:{ gap:10 } },
-          createElement(Logo, { color: onDark ? '#fff' : 'var(--plum-700)', accent:'var(--green-bright)' })
+          createElement(Logo, { tone: 'yellow' })
         ),
         createElement('nav', { className:'row hdr-nav', style:{ gap:48, fontWeight:600, fontSize:'var(--fs-16)', color:txt } },
           links.map(([h, l]) => createElement('a', {
@@ -148,7 +148,7 @@ function TrayBelt({ meals }) {
 
 /* ---------------- Hero ---------------- */
 function Hero({ t, onOrder }) {
-  const meals = ['/landing-stas/assets/img/q1.png','/landing-stas/assets/meals/meal_05.png','/landing-stas/assets/imgMeal_01.png','/landing-stas/assets/meals/meal_03.png','/landing-stas/assets/meals/meal_04.png','/landing-stas/assets/img/p5.png'];
+  const meals = ['/landing-stas/assets/meals/meal-01.avif','/landing-stas/assets/meals/meal-03.avif','/landing-stas/assets/meals/meal-05.avif','/landing-stas/assets/meals/meal-07.avif','/landing-stas/assets/meals/meal-09.avif','/landing-stas/assets/meals/meal-11.avif'];
   return (
     createElement('section', { id:'top', style:{
       background:'radial-gradient(120% 90% at 50% -10%, #5A2487 0%, var(--plum-700) 45%, var(--plum-900) 100%)',
@@ -276,8 +276,8 @@ function Compare({ t }) {
               borderInlineStart: i ? '1px solid var(--ash)' : 'none',
             } },
               createElement('span', { style:{ fontSize:'var(--fs-16)', fontWeight:600, color: c.hot?'var(--brand)':'#8A8694', display:'flex', alignItems:'center', gap:6 } },
-                c.hot ? [createElement(Logo,{key:'l',height:14,tone:'plum'}), createElement('span',{key:'b',style:{color:'var(--green)'}}, '★')] : c.k),
-              createElement('span', { style:{ fontSize:'var(--fs-16)', fontWeight:600, color: c.hot?'var(--ink)':'var(--slate)' } }, c.v)))
+                c.hot ? [createElement(Logo,{key:'l',height:16.8,color:'#9A38EF',accent:'#9A38EF'}), createElement('span',{key:'b',style:{color:'var(--pink)'}}, '★')] : c.k),
+              createElement('span', { style:{ fontSize:'var(--fs-16)', fontWeight: c.hot ? 900 : 600, color: c.hot ? 'var(--brand)' : 'var(--slate)' } }, c.v)))
           )
         ),
         createElement('style', null, `

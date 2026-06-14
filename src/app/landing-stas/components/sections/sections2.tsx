@@ -43,9 +43,10 @@ function Menu({ t, onOrder }) {
   return (
     createElement('section', { className:'section section--cream menu-section', id:'menu', style:{ paddingBottom:'clamp(48px,6vw,84px)' } },
       createElement('div', { className:'wrap' },
+        createElement('div', { className:'eyebrow menu-eyebrow reveal' }, t.menu.eyebrow),
         createElement('div', { className:'menu-head reveal' },
           createElement('div', { className:'menu-head-text' },
-            createElement('h2', { className:'menu-head-title' }, t.menu.title),
+            createElement('h2', { className:'h2 menu-head-title' }, t.menu.title),
             createElement('p', { className:'row menu-head-trusted', style:{ gap:8, margin:0, color:'var(--pink)', fontWeight:600, fontSize:'var(--fs-16)' } }, createElement(Icon.heart,{size:18,fill:'currentColor',sw:0}), t.menu.trusted)
           ),
           createElement('button', {
@@ -76,8 +77,8 @@ function Menu({ t, onOrder }) {
         }, d))
       ),
 
-      /* meal cards — gutter-x on mobile; grid in .wrap-width container on desktop */
-      createElement('div', { className:'menu-grid-wrap gutter-x reveal' },
+      /* meal cards — full-bleed scroll on mobile; grid in .wrap-width container on desktop */
+      createElement('div', { className:'menu-grid-wrap reveal' },
         createElement('div', {
           ref: menuGridScroll.ref,
           onMouseDown: menuGridScroll.onMouseDown,
@@ -112,6 +113,10 @@ function Menu({ t, onOrder }) {
           createElement(Icon.check, { size:18, sw:2.6, style:{ color:'var(--green)', flexShrink:0, marginTop:1 } }),
           t.menu.note),
         createElement('style', null, `
+          .menu-eyebrow { margin-bottom:14px; }
+          @media (max-width: 640px) {
+            .menu-eyebrow { text-align:center; }
+          }
           .menu-head {
             display:flex;
             flex-wrap:wrap;
@@ -123,17 +128,11 @@ function Menu({ t, onOrder }) {
           .menu-head-text {
             flex:1 1 0;
             min-width:0;
+            width:100%;
           }
           .menu-head-title {
             margin:0 0 8px;
-            font-weight:700;
-            line-height:1.08;
-            letter-spacing:-.02em;
-            font-size:clamp(32px, 4.8vw, 50px);
-            white-space:nowrap;
-          }
-          @media (max-width: 900px) {
-            .menu-head-title { white-space:normal; }
+            width:100%;
           }
           .menucard-shell {
             flex:0 0 auto;
@@ -293,7 +292,7 @@ function Fresh({ t }) {
           createElement('div', { className:'eyebrow reveal', style:{ marginBottom:14 } }, t.fresh.eyebrow),
           createElement('h2', { className:'h2 reveal', style:{ margin:'0 0 32px' } }, t.fresh.title),
           createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:22 } },
-            t.fresh.items.map((it,i)=>createElement('li', { key:i, className:'row reveal', 'data-d':String((i%3)+1), style:{ gap:16, alignItems:'flex-start' } },
+            t.fresh.items.map((it,i)=>createElement('li', { key:i, className:'row reveal', 'data-d':String((i%3)+1), style:{ gap:16, alignItems:'center' } },
               createElement('span', { style:{ flex:'0 0 auto', width:44, height:44, borderRadius:'var(--r-md)', background:'var(--brand-soft)', color:'var(--brand)', display:'grid', placeItems:'center' } }, createElement(ic[i], { size:22 })),
               createElement('p', { style:{ margin:0, fontSize:'var(--fs-16)', color:'var(--slate)', fontWeight:600, lineHeight:1.45, paddingTop:0 } }, it)))
           )
@@ -353,30 +352,22 @@ function LeadCapture({ t, onWhatsAppClick }) {
             createElement('div', { className:'stack', style:{ gap:14 } },
               createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'7px 14px' } },
                 createElement(Icon.whatsapp,{size:15}), l.eyebrow),
-              createElement('h2', { className:'lead-title', style:{ margin:0 } }, l.title),
+              createElement('h3', { className:'h3', style:{ margin:0 } }, l.title),
               createElement('p', { className:'lead', style:{ margin:0 } }, l.sub),
               createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)' } }, l.fine)),
 
             createElement('div', { className:'stack', style:{ gap:12 } },
-                  createElement('form', { onSubmit: handleSubmit, style:{ display:'flex', flexDirection:'column', gap:12 } },
-                    createElement('div', { style:{ display:'flex', gap:12, flexWrap:'nowrap' } },
+                  createElement('form', { className:'lead-form', onSubmit: handleSubmit },
+                    createElement('div', { className:'lead-form-fields', style:{ display:'flex', gap:12, flexWrap:'nowrap' } },
                       createElement('span', { className:'row', style:{ flex:'0 0 auto', gap:8, background:'#fff', borderRadius:'var(--r-md)', padding:'0 16px', fontWeight:700, fontSize:'var(--fs-16)', color:'var(--ink)', boxShadow:'var(--shadow-sm)', minHeight:58 } },
                         createElement('span', { style:{ fontSize:'var(--fs-20)' } }, '🇦🇪'), l.cc),
                       createElement('input', { type:'tel', required:true, value:phone, onChange:(e)=>{ setPhone(e.target.value); setError(''); }, placeholder:l.ph, dir:'ltr',
                         style:{ flex:'1 1 auto', minWidth:0, font:'inherit', fontSize:'var(--fs-16)', fontWeight:600, padding:'0 18px', minHeight:58, borderRadius:'var(--r-md)', border:'none', background:'#fff', color:'var(--ink)', boxShadow:'var(--shadow-sm)', outline:'none' },
                         onFocus:(e)=>e.target.style.boxShadow='0 0 0 3px rgba(154,56,239,.22)', onBlur:(e)=>e.target.style.boxShadow='var(--shadow-sm)' })),
-                    createElement('button', { type:'submit', className:'btn btn-primary', style:{ width:'100%', minHeight:58 } }, l.cta)),
+                    createElement('button', { type:'submit', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 } }, l.cta)),
                   error ? createElement('span', { style:{ fontSize:'var(--fs-14)', textAlign:'center', color:'var(--pink)' } }, error) : null,
                   createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center' } }, l.hint))
-          ),
-          createElement('style', null, `
-            .lead-title {
-              font-weight:700;
-              line-height:1.12;
-              letter-spacing:-.02em;
-              font-size:clamp(28px, 3.8vw, 40px);
-            }
-          `)
+          )
         )
       )
     )
