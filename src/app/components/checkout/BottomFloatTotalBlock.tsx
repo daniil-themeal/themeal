@@ -21,6 +21,7 @@ import {
 } from '../../data/checkoutPricing';
 import { getMealsForPlan, testMenuDays, type LightMealOption } from '../../data/testMeals';
 import type { Meal as MealDetail } from '../../types/meal';
+import { AnimatedNumber } from '../common/AnimatedNumber';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
@@ -573,7 +574,7 @@ export function BottomFloatTotalBlock({
                     <div className="flex items-end gap-[4px]">
                       {pricing.oldPeriodPrice ? (
                         <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-muted)] line-through">
-                          {formatAed(pricing.oldPeriodPrice)}
+                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} />
                         </p>
                       ) : null}
 
@@ -582,12 +583,12 @@ export function BottomFloatTotalBlock({
                       </p>
 
                       <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
-                        {formatAed(pricing.periodPrice)}
+                        <AnimatedNumber value={pricing.periodPrice} format={formatAed} />
                       </p>
                     </div>
 
                     <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
-                      AED {formatPricePerDay(pricing.pricePerDay)}/day
+                      AED <AnimatedNumber value={pricing.pricePerDay} format={formatPricePerDay} />/day
                     </p>
                   </div>
 

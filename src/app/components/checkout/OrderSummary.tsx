@@ -1,11 +1,13 @@
-import { useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import type { CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 
+import { AnimatedNumber } from '../common/AnimatedNumber';
 import { Button } from '../common/Button';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
 import { PhoneInput } from '../common/PhoneInput';
 import { COLOR_TOKENS } from '../common/colorTokens';
+import { CHECKOUT_ANIMATION_DURATION_MS, easeInOutCubic } from '../common/easing';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import {
   getPlanTariffChips,
@@ -29,6 +31,48 @@ import {
   type Plan,
 } from '../../data/checkoutPricing';
 import { MealDetailModal } from './MealDetailModal';
+
+function getMaxScrollLeft(element: HTMLElement) {
+  return Math.max(0, element.scrollWidth - element.clientWidth);
+}
+
+function scrollToLeft(element: HTMLElement, left: number): Promise<void> {
+  const targetLeft = Math.max(0, Math.min(left, getMaxScrollLeft(element)));
+
+  if (Math.abs(element.scrollLeft - targetLeft) < 1) {
+    return Promise.resolve();
+  }
+
+  return new Promise((resolve) => {
+    const startLeft = element.scrollLeft;
+    const distance = targetLeft - startLeft;
+    const startTime = performance.now();
+
+    const animate = (currentTime: number) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / CHECKOUT_ANIMATION_DURATION_MS, 1);
+      element.scrollLeft = startLeft + distance * easeInOutCubic(progress);
+
+      if (progress < 1) {
+        window.requestAnimationFrame(animate);
+        return;
+      }
+
+      element.scrollLeft = targetLeft;
+      resolve();
+    };
+
+    window.requestAnimationFrame(animate);
+  });
+}
+
+function waitForNextFrame(): Promise<void> {
+  return new Promise((resolve) => {
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => resolve());
+    });
+  });
+}
 
 const SVG_TABBY_BG =
   'M52.2688 24H7.7312C3.4402 24 0 20.6278 0 16.5022V7.49776C0 3.33632 3.47719 0 7.7312 0H52.2688C56.5598 0 60 3.3722 60 7.49776V16.5022C60 20.6278 56.5598 24 52.2688 24Z';
@@ -126,13 +170,73 @@ export function OrderSummary({
   pricingTable?: CheckoutPricingTable;
 }) {
   const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
+  const [visibleMeals, setVisibleMeals] = useState<MealDetail[]>(() =>
+    getMealsForPlan(testMenuDays[0], plan, lightMealOption),
+  );
 
   const dragStartXRef = useRef(0);
   const dragMovedRef = useRef(false);
+  const mealsScrollRef = useRef<HTMLDivElement | null>(null);
+  const prevMealsCountRef = useRef(visibleMeals.length);
+  const animationTokenRef = useRef(0);
 
   const pricing = getCheckoutPrice({ pricingTable, plan, days, duration, persons });
   const mealsCount = getTotalMeals({ pricingTable, plan, days, duration, persons });
-  const previewMeals = getMealsForPlan(testMenuDays[0], plan, lightMealOption);
+  const previewMeals = useMemo(
+    () => getMealsForPlan(testMenuDays[0], plan, lightMealOption),
+    [plan, lightMealOption],
+  );
+
+  useEffect(() => {
+    const prevCount = prevMealsCountRef.current;
+    const nextCount = previewMeals.length;
+    const token = animationTokenRef.current + 1;
+    animationTokenRef.current = token;
+
+    const isActive = () => animationTokenRef.current === token;
+
+    if (nextCount > prevCount) {
+      setVisibleMeals(previewMeals.slice(0, prevCount));
+
+      const runAddAnimation = async () => {
+        await waitForNextFrame();
+        if (!isActive()) return;
+
+        const scrollContainer = mealsScrollRef.current;
+        if (!scrollContainer) {
+          setVisibleMeals(previewMeals);
+          return;
+        }
+
+        await scrollToLeft(scrollContainer, getMaxScrollLeft(scrollContainer));
+        if (!isActive()) return;
+
+        setVisibleMeals(previewMeals);
+
+        await waitForNextFrame();
+        if (!isActive()) return;
+
+        const updatedScrollContainer = mealsScrollRef.current;
+        if (!updatedScrollContainer) return;
+
+        await scrollToLeft(updatedScrollContainer, getMaxScrollLeft(updatedScrollContainer));
+        if (!isActive()) return;
+
+        await scrollToLeft(updatedScrollContainer, 0);
+      };
+
+      void runAddAnimation();
+    } else {
+      setVisibleMeals(previewMeals);
+      mealsScrollRef.current?.scrollTo({ left: 0 });
+    }
+
+    prevMealsCountRef.current = nextCount;
+
+    return () => {
+      animationTokenRef.current += 1;
+    };
+  }, [previewMeals]);
   const planTariffChips = getPlanTariffChips({
     plan,
     days,
@@ -159,7 +263,9 @@ export function OrderSummary({
                 <button type="button" onClick={() => onPersonsChange(Math.max(1, persons - 1))} className="flex h-[40px] cursor-pointer items-center justify-center rounded-full bg-[var(--order-summary-field-bg)] px-[12px]" aria-label="Decrease people count">
                   <svg width="14" height="2" viewBox="0 0 14 2" fill="none"><path d="M1 1H13" stroke="var(--order-summary-control-icon)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" /></svg>
                 </button>
-                <p className="w-[16px] text-center font-sans text-[length:var(--order-summary-title-font-size)] font-semibold text-[var(--order-summary-text)]">{persons}</p>
+                <p className="w-[16px] text-center font-sans text-[length:var(--order-summary-title-font-size)] font-semibold text-[var(--order-summary-text)]">
+                  <AnimatedNumber value={persons} />
+                </p>
                 <button type="button" onClick={() => onPersonsChange(persons + 1)} className="flex h-[40px] cursor-pointer items-center justify-center rounded-full bg-[var(--order-summary-field-bg)] px-[12px]" aria-label="Increase people count">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d={SVG_PLUS} stroke="var(--order-summary-control-icon)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" /></svg>
                 </button>
@@ -178,6 +284,7 @@ export function OrderSummary({
 
               <div className="relative">
                 <div
+                  ref={mealsScrollRef}
                   className="flex cursor-grab select-none gap-[20px] overflow-x-auto px-[20px] pb-[4px] scrollbar-hide active:cursor-grabbing md:px-[24px]"
                   onMouseDown={(event) => {
                     const el = event.currentTarget;
@@ -216,7 +323,7 @@ export function OrderSummary({
                     document.addEventListener('touchend', onTouchEnd);
                   }}
                 >
-                  {previewMeals.map((meal) => (
+                  {visibleMeals.map((meal) => (
                     <button key={meal.id} type="button" onClick={() => { if (dragMovedRef.current) return; setSelectedMeal(meal); }} className="group flex shrink-0 cursor-pointer flex-col items-start gap-[12px] text-left">
                       <div className="h-[108px] w-[150px] overflow-hidden rounded-[8px]"><img src={meal.img} alt={meal.name} className="pointer-events-none h-full w-full object-cover transition-transform duration-200 group-hover:scale-105" /></div>
                       <p className="line-clamp-2 w-[150px] font-sans text-[length:var(--order-summary-body-font-size)] font-semibold leading-[140%] text-[var(--order-summary-text)] transition-colors group-hover:text-[var(--order-summary-primary)]">
@@ -233,9 +340,11 @@ export function OrderSummary({
             <Divider />
 
             <div className="flex items-center gap-[6px] px-[20px] md:px-[24px]">
-              <p className="flex-[1_0_0] whitespace-nowrap font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">Total meals <span className="font-medium">(over {pricing.paidDays} days)</span></p>
+              <p className="flex-[1_0_0] whitespace-nowrap font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">Total meals <span className="font-medium">(over <AnimatedNumber value={pricing.paidDays} /> days)</span></p>
               <div className="h-[4px] flex-[1_0_0]" />
-              <p className="text-center font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[150%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">{mealsCount}</p>
+              <p className="text-center font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[150%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">
+                <AnimatedNumber value={mealsCount} />
+              </p>
             </div>
 
             <Divider />

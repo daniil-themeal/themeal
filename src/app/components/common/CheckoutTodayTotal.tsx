@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 
 import { formatAed, formatPricePerDay } from '../../data/checkoutPricing';
+import { AnimatedNumber } from './AnimatedNumber';
 import { COLOR_TOKENS } from './colorTokens';
 import { FONT_SIZE_TOKENS } from './fontSizeTokens';
 
@@ -54,7 +55,7 @@ export function CheckoutTodayTotal({
         <div className="flex items-end gap-[5px]">
           {oldPeriodPrice ? (
             <p className="font-sans text-[length:var(--today-total-body-fs)] font-bold leading-[150%] text-[var(--today-total-subtle)] line-through">
-              {formatAed(oldPeriodPrice)}
+              <AnimatedNumber value={oldPeriodPrice} format={formatAed} />
             </p>
           ) : null}
 
@@ -63,13 +64,13 @@ export function CheckoutTodayTotal({
           </p>
 
           <p className="font-sans text-[length:var(--today-total-price-fs)] font-bold leading-[150%] text-[var(--today-total-primary)]">
-            {formatAed(periodPrice)}
+            <AnimatedNumber value={periodPrice} format={formatAed} />
           </p>
         </div>
       </div>
 
       <p className="text-right font-sans text-[length:var(--today-total-body-fs)] font-bold leading-[150%] text-[var(--today-total-text)]">
-        AED {formatPricePerDay(pricePerDay)}/day
+        AED <AnimatedNumber value={pricePerDay} format={formatPricePerDay} />/day
       </p>
     </div>
   );
