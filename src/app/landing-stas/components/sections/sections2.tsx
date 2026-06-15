@@ -250,16 +250,17 @@ function Customers({ t }) {
 function Fresh({ t }) {
   const ic = [Icon.snow, Icon.truck, Icon.shield, Icon.leaf];
   const shots = [
-    '/landing-stas/assets/gallery/g3.avif',
-    '/landing-stas/assets/production_2.avif',
-    '/landing-stas/assets/gallery/g5.avif',
-    '/landing-stas/assets/gallery/g6.avif',
-    '/landing-stas/assets/production_1.avif',
+    '/landing-stas/assets/gallery/g1.png',
+    '/landing-stas/assets/gallery/g2.png',
+    '/landing-stas/assets/gallery/g3.png',
+    '/landing-stas/assets/gallery/g4.png',
+    '/landing-stas/assets/gallery/g5.png',
   ];
   const [idx, setIdx] = useState(0);
   const timerRef = useRef(null);
   const startAuto = () => {
     if (timerRef.current) clearInterval(timerRef.current);
+    if (shots.length < 2) return;
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) return;
     timerRef.current = setInterval(() => setIdx(i => (i + 1) % shots.length), 3200);
@@ -269,6 +270,7 @@ function Fresh({ t }) {
     return () => { if (timerRef.current) clearInterval(timerRef.current); };
   }, []);
   const go = (delta) => {
+    if (shots.length < 2) return;
     setIdx(i => (i + delta + shots.length) % shots.length);
     startAuto();
   };
@@ -279,11 +281,10 @@ function Fresh({ t }) {
         /* carousel */
         createElement('div', { className:'reveal', style:{ position:'relative' } },
           createElement('div', { style:{ position:'relative', borderRadius:'var(--r-2xl)', overflow:'hidden', boxShadow:'var(--shadow-lg)', aspectRatio:'4/5', background:'var(--cream-2)' } },
-            shots.map((src,i)=>{
-              const offset = i === 3 ? { top:0, left:-2 } : i === 4 ? { top:2, left:-201 } : { top:0, left:0 };
-              return createElement('img', { key:i, src, alt:'', loading:i?'lazy':'eager',
-                style:{ position:'absolute', top:offset.top, right:0, bottom:0, left:offset.left, width:'100%', height:'100%', objectFit:'cover', opacity:i===idx?1:0, transition:'opacity .8s var(--ease)' } });
-            }),
+            shots.map((src,i)=>
+              createElement('img', { key:i, src, alt:'', loading:i?'lazy':'eager',
+                style:{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', opacity:i===idx?1:0, transition:'opacity .8s var(--ease)' } })
+            ),
             createElement('div', { style:{ position:'absolute', inset:0, background:'linear-gradient(to top, rgba(34,10,56,.55), transparent 45%)', pointerEvents:'none' } }),
             /* inside the kitchen caption */
             createElement('div', { className:'row', style:{ position:'absolute', top:16, insetInlineStart:16, gap:8, background:'rgba(34,10,56,.55)', backdropFilter:'blur(8px)', color:'#fff', borderRadius:'var(--r-pill)', padding:'8px 14px', fontSize:'var(--fs-12)', fontWeight:700, letterSpacing:'.04em', textTransform:'uppercase' } },
@@ -319,7 +320,13 @@ function Fresh({ t }) {
 
 /* ---------------- Gallery ---------------- */
 function Gallery({ t }) {
-  const imgs = ['/landing-stas/assets/gallery/g3.avif','/landing-stas/assets/production_2.avif','/landing-stas/assets/gallery/g5.avif','/landing-stas/assets/gallery/g6.avif','/landing-stas/assets/production_1.avif'];
+  const imgs = [
+    '/landing-stas/assets/gallery/g1.png',
+    '/landing-stas/assets/gallery/g2.png',
+    '/landing-stas/assets/gallery/g3.png',
+    '/landing-stas/assets/gallery/g4.png',
+    '/landing-stas/assets/gallery/g5.png',
+  ];
   return (
     createElement('section', { className:'section section--cream2', id:'gallery' },
       createElement('div', { className:'wrap' },

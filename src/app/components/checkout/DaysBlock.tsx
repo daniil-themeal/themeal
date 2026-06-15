@@ -145,13 +145,13 @@ export function DaysBlock({
 }) {
   return (
     <div
-      className="flex w-full flex-col items-start gap-[16px]"
+      className="flex w-full flex-col items-start gap-[20px]"
       style={daysBlockStyle}
     >
       <CheckoutSectionHeader
         title="Which days do you eat with us?"
         subtitle="Pick the days you want meals ready. Custom days cost the same per day."
-        gap={2}
+        gap={12}
       />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">

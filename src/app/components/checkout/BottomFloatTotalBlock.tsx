@@ -551,7 +551,7 @@ export function BottomFloatTotalBlock({
                         <p
                           className={[
                             TEXT_TRIM_CLASS_NAME,
-                            'w-[150px] font-sans text-[length:var(--checkout-float-font-size-md)] font-semibold leading-[1.4] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)]',
+                            'mx-[4px] w-[150px] font-sans text-[length:var(--checkout-float-font-size-md)] font-semibold leading-[1.4] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)]',
                           ].join(' ')}
                         >
                           {meal.name}

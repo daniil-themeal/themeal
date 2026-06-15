@@ -100,13 +100,13 @@ function Checkmark() {
 export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) {
   return (
     <div
-      className="flex w-full flex-col items-start gap-[16px]"
+      className="flex w-full flex-col items-start gap-[20px]"
       style={ingredientsBlockStyle}
     >
       <CheckoutSectionHeader
         title="Exclude ingredients"
         subtitle="Optional. Select all that apply"
-        gap={2}
+        gap={12}
       />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">

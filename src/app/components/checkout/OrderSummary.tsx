@@ -47,8 +47,6 @@ type OrderSummaryCssVariables = CSSProperties & {
   '--order-summary-divider': string;
   '--order-summary-field-bg': string;
   '--order-summary-control-icon': string;
-  '--order-summary-success': string;
-  '--order-summary-white': string;
   '--order-summary-section-label-font-size': string;
   '--order-summary-title-font-size': string;
   '--order-summary-title-font-size-md': string;
@@ -66,8 +64,6 @@ const orderSummaryStyle: OrderSummaryCssVariables = {
   '--order-summary-divider': COLOR_TOKENS.neutral[100],
   '--order-summary-field-bg': COLOR_TOKENS.neutral[50],
   '--order-summary-control-icon': COLOR_TOKENS.neutral[500],
-  '--order-summary-success': COLOR_TOKENS.success[500],
-  '--order-summary-white': COLOR_TOKENS.base.white,
   '--order-summary-section-label-font-size': FONT_SIZE_TOKENS[12],
   '--order-summary-title-font-size': FONT_SIZE_TOKENS[16],
   '--order-summary-title-font-size-md': FONT_SIZE_TOKENS[20],
@@ -92,17 +88,6 @@ function TabbyLogo() {
           <path d={SVG_TABBY_TEXT2} fill="#292929" />
         </svg>
       </div>
-    </div>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <div className="relative size-[16px] shrink-0">
-      <svg className="absolute inset-0 block size-full" fill="none" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
-        <circle cx="8" cy="8" fill="var(--order-summary-success)" r="8" />
-        <path d="M4 7.6L7.2 10.8L13.2 4.8" stroke="var(--order-summary-white)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.6" />
-      </svg>
     </div>
   );
 }
@@ -160,7 +145,7 @@ export function OrderSummary({
     <>
       <div className="flex flex-col gap-[16px] md:pt-[56px]" style={orderSummaryStyle}>
         <div className="rounded-[16px] bg-[var(--order-summary-bg)] py-[28px]">
-          <div className="flex flex-col gap-[16px]">
+          <div className="flex flex-col gap-[20px]">
             <div className="px-[20px] md:px-[24px]">
               <PlanTariffSummary title={getPlanTariffTitle(plan)} chips={planTariffChips} />
             </div>
@@ -183,7 +168,7 @@ export function OrderSummary({
 
             <Divider />
 
-            <div className="flex flex-col gap-[10px]">
+            <div className="flex flex-col gap-[16px]">
               <div className="flex items-center justify-between gap-[16px] px-[20px] md:px-[24px]">
                 <p className="font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">What you'll eat</p>
                 <TextLink size="12" onClick={onOpenMenu}>
@@ -274,11 +259,6 @@ export function OrderSummary({
               <Button type="button" variant="primary" size="medium" fullWidth onClick={onOrder}>Continue to Delivery</Button>
 
               <p className="text-center font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[140%] text-[var(--order-summary-muted)]">By continuing, you accept our <span className="underline">Terms</span> and <span className="underline">Privacy Policy</span></p>
-            </div>
-
-            <div className="flex items-center justify-center gap-[12px] px-[20px]">
-              <div className="flex items-center gap-[8px]"><CheckIcon /><p className="font-sans text-[length:var(--order-summary-body-font-size)] font-normal leading-[150%] text-[var(--order-summary-text)]">Free delivery</p></div>
-              <div className="flex items-center gap-[8px]"><CheckIcon /><p className="font-sans text-[length:var(--order-summary-body-font-size)] font-normal leading-[150%] text-[var(--order-summary-text)]">Pause anytime</p></div>
             </div>
           </div>
         </div>
