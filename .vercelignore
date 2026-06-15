@@ -5,3 +5,12 @@ Landing_20.05_TEST.rar
 *.err
 node_modules
 .git
+_figma-success-import/
+src/imports/Frame1/
+src/imports/Inputs/
+src/imports/DeliveryBenefits/
+src/imports/meal_logo_green.svg
+src/imports/Unhealthy_Icon.svg
+src/imports/Unhealthy_Icon-1.svg
+src/imports/Unhealthy_Icon-2.svg
+src/imports/svgPaths.ts

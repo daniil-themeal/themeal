@@ -135,7 +135,7 @@ export function ModalShell({
         style={{ zIndex }}
         onClick={disableOverlayClick ? undefined : requestClose}
       >
-        <div className="min-h-full md:flex md:items-center md:justify-center">
+        <div className="min-h-full sm:flex sm:items-center sm:justify-center">
           <div
             className={panelClasses}
             onClick={(event) => event.stopPropagation()}

@@ -68,12 +68,12 @@ export function MealDetailModal({
       onClose={onClose}
       variant="centered-scroll"
       zIndex={Z_INDEX_TOKENS.modal}
-      rootClassName="bg-[var(--meal-detail-page-bg)] md:bg-black/40 md:px-[24px] md:py-[24px]"
-      panelClassName="min-h-screen w-full bg-[var(--meal-detail-card-bg)] md:min-h-0 md:max-w-[480px] md:overflow-hidden md:rounded-[20px] md:shadow-2xl"
+      rootClassName="bg-[var(--meal-detail-page-bg)] sm:bg-black/40 sm:px-[24px] sm:py-[24px]"
+      panelClassName="min-h-screen w-full bg-[var(--meal-detail-card-bg)] sm:min-h-0 sm:max-w-[480px] sm:overflow-hidden sm:rounded-[20px] sm:shadow-2xl"
     >
       {(requestClose) => (
         <div style={mealDetailModalStyle}>
-          <div className="sticky top-0 z-10 flex h-[56px] shrink-0 items-center justify-end bg-[var(--meal-detail-card-bg)] md:static md:z-auto">
+          <div className="sticky top-0 z-10 flex h-[56px] shrink-0 items-center justify-end bg-[var(--meal-detail-card-bg)] sm:static sm:z-auto">
             <button
               type="button"
               onClick={requestClose}

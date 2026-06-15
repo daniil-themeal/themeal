@@ -85,6 +85,22 @@
 }
 
 
+/*
+ * Project breakpoints — source of truth for CSS.
+ * JS mirror: src/app/components/common/breakpoints.ts
+ *
+ * | Token | Tailwind | Min width | Typical use                          |
+ * |-------|----------|-----------|--------------------------------------|
+ * | xs    | xs:      | 390px     | Small phones (iPhone SE, narrow)     |
+ * | sm    | sm:      | 576px     | Large phones / small tablets         |
+ * | md    | md:      | 768px     | Tablets, small laptops               |
+ * | lg    | lg:      | 1024px    | Desktop layouts                      |
+ * | xl    | xl:      | 1200px    | Wide content (max-width containers)  |
+ * | 2xl   | 2xl:     | 1440px    | Large desktop / design canvas        |
+ *
+ * Note: sm is 576px (not Tailwind default 640px).
+ * Mobile-first: unprefixed = all sizes; sm: applies at 576px and up.
+ */
 @theme {
   --breakpoint-xs: 390px;
   --breakpoint-sm: 576px;

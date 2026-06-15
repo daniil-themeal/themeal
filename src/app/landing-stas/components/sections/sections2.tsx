@@ -12,6 +12,7 @@ import { Icon, Logo, Stars, Social } from '../icons';
 function Menu({ t, onOrder }) {
   const dayKeys = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   const [day, setDay] = useState(0);
+  const [slideDirection, setSlideDirection] = useState('left');
   const [selectedMeal, setSelectedMeal] = useState(null);
   const imgs = ['/landing-stas/assets/img/p6.png','/landing-stas/assets/meals/meal_03.png','/landing-stas/assets/meals/meal_04.png','/landing-stas/assets/meals/meal_05.png'];
   const meals = t.menu.meals[dayKeys[day]];
@@ -31,6 +32,12 @@ function Menu({ t, onOrder }) {
       kcal: meta[slotIndex].kcal,
       weight: meta[slotIndex].g,
     }));
+  };
+
+  const selectDay = (nextDay) => {
+    if (nextDay === day) return;
+    setSlideDirection(nextDay > day ? 'left' : 'right');
+    setDay(nextDay);
   };
 
   useEffect(() => {
@@ -77,7 +84,7 @@ function Menu({ t, onOrder }) {
           t.menu.days.map((d,i)=>createElement('button', {
             key:i,
             className:`menu-day-tab${i===day ? ' is-active' : ''}`,
-            onClick: dayTabsScroll.guardClick(() => setDay(i)),
+            onClick: dayTabsScroll.guardClick(() => selectDay(i)),
           }, d))
         )
       ),
@@ -85,11 +92,22 @@ function Menu({ t, onOrder }) {
       /* meal cards — full-bleed scroll on mobile; grid in .wrap-width container on desktop */
       createElement('div', { className:'menu-grid-wrap reveal' },
         createElement('div', {
-          ref: menuGridScroll.ref,
-          onMouseDown: menuGridScroll.onMouseDown,
-          className:'menu-grid-shell no-scrollbar h-scroll reveal',
+          className:'menu-grid-shell reveal',
         },
-          createElement('div', { className:'menu-grid menu-grid--cards' },
+          createElement('div', {
+            ref: menuGridScroll.ref,
+            onMouseDown: menuGridScroll.onMouseDown,
+            className:'menu-grid-scroll no-scrollbar h-scroll reveal',
+          },
+            createElement('div', {
+              key: dayKeys[day],
+              className:'menu-grid menu-grid--cards',
+              style: {
+                animation: slideDirection === 'left'
+                  ? 'menuMealsSlideFromRight 260ms ease-out both'
+                  : 'menuMealsSlideFromLeft 260ms ease-out both',
+              },
+            },
             meals.map((m,i)=>createElement('div', { key:i, className:'menucard-shell' },
               createElement('article', {
                 className:'menucard',
@@ -111,6 +129,7 @@ function Menu({ t, onOrder }) {
                   createElement('p', { className:'menucard-title' }, m))
               )
             ))
+          )
           )
         )
       ),
@@ -316,31 +335,6 @@ function Fresh({ t }) {
           )
         )
         )
-      )
-    )
-  );
-}
-
-/* ---------------- Gallery ---------------- */
-function Gallery({ t }) {
-  const imgs = [
-    '/landing-stas/assets/gallery/g1.png',
-    '/landing-stas/assets/gallery/g2.png',
-    '/landing-stas/assets/gallery/g3.png',
-    '/landing-stas/assets/gallery/g4.png',
-    '/landing-stas/assets/gallery/g5.png',
-  ];
-  return (
-    createElement('section', { className:'section section--cream2', id:'gallery' },
-      createElement('div', { className:'wrap' },
-        createElement('div', { className:'center reveal section-intro--sm' },
-          createElement('div', { className:'eyebrow' }, t.gallery.eyebrow),
-          createElement('h2', { className:'h2', style:{ margin:0 } }, t.gallery.title)
-        )
-      ),
-      createElement('div', { className:'no-scrollbar reveal', style:{ display:'flex', gap:18, overflowX:'auto', paddingInline:'var(--gutter)', scrollSnapType:'x mandatory' } },
-        imgs.map((src,i)=>createElement('div', { key:i, style:{ flex:'0 0 auto', width:'clamp(260px,40vw,440px)', aspectRatio:'16/10', borderRadius:'var(--r-xl)', overflow:'hidden', boxShadow:'var(--shadow-md)', scrollSnapAlign:'center' } },
-          createElement('img', { src, alt:'', loading:'lazy', style:{ width:'100%', height:'100%', objectFit:'cover' } })))
       )
     )
   );
