@@ -22,8 +22,8 @@ type MealDetailModalCssVariables = CSSProperties & {
 };
 
 const mealDetailModalStyle: MealDetailModalCssVariables = {
-  '--cream': '#FBF8F3',
-  '--meal-detail-page-bg': COLOR_TOKENS.neutral[50],
+  '--cream': COLOR_TOKENS.base.cream,
+  '--meal-detail-page-bg': COLOR_TOKENS.base.cream,
   '--meal-detail-card-bg': COLOR_TOKENS.base.white,
   '--meal-detail-border': COLOR_TOKENS.neutral[100],
   '--meal-detail-text': COLOR_TOKENS.neutral[900],

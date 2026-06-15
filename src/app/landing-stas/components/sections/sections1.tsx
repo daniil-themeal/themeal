@@ -4,7 +4,7 @@ import { Icon, Logo, Stars, Social } from '../icons';
 import { HeroStats } from '../HeroStats';
 
 /* ---------------- Header (scroll + cursor reveal — Bender) ---------------- */
-function Header({ t, lang, setLang, onOrder, dark }) {
+function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
   const [shown, setShown] = useState(true);
   const [solid, setSolid] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -55,7 +55,16 @@ function Header({ t, lang, setLang, onOrder, dark }) {
             style:{ color:txt, transition:'color .15s' },
             onMouseEnter:(e)=>e.target.style.color = onDark ? '#fff' : 'var(--brand)',
             onMouseLeave:(e)=>e.target.style.color = txt,
-          }, l))
+          }, l)),
+          onDesignSystemClick ? createElement('a', {
+            key:'design-system',
+            href:'#',
+            className:'navlink',
+            style:{ color:txt, transition:'color .15s' },
+            onClick:(e)=>{ e.preventDefault(); onDesignSystemClick(); },
+            onMouseEnter:(e)=>e.target.style.color = onDark ? '#fff' : 'var(--brand)',
+            onMouseLeave:(e)=>e.target.style.color = txt,
+          }, t.nav.designSystem) : null
         ),
         createElement('div', { className:'hdr-profile' },
           createElement('button', {

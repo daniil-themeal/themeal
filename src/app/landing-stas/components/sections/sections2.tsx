@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { createElement, Fragment, useState, useEffect, useRef } from 'react';
+import { UaeFlag } from '../../../components/common/UaeFlag';
 import { normalizeUaePhone, validateUaePhone } from '../../../components/checkout/phoneValidation';
 import { MealDetailModal } from '../../../components/checkout/MealDetailModal';
 import { buildMealDetail } from '../../../data/testMeals';
@@ -67,16 +68,18 @@ function Menu({ t, onOrder }) {
       ),
 
       /* day tabs — align with .wrap via gutter-x */
-      createElement('div', {
-        ref: dayTabsScroll.ref,
-        onMouseDown: dayTabsScroll.onMouseDown,
-        className:'menu-days no-scrollbar h-scroll gutter-x reveal',
-      },
-        t.menu.days.map((d,i)=>createElement('button', {
-          key:i,
-          className:`menu-day-tab${i===day ? ' is-active' : ''}`,
-          onClick: dayTabsScroll.guardClick(() => setDay(i)),
-        }, d))
+      createElement('div', { className:'menu-days-wrap reveal' },
+        createElement('div', {
+          ref: dayTabsScroll.ref,
+          onMouseDown: dayTabsScroll.onMouseDown,
+          className:'menu-days no-scrollbar h-scroll gutter-x reveal',
+        },
+          t.menu.days.map((d,i)=>createElement('button', {
+            key:i,
+            className:`menu-day-tab${i===day ? ' is-active' : ''}`,
+            onClick: dayTabsScroll.guardClick(() => setDay(i)),
+          }, d))
+        )
       ),
 
       /* meal cards — full-bleed scroll on mobile; grid in .wrap-width container on desktop */
@@ -375,16 +378,18 @@ function LeadTitleWhatsAppIcon() {
 
 function leadTitleWordSpans(title) {
   const words = title.split(/\s+/);
-  const parts = [];
-  for (let i = 0; i < words.length; i++) {
-    if (words[i].toLowerCase() === 'in' && words[i + 1] === 'WhatsApp') {
-      parts.push('in WhatsApp');
-      i += 1;
-    } else {
-      parts.push(words[i]);
+  return words.map((word, i) => {
+    if (word === 'WhatsApp') {
+      return createElement('span', {
+        key: `wa-${i}`,
+        className: 'lead-title-wa',
+      },
+        createElement('span', null, word),
+        createElement(LeadTitleWhatsAppIcon),
+      );
     }
-  }
-  return parts.map((part, i) => createElement('span', { key: i }, part));
+    return createElement('span', { key: i }, word);
+  });
 }
 
 function LeadCapture({ t, onWhatsAppClick }) {
@@ -416,8 +421,7 @@ function LeadCapture({ t, onWhatsAppClick }) {
             createElement('div', { className:'stack lead-text', style:{ gap:'var(--space-24)' } },
               createElement('div', { className:'stack lead-copy', style:{ gap:'var(--space-20)' } },
                 createElement('h3', { className:'h3 row lead-title', style:{ margin:0, gap:4, width:'100%' } },
-                  ...leadTitleWordSpans(l.title),
-                  createElement(LeadTitleWhatsAppIcon)),
+                  ...leadTitleWordSpans(l.title)),
                 createElement('p', { className:'lead', style:{ margin:0, width:'100%' } }, l.sub),
                 createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)' } }, l.fine)),
               createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'0 14px', height:32 } },
@@ -428,7 +432,7 @@ function LeadCapture({ t, onWhatsAppClick }) {
                   createElement('form', { className:'lead-form', onSubmit: handleSubmit },
                     createElement('div', { className:'lead-form-fields' },
                       createElement('span', { className:'lead-form-prefix' },
-                        createElement('span', { style:{ fontSize:'var(--fs-20)' } }, '🇦🇪'), l.cc),
+                        createElement(UaeFlag), l.cc),
                       createElement('input', { type:'tel', required:true, className:'lead-form-input', value:phone, onChange:(e)=>{ setPhone(e.target.value); setError(''); }, placeholder:l.ph, dir:'ltr' })),
                     createElement('button', { type:'submit', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 } }, l.cta)),
                   error ? createElement('span', { style:{ fontSize:'var(--fs-14)', textAlign:'center', color:'var(--pink)' } }, error) : null,

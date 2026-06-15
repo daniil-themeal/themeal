@@ -461,7 +461,7 @@ export function FullMenuModal({
               onMouseMove={handleMealsMouseMove}
               onMouseUp={stopMealsMouseDrag}
               onMouseLeave={stopMealsMouseDrag}
-              className={`flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto px-[20px] py-[20px] scrollbar-hide md:justify-center md:px-[24px] ${
+              className={`flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible px-[20px] py-[20px] scrollbar-hide md:justify-center md:px-[24px] ${
                 isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
               }`}
               style={{
@@ -476,14 +476,14 @@ export function FullMenuModal({
                   key={meal.id}
                   type="button"
                   onClick={() => handleMealClick(meal)}
-                  className="group flex shrink-0 cursor-pointer flex-col gap-[12px] text-left"
+                  className="group relative z-0 flex shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10"
                 >
-                  <div className="relative h-[108px] w-[150px] overflow-hidden rounded-[8px] md:h-[116px] md:w-[160px]">
+                  <div className="h-[108px] w-[150px] overflow-hidden rounded-[8px] md:h-[116px] md:w-[160px]">
                     <img
                       src={meal.img}
                       alt={meal.name}
                       draggable={false}
-                      className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                      className="pointer-events-none h-full w-full rounded-[8px] object-cover transition-transform duration-200 group-hover:scale-105"
                     />
                   </div>
 

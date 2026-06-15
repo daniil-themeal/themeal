@@ -531,21 +531,21 @@ export function BottomFloatTotalBlock({
                     onTouchStart={handleMealsTouchStart}
                     onTouchMove={handleMealsTouchMove}
                     onTouchEnd={handleMealsTouchEnd}
-                    className="scrollbar-hide flex cursor-grab touch-pan-x select-none gap-[12px] overflow-x-auto px-[20px] py-[16px] active:cursor-grabbing"
+                    className="scrollbar-hide flex cursor-grab touch-pan-x select-none gap-[12px] overflow-x-auto overflow-y-visible px-[20px] py-[16px] active:cursor-grabbing"
                   >
                     {selectedDayMeals.map((meal) => (
                       <button
                         key={meal.id}
                         type="button"
                         onClick={() => handleMealClick(meal)}
-                        className="group flex shrink-0 cursor-pointer flex-col gap-[8px] text-left"
+                        className="group relative z-0 flex shrink-0 cursor-pointer flex-col gap-[8px] text-left hover:z-10 focus-visible:z-10"
                       >
-                        <div className="relative h-[108px] w-[150px] overflow-hidden rounded-[8px]">
+                        <div className="h-[108px] w-[150px] overflow-hidden rounded-[8px]">
                           <img
                             src={meal.img}
                             alt={meal.name}
                             draggable={false}
-                            className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                            className="pointer-events-none h-full w-full rounded-[8px] object-cover transition-transform duration-200 group-hover:scale-105"
                           />
                         </div>
 

@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
 import { FONT_SIZE_TOKENS } from './fontSizeTokens';
+import { UaeFlag } from './UaeFlag';
 
 type PhoneInputCssVariables = CSSProperties & {
   '--phone-input-bg': string;
@@ -20,17 +21,6 @@ const phoneInputStyle: PhoneInputCssVariables = {
   '--phone-input-error': COLOR_TOKENS.danger[400],
   '--phone-input-font-size': FONT_SIZE_TOKENS[20],
 };
-
-function UaeFlag() {
-  return (
-    <svg className="h-[12px] w-[20px]" fill="none" viewBox="0 0 20 12" aria-hidden="true">
-      <rect width="20" height="12" fill="#00732F" />
-      <rect y="4" width="20" height="8" fill="white" />
-      <rect y="8" width="20" height="4" fill="black" />
-      <rect width="6" height="12" fill="#FF0000" />
-    </svg>
-  );
-}
 
 type PhoneInputProps = {
   id?: string;

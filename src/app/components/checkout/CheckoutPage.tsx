@@ -41,11 +41,11 @@ type CheckoutPageCssVariables = CSSProperties & {
 };
 
 const checkoutPageStyle: CheckoutPageCssVariables = {
-  '--checkout-page-bg': COLOR_TOKENS.neutral[50],
+  '--checkout-page-bg': COLOR_TOKENS.base.cream,
 };
 
 const checkoutStepScrollClassName =
-  'flex-1 overflow-y-auto bg-white md:bg-[var(--checkout-page-bg)] scrollbar-hide';
+  'flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide';
 
 export function CheckoutPage({
   isOpen,

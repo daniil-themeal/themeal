@@ -1,6 +1,7 @@
 export const COLOR_TOKENS = {
   base: {
     white: '#FFFFFF',
+    cream: '#FBF8F3',
   },
 
   brand: {

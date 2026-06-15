@@ -29,12 +29,14 @@ import './styles/landing-stas.css';
 type LandingStasPageProps = {
   onOrderClick: () => void;
   onWhatsAppClick: (phone: string) => void;
+  onDesignSystemClick?: () => void;
   checkoutOpen?: boolean;
 };
 
 export default function LandingStasPage({
   onOrderClick,
   onWhatsAppClick,
+  onDesignSystemClick,
   checkoutOpen = false,
 }: LandingStasPageProps) {
   const t = mealContentEn;
@@ -50,7 +52,7 @@ export default function LandingStasPage({
 
   return (
     <div className="landing-stas min-h-screen w-full">
-      <Header {...shared} dark />
+      <Header {...shared} dark onDesignSystemClick={onDesignSystemClick} />
       <main>
         <Hero t={t} onOrder={onOrderClick} />
         <Compare t={t} />

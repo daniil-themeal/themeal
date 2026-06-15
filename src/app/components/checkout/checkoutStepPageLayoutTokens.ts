@@ -8,7 +8,7 @@ import { TEXT_TRIM_FIT_CLASS_NAME } from '../common/textTrimTokens';
 const headerToCardGap = 'gap-[32px]';
 
 export const CHECKOUT_STEP_PAGE_LAYOUT = {
-  page: 'min-h-full bg-[var(--checkout-step-surface)] md:bg-[var(--checkout-step-page-bg)]',
+  page: 'min-h-full bg-[var(--checkout-step-page-bg)]',
   /** Space from page title block to white card. */
   headerToCardGap,
   container: `mx-auto flex w-full flex-col md:px-[32px] md:py-[120px] ${headerToCardGap}`,
@@ -33,7 +33,7 @@ export const CHECKOUT_STEP_PAGE_LAYOUT = {
 } as const;
 
 export const CHECKOUT_STEP_PAGE_VARS = {
-  '--checkout-step-page-bg': COLOR_TOKENS.neutral[50],
+  '--checkout-step-page-bg': COLOR_TOKENS.base.cream,
   '--checkout-step-surface': COLOR_TOKENS.base.white,
   '--checkout-step-title-fs': FONT_SIZE_TOKENS[32],
   '--checkout-step-title-fs-md': FONT_SIZE_TOKENS[48],

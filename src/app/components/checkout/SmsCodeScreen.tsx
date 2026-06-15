@@ -49,7 +49,7 @@ type RingColorStyle = CSSProperties & {
 };
 
 const smsCodeScreenStyle: SmsCodeScreenCssVariables = {
-  '--sms-code-page-bg': COLOR_TOKENS.neutral[50],
+  '--sms-code-page-bg': COLOR_TOKENS.base.cream,
   '--sms-code-text': COLOR_TOKENS.neutral[900],
   '--sms-code-muted': COLOR_TOKENS.neutral[500],
   '--sms-code-primary': COLOR_TOKENS.primary[500],
@@ -385,7 +385,7 @@ export function SmsCodeScreen({
 
   return (
     <div
-      className="flex min-h-full bg-white lg:bg-[var(--sms-code-page-bg)]"
+      className="flex min-h-full bg-[var(--sms-code-page-bg)]"
       style={smsCodeScreenStyle}
     >
       <div className="mx-auto flex min-h-full w-full max-w-[1200px] flex-col justify-center px-[20px] pt-[24px] md:px-[32px] lg:justify-center lg:px-[32px] lg:py-[56px]">

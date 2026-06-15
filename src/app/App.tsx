@@ -39,6 +39,10 @@ export default function App() {
     setCheckoutOpen(false);
   };
 
+  const openDesignSystem = () => {
+    setDesignSystemOpen(true);
+  };
+
   const closeDesignSystem = () => {
     setDesignSystemOpen(false);
   };
@@ -52,6 +56,7 @@ export default function App() {
       <LandingStasPage
         onOrderClick={openCheckout}
         onWhatsAppClick={openCheckoutFromWhatsApp}
+        onDesignSystemClick={openDesignSystem}
         checkoutOpen={checkoutOpen}
       />
 

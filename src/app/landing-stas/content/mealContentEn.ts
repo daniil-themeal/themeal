@@ -6,6 +6,7 @@ export const mealContentEn = {
     "how": "How it works",
     "delivery": "Delivery",
     "qa": "Q&A",
+    "designSystem": "Design system",
     "signin": "Sign in",
     "order": "View menu"
   },

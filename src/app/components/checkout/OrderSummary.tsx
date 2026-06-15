@@ -285,7 +285,7 @@ export function OrderSummary({
               <div className="relative">
                 <div
                   ref={mealsScrollRef}
-                  className="flex cursor-grab select-none gap-[20px] overflow-x-auto px-[20px] pb-[4px] scrollbar-hide active:cursor-grabbing md:px-[24px]"
+                  className="flex cursor-grab select-none gap-[20px] overflow-x-auto overflow-y-visible py-[4px] px-[20px] scrollbar-hide active:cursor-grabbing md:px-[24px]"
                   onMouseDown={(event) => {
                     const el = event.currentTarget;
                     const startX = event.pageX - el.offsetLeft;
@@ -324,9 +324,9 @@ export function OrderSummary({
                   }}
                 >
                   {visibleMeals.map((meal) => (
-                    <button key={meal.id} type="button" onClick={() => { if (dragMovedRef.current) return; setSelectedMeal(meal); }} className="group flex shrink-0 cursor-pointer flex-col items-start gap-[12px] text-left">
-                      <div className="h-[108px] w-[150px] overflow-hidden rounded-[8px]"><img src={meal.img} alt={meal.name} className="pointer-events-none h-full w-full object-cover transition-transform duration-200 group-hover:scale-105" /></div>
-                      <p className="line-clamp-2 w-[150px] font-sans text-[length:var(--order-summary-body-font-size)] font-semibold leading-[140%] text-[var(--order-summary-text)] transition-colors group-hover:text-[var(--order-summary-primary)]">
+                    <button key={meal.id} type="button" onClick={() => { if (dragMovedRef.current) return; setSelectedMeal(meal); }} className="group relative z-0 flex w-[150px] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10">
+                      <div className="h-[108px] w-full overflow-hidden rounded-[8px]"><img src={meal.img} alt={meal.name} className="pointer-events-none h-full w-full rounded-[8px] object-cover transition-transform duration-200 group-hover:scale-105" /></div>
+                      <p className="w-full px-[4px] line-clamp-2 [text-box-trim:none] [text-box-edge:auto] font-sans text-[length:var(--order-summary-body-font-size)] font-semibold leading-[140%] text-[var(--order-summary-text)] transition-colors group-hover:text-[var(--order-summary-primary)]">
                         {meal.name}
                       </p>
                     </button>

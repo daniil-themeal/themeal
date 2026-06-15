@@ -75,7 +75,7 @@ type DeliveryAddressScreenCssVariables = CSSProperties & {
 };
 
 const deliveryAddressScreenStyle: DeliveryAddressScreenCssVariables = {
-  '--delivery-address-page-bg': COLOR_TOKENS.neutral[50],
+  '--delivery-address-page-bg': COLOR_TOKENS.base.cream,
   '--delivery-address-card-bg': COLOR_TOKENS.base.white,
   '--delivery-address-search-bg': COLOR_TOKENS.neutral[50],
   '--delivery-address-search-border': COLOR_TOKENS.neutral[200],
@@ -937,7 +937,7 @@ export function DeliveryAddressScreen({
 
   return (
     <div
-      className="relative h-full min-h-full overflow-hidden bg-white lg:bg-[var(--delivery-address-page-bg)]"
+      className="relative h-full min-h-full overflow-hidden bg-[var(--delivery-address-page-bg)]"
       style={deliveryAddressScreenStyle}
     >
       <style>

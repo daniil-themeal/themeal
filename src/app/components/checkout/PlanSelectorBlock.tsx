@@ -123,6 +123,7 @@ function PlanCard({
       onClick={onSelect}
       className={[
         'relative w-full shrink-0 cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
+        'hover:border-[var(--plan-selector-active)]',
         selected
           ? 'border-[var(--plan-selector-card-selected-border)] bg-[var(--plan-selector-card-selected-bg)]'
           : 'border-transparent bg-[var(--plan-selector-card-bg)]',

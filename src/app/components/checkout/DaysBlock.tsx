@@ -24,6 +24,7 @@ type DaysBlockCssVariables = CSSProperties & {
   '--days-card-title-font-size-md': string;
   '--days-chip-font-size': string;
   '--days-text': string;
+  '--days-active': string;
   '--days-card-bg': string;
   '--days-card-selected-bg': string;
   '--days-card-selected-border': string;
@@ -43,6 +44,7 @@ const daysBlockStyle: DaysBlockCssVariables = {
   '--days-card-title-font-size-md': FONT_SIZE_TOKENS[20],
   '--days-chip-font-size': FONT_SIZE_TOKENS[12],
   '--days-text': COLOR_TOKENS.neutral[900],
+  '--days-active': COLOR_TOKENS.primary[500],
   '--days-card-bg': COLOR_TOKENS.base.white,
   '--days-card-selected-bg': COLOR_TOKENS.primary[50],
   '--days-card-selected-border': COLOR_TOKENS.primary[200],
@@ -106,12 +108,13 @@ function DayCard({
       onClick={onSelect}
       className={[
         'w-full cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
+        'hover:border-[var(--days-active)]',
         selected
           ? 'border-[var(--days-card-selected-border)] bg-[var(--days-card-selected-bg)]'
           : 'border-transparent bg-[var(--days-card-bg)]',
       ].join(' ')}
     >
-      <div className="flex flex-col items-start gap-[12px] p-[20px] md:px-[24px]">
+      <div className="flex flex-col items-start gap-[12px] px-[20px] py-[24px] md:px-[24px]">
         <p
           className={[
             'w-full font-sans text-[length:var(--days-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--days-card-title-font-size-md)]',

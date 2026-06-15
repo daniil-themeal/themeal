@@ -119,19 +119,13 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
               type="button"
               onClick={() => onToggle(item.key)}
               className={[
-                'relative w-full cursor-pointer rounded-[12px] text-left transition-colors duration-150',
+                'relative w-full cursor-pointer rounded-[12px] border border-solid text-left transition-colors duration-150',
+                'hover:border-[var(--ingredients-active)]',
                 checked
-                  ? 'bg-[var(--ingredients-active-bg)]'
-                  : 'bg-[var(--ingredients-card-bg)]',
+                  ? 'border-[var(--ingredients-active-border)] bg-[var(--ingredients-active-bg)]'
+                  : 'border-transparent bg-[var(--ingredients-card-bg)]',
               ].join(' ')}
             >
-              {checked ? (
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-[12px] border border-[var(--ingredients-active-border)]"
-                />
-              ) : null}
-
               <div className="flex cursor-pointer items-center gap-[12px] px-[20px] md:px-[24px]">
                 <div
                   className={[

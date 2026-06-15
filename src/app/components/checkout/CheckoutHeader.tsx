@@ -93,7 +93,7 @@ function Stepper({
         const stepLabel = (
           <div className="flex items-center gap-[4px] sm:gap-[8px]">
             <div
-              className="hidden size-[20px] items-center justify-center rounded-full font-sans text-[length:var(--checkout-header-step-font-size)] font-bold xs:flex sm:size-[24px]"
+              className="hidden size-[20px] items-center justify-center rounded-full font-sans text-[length:var(--checkout-header-step-font-size)] font-bold sm:flex sm:size-[24px]"
               style={{
                 backgroundColor: isActive
                   ? 'var(--checkout-header-step-active-bg)'
