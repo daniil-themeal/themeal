@@ -18,6 +18,10 @@ services:
         value: feature/next
       - key: CURSOR_MODEL
         value: composer-2.5
+      - key: VERCEL_URL
+        value: https://landing-20-05-test.vercel.app
+      - key: AUTO_PUSH
+        value: "true"
       - key: TELEGRAM_BOT_TOKEN
         sync: false
       - key: CURSOR_API_KEY

@@ -24,6 +24,8 @@ type Settings = {
   cloudRepoUrl: string;
   cloudRepoRef: string;
   model: string;
+  vercelUrl: string;
+  autoPush: boolean;
 };
 
 function env(name: string, fallback = ""): string {
@@ -60,6 +62,8 @@ function loadSettings(): Settings {
     cloudRepoUrl: env("CLOUD_REPO_URL", "https://github.com/daniil-themeal/themeal.git"),
     cloudRepoRef: env("CLOUD_REPO_REF", "feature/next"),
     model: env("CURSOR_MODEL", "composer-2.5"),
+    vercelUrl: env("VERCEL_URL", "https://landing-20-05-test.vercel.app"),
+    autoPush: env("AUTO_PUSH", "true") !== "false",
   };
 }
 
@@ -93,6 +97,30 @@ function isAllowed(userId: number | undefined, settings: Settings): boolean {
   if (userId == null) return false;
   if (!settings.allowedUserIds) return true;
   return settings.allowedUserIds.has(userId);
+}
+
+function buildAgentPrompt(userText: string, settings: Settings): string {
+  const pushBlock = settings.autoPush
+    ? [
+        "After completing the task:",
+        "1. Run `npm run build` if you changed source code.",
+        `2. Commit with a clear message and push to origin ${settings.cloudRepoRef}.`,
+        `3. Confirm the push succeeded — Vercel will deploy to ${settings.vercelUrl}.`,
+      ].join("\n")
+    : "Report what changed; do not push unless the user explicitly asks.";
+
+  return [
+    "You are the Cursor agent for the theMeal landing page.",
+    `Repository: ${settings.cloudRepoUrl} (branch: ${settings.cloudRepoRef}).`,
+    `Production site: ${settings.vercelUrl} (Vercel, auto-deploy on git push).`,
+    "Stack: Vite + React, landing in src/app/landing-stas/.",
+    "Make minimal, focused changes. Match existing code style.",
+    "",
+    pushBlock,
+    "",
+    "User request:",
+    userText,
+  ].join("\n");
 }
 
 async function createAgent(settings: Settings) {
@@ -163,10 +191,16 @@ async function main() {
     }
     await ctx.reply(
       [
-        "Привет! Я прокси к Cursor Agent.",
+        "Привет! Управление лендингом theMeal через Cursor Agent.",
         "",
         `Режим: ${modeLabel}`,
-        "• Напиши задачу — отправлю агенту",
+        `Сайт: ${settings.vercelUrl}`,
+        "",
+        "Как работает:",
+        "1. Пишешь задачу (например: «увеличь gap в hero до 20px»)",
+        "2. Агент меняет код в GitHub",
+        "3. Пушит в ветку → Vercel деплоит автоматически",
+        "",
         "• /reset — новый диалог",
         "• /status — настройки",
       ].join("\n"),
@@ -192,7 +226,7 @@ async function main() {
       await ctx.reply("Access denied.");
       return;
     }
-    const lines = [`mode: ${settings.agentMode}`, `model: ${settings.model}`];
+    const lines = [`mode: ${settings.agentMode}`, `model: ${settings.model}`, `site: ${settings.vercelUrl}`];
     if (settings.agentMode === "local") {
       lines.push(`workspace: ${settings.workspace}`);
     } else {
@@ -220,7 +254,10 @@ async function main() {
         userAgents.set(userId, agent);
       }
 
-      const answer = await askAgentStreaming(agent, prompt, async (partial) => {
+      const answer = await askAgentStreaming(
+        agent,
+        buildAgentPrompt(prompt, settings),
+        async (partial) => {
         await ctx.telegram.editMessageText(ctx.chat.id, status.message_id, undefined, partial);
       });
 
