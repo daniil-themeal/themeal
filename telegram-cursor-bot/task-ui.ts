@@ -95,6 +95,12 @@ export function sectionsMenuKeyboard(ui: TaskUiContext) {
   return Markup.inlineKeyboard(rows);
 }
 
+export function taskInputCancelKeyboard(section: TaskSection, page: number) {
+  return Markup.inlineKeyboard([
+    [Markup.button.callback("⛔ Отмена", taskCallback("back", page, section))],
+  ]);
+}
+
 export function tasksKeyboard(
   section: TaskSection,
   page: number,
@@ -104,13 +110,14 @@ export function tasksKeyboard(
   const items = listTasks(section);
   const totalPages = Math.max(1, Math.ceil(items.length / TASKS_PAGE_SIZE));
   const safePage = Math.min(Math.max(page, 0), totalPages - 1);
+
+  if (options?.showCancel) {
+    return taskInputCancelKeyboard(section, safePage);
+  }
+
   const slice = items.slice(safePage * TASKS_PAGE_SIZE, safePage * TASKS_PAGE_SIZE + TASKS_PAGE_SIZE);
 
   const rows: InlineRow[] = [];
-
-  if (options?.showCancel) {
-    rows.push([Markup.button.callback("⛔ Отмена", taskCallback("back", safePage, section))]);
-  }
 
   for (const item of slice) {
     rows.push([

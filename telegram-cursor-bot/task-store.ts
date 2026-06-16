@@ -239,7 +239,7 @@ export function formatTaskList(
 ): string {
   const items = listTasks(section);
   if (items.length === 0) {
-    return `📋 ${sectionTitle} — список пуст.\n\nНажми «➕ Добавить» — текст или 🎤 голосовое.`;
+    return `📋 ${sectionTitle} — список пуст.\n\nНажми «➕ Добавить», чтобы создать задачу.`;
   }
 
   const doneCount = items.filter((t) => t.done).length;

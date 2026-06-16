@@ -1,5 +1,10 @@
 import { Markup } from "telegraf";
 
+/** Callback data for inline buttons. */
+export const CB_DEPLOY = "deploy";
+export const CB_CANCEL = "cancel_deploy";
+export const CB_OPEN_TASKS = "open_tasks";
+
 /** Тексты кнопок reply-клавиатуры (физические кнопки внизу чата). */
 export const BTN_TASKS = "📋 Задачи";
 export const BTN_STATUS = "📊 Статус";
@@ -18,6 +23,16 @@ export function mainReplyKeyboard(_siteUrl: string, owner = true) {
   return Markup.keyboard(rows).resize().persistent();
 }
 
+/** Скрыть reply-клавиатуру — в разделе задач работаем только через inline-кнопки. */
+export function hideReplyKeyboard() {
+  return Markup.removeKeyboard();
+}
+
+/** Поле ввода «ответить на сообщение» — только при добавлении/редактировании задачи. */
+export function taskInputForceReply() {
+  return Markup.forceReply().selective();
+}
+
 export function matchReplyButton(text: string): ReplyButtonAction | null {
   const t = text.trim();
   if (t === BTN_TASKS) return "tasks";
@@ -27,4 +42,23 @@ export function matchReplyButton(text: string): ReplyButtonAction | null {
   if (t === BTN_CANCEL) return "cancel";
   if (t === BTN_RESET) return "reset";
   return null;
+}
+
+/** После выполнения задачи агентом — деплой, отмена, сайт. */
+export function deployOfferKeyboard(vercelUrl: string) {
+  return Markup.inlineKeyboard([
+    [
+      Markup.button.callback(BTN_DEPLOY, CB_DEPLOY),
+      Markup.button.callback(BTN_CANCEL, CB_CANCEL),
+    ],
+    [Markup.button.url(BTN_SITE, vercelUrl)],
+  ]);
+}
+
+/** После успешного деплоя или другого финального успеха. */
+export function successDoneKeyboard(vercelUrl: string) {
+  return Markup.inlineKeyboard([
+    [Markup.button.url(BTN_SITE, vercelUrl)],
+    [Markup.button.callback(BTN_TASKS, CB_OPEN_TASKS)],
+  ]);
 }

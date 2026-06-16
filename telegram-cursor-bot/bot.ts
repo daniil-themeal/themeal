@@ -33,6 +33,7 @@ import {
   runConfirmKeyboard,
   TASKS_PAGE_SIZE,
   sectionsMenuKeyboard,
+  taskInputCancelKeyboard,
   tasksKeyboard,
   type TaskUiContext,
 } from "./task-ui.js";
@@ -59,7 +60,18 @@ import {
   sleep,
   triggerVercelDeploy,
 } from "./deploy.js";
-import { mainReplyKeyboard, matchReplyButton, BTN_SITE } from "./reply-keyboard.js";
+import {
+  hideReplyKeyboard,
+  mainReplyKeyboard,
+  matchReplyButton,
+  taskInputForceReply,
+  BTN_SITE,
+  CB_DEPLOY,
+  CB_CANCEL,
+  CB_OPEN_TASKS,
+  deployOfferKeyboard,
+  successDoneKeyboard,
+} from "./reply-keyboard.js";
 import {
   agentElapsedText,
   agentStreamingText,
@@ -73,8 +85,6 @@ import {
 
 const TELEGRAM_MAX = 4096;
 const STREAM_EDIT_MS = 1200;
-const CB_DEPLOY = "deploy";
-const CB_CANCEL = "cancel_deploy";
 
 type Settings = {
   telegramToken: string;
@@ -207,13 +217,6 @@ function buildPushPrompt(settings: Settings): string {
 const CONFIRM_PUSH = /^(?:\/push|да|yes|push|пуш|опубликовать|deploy|деплой)$/i;
 const REJECT_PUSH = /^(?:\/cancel|нет|no|cancel|отмена)$/i;
 
-function deployKeyboard() {
-  return Markup.inlineKeyboard([
-    Markup.button.callback("🚀 Деплой", CB_DEPLOY),
-    Markup.button.callback("⛔ Отмена", CB_CANCEL),
-  ]);
-}
-
 function buildWelcomeText(modeLabel: string, vercelUrl: string, owner: boolean): string {
   if (owner) {
     return [
@@ -223,12 +226,11 @@ function buildWelcomeText(modeLabel: string, vercelUrl: string, owner: boolean):
       `Сайт: ${vercelUrl}`,
       "",
       "Как работает:",
-      "1. Пишешь или 🎤 — агент меняет код",
-      "2. 🚀 Деплой — публикация на GitHub и Vercel",
+      "1. 📋 Задачи → ➕ Добавить → текст задачи",
+      "2. «В работу» — отдать агенту",
+      "3. 🚀 Деплой — публикация",
       "",
-      "📋 Задачи — раздел каждого пользователя",
-    "🌐 Сайт — открыть лендинг",
-      "Остальные добавляют задачи и шлют тебе на подтверждение.",
+      "Свободный текст агенту — только вне экрана задач (или после 🔄 Сброс).",
     ].join("\n");
   }
   return [
@@ -334,6 +336,8 @@ async function main() {
   const taskListPage = new Map<number, number>();
   const taskViewSection = new Map<number, TaskSection>();
   const taskInSectionView = new Map<number, boolean>();
+  const tasksUiActive = new Map<number, boolean>();
+  const taskInputPromptMsg = new Map<number, { chatId: number; messageId: number }>();
   const userActivity = new Map<number, string>();
 
   const isOwner = (userId: number) => userId === settings.taskOwnerId;
@@ -343,6 +347,23 @@ async function main() {
   };
 
   const isInSectionView = (userId: number) => taskInSectionView.get(userId) ?? false;
+
+  const setTasksUiActive = (userId: number, active: boolean) => {
+    if (active) tasksUiActive.set(userId, true);
+    else {
+      tasksUiActive.delete(userId);
+      taskInSectionView.delete(userId);
+    }
+  };
+
+  const isInTasksUi = (userId: number) => tasksUiActive.get(userId) ?? false;
+
+  const clearTaskInputPrompt = async (userId: number) => {
+    const ref = taskInputPromptMsg.get(userId);
+    if (!ref) return;
+    await bot.telegram.deleteMessage(ref.chatId, ref.messageId).catch(() => undefined);
+    taskInputPromptMsg.delete(userId);
+  };
 
   const allowedUserIdList = (): number[] => [...(settings.allowedUserIds ?? [])];
 
@@ -386,7 +407,7 @@ async function main() {
       TASKS_PAGE_SIZE,
       !isOwner(userId),
     );
-    const text = prompt ? `${prompt}\n\n${body}` : body;
+    const text = showCancel && prompt ? prompt : prompt ? `${prompt}\n\n${body}` : body;
     const keyboard = tasksKeyboard(section, page, taskUi(userId), {
       showCancel,
       canAdd: canAddToSection(userId, section),
@@ -537,6 +558,8 @@ async function main() {
     edit = false,
   ) => {
     pendingTaskInput.delete(userId);
+    await clearTaskInputPrompt(userId);
+    setTasksUiActive(userId, true);
     const ui = taskUi(userId);
     const lines = ui.sections.map((s) => `• ${sectionLabelWithCount(s, ui.sectionName(s))}`);
     const text = ["📋 Разделы задач", "", ...lines, "", "➕ Добавить задачу — зайди в раздел", "", "Выбери раздел:"].join(
@@ -557,7 +580,11 @@ async function main() {
     ctx: Parameters<typeof showTasks>[0],
     userId: number,
     edit = false,
+    hideKeyboard = false,
   ) => {
+    if (hideKeyboard && !edit) {
+      await ctx.reply("📋 Задачи", hideReplyKeyboard());
+    }
     if (taskUi(userId).sections.length > 1) {
       await showSectionPicker(ctx, userId, edit);
       return;
@@ -579,6 +606,7 @@ async function main() {
     const viewSection = resolveSection(section, userId);
     taskViewSection.set(userId, viewSection);
     taskListPage.set(userId, page);
+    setTasksUiActive(userId, true);
     setSectionBrowseMode(userId, true);
     const { text, keyboard } = buildTasksPanel(userId, viewSection, page);
     if (edit && ctx.editMessageText && ctx.callbackQuery?.message) {
@@ -608,6 +636,25 @@ async function main() {
     await ctx.reply(text, extra);
   };
 
+  const enterTaskInputMode = async (
+    ctx: {
+      reply: (text: string, extra?: object) => Promise<{ message_id: number }>;
+      editMessageText?: (text: string, extra?: object) => Promise<unknown>;
+      callbackQuery?: { message?: { chat: { id: number }; message_id: number } };
+      chat?: { id: number };
+    },
+    userId: number,
+    promptText: string,
+    inlineKeyboard: object,
+  ) => {
+    await clearTaskInputPrompt(userId);
+    await editOrReply(ctx, promptText, inlineKeyboard);
+    const chatId = ctx.callbackQuery?.message?.chat.id ?? ctx.chat?.id;
+    if (!chatId) return;
+    const ref = await ctx.reply("👇 Отправь текст или 🎤 голосовое:", taskInputForceReply());
+    taskInputPromptMsg.set(userId, { chatId, messageId: ref.message_id });
+  };
+
   const handleTaskTextInput = async (
     userId: number,
     text: string,
@@ -616,6 +663,7 @@ async function main() {
     const pending = pendingTaskInput.get(userId);
     if (!pending || pending.type === "delete_confirm") return false;
 
+    await clearTaskInputPrompt(userId);
     pendingTaskInput.delete(userId);
     const trimmed = text.trim();
     if (trimmed.length < 2) {
@@ -798,9 +846,12 @@ async function main() {
     await ctx.answerCbQuery?.("Запускаю деплой…");
     await ctx.reply(deployStartMessage(statusSettings));
     userProcessing.add(actorUserId);
-    const notifyRequester = async (text: string) => {
+    const doneKeyboard = successDoneKeyboard(settings.vercelUrl);
+    const notifyRequester = async (text: string, withButtons = true) => {
       if (changeOwnerId !== actorUserId) {
-        await bot.telegram.sendMessage(changeOwnerId, text).catch(() => undefined);
+        await bot.telegram
+          .sendMessage(changeOwnerId, text, withButtons ? doneKeyboard : undefined)
+          .catch(() => undefined);
       }
     };
     try {
@@ -866,7 +917,7 @@ async function main() {
             lines.push(settings.vercelUrl);
           }
           const result = lines.filter(Boolean).join("\n");
-          await ctx.reply(result);
+          await ctx.reply(result, doneKeyboard);
           await notifyRequester(`✅ Daniil опубликовал изменения.\n\n${result}`);
           return;
         }
@@ -880,12 +931,12 @@ async function main() {
             `❌ Vercel hook: ${deploy.detail}`,
             settings.vercelUrl,
           ].join("\n");
-          await ctx.reply(result);
+          await ctx.reply(result, doneKeyboard);
           await notifyRequester(`✅ Push OK, но Vercel hook упал.\n\n${settings.vercelUrl}`);
           return;
         }
         await ctx.reply(`❌ Vercel hook: ${deploy.detail}`);
-        await notifyRequester(`❌ Деплой не удался: ${deploy.detail}`);
+        await notifyRequester(`❌ Деплой не удался: ${deploy.detail}`, false);
         return;
       }
 
@@ -899,7 +950,7 @@ async function main() {
           "GitHub Action должен вызвать Vercel.",
           settings.vercelUrl,
         ].join("\n");
-        await ctx.reply(result);
+        await ctx.reply(result, doneKeyboard);
         await notifyRequester(`✅ Daniil опубликовал изменения на GitHub.\n\n${settings.vercelUrl}`);
         return;
       }
@@ -911,7 +962,7 @@ async function main() {
           "Push не прошёл. Попробуй /reset и 🚀 Деплой ещё раз.",
         ].join("\n"),
       );
-      await notifyRequester("❌ Деплой не завершён. Daniil попробует ещё раз.");
+      await notifyRequester("❌ Деплой не завершён. Daniil попробует ещё раз.", false);
     } finally {
       userProcessing.delete(actorUserId);
     }
@@ -1001,7 +1052,7 @@ async function main() {
               "🚀 Деплой — опубликовать на GitHub и Vercel",
               "❌ Отмена — не публиковать",
             ].join("\n"),
-            deployKeyboard(),
+            deployOfferKeyboard(settings.vercelUrl),
           );
         } else {
           awaitingPush.add(userId);
@@ -1013,7 +1064,7 @@ async function main() {
               "🚀 Деплой — заявка на публикацию (нужно подтверждение Daniil)",
               "❌ Отмена — не публиковать",
             ].join("\n"),
-            deployKeyboard(),
+            deployOfferKeyboard(settings.vercelUrl),
           );
         }
       }
@@ -1090,6 +1141,8 @@ async function main() {
     await disposeUserAgent(userId, userAgents);
     awaitingPush.delete(userId);
     pendingTaskInput.delete(userId);
+    await clearTaskInputPrompt(userId);
+    setTasksUiActive(userId, false);
     await ctx.reply("🔄 Сброс: контекст агента очищен.\nМожешь отправить новую задачу.", mainReplyKeyboard(settings.vercelUrl, isOwner(userId)));
   };
 
@@ -1135,6 +1188,17 @@ async function main() {
     await ctx.editMessageReplyMarkup(undefined).catch(() => undefined);
   });
 
+  bot.action(CB_OPEN_TASKS, async (ctx) => {
+    if (!isAllowed(ctx.from?.id, settings)) {
+      await ctx.answerCbQuery("Access denied.");
+      return;
+    }
+    await ctx.answerCbQuery();
+    const taskCtx = buildTaskCtx(ctx);
+    if (!taskCtx || !ctx.from) return;
+    await openTasks(taskCtx, ctx.from.id, false, true);
+  });
+
   const replyStatus = async (ctx: { from?: { id: number }; reply: (text: string) => Promise<unknown> }) => {
     if (!isAllowed(ctx.from?.id, settings)) {
       await ctx.reply("Access denied.");
@@ -1172,7 +1236,7 @@ async function main() {
       await ctx.reply("Access denied.");
       return;
     }
-    await openTasks(ctx, ctx.from!.id);
+    await openTasks(ctx, ctx.from!.id, false, true);
   });
 
   bot.command("task_add", async (ctx) => {
@@ -1184,7 +1248,7 @@ async function main() {
     const text = ctx.message.text.replace(/^\/task_add(?:@\w+)?\s*/i, "").trim();
     if (!isInSectionView(userId)) {
       await ctx.reply("➕ Сначала зайди в раздел пользователя, затем нажми «➕ Добавить».");
-      await openTasks(ctx, userId);
+      await openTasks(ctx, userId, false, true);
       return;
     }
     const section = ownSection(userId);
@@ -1199,10 +1263,10 @@ async function main() {
         userId,
         section,
         taskListPage.get(userId) ?? 0,
-        `➕ Новая задача (${userDisplayName(Number(section))})\nНапиши текст или 🎤 голосовое:`,
+        `➕ Новая задача (${userDisplayName(Number(section))})\n\nОтправь текст или 🎤 голосовое:`,
         true,
       );
-      await ctx.reply(panel.text, panel.keyboard);
+      await enterTaskInputMode(ctx, userId, panel.text, panel.keyboard);
       return;
     }
     const item = addTask(section, text, userId);
@@ -1339,6 +1403,7 @@ async function main() {
       case "back":
         await ack();
         pendingTaskInput.delete(userId);
+        await clearTaskInputPrompt(userId);
         await showTasks(ctx, userId, id ?? page, true, section);
         break;
       case "add":
@@ -1351,11 +1416,11 @@ async function main() {
           userId,
           section,
           page,
-          "Напиши текст или 🎤 голосовое для новой задачи:",
+          `➕ Новая задача (${userDisplayName(Number(section))})\n\nОтправь текст или 🎤 голосовое:`,
           true,
         );
         await ack();
-        await editOrReply(ctx, addPanel.text, addPanel.keyboard);
+        await enterTaskInputMode(ctx, userId, addPanel.text, addPanel.keyboard);
         break;
       case "edit": {
         if (id === undefined) return;
@@ -1366,13 +1431,17 @@ async function main() {
         }
         pendingTaskInput.set(userId, { type: "edit", section, taskId: id });
         await ack();
-        await ctx.reply(
-          `Редактирование #${id}.\nТекущий текст:\n${task.text}\n\nОтправь новый текст или 🎤 голосовое:`,
+        await enterTaskInputMode(
+          ctx,
+          userId,
+          `✏️ Редактирование #${id}\n\nТекущий текст:\n${task.text}\n\nОтправь новый текст или 🎤 голосовое:`,
+          taskInputCancelKeyboard(section, page),
         );
         break;
       }
       case "deploy": {
         pendingTaskInput.delete(userId);
+        await clearTaskInputPrompt(userId);
         const deployCtx = buildTaskCtx(ctx);
         if (!deployCtx) return;
         await handleDeploy(userId, deployCtx, section);
@@ -1533,8 +1602,7 @@ async function main() {
     if (taskCtx.from) rememberUser(taskCtx.from);
     const replyBtn = matchReplyButton(prompt);
     if (replyBtn === "tasks") {
-      await replyCtx.reply("📋 Открываю список задач…");
-      await openTasks(replyCtx, userId);
+      await openTasks(replyCtx, userId, false, true);
       return;
     }
     if (replyBtn === "status") {
@@ -1570,11 +1638,15 @@ async function main() {
     }
 
     if (/^задачи$/i.test(prompt)) {
-      await openTasks(replyCtx, userId);
+      await openTasks(replyCtx, userId, false, true);
       return;
     }
 
     if (await handleTaskTextInput(userId, prompt, replyCtx)) {
+      return;
+    }
+
+    if (isInTasksUi(userId) && !pendingTaskInput.has(userId)) {
       return;
     }
 
@@ -1606,7 +1678,8 @@ async function main() {
       return;
     }
 
-    await taskCtx.reply(userTaskAcceptedMessage(statusSettings));
+    await taskCtx.reply(userTaskAcceptedMessage(statusSettings), mainReplyKeyboard(settings.vercelUrl, isOwner(userId)));
+    setTasksUiActive(userId, false);
     await runAgentAndOfferDeploy(
       userId,
       taskCtx,
@@ -1638,6 +1711,12 @@ async function main() {
     if (!fileId) return;
 
     const userId = ctx.from!.id;
+
+    if (isInTasksUi(userId) && !pendingTaskInput.has(userId)) {
+      await ctx.reply("Сначала нажми «➕ Добавить» или ✏️ у задачи.");
+      return;
+    }
+
     await ctx.reply(voiceStartMessage());
 
     try {
