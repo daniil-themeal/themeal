@@ -428,7 +428,7 @@ function LeadCapture({ t, onWhatsAppClick }) {
                       createElement('span', { className:'lead-form-prefix' },
                         createElement(UaeFlag), l.cc),
                       createElement('input', { type:'tel', required:true, className:'lead-form-input', value:phone, onChange:(e)=>{ setPhone(e.target.value); setError(''); }, placeholder:l.ph, dir:'ltr' })),
-                    createElement('button', { type:'submit', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 } }, l.cta)),
+                    createElement('button', { type:'submit', className:'btn lead-form-submit', style:{ minHeight:58 } }, l.cta)),
                   error ? createElement('span', { style:{ fontSize:'var(--fs-14)', textAlign:'center', color:'var(--pink)' } }, error) : null,
                   createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center' } }, l.hint))
           )

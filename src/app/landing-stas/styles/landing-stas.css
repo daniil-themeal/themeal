@@ -18,7 +18,8 @@
   --plum-800:#371259;
   --plum-700:#411864;   /* hero anchor (brand) */
   --plum-600:#542080;
-  --brand:#9A38EF;      /* brand purple */
+  --brand:#9A38EF;      /* brand purple — design system primary/500 */
+  --brand-600:#8C33D9;  /* design system primary/600 */
   --brand-soft:#F5EBFD;
   --brand-soft-2:#EADBFB;
 
@@ -55,6 +56,8 @@
   --shadow-pink:0 6px 18px rgba(240,41,168,.30), 0 14px 40px rgba(240,41,168,.22);
   --shadow-primary:0 6px 18px rgba(240,41,168,.32), 0 14px 40px rgba(240,41,168,.24);
   --shadow-primary-hover:0 10px 26px rgba(240,41,168,.40), 0 20px 52px rgba(240,41,168,.28);
+  --shadow-brand:0 6px 18px rgba(154,56,239,.32), 0 14px 40px rgba(154,56,239,.24);
+  --shadow-brand-hover:0 10px 26px rgba(154,56,239,.40), 0 20px 52px rgba(154,56,239,.28);
   --shadow-secondary:0 4px 14px rgba(42,34,48,.10), 0 10px 28px rgba(42,34,48,.08);
   --shadow-secondary-hover:0 8px 22px rgba(42,34,48,.14), 0 16px 40px rgba(42,34,48,.12);
 
@@ -305,6 +308,14 @@ body {
   width: 100%;
   padding-top: 8px;
   padding-bottom: 8px;
+  background: var(--brand);
+  color: #fff;
+  box-shadow: var(--shadow-brand);
+}
+.landing-stas .lead-form-submit:hover {
+  background: var(--brand-600);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brand-hover);
 }
 .eyebrow {
   font-size:var(--fs-12); font-weight:700; letter-spacing:.16em; text-transform:uppercase;
