@@ -1,0 +1,10 @@
+# Paste these into Render → themeal-telegram-bot → Environment
+# (copy values from your local .env — never commit .env)
+
+TELEGRAM_BOT_TOKEN=
+CURSOR_API_KEY=
+ALLOWED_USER_IDS=113321584,47420604,6282022405
+USER_NAMES=113321584:Daniil,47420604:Stas,6282022405:Jack
+TASK_OWNER_ID=113321584
+VERCEL_DEPLOY_HOOK=
+GROQ_API_KEY=
