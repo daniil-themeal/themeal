@@ -148,9 +148,15 @@ function buildAgentPrompt(userText: string, settings: Settings): string {
         "After completing the task:",
         "1. Run `npm run build` if you changed source code.",
         `2. Commit with a clear message and push to origin ${settings.cloudRepoRef}.`,
-        `3. Confirm the push succeeded — production deploy will run automatically.`,
+        "3. Wait for push to finish and report the commit hash — do not claim success without a real push.",
+        "4. List every file path you changed.",
       ].join("\n")
-    : "Report what changed; do not push unless the user explicitly asks.";
+    : [
+        "After completing the task:",
+        "1. Run `npm run build` if you changed source code.",
+        "2. Commit locally but do NOT push unless the user explicitly asks.",
+        "3. List every file path you changed.",
+      ].join("\n");
 
   return [
     "You are the Cursor agent for the theMeal landing page.",
@@ -226,6 +232,45 @@ async function triggerVercelDeploy(settings: Settings): Promise<string | null> {
   return data.job?.id ?? "started";
 }
 
+async function fetchLatestRemoteCommit(
+  settings: Settings,
+): Promise<{ sha: string; message: string } | null> {
+  try {
+    const repoPath = settings.cloudRepoUrl
+      .replace(/^https:\/\/github.com\//, "")
+      .replace(/\.git$/, "");
+    const url = `https://api.github.com/repos/${repoPath}/commits/${settings.cloudRepoRef}`;
+    const res = await fetch(url, {
+      headers: { Accept: "application/vnd.github+json", "User-Agent": "themeal-telegram-bot" },
+    });
+    if (!res.ok) return null;
+    const data = (await res.json()) as { sha?: string; commit?: { message?: string } };
+    if (!data.sha) return null;
+    const message = (data.commit?.message ?? "").split("\n")[0].trim();
+    return { sha: data.sha.slice(0, 7), message };
+  } catch {
+    return null;
+  }
+}
+
+function syncInstructions(settings: Settings): string {
+  if (settings.agentMode === "local") {
+    return [
+      "📂 Синхронизация",
+      `Файлы изменены прямо в папке проекта: ${settings.workspace}`,
+      "Cursor IDE на этом ПК увидит изменения сразу (иногда нужен Reload Window).",
+    ].join("\n");
+  }
+
+  return [
+    "📂 Синхронизация с Cursor на ПК",
+    "Cloud-агент меняет код в GitHub, не в локальной папке.",
+    `На компьютере с проектом выполни:`,
+    `git pull origin ${settings.cloudRepoRef}`,
+    "После pull файлы в Cursor будут как на GitHub / production.",
+  ].join("\n");
+}
+
 async function main() {
   const settings = loadSettings();
   const userAgents = new Map<number, Awaited<ReturnType<typeof Agent.create>>>();
@@ -251,11 +296,20 @@ async function main() {
         "",
         "Как работает:",
         "1. Пишешь задачу (например: «увеличь gap в hero до 20px»)",
-        "2. Агент меняет код в GitHub",
-        "3. Пушит в ветку → Vercel деплоит автоматически",
+        settings.agentMode === "local"
+          ? "2. Агент меняет файлы прямо в WORKSPACE на этом ПК"
+          : "2. Cloud-агент меняет код в GitHub (не на твоём ПК автоматически)",
+        settings.autoPush
+          ? "3. Push в ветку → Vercel деплоит"
+          : "3. Push только по явной просьбе (AUTO_PUSH=false)",
+        "",
+        settings.agentMode === "cloud"
+          ? "⚠️ После задачи на ПК с Cursor: git pull origin " + settings.cloudRepoRef
+          : "",
         "",
         "• /reset — новый диалог",
         "• /status — настройки",
+        "• /sync — как подтянуть изменения в Cursor",
       ].join("\n"),
     );
   });
@@ -279,13 +333,32 @@ async function main() {
       await ctx.reply("Access denied.");
       return;
     }
-    const lines = [`mode: ${settings.agentMode}`, `model: ${settings.model}`, `site: ${settings.vercelUrl}`];
+    const lines = [
+      `mode: ${settings.agentMode}`,
+      `model: ${settings.model}`,
+      `site: ${settings.vercelUrl}`,
+      `auto_push: ${settings.autoPush}`,
+    ];
     if (settings.agentMode === "local") {
       lines.push(`workspace: ${settings.workspace}`);
+      lines.push("sync: файлы на этом ПК обновляются сразу");
     } else {
       lines.push(`repo: ${settings.cloudRepoUrl} @ ${settings.cloudRepoRef}`);
+      lines.push(`sync: git pull origin ${settings.cloudRepoRef} на ПК с Cursor`);
+    }
+    const latest = await fetchLatestRemoteCommit(settings);
+    if (latest) {
+      lines.push(`latest on GitHub: ${latest.sha} — ${latest.message}`);
     }
     await ctx.reply(lines.join("\n"));
+  });
+
+  bot.command("sync", async (ctx) => {
+    if (!isAllowed(ctx.from, settings)) {
+      await ctx.reply("Access denied.");
+      return;
+    }
+    await ctx.reply(syncInstructions(settings));
   });
 
   bot.on("text", async (ctx) => {
@@ -320,11 +393,27 @@ async function main() {
         await ctx.reply(chunk);
       }
 
+      const latest = await fetchLatestRemoteCommit(settings);
+      const syncLines = [syncInstructions(settings)];
+      if (latest) {
+        syncLines.push("", `Последний commit на GitHub: ${latest.sha} — ${latest.message}`);
+      }
+
       if (settings.autoPush && settings.vercelDeployHook) {
         await ctx.reply("Запускаю деплой на Vercel…");
         const jobId = await triggerVercelDeploy(settings);
-        await ctx.reply(`Production deploy: ${settings.vercelUrl}${jobId ? `\njob: ${jobId}` : ""}`);
+        syncLines.push(
+          "",
+          `🚀 Vercel deploy: ${settings.vercelUrl}${jobId ? `\njob: ${jobId}` : ""}`,
+        );
+      } else if (settings.agentMode === "cloud") {
+        syncLines.push(
+          "",
+          "ℹ️ AUTO_PUSH выключен — push и деплой могли не произойти, даже если агент так написал.",
+        );
       }
+
+      await ctx.reply(syncLines.join("\n"));
     } catch (err) {
       const message =
         err instanceof CursorAgentError
