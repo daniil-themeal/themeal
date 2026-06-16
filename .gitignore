@@ -2,6 +2,8 @@
 
 node_modules/
 dist/
+telegram-cursor-bot/.env
+telegram-cursor-bot/node_modules/
 
 *.log
 *.err

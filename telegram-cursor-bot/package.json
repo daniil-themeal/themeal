@@ -1,0 +1,23 @@
+{
+  "name": "telegram-cursor-bot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "setup": "node setup.mjs",
+    "start": "tsx bot.ts",
+    "dev": "tsx watch bot.ts"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@cursor/sdk": "latest",
+    "dotenv": "^16.4.7",
+    "telegraf": "^4.16.3",
+    "tsx": "^4.19.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2"
+  }
+}
