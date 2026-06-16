@@ -281,6 +281,8 @@ function Fresh({ t }) {
   ];
   const [idx, setIdx] = useState(0);
   const timerRef = useRef(null);
+  const touchStartXRef = useRef(null);
+  const SWIPE_THRESHOLD = 48;
   const startAuto = () => {
     if (timerRef.current) clearInterval(timerRef.current);
     if (shots.length < 2) return;
@@ -297,13 +299,33 @@ function Fresh({ t }) {
     setIdx(i => (i + delta + shots.length) % shots.length);
     startAuto();
   };
+  const onCarouselTouchStart = (e) => {
+    touchStartXRef.current = e.touches[0]?.clientX ?? null;
+  };
+  const onCarouselTouchEnd = (e) => {
+    const startX = touchStartXRef.current;
+    touchStartXRef.current = null;
+    if (startX == null) return;
+    const endX = e.changedTouches[0]?.clientX;
+    if (endX == null) return;
+    const delta = endX - startX;
+    if (Math.abs(delta) < SWIPE_THRESHOLD) return;
+    go(delta > 0 ? -1 : 1);
+  };
   return (
     createElement('section', { className:'section section--white', id:'fresh' },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'fresh-grid', style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(320px,1fr))', gap:'clamp(32px,5vw,72px)', alignItems:'start' } },
         /* carousel */
         createElement('div', { className:'reveal', style:{ position:'relative' } },
-          createElement('div', { style:{ position:'relative', borderRadius:'var(--r-2xl)', overflow:'hidden', boxShadow:'var(--shadow-lg)', aspectRatio:'4/5', background:'var(--cream-2)' } },
+          createElement('div', {
+            style: {
+              position:'relative', borderRadius:'var(--r-2xl)', overflow:'hidden', boxShadow:'var(--shadow-lg)',
+              aspectRatio:'4/5', background:'var(--cream-2)', touchAction:'pan-y',
+            },
+            onTouchStart: onCarouselTouchStart,
+            onTouchEnd: onCarouselTouchEnd,
+          },
             shots.map((src,i)=>
               createElement('img', { key:i, src, alt:'', loading:i?'lazy':'eager',
                 style:{ position:'absolute', inset:0, width:'100%', height:'100%', objectFit:'cover', opacity:i===idx?1:0, transition:'opacity .8s var(--ease)' } })

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
 import type { CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -164,6 +164,7 @@ export function OrderSummary({
   isPhoneVerified = false,
   onResetPhone,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
+  totalMealsAnchorRef,
 }: {
   plan: Plan;
   days: DayOption;
@@ -180,6 +181,7 @@ export function OrderSummary({
   isPhoneVerified?: boolean;
   onResetPhone?: () => void;
   pricingTable?: CheckoutPricingTable;
+  totalMealsAnchorRef?: RefObject<HTMLDivElement | null>;
 }) {
   const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
   const [visibleMeals, setVisibleMeals] = useState<MealDetail[]>(() =>
@@ -353,7 +355,10 @@ export function OrderSummary({
 
             <Divider />
 
-            <div className="flex items-center gap-[6px] px-[20px] md:px-[24px]">
+            <div
+              ref={totalMealsAnchorRef}
+              className="flex items-center gap-[6px] px-[20px] md:px-[24px]"
+            >
               <p className="flex-[1_0_0] whitespace-nowrap font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">Total meals <span className="font-medium">(over <AnimatedNumber value={pricing.paidDays} /> days)</span></p>
               <div className="h-[4px] flex-[1_0_0]" />
               <p className="text-center font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[150%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">

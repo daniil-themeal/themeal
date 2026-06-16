@@ -262,12 +262,12 @@ function Compare({ t }) {
             ),
           ),
           /* solutions */
-          createElement('div', { className:'card reveal', 'data-d':'1', style:{ padding:'24px 32px 32px', background:'#fff', color:'var(--ink)', boxShadow:'var(--shadow-sm)', position:'relative', overflow:'visible' } },
+          createElement('div', { className:'card reveal compare-card--solutions', 'data-d':'1', style:{ padding:'24px 32px 32px', background:'linear-gradient(155deg, #6E34A2 0%, #4C1F77 100%)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'hidden' } },
             createElement('div', { className:'compare-card-head compare-card-head--solutions' },
               createElement('span', { className:'compare-card-head__badge' }, t.compare.bestShort, ' 🔥'),
-              createElement(Logo, { height: 24, color: '#9A38EF', accent: '#9A38EF' })),
+              createElement(Logo, { height: 24, color: '#fff', accent: '#fff' })),
             createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:16 } },
-              t.compare.solutions.map((s,i)=>createElement('li', { key:i, className:'row', style:{ gap:14, width:'100%', alignItems:'center', color:'var(--slate)', fontWeight:600, fontSize:'var(--fs-16)' } },
+              t.compare.solutions.map((s,i)=>createElement('li', { key:i, className:'row', style:{ gap:14, width:'100%', alignItems:'center', color:'rgba(255,255,255,.85)', fontWeight:600, fontSize:'var(--fs-16)' } },
                 createElement(CompareIcon, { src:s.icon }),
                 createElement('span', { style:{ flex:1, minWidth:0 } }, s.text),
                 createElement(CompareMark, { kind:'check' })
@@ -314,6 +314,9 @@ function Compare({ t }) {
             font-size:16px;
             line-height:1;
             text-align:start;
+          }
+          #why .compare-card--solutions .compare-card-head__badge {
+            color:var(--yellow);
           }
         `)
       )

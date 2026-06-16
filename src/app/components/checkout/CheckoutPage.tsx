@@ -88,6 +88,7 @@ export function CheckoutPage({
 
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
+  const totalMealsRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
 
   const headerStep =
@@ -156,17 +157,17 @@ export function CheckoutPage({
   useEffect(() => {
     if (!isOpen || checkoutStep !== 'plan') return;
 
-    const right = rightRef.current;
+    const anchor = totalMealsRef.current;
     const body = bodyRef.current;
 
-    if (!right || !body) return;
+    if (!anchor || !body) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => setSummaryVisible(entry.isIntersecting),
       { root: body, threshold: 0.1 },
     );
 
-    observer.observe(right);
+    observer.observe(anchor);
 
     return () => observer.disconnect();
   }, [isOpen, checkoutStep]);
@@ -199,7 +200,7 @@ export function CheckoutPage({
 
   const handleScrollToSummary = () => {
     setMenuOpen(false);
-    rightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    (totalMealsRef.current ?? rightRef.current)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   };
 
   const handleContinueFromPlan = () => {
@@ -394,10 +395,10 @@ export function CheckoutPage({
             ref={bodyRef}
             className="flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide"
           >
-            <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-[20px] md:flex-row md:gap-[24px] md:px-[24px] lg:px-[32px] xl:gap-[40px]">
+            <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-[20px] md:grid md:grid-cols-[minmax(0,1fr)_420px] md:items-start md:gap-[24px] md:px-[24px] lg:px-[32px] xl:gap-[40px]">
               <div
                 ref={leftRef}
-                className="flex w-full flex-col gap-[32px] pt-[56px] md:min-w-0 md:flex-[1_1_0] md:gap-[48px] md:pb-[120px]"
+                className="flex w-full min-w-0 flex-col gap-[32px] pt-[56px] md:gap-[48px] md:pb-[120px]"
               >
                 <PlanSelectorBlock
                   selected={plan}
@@ -420,7 +421,7 @@ export function CheckoutPage({
 
               <div
                 ref={rightRef}
-                className="w-full md:sticky md:top-[24px] md:w-[420px] md:shrink-0 md:self-start md:pb-[120px]"
+                className="w-full min-w-0 md:sticky md:top-[24px] md:self-start md:pb-[120px]"
               >
                 <OrderSummary
                   plan={plan}
@@ -437,6 +438,7 @@ export function CheckoutPage({
                   phoneError={phoneError}
                   isPhoneVerified={isPhoneVerified}
                   onResetPhone={handleResetPhone}
+                  totalMealsAnchorRef={totalMealsRef}
                 />
               </div>
             </div>

@@ -171,7 +171,7 @@ export function DurationBlock({
 }) {
   return (
     <div
-      className="flex w-full flex-col items-start gap-[20px]"
+      className="flex w-full min-w-0 flex-col items-start gap-[20px]"
       style={durationBlockStyle}
     >
       <CheckoutSectionHeader title="Subscription duration" />
