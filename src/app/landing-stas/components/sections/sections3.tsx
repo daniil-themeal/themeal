@@ -39,7 +39,7 @@ function Benefits({ t, onOrder }) {
         ),
         createElement('div', { className:'center reveal', style:{ marginTop:40 } },
           createElement('p', { className:'lead', style:{ marginBottom:24 } }, t.benefits.bottom),
-          createElement('button', { className:'btn btn-primary btn-lg benefits-cta', onClick:onOrder }, t.benefits.cta, createElement(Icon.arrow,{size:20,className:'flip'})))
+          createElement('button', { className:'btn btn-secondary btn-lg benefits-cta', onClick:onOrder }, t.benefits.cta, createElement(Icon.arrow,{size:20,className:'flip'})))
       )
     )
   );
