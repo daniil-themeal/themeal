@@ -26,6 +26,7 @@ type Settings = {
   model: string;
   vercelUrl: string;
   autoPush: boolean;
+  vercelDeployHook: string;
 };
 
 function env(name: string, fallback = ""): string {
@@ -64,6 +65,7 @@ function loadSettings(): Settings {
     model: env("CURSOR_MODEL", "composer-2.5"),
     vercelUrl: env("VERCEL_URL", "https://landing-20-05-test.vercel.app"),
     autoPush: env("AUTO_PUSH", "true") !== "false",
+    vercelDeployHook: env("VERCEL_DEPLOY_HOOK"),
   };
 }
 
@@ -105,7 +107,7 @@ function buildAgentPrompt(userText: string, settings: Settings): string {
         "After completing the task:",
         "1. Run `npm run build` if you changed source code.",
         `2. Commit with a clear message and push to origin ${settings.cloudRepoRef}.`,
-        `3. Confirm the push succeeded — Vercel will deploy to ${settings.vercelUrl}.`,
+        `3. Confirm the push succeeded — production deploy will run automatically.`,
       ].join("\n")
     : "Report what changed; do not push unless the user explicitly asks.";
 
@@ -171,6 +173,16 @@ async function askAgentStreaming(
     throw new Error(`Cursor run failed: ${result.id}`);
   }
   return text.trim() || "(empty response)";
+}
+
+async function triggerVercelDeploy(settings: Settings): Promise<string | null> {
+  if (!settings.vercelDeployHook) return null;
+  const res = await fetch(settings.vercelDeployHook, { method: "POST" });
+  if (!res.ok) {
+    throw new Error(`Vercel deploy hook failed: ${res.status}`);
+  }
+  const data = (await res.json()) as { job?: { id?: string } };
+  return data.job?.id ?? "started";
 }
 
 async function main() {
@@ -265,6 +277,12 @@ async function main() {
 
       for (const chunk of splitMessage(answer)) {
         await ctx.reply(chunk);
+      }
+
+      if (settings.autoPush && settings.vercelDeployHook) {
+        await ctx.reply("Запускаю деплой на Vercel…");
+        const jobId = await triggerVercelDeploy(settings);
+        await ctx.reply(`Production deploy: ${settings.vercelUrl}${jobId ? `\njob: ${jobId}` : ""}`);
       }
     } catch (err) {
       const message =
