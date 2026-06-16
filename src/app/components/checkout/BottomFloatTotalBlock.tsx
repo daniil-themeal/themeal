@@ -50,6 +50,7 @@ type BottomFloatTotalBlockCssVariables = CSSProperties & {
   '--checkout-float-font-size-sm': string;
   '--checkout-float-font-size-md': string;
   '--checkout-float-font-size-lg': string;
+  '--checkout-float-discount': string;
 };
 
 const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
@@ -67,6 +68,7 @@ const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
   '--checkout-float-font-size-sm': FONT_SIZE_TOKENS[12],
   '--checkout-float-font-size-md': FONT_SIZE_TOKENS[16],
   '--checkout-float-font-size-lg': FONT_SIZE_TOKENS[20],
+  '--checkout-float-discount': COLOR_TOKENS.neutral[300],
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -570,24 +572,32 @@ export function BottomFloatTotalBlock({
             <div className="relative z-10 w-full bg-[var(--checkout-float-surface)]">
               <div className="w-full">
                 <div className="flex items-center gap-[16px] px-[20px] py-[8px]">
-                  <div className="flex flex-1 flex-col items-center gap-[2px]">
-                    <div className="flex items-end gap-[4px]">
+                  <div className="flex flex-1 flex-col items-center justify-start gap-[8px]">
+                    <div className="flex items-end gap-[5px] tabular-nums">
                       {pricing.oldPeriodPrice ? (
-                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-muted)] line-through">
+                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-[var(--checkout-float-muted)]">
                           <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} />
                         </p>
                       ) : null}
 
-                      <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
-                        AED
-                      </p>
+                      <div className="flex items-end gap-[4px]">
+                        <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
+                          AED
+                        </p>
 
-                      <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
-                        <AnimatedNumber value={pricing.periodPrice} format={formatAed} />
-                      </p>
+                        <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
+                          <AnimatedNumber value={pricing.periodPrice} format={formatAed} />
+                        </p>
+                      </div>
+
+                      {pricing.oldPeriodPrice ? (
+                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-transparent opacity-0">
+                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} />
+                        </p>
+                      ) : null}
                     </div>
 
-                    <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
+                    <p className="text-right font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
                       AED <AnimatedNumber value={pricing.pricePerDay} format={formatPricePerDay} />/day
                     </p>
                   </div>
