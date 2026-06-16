@@ -23,22 +23,16 @@ type SlideDirection = 'left' | 'right';
 type FullMenuDayPillCssVariables = CSSProperties & {
   '--full-menu-day-bg': string;
   '--full-menu-day-bg-hover': string;
-  '--full-menu-day-border': string;
-  '--full-menu-day-border-hover': string;
 };
 
 const FULL_MENU_DAY_PILL_SELECTED_STYLE: FullMenuDayPillCssVariables = {
   '--full-menu-day-bg': COLOR_TOKENS.primary[50],
   '--full-menu-day-bg-hover': COLOR_TOKENS.primary[75],
-  '--full-menu-day-border': COLOR_TOKENS.primary[500],
-  '--full-menu-day-border-hover': COLOR_TOKENS.primary[600],
 };
 
 const FULL_MENU_DAY_PILL_DEFAULT_STYLE: FullMenuDayPillCssVariables = {
   '--full-menu-day-bg': COLOR_TOKENS.base.white,
   '--full-menu-day-bg-hover': COLOR_TOKENS.neutral[50],
-  '--full-menu-day-border': COLOR_TOKENS.neutral[100],
-  '--full-menu-day-border-hover': COLOR_TOKENS.neutral[300],
 };
 
 type FullMenuModalCssVariables = CSSProperties & {
@@ -57,6 +51,7 @@ type FullMenuModalCssVariables = CSSProperties & {
   '--full-menu-day-meta-font-size': string;
   '--full-menu-meal-meta-font-size': string;
   '--full-menu-meal-title-font-size': string;
+  '--full-menu-meal-title-font-size-md': string;
 };
 
 const fullMenuModalStyle: FullMenuModalCssVariables = {
@@ -74,7 +69,8 @@ const fullMenuModalStyle: FullMenuModalCssVariables = {
   '--full-menu-day-date-font-size': FONT_SIZE_TOKENS[16],
   '--full-menu-day-meta-font-size': FONT_SIZE_TOKENS[12],
   '--full-menu-meal-meta-font-size': FONT_SIZE_TOKENS[12],
-  '--full-menu-meal-title-font-size': FONT_SIZE_TOKENS[16],
+  '--full-menu-meal-title-font-size': FONT_SIZE_TOKENS[14],
+  '--full-menu-meal-title-font-size-md': FONT_SIZE_TOKENS[16],
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -357,7 +353,7 @@ export function FullMenuModal({
           </button>
         </div>
 
-        <div className="shrink-0 border-b border-[var(--full-menu-border)] px-[8px] py-[12px]">
+        <div className="shrink-0 px-[8px] py-[12px]">
           <div className="flex w-full items-stretch" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
             <button
               type="button"
@@ -402,9 +398,9 @@ export function FullMenuModal({
                       onClick={() => handleDayClick(d.absoluteDayIndex)}
                       className={[
                         'relative flex flex-[0_0_calc((100%-104px)/14)] cursor-pointer flex-col items-center justify-center gap-[6px]',
-                        'rounded-[8px] border border-[length:1px] border-[var(--full-menu-day-border)] bg-[var(--full-menu-day-bg)] py-[8px]',
+                        'rounded-[8px] bg-[var(--full-menu-day-bg)] py-[8px]',
                         'transition-colors',
-                        'hover:enabled:border-[var(--full-menu-day-border-hover)] hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
+                        'hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
                       ].join(' ')}
                       style={active ? FULL_MENU_DAY_PILL_SELECTED_STYLE : FULL_MENU_DAY_PILL_DEFAULT_STYLE}
                     >
@@ -461,7 +457,7 @@ export function FullMenuModal({
               onMouseMove={handleMealsMouseMove}
               onMouseUp={stopMealsMouseDrag}
               onMouseLeave={stopMealsMouseDrag}
-              className={`flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible px-[20px] py-[20px] scrollbar-hide md:justify-center md:px-[24px] ${
+              className={`flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible px-[20px] pt-0 pb-[20px] scrollbar-hide md:justify-center md:px-[24px] ${
                 isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
               }`}
               style={{
@@ -500,7 +496,7 @@ export function FullMenuModal({
                     <p
                       className={[
                         TEXT_TRIM_CLASS_NAME,
-                        'w-[150px] font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)] md:w-[160px]',
+                        'w-[150px] font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)] md:w-[160px] md:text-[length:var(--full-menu-meal-title-font-size-md)]',
                       ].join(' ')}
                     >
                       {meal.name}

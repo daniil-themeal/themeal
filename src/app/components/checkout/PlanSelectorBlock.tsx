@@ -134,8 +134,8 @@ function PlanCard({
       ) : null}
 
       <div className="flex flex-col items-start gap-[12px] px-[20px] py-[24px] md:px-[24px]">
-        <div className="flex w-full items-start gap-[16px]">
-          <div className="flex flex-[1_0_0] items-center gap-[4px]">
+        <div className="flex w-full min-w-0 flex-wrap items-baseline justify-between gap-x-[16px] gap-y-[8px]">
+          <div className="flex min-w-0 items-center gap-[4px]">
             <p
               className={[
                 "font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]",
@@ -155,12 +155,12 @@ function PlanCard({
             </p>
           </div>
 
-          <div className="flex items-baseline gap-[4px] text-right text-[var(--plan-selector-active)]">
+          <div className="flex shrink-0 items-baseline gap-[4px] text-left text-[var(--plan-selector-active)]">
             <p className="font-sans text-[length:var(--plan-selector-card-meta-font-size)] font-medium leading-[130%] md:text-[length:var(--plan-selector-card-meta-font-size-md)]">
               from
             </p>
 
-            <p className="whitespace-nowrap text-right font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]">
+            <p className="whitespace-nowrap text-left font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]">
               {plan.pricePerDay}/day
             </p>
           </div>

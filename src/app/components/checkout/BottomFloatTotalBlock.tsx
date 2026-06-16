@@ -49,6 +49,9 @@ type BottomFloatTotalBlockCssVariables = CSSProperties & {
   '--checkout-float-button-text': string;
   '--checkout-float-font-size-sm': string;
   '--checkout-float-font-size-md': string;
+  '--checkout-float-meal-title-font-size': string;
+  '--checkout-float-meal-title-font-size-md': string;
+  '--checkout-float-meal-meta-font-size': string;
   '--checkout-float-font-size-lg': string;
   '--checkout-float-discount': string;
 };
@@ -67,6 +70,9 @@ const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
   '--checkout-float-button-text': COLOR_TOKENS.base.white,
   '--checkout-float-font-size-sm': FONT_SIZE_TOKENS[12],
   '--checkout-float-font-size-md': FONT_SIZE_TOKENS[16],
+  '--checkout-float-meal-title-font-size': FONT_SIZE_TOKENS[14],
+  '--checkout-float-meal-title-font-size-md': FONT_SIZE_TOKENS[16],
+  '--checkout-float-meal-meta-font-size': FONT_SIZE_TOKENS[12],
   '--checkout-float-font-size-lg': FONT_SIZE_TOKENS[20],
   '--checkout-float-discount': COLOR_TOKENS.neutral[300],
 };
@@ -533,38 +539,61 @@ export function BottomFloatTotalBlock({
                     onTouchStart={handleMealsTouchStart}
                     onTouchMove={handleMealsTouchMove}
                     onTouchEnd={handleMealsTouchEnd}
-                    className="scrollbar-hide flex cursor-grab touch-pan-x select-none gap-[12px] overflow-x-auto overflow-y-visible px-[20px] py-[16px] active:cursor-grabbing"
+                    className={`scrollbar-hide flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible px-[20px] pt-[8px] pb-[16px] md:justify-center md:px-[24px] ${
+                      isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
+                    }`}
                   >
                     {selectedDayMeals.map((meal) => (
                       <button
                         key={meal.id}
                         type="button"
                         onClick={() => handleMealClick(meal)}
-                        className="group relative z-0 flex shrink-0 cursor-pointer flex-col gap-[8px] text-left hover:z-10 focus-visible:z-10"
+                        className="group relative z-0 flex shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10"
                       >
-                        <div className="flex h-[114px] w-[150px] items-center justify-center overflow-visible">
+                        <div className="flex h-[114px] w-[150px] items-center justify-center overflow-visible md:h-[122px] md:w-[160px]">
                           <img
                             src={meal.img}
                             alt={meal.name}
                             draggable={false}
-                            className="pointer-events-none h-[108px] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105"
+                            className="pointer-events-none h-[108px] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105 md:h-[116px] md:w-[160px]"
                           />
                         </div>
 
-                        <p
-                          className={[
-                            TEXT_TRIM_CLASS_NAME,
-                            'mx-[4px] w-[150px] font-sans text-[length:var(--checkout-float-font-size-md)] font-semibold leading-[1.4] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)]',
-                          ].join(' ')}
-                        >
-                          {meal.name}
-                        </p>
+                        <div className="flex w-[150px] flex-col gap-[12px] md:w-[160px]">
+                          <p
+                            className={[
+                              TEXT_TRIM_CLASS_NAME,
+                              'w-[150px] font-sans text-[length:var(--checkout-float-meal-meta-font-size)] font-medium leading-[140%] text-[var(--checkout-float-muted)] md:w-[160px]',
+                            ].join(' ')}
+                          >
+                            {meal.kcal} kcal • {meal.weight}g • {meal.type}
+                          </p>
+
+                          <p
+                            className={[
+                              TEXT_TRIM_CLASS_NAME,
+                              'w-[150px] font-sans text-[length:var(--checkout-float-meal-title-font-size)] font-semibold leading-[140%] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)] md:w-[160px] md:text-[length:var(--checkout-float-meal-title-font-size-md)]',
+                            ].join(' ')}
+                          >
+                            {meal.name}
+                          </p>
+                        </div>
                       </button>
                     ))}
                   </div>
 
-                  <div className="pointer-events-none absolute bottom-0 left-0 top-0 w-[20px] bg-gradient-to-l from-transparent to-[var(--checkout-float-surface)]" />
-                  <div className="pointer-events-none absolute bottom-0 right-0 top-0 w-[20px] bg-gradient-to-r from-transparent to-[var(--checkout-float-surface)]" />
+                  <div
+                    className="pointer-events-none absolute bottom-0 left-0 top-0 w-[20px] md:w-[32px]"
+                    style={{
+                      background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})`,
+                    }}
+                  />
+                  <div
+                    className="pointer-events-none absolute bottom-0 right-0 top-0 w-[20px] md:w-[32px]"
+                    style={{
+                      background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})`,
+                    }}
+                  />
                 </div>
               </div>
             )}

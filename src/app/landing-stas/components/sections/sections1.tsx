@@ -45,26 +45,29 @@ function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
           boxShadow: solid ? 'inset 0 -1px 0 rgba(255,255,255,.1)' : 'none',
         }
       },
-      createElement('div', { className:'wrap row', style:{ height:64, gap:24, justifyContent:'space-between' } },
+      createElement('div', { className:'wrap row hdr-row', style:{ height:64, justifyContent:'space-between' } },
         createElement('a', { href:'#top', className:'row hdr-logo' },
           createElement(Logo, { tone: 'yellow' })
         ),
-        createElement('nav', { className:'row hdr-nav', style:{ fontWeight:600, fontSize:'var(--fs-16)', color:txt } },
+        createElement('nav', { className:'row hdr-nav', style:{ fontWeight:600, color:txt } },
           links.map(([h, l]) => createElement('a', {
             key:h, href:h, className:'navlink',
             style:{ color:txt, transition:'color .15s' },
-            onMouseEnter:(e)=>e.target.style.color = onDark ? '#fff' : 'var(--brand)',
-            onMouseLeave:(e)=>e.target.style.color = txt,
+            onMouseEnter:(e)=>e.currentTarget.style.color = onDark ? '#fff' : 'var(--brand)',
+            onMouseLeave:(e)=>e.currentTarget.style.color = txt,
           }, l)),
           onDesignSystemClick ? createElement('a', {
             key:'design-system',
             href:'#',
-            className:'navlink',
+            className:'navlink navlink--design-system',
             style:{ color:txt, transition:'color .15s' },
             onClick:(e)=>{ e.preventDefault(); onDesignSystemClick(); },
-            onMouseEnter:(e)=>e.target.style.color = onDark ? '#fff' : 'var(--brand)',
-            onMouseLeave:(e)=>e.target.style.color = txt,
-          }, t.nav.designSystem) : null
+            onMouseEnter:(e)=>e.currentTarget.style.color = onDark ? '#fff' : 'var(--brand)',
+            onMouseLeave:(e)=>e.currentTarget.style.color = txt,
+          },
+            createElement('span', { className:'navlink__full' }, t.nav.designSystem),
+            createElement('span', { className:'navlink__short' }, 'DS'),
+          ) : null
         ),
         createElement('div', { className:'hdr-profile' },
           createElement('button', {

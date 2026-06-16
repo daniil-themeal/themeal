@@ -163,7 +163,7 @@ body {
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap:40px;
+  gap:0.5em;
 }
 .landing-stas #top .hero-title__line {
   text-wrap:balance;
@@ -171,7 +171,7 @@ body {
 }
 .landing-stas #top .hero-title__offer {
   display:flex;
-  flex-wrap:wrap;
+  flex-wrap:nowrap;
   justify-content:center;
   align-items:center;
   gap:.32em;
@@ -693,12 +693,19 @@ body {
 .hdr-nav {
   align-self: stretch;
   gap: 0;
+  font-size: var(--fs-16);
 }
 .hdr-nav .navlink {
   display: inline-flex;
   align-items: center;
   height: 100%;
   padding-inline: 24px;
+}
+.navlink__short {
+  display: none;
+}
+.hdr-row {
+  gap: 24px;
 }
 .hdr-profile {
   align-self: stretch;
@@ -732,7 +739,29 @@ body {
 .hdr-profile-btn:hover .hdr-profile-icon {
   background: rgba(255,255,255,.1);
 }
-@media (max-width: 880px){ .hdr-nav { display: none !important; } }
+@media (max-width: 880px) {
+  .hdr-row {
+    gap: 8px;
+  }
+  .landing-stas {
+    --hdr-logo-h: 22px;
+  }
+  .hdr-nav {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+    font-size: var(--fs-12);
+  }
+  .hdr-nav .navlink {
+    padding-inline: 8px;
+  }
+  .navlink--design-system .navlink__full {
+    display: none;
+  }
+  .navlink--design-system .navlink__short {
+    display: inline;
+  }
+}
 
 /* ---- menu: horizontal scroll strips (day tabs + dish cards) ---- */
 @keyframes menuMealsSlideFromRight {

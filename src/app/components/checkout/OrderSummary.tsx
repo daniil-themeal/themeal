@@ -261,7 +261,7 @@ export function OrderSummary({
 
   return (
     <>
-      <div className="flex flex-col gap-[16px] md:pt-[56px]" style={orderSummaryStyle}>
+      <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none md:pt-[56px]" style={orderSummaryStyle}>
         <div className="rounded-[16px] bg-[var(--order-summary-bg)] py-[28px]">
           <div className="flex flex-col gap-[20px]">
             <div className="px-[20px] md:px-[24px]">
@@ -299,7 +299,7 @@ export function OrderSummary({
               <div className="relative">
                 <div
                   ref={mealsScrollRef}
-                  className="flex cursor-grab select-none gap-[20px] overflow-x-auto overflow-y-visible py-[8px] px-[20px] scrollbar-hide active:cursor-grabbing md:px-[24px]"
+                  className="flex cursor-grab select-none gap-[16px] overflow-x-auto overflow-y-visible py-[8px] px-[20px] scrollbar-hide active:cursor-grabbing md:px-[24px]"
                   onMouseDown={(event) => {
                     const el = event.currentTarget;
                     const startX = event.pageX - el.offsetLeft;
