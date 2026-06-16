@@ -6,15 +6,15 @@
       "items": []
     },
     "113321584": {
-      "nextId": 3,
+      "nextId": 4,
       "items": [
         {
           "id": 1,
           "text": "Нужно на блоке Simple Menu поменять цвет кнопки на Primary фиолетовый из дизайн-системы.",
-          "done": false,
+          "done": true,
           "deferred": false,
           "createdAt": "2026-06-16T08:51:07.720Z",
-          "updatedAt": "2026-06-16T13:24:17.627Z"
+          "updatedAt": "2026-06-16T14:11:52.236Z"
         },
         {
           "id": 2,
@@ -23,6 +23,15 @@
           "deferred": false,
           "createdAt": "2026-06-16T12:40:18.532Z",
           "updatedAt": "2026-06-16T13:24:19.161Z",
+          "createdBy": 113321584
+        },
+        {
+          "id": 3,
+          "text": "В этом блоке the best value in uae сделай фон как в блоке Compare your real spend в 3-й карточке",
+          "done": true,
+          "deferred": false,
+          "createdAt": "2026-06-16T13:53:18.847Z",
+          "updatedAt": "2026-06-16T14:07:53.193Z",
           "createdBy": 113321584
         }
       ]
