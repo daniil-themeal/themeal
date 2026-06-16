@@ -182,7 +182,7 @@ function Hero({ t, onOrder }) {
         /* cta + price-per-day */
         createElement('div', { className:'reveal', 'data-d':'2', style:{ marginTop:2 } },
           createElement('button', {
-            className:'btn btn-primary menu-head-cta',
+            className:'btn btn-secondary menu-head-cta',
             onClick:onOrder,
             style:{
               flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'var(--space-8)',
