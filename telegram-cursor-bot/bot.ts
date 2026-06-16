@@ -251,9 +251,8 @@ async function main() {
   process.once("SIGINT", () => void shutdown());
   process.once("SIGTERM", () => void shutdown());
 
-  const port = Number(process.env.PORT || 0);
-  if (port > 0) {
-    createServer((req, res) => {
+  const port = Number(process.env.PORT || 8080);
+  createServer((req, res) => {
       if (req.url === "/health") {
         res.writeHead(200, { "Content-Type": "text/plain" });
         res.end("ok");
@@ -262,7 +261,6 @@ async function main() {
       res.writeHead(404);
       res.end();
     }).listen(port, () => console.log(`Health check on :${port}/health`));
-  }
 
   console.log(`Bot started (${settings.agentMode}, workspace: ${settings.workspace})`);
   await bot.launch();

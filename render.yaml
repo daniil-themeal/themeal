@@ -1,0 +1,26 @@
+# Render Blueprint — https://dashboard.render.com/blueprints
+# New Blueprint → connect daniil-themeal/themeal → branch feature/next
+
+services:
+  - type: web
+    name: themeal-telegram-bot
+    runtime: docker
+    rootDir: telegram-cursor-bot
+    branch: feature/next
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: AGENT_MODE
+        value: cloud
+      - key: CLOUD_REPO_URL
+        value: https://github.com/daniil-themeal/themeal.git
+      - key: CLOUD_REPO_REF
+        value: feature/next
+      - key: CURSOR_MODEL
+        value: composer-2.5
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: CURSOR_API_KEY
+        sync: false
+      - key: ALLOWED_USER_IDS
+        sync: false
