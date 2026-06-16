@@ -80,7 +80,9 @@ type PlanSelectorBlockCssVariables = CSSProperties & {
   '--plan-selector-card-selected-border': string;
   '--plan-selector-radio-bg': string;
   '--plan-selector-radio-selected-bg': string;
+  '--plan-selector-radio-hover-bg': string;
   '--plan-selector-radio-dot': string;
+  '--plan-selector-option-hover-text': string;
 };
 
 const planSelectorBlockStyle: PlanSelectorBlockCssVariables = {
@@ -98,7 +100,9 @@ const planSelectorBlockStyle: PlanSelectorBlockCssVariables = {
   '--plan-selector-card-selected-border': COLOR_TOKENS.primary[200],
   '--plan-selector-radio-bg': COLOR_TOKENS.neutral[50],
   '--plan-selector-radio-selected-bg': COLOR_TOKENS.primary[100],
+  '--plan-selector-radio-hover-bg': COLOR_TOKENS.primary[75],
   '--plan-selector-radio-dot': COLOR_TOKENS.primary[500],
+  '--plan-selector-option-hover-text': COLOR_TOKENS.primary[500],
 };
 
 function PlanCard({
@@ -183,7 +187,16 @@ function PlanCard({
               return (
                 <span
                   key={option.id}
-                  className="flex cursor-pointer items-center gap-[6px] py-[4px]"
+                  role="radio"
+                  aria-checked={optionSelected}
+                  tabIndex={0}
+                  className={[
+                    'group flex cursor-pointer items-center gap-[6px] rounded-[8px] px-[8px] -mx-[8px] py-[4px]',
+                    'transition-[color,transform] duration-150 will-change-transform',
+                    'hover:-translate-y-[2px] focus-visible:-translate-y-[2px]',
+                    'active:translate-y-0',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--plan-selector-active)] focus-visible:ring-offset-2',
+                  ].join(' ')}
                   onClick={(event) => {
                     event.stopPropagation();
                     onLightMealOptionChange(option.id);
@@ -192,13 +205,24 @@ function PlanCard({
                       onSelect();
                     }
                   }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      onLightMealOptionChange(option.id);
+
+                      if (!selected) {
+                        onSelect();
+                      }
+                    }
+                  }}
                 >
                   <span
                     className={[
                       'flex size-[16px] items-center justify-center rounded-full transition-colors duration-150',
                       radioActiveBackground
                         ? 'bg-[var(--plan-selector-radio-selected-bg)]'
-                        : 'bg-[var(--plan-selector-radio-bg)]',
+                        : 'bg-[var(--plan-selector-radio-bg)] group-hover:bg-[var(--plan-selector-radio-hover-bg)] group-focus-visible:bg-[var(--plan-selector-radio-hover-bg)]',
                     ].join(' ')}
                   >
                     {optionSelected ? (
@@ -206,7 +230,14 @@ function PlanCard({
                     ) : null}
                   </span>
 
-                  <span className="font-sans text-[length:var(--plan-selector-radio-font-size)] font-medium leading-[130%] text-[var(--plan-selector-text)]">
+                  <span
+                    className={[
+                      'font-sans text-[length:var(--plan-selector-radio-font-size)] font-medium leading-[130%] transition-colors duration-150',
+                      optionSelected
+                        ? 'text-[var(--plan-selector-text)]'
+                        : 'text-[var(--plan-selector-text)] group-hover:text-[var(--plan-selector-option-hover-text)] group-focus-visible:text-[var(--plan-selector-option-hover-text)]',
+                    ].join(' ')}
+                  >
                     {option.label}
                   </span>
                 </span>
