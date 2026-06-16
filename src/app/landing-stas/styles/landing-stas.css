@@ -900,7 +900,7 @@ body {
 }
 .menu-section { overflow:visible; }
 .menu-grid-wrap {
-  padding-bottom:16px;
+  padding-block:8px 32px;
   width:100%;
   max-width:var(--maxw);
   margin-inline:auto;
@@ -916,6 +916,8 @@ body {
 .menu-grid-scroll {
   width:100%;
   min-width:0;
+  padding-block:var(--space-32);
+  margin-block:calc(var(--space-32) * -1);
 }
 .menu-section .menu-top-stack {
   display:flex;
@@ -980,7 +982,9 @@ body {
   width:100%;
   min-width:0;
   overflow:visible;
-  padding-block:0;
+  padding-block:var(--space-8);
+  padding-inline:var(--space-8);
+  margin-inline:calc(var(--space-8) * -1);
 }
 .menu-section .menu-grid--cards > .menucard-shell {
   grid-column:span 3;
@@ -996,14 +1000,6 @@ body {
   user-select:none;
   pointer-events:none;
 }
-@media (min-width: 1024px) {
-  .menu-section .menu-grid-scroll.h-scroll {
-    overflow:visible;
-    touch-action:auto;
-    user-select:auto;
-    cursor:default;
-  }
-}
 @media (max-width: 1023px){
   .menu-section .menu-grid-wrap {
     --menu-inline-gutter:max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
@@ -1014,9 +1010,10 @@ body {
   }
   .menu-section .menu-grid-shell {
     container-type:inline-size;
-    overflow:hidden;
-    padding-block:12px;
-    margin-block:-12px;
+    overflow-x:clip;
+    overflow-y:visible;
+    padding-block:var(--space-32);
+    margin-block:calc(var(--space-32) * -1);
   }
   .menu-section .menu-grid-scroll {
     width:100%;
@@ -1028,6 +1025,8 @@ body {
     touch-action:pan-x;
     cursor:grab;
     user-select:none;
+    padding-block:var(--space-16);
+    margin-block:calc(var(--space-16) * -1);
   }
   .menu-section .menu-grid-scroll:active { cursor:grabbing; }
   .menu-section .menu-grid.menu-grid--cards {
@@ -1035,9 +1034,10 @@ body {
     flex-wrap:nowrap;
     gap:var(--space-16);
     width:max-content;
-    padding-block:0;
+    padding-block:var(--space-8);
     padding-inline-start:var(--menu-inline-gutter);
     padding-inline-end:0;
+    margin-inline:0;
     box-sizing:border-box;
   }
   .menu-section .menu-grid--cards::after {
@@ -1273,6 +1273,20 @@ body {
   touch-action:pan-x pan-y;
 }
 .h-scroll > * { flex:0 0 auto; }
+
+/* menu cards: keep shadows visible — override generic h-scroll overflow */
+.menu-section .menu-grid-scroll.h-scroll {
+  overflow-x:auto;
+  overflow-y:visible;
+}
+@media (min-width: 1024px) {
+  .menu-section .menu-grid-scroll.h-scroll {
+    overflow:visible;
+    touch-action:auto;
+    user-select:auto;
+    cursor:default;
+  }
+}
 
 /* ---- faq: split layout + edge-to-edge tab scroll (like menu) ---- */
 .faq-section { overflow:visible; }

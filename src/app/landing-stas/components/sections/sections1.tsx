@@ -391,7 +391,7 @@ function HowIllu({ i }) {
 }
 
 function HowItWorks({ t }) {
-  const cardBg = ['#FDF3FF', '#F6FBEF', 'var(--input-background)'];
+  const cardBg = ['#FDF3FF', '#F6FBEF', 'rgba(245, 247, 255, 1)'];
   const stepColors = ['var(--brand)', 'var(--green)', 'var(--plum-700)'];
   return (
     createElement('section', { className:'section section--white', id:'how' },
@@ -404,7 +404,7 @@ function HowItWorks({ t }) {
         createElement('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:16 } },
           t.how.steps.map((s,i)=>createElement('div', { key:i, className:'card reveal', 'data-d':String(i+1), style:{ overflow:'hidden', background:cardBg[i], borderRadius:'50px', boxShadow:'none', color:'rgba(42, 34, 48, 1)' } },
             createElement('div', { style:{ position:'relative', aspectRatio:'5/4', overflow:'hidden', display:'grid', placeItems:'center' } },
-              createElement('span', { className:'mono', style:{ position:'static', fontSize:'12px', fontWeight:500, color:stepColors[i], opacity:.7, marginInline:0, paddingInline:32, width:'100%' } }, s.n),
+              createElement('span', { className:'mono', style:{ position:'static', fontSize:'12px', fontWeight:500, color:stepColors[i], opacity: i === 2 ? 1 : 0.7, marginInline:0, paddingInline:32, width:'100%' } }, s.n),
               createElement(HowIllu, { i })
             ),
             createElement('div', { style:{ padding:'var(--space-24) var(--space-32) 36px' } },
