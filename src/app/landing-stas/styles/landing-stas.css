@@ -600,7 +600,7 @@ body {
   transform:none;
   background:var(--brand-600);
 }
-.order-fab-wa {
+.landing-stas a.order-fab-wa {
   display:flex;
   width:48px;
   height:48px;
@@ -608,21 +608,30 @@ body {
   align-items:center;
   justify-content:center;
   border-radius:50%;
-  transition:transform .15s var(--ease), filter .15s var(--ease);
+  color:var(--brand);
+  transition:transform .15s var(--ease), filter .15s var(--ease), color .15s var(--ease);
   filter:
-    drop-shadow(0 6px 18px rgba(37,211,102,.42))
-    drop-shadow(0 14px 40px rgba(37,211,102,.34));
+    drop-shadow(0 6px 18px rgba(154,56,239,.32))
+    drop-shadow(0 14px 40px rgba(154,56,239,.24));
 }
-.order-fab-wa:hover {
+.landing-stas a.order-fab-wa:hover {
   transform:translateY(-2px);
+  color:var(--brand-600);
   filter:
-    drop-shadow(0 10px 26px rgba(37,211,102,.50))
-    drop-shadow(0 20px 52px rgba(37,211,102,.38));
+    drop-shadow(0 10px 26px rgba(154,56,239,.40))
+    drop-shadow(0 20px 52px rgba(154,56,239,.28));
 }
 .order-fab-wa svg {
   display:block;
   width:48px;
   height:48px;
+}
+.order-fab-wa svg .order-fab-wa-bg {
+  fill:var(--brand);
+  transition:fill .15s var(--ease);
+}
+.landing-stas a.order-fab-wa:hover svg .order-fab-wa-bg {
+  fill:var(--brand-600);
 }
 
 /* ---- pill / chip ---- */
