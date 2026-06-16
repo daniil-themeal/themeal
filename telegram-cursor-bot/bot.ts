@@ -6,6 +6,7 @@
  */
 
 import "dotenv/config";
+import { readFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -19,6 +20,7 @@ type Settings = {
   telegramToken: string;
   cursorApiKey: string;
   allowedUserIds: Set<number> | null;
+  allowedUsernames: Set<string>;
   agentMode: "local" | "cloud";
   workspace: string;
   cloudRepoUrl: string;
@@ -54,10 +56,13 @@ function loadSettings(): Settings {
     throw new Error("Set ALLOWED_USER_IDS in .env (your Telegram user ID from @userinfobot)");
   }
 
+  const allowedUsernames = loadAllowedUsernames(env("ALLOWED_USERNAMES"));
+
   return {
     telegramToken,
     cursorApiKey,
     allowedUserIds,
+    allowedUsernames,
     agentMode,
     workspace,
     cloudRepoUrl: env("CLOUD_REPO_URL", "https://github.com/daniil-themeal/themeal.git"),
@@ -71,6 +76,32 @@ function loadSettings(): Settings {
 
 function resolveWorkspace(): string {
   return resolve(dirname(fileURLToPath(import.meta.url)), "..");
+}
+
+function normalizeUsername(username: string): string {
+  return username.trim().replace(/^@/, "").toLowerCase();
+}
+
+function loadAllowedUsernames(envRaw: string): Set<string> {
+  const usernames = new Set<string>();
+
+  for (const part of envRaw.split(",")) {
+    const normalized = normalizeUsername(part);
+    if (normalized) usernames.add(normalized);
+  }
+
+  const configPath = resolve(dirname(fileURLToPath(import.meta.url)), "allowed-users.json");
+  try {
+    const parsed = JSON.parse(readFileSync(configPath, "utf8")) as { usernames?: string[] };
+    for (const username of parsed.usernames ?? []) {
+      const normalized = normalizeUsername(username);
+      if (normalized) usernames.add(normalized);
+    }
+  } catch {
+    // Optional config — env-only setups keep working.
+  }
+
+  return usernames;
 }
 
 function splitMessage(text: string, limit = TELEGRAM_MAX): string[] {
@@ -95,10 +126,20 @@ function preview(text: string, max = TELEGRAM_MAX - 20): string {
   return text.slice(0, max) + "…";
 }
 
-function isAllowed(userId: number | undefined, settings: Settings): boolean {
-  if (userId == null) return false;
-  if (!settings.allowedUserIds) return true;
-  return settings.allowedUserIds.has(userId);
+function isAllowed(
+  user: { id?: number; username?: string } | undefined,
+  settings: Settings,
+): boolean {
+  if (user?.id == null) return false;
+
+  const hasIdRestriction = settings.allowedUserIds !== null;
+  const hasUsernameRestriction = settings.allowedUsernames.size > 0;
+  if (!hasIdRestriction && !hasUsernameRestriction) return true;
+
+  if (settings.allowedUserIds?.has(user.id)) return true;
+
+  const username = user.username ? normalizeUsername(user.username) : "";
+  return username !== "" && settings.allowedUsernames.has(username);
 }
 
 function buildAgentPrompt(userText: string, settings: Settings): string {
@@ -197,7 +238,7 @@ async function main() {
       : "cloud (GitHub: themeal)";
 
   bot.start(async (ctx) => {
-    if (!isAllowed(ctx.from?.id, settings)) {
+    if (!isAllowed(ctx.from, settings)) {
       await ctx.reply("Access denied.");
       return;
     }
@@ -220,7 +261,7 @@ async function main() {
   });
 
   bot.command("reset", async (ctx) => {
-    if (!isAllowed(ctx.from?.id, settings)) {
+    if (!isAllowed(ctx.from, settings)) {
       await ctx.reply("Access denied.");
       return;
     }
@@ -234,7 +275,7 @@ async function main() {
   });
 
   bot.command("status", async (ctx) => {
-    if (!isAllowed(ctx.from?.id, settings)) {
+    if (!isAllowed(ctx.from, settings)) {
       await ctx.reply("Access denied.");
       return;
     }
@@ -248,7 +289,7 @@ async function main() {
   });
 
   bot.on("text", async (ctx) => {
-    if (!isAllowed(ctx.from?.id, settings)) {
+    if (!isAllowed(ctx.from, settings)) {
       await ctx.reply("Access denied.");
       return;
     }
