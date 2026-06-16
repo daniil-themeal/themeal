@@ -27,7 +27,7 @@ export function OrderFab({ t, onOrderClick, hidden }: OrderFabProps) {
       type="button"
       onClick={onOrderClick}
       aria-label={t.hero.cta}
-      className="btn btn-primary btn-md"
+      className="btn btn-primary btn-md order-fab"
       style={{
         position: 'fixed',
         insetInlineEnd: 'clamp(16px,3vw,32px)',

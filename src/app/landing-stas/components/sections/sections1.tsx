@@ -191,7 +191,7 @@ function Hero({ t, onOrder }) {
           },
             createElement('span', { className:'stack', style:{ alignItems:'center', gap:'var(--space-8)' } },
               t.hero.cta,
-              createElement('span', { className:'mono', style:{ fontSize:'var(--fs-14)', fontWeight:500, opacity:.92 } }, t.hero.ctaSub))
+              createElement('span', { className:'mono', style:{ fontSize:'var(--fs-14)', fontWeight:700, opacity:.92 } }, t.hero.ctaSub))
           )
         ),
 

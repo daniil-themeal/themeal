@@ -438,7 +438,7 @@ function LeadCapture({ t, onWhatsAppClick, onContinue, onResetPhone, isPhoneVeri
                       }),
                       createElement('p', { className:'lead', style:{ margin:0, textAlign:'center', fontWeight:600, paddingInline:'32px' } }, l.done),
                       createElement('p', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center', margin:'8px 0 0' } }, l.doneSub)),
-                    createElement('button', { type:'button', className:'btn lead-form-submit', style:{ minHeight:58 }, onClick: onContinue }, l.continueCta))
+                      createElement('button', { type:'button', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 }, onClick: onContinue }, l.continueCta))
                 : createElement(Fragment, null,
                     createElement('form', { className:'lead-form', onSubmit: handleSubmit },
                       createElement(PhoneInput, {
@@ -448,7 +448,7 @@ function LeadCapture({ t, onWhatsAppClick, onContinue, onResetPhone, isPhoneVeri
                         error: error,
                         placeholder: l.ph,
                       }),
-                      createElement('button', { type:'submit', className:'btn lead-form-submit', style:{ minHeight:58 } }, l.cta)),
+                      createElement('button', { type:'submit', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 } }, l.cta)),
                     createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center' } }, l.hint)))
           )
         )

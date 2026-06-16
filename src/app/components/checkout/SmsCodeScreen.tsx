@@ -5,7 +5,6 @@ import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { PhoneInput } from '../common/PhoneInput';
-import { TempPhoneResetButton } from '../common/TempPhoneResetButton';
 import { validateUaePhone } from './phoneValidation';
 
 const CODE_LENGTH = 4;
@@ -19,7 +18,6 @@ type SmsCodeScreenProps = {
   onContinue?: () => void;
   onCodeChange?: (code: string) => void;
   onCodeComplete?: (code: string) => void;
-  onResetPhone?: () => void;
 };
 
 type SmsCodeMode = 'code' | 'phone';
@@ -101,7 +99,6 @@ export function SmsCodeScreen({
   onContinue,
   onCodeChange,
   onCodeComplete,
-  onResetPhone,
 }: SmsCodeScreenProps) {
   const [mode, setMode] = useState<SmsCodeMode>('code');
   const [phoneError, setPhoneError] = useState<string | undefined>();
@@ -473,9 +470,8 @@ export function SmsCodeScreen({
                 >
                   Change number
                 </button>{' '}
-                <span className="inline-flex items-center gap-[2px] font-sans font-bold">
+                <span className="font-sans font-bold">
                   {formattedPhone}
-                  {onResetPhone ? <TempPhoneResetButton onClick={onResetPhone} /> : null}
                 </span>
               </p>
 

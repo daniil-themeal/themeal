@@ -397,7 +397,7 @@ export function CheckoutPage({
             <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-[20px] md:flex-row md:gap-[24px] md:px-[24px] lg:px-[32px] xl:gap-[40px]">
               <div
                 ref={leftRef}
-                className="flex w-full flex-col gap-[32px] pt-[56px] md:flex-[1_1_0] md:gap-[48px] md:pb-[120px]"
+                className="flex w-full flex-col gap-[32px] pt-[56px] md:min-w-0 md:flex-[1_1_0] md:gap-[48px] md:pb-[120px]"
               >
                 <PlanSelectorBlock
                   selected={plan}
@@ -420,7 +420,7 @@ export function CheckoutPage({
 
               <div
                 ref={rightRef}
-                className="w-full md:sticky md:top-[24px] md:w-[380px] md:shrink-0 md:self-start md:pb-[120px]"
+                className="w-full md:sticky md:top-[24px] md:w-[420px] md:shrink-0 md:self-start md:pb-[120px]"
               >
                 <OrderSummary
                   plan={plan}
@@ -471,7 +471,6 @@ export function CheckoutPage({
             }}
             onContinue={handleSmsContinue}
             onCodeComplete={() => {}}
-            onResetPhone={handleResetPhone}
           />
         </div>
       ) : checkoutStep === 'delivery' && deliveryStep === 'address' ? (
