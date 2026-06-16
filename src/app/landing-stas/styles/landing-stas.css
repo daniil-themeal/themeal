@@ -1209,6 +1209,9 @@ body {
 }
 
 /* ---- hero-stats: compact below sm (576px) ---- */
+.landing-stas .hero-stats--with-checks {
+  padding-right: 40px;
+}
 @media (max-width: 575px){
   .landing-stas .hero-stats {
     gap: 12px !important;
@@ -1218,7 +1221,7 @@ body {
     justify-content: space-between !important;
     white-space: nowrap !important;
   }
-  .landing-stas .hero-stats .row > span:first-child {
+  .landing-stas .hero-stats .row > .hero-stats-check {
     display: none !important;
   }
   .landing-stas .hero-stats .row {
