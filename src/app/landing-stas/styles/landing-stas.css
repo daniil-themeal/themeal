@@ -952,7 +952,17 @@ body {
     background:linear-gradient(to left, var(--cream) 20%, transparent);
   }
 }
-.menu-section .menu-head-cta { margin-top: 32px; }
+.menu-section .menu-head-cta {
+  margin-top: 32px;
+  background: var(--brand);
+  color: #fff;
+  box-shadow: var(--shadow-brand);
+}
+.menu-section .menu-head-cta:hover {
+  background: var(--brand-600);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-brand-hover);
+}
 @media (max-width: 640px){
   .menu-section .menu-head {
     flex-direction: column;
