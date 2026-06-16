@@ -1,7 +1,8 @@
 // @ts-nocheck
 import { createElement, Fragment, useState, useEffect, useRef } from 'react';
-import { UaeFlag } from '../../../components/common/UaeFlag';
-import { normalizeUaePhone, validateUaePhone } from '../../../components/checkout/phoneValidation';
+import { PhoneInput } from '../../../components/common/PhoneInput';
+import { TempPhoneResetButton } from '../../../components/common/TempPhoneResetButton';
+import { formatUaePhoneInput, normalizeUaePhone, validateUaePhone } from '../../../components/checkout/phoneValidation';
 import { MealDetailModal } from '../../../components/checkout/MealDetailModal';
 import { buildMealDetail } from '../../../data/testMeals';
 import { useTestimonialIframe } from '../../useTestimonialIframe';
@@ -386,10 +387,15 @@ function leadTitleWordSpans(title) {
   });
 }
 
-function LeadCapture({ t, onWhatsAppClick }) {
+function LeadCapture({ t, onWhatsAppClick, onContinue, onResetPhone, isPhoneVerified = false }) {
   const [error, setError] = useState('');
   const [phone, setPhone] = useState('');
   const l = t.lead;
+  const handleResetPhone = () => {
+    setPhone('');
+    setError('');
+    onResetPhone?.();
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
     const result = validateUaePhone(phone);
@@ -423,14 +429,27 @@ function LeadCapture({ t, onWhatsAppClick }) {
             ),
 
             createElement('div', { className:'stack', style:{ gap:12 } },
-                  createElement('form', { className:'lead-form', onSubmit: handleSubmit },
-                    createElement('div', { className:'lead-form-fields' },
-                      createElement('span', { className:'lead-form-prefix' },
-                        createElement(UaeFlag), l.cc),
-                      createElement('input', { type:'tel', required:true, className:'lead-form-input', value:phone, onChange:(e)=>{ setPhone(e.target.value); setError(''); }, placeholder:l.ph, dir:'ltr' })),
-                    createElement('button', { type:'submit', className:'btn lead-form-submit', style:{ minHeight:58 } }, l.cta)),
-                  error ? createElement('span', { style:{ fontSize:'var(--fs-14)', textAlign:'center', color:'var(--pink)' } }, error) : null,
-                  createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center' } }, l.hint))
+              isPhoneVerified
+                ? createElement(Fragment, null,
+                    createElement('div', { style:{ position:'relative', width:'100%' } },
+                      createElement(TempPhoneResetButton, {
+                        onClick: handleResetPhone,
+                        style:{ position:'absolute', top:0, insetInlineEnd:0 },
+                      }),
+                      createElement('p', { className:'lead', style:{ margin:0, textAlign:'center', fontWeight:600, paddingInline:'32px' } }, l.done),
+                      createElement('p', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center', margin:'8px 0 0' } }, l.doneSub)),
+                    createElement('button', { type:'button', className:'btn lead-form-submit', style:{ minHeight:58 }, onClick: onContinue }, l.continueCta))
+                : createElement(Fragment, null,
+                    createElement('form', { className:'lead-form', onSubmit: handleSubmit },
+                      createElement(PhoneInput, {
+                        id: 'lead-phone',
+                        value: phone,
+                        onChange: (v) => { setPhone(formatUaePhoneInput(v)); setError(''); },
+                        error: error,
+                        placeholder: l.ph,
+                      }),
+                      createElement('button', { type:'submit', className:'btn lead-form-submit', style:{ minHeight:58 } }, l.cta)),
+                    createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center' } }, l.hint)))
           )
         )
       )

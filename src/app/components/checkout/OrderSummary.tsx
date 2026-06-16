@@ -6,6 +6,7 @@ import { AnimatedNumber } from '../common/AnimatedNumber';
 import { Button } from '../common/Button';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
 import { PhoneInput } from '../common/PhoneInput';
+import { TempPhoneResetButton } from '../common/TempPhoneResetButton';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { CHECKOUT_ANIMATION_DURATION_MS, easeInOutCubic } from '../common/easing';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
@@ -90,6 +91,8 @@ type OrderSummaryCssVariables = CSSProperties & {
   '--order-summary-primary': string;
   '--order-summary-divider': string;
   '--order-summary-field-bg': string;
+  '--order-summary-field-bg-hover': string;
+  '--order-summary-field-bg-active': string;
   '--order-summary-control-icon': string;
   '--order-summary-section-label-font-size': string;
   '--order-summary-title-font-size': string;
@@ -107,6 +110,8 @@ const orderSummaryStyle: OrderSummaryCssVariables = {
   '--order-summary-primary': COLOR_TOKENS.primary[500],
   '--order-summary-divider': COLOR_TOKENS.neutral[100],
   '--order-summary-field-bg': COLOR_TOKENS.neutral[50],
+  '--order-summary-field-bg-hover': COLOR_TOKENS.neutral[100],
+  '--order-summary-field-bg-active': COLOR_TOKENS.neutral[200],
   '--order-summary-control-icon': COLOR_TOKENS.neutral[500],
   '--order-summary-section-label-font-size': FONT_SIZE_TOKENS[12],
   '--order-summary-title-font-size': FONT_SIZE_TOKENS[16],
@@ -140,6 +145,9 @@ function Divider() {
   return <div className="h-px bg-[var(--order-summary-divider)]" />;
 }
 
+const personControlButtonClassName =
+  'flex h-[40px] cursor-pointer items-center justify-center rounded-full bg-[var(--order-summary-field-bg)] px-[12px] transition-colors duration-150 hover:bg-[var(--order-summary-field-bg-hover)] active:bg-[var(--order-summary-field-bg-active)]';
+
 export function OrderSummary({
   plan,
   days,
@@ -153,6 +161,8 @@ export function OrderSummary({
   phone,
   onPhoneChange,
   phoneError,
+  isPhoneVerified = false,
+  onResetPhone,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
 }: {
   plan: Plan;
@@ -167,6 +177,8 @@ export function OrderSummary({
   phone: string;
   onPhoneChange: (value: string) => void;
   phoneError?: ReactNode;
+  isPhoneVerified?: boolean;
+  onResetPhone?: () => void;
   pricingTable?: CheckoutPricingTable;
 }) {
   const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
@@ -260,13 +272,13 @@ export function OrderSummary({
               <p className="flex-[1_0_0] font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">How many people?</p>
 
               <div className="flex items-center gap-[16px]">
-                <button type="button" onClick={() => onPersonsChange(Math.max(1, persons - 1))} className="flex h-[40px] cursor-pointer items-center justify-center rounded-full bg-[var(--order-summary-field-bg)] px-[12px]" aria-label="Decrease people count">
+                <button type="button" onClick={() => onPersonsChange(Math.max(1, persons - 1))} className={personControlButtonClassName} aria-label="Decrease people count">
                   <svg width="14" height="2" viewBox="0 0 14 2" fill="none"><path d="M1 1H13" stroke="var(--order-summary-control-icon)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" /></svg>
                 </button>
                 <p className="w-[16px] text-center font-sans text-[length:var(--order-summary-title-font-size)] font-semibold text-[var(--order-summary-text)]">
                   <AnimatedNumber value={persons} />
                 </p>
-                <button type="button" onClick={() => onPersonsChange(persons + 1)} className="flex h-[40px] cursor-pointer items-center justify-center rounded-full bg-[var(--order-summary-field-bg)] px-[12px]" aria-label="Increase people count">
+                <button type="button" onClick={() => onPersonsChange(persons + 1)} className={personControlButtonClassName} aria-label="Increase people count">
                   <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d={SVG_PLUS} stroke="var(--order-summary-control-icon)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" /></svg>
                 </button>
               </div>
@@ -285,7 +297,7 @@ export function OrderSummary({
               <div className="relative">
                 <div
                   ref={mealsScrollRef}
-                  className="flex cursor-grab select-none gap-[20px] overflow-x-auto overflow-y-visible py-[4px] px-[20px] scrollbar-hide active:cursor-grabbing md:px-[24px]"
+                  className="flex cursor-grab select-none gap-[20px] overflow-x-auto overflow-y-visible py-[8px] px-[20px] scrollbar-hide active:cursor-grabbing md:px-[24px]"
                   onMouseDown={(event) => {
                     const el = event.currentTarget;
                     const startX = event.pageX - el.offsetLeft;
@@ -325,7 +337,9 @@ export function OrderSummary({
                 >
                   {visibleMeals.map((meal) => (
                     <button key={meal.id} type="button" onClick={() => { if (dragMovedRef.current) return; setSelectedMeal(meal); }} className="group relative z-0 flex w-[150px] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10">
-                      <div className="h-[108px] w-full overflow-hidden rounded-[8px]"><img src={meal.img} alt={meal.name} className="pointer-events-none h-full w-full rounded-[8px] object-cover transition-transform duration-200 group-hover:scale-105" /></div>
+                      <div className="flex h-[114px] w-full items-center justify-center overflow-visible">
+                        <img src={meal.img} alt={meal.name} className="pointer-events-none h-[108px] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105" />
+                      </div>
                       <p className="w-full px-[4px] line-clamp-2 [text-box-trim:none] [text-box-edge:auto] font-sans text-[length:var(--order-summary-body-font-size)] font-semibold leading-[140%] text-[var(--order-summary-text)] transition-colors group-hover:text-[var(--order-summary-primary)]">
                         {meal.name}
                       </p>
@@ -358,12 +372,21 @@ export function OrderSummary({
             </div>
 
             <div className="flex flex-col gap-[12px] px-[20px] md:px-[24px]">
-              <PhoneInput
-                id="order-summary-phone"
-                value={phone}
-                onChange={onPhoneChange}
-                error={phoneError}
-              />
+              {!isPhoneVerified ? (
+                <PhoneInput
+                  id="order-summary-phone"
+                  value={phone}
+                  onChange={onPhoneChange}
+                  error={phoneError}
+                />
+              ) : phone ? (
+                <div className="flex items-center justify-center gap-[4px]">
+                  <p className="text-center font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[140%] text-[var(--order-summary-muted)]">
+                    +971 {phone}
+                  </p>
+                  {onResetPhone ? <TempPhoneResetButton onClick={onResetPhone} /> : null}
+                </div>
+              ) : null}
 
               <Button type="button" variant="primary" size="medium" fullWidth onClick={onOrder}>Continue to Delivery</Button>
 

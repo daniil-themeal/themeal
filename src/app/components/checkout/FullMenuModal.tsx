@@ -453,7 +453,7 @@ export function FullMenuModal({
         </div>
 
         <div className="flex-1 overflow-y-auto">
-          <div className="relative overflow-hidden">
+          <div className="relative overflow-visible">
             <div
               key={`${testMenuDays[selectedDayIndex]?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}
               ref={mealsScrollRef}
@@ -478,12 +478,12 @@ export function FullMenuModal({
                   onClick={() => handleMealClick(meal)}
                   className="group relative z-0 flex shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10"
                 >
-                  <div className="h-[108px] w-[150px] overflow-hidden rounded-[8px] md:h-[116px] md:w-[160px]">
+                  <div className="flex h-[114px] w-[150px] items-center justify-center overflow-visible md:h-[122px] md:w-[160px]">
                     <img
                       src={meal.img}
                       alt={meal.name}
                       draggable={false}
-                      className="pointer-events-none h-full w-full rounded-[8px] object-cover transition-transform duration-200 group-hover:scale-105"
+                      className="pointer-events-none h-[108px] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105 md:h-[116px] md:w-[160px]"
                     />
                   </div>
 

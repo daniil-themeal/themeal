@@ -1,7 +1,14 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import LandingStasPage from './landing-stas/LandingStasPage';
 import { CheckoutPage } from './components/checkout/CheckoutPage';
 import DesignSystemDemo from './components/DesignSystemDemo';
+import {
+  clearPhoneSession,
+  loadPhoneSession,
+  mergePhoneSession,
+  savePhoneSession,
+  type PhoneSession,
+} from './phoneSession';
 
 type InitialCheckoutStep =
   | 'plan'
@@ -12,28 +19,96 @@ type InitialCheckoutStep =
   | 'failed';
 type InitialDeliveryStep = 'address' | 'details';
 
+function resumeCheckoutStep(session: PhoneSession): InitialCheckoutStep {
+  const step = session.checkoutStep;
+  if (!step || step === 'verification') {
+    return session.isVerified ? 'delivery' : 'plan';
+  }
+  return step;
+}
+
 export default function App() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [designSystemOpen, setDesignSystemOpen] = useState(false);
+  const [phoneSession, setPhoneSession] = useState<PhoneSession | null>(() => loadPhoneSession());
   const [initialCheckoutStep, setInitialCheckoutStep] =
     useState<InitialCheckoutStep>('plan');
   const [initialDeliveryStep, setInitialDeliveryStep] =
     useState<InitialDeliveryStep>('address');
   const [checkoutInitialPhone, setCheckoutInitialPhone] = useState<string | undefined>();
+  const [initialIsVerified, setInitialIsVerified] = useState(false);
 
-  const openCheckout = () => {
+  const handleSessionUpdate = useCallback((session: PhoneSession) => {
+    setPhoneSession(session);
+    savePhoneSession(session);
+  }, []);
+
+  const openCheckoutAt = useCallback(
+    (
+      step: InitialCheckoutStep,
+      deliveryStep: InitialDeliveryStep,
+      phone?: string,
+      isVerified = false,
+    ) => {
+      setCheckoutInitialPhone(phone);
+      setInitialCheckoutStep(step);
+      setInitialDeliveryStep(deliveryStep);
+      setInitialIsVerified(isVerified);
+      setCheckoutOpen(true);
+    },
+    [],
+  );
+
+  const openCheckoutResume = useCallback(() => {
+    const session = phoneSession ?? loadPhoneSession();
+    if (session?.isVerified) {
+      openCheckoutAt(
+        resumeCheckoutStep(session),
+        session.deliveryStep ?? 'address',
+        session.phone,
+        true,
+      );
+      return;
+    }
+
+    openCheckoutAt('plan', 'address');
+  }, [openCheckoutAt, phoneSession]);
+
+  const openCheckout = useCallback(() => {
+    const session = phoneSession ?? loadPhoneSession();
+    if (session?.isVerified) {
+      openCheckoutResume();
+      return;
+    }
+
+    openCheckoutAt('plan', 'address');
+  }, [openCheckoutAt, openCheckoutResume, phoneSession]);
+
+  const openCheckoutFromWhatsApp = useCallback(
+    (phone: string) => {
+      const next = mergePhoneSession(phoneSession, {
+        phone,
+        isVerified: false,
+        checkoutStep: 'verification',
+        deliveryStep: 'address',
+      });
+      handleSessionUpdate(next);
+      openCheckoutAt('verification', 'address', phone, false);
+    },
+    [handleSessionUpdate, openCheckoutAt, phoneSession],
+  );
+
+  const resetPhoneSession = useCallback((options?: { closeCheckout?: boolean }) => {
+    clearPhoneSession();
+    setPhoneSession(null);
+    if (options?.closeCheckout ?? true) {
+      setCheckoutOpen(false);
+    }
+    setInitialIsVerified(false);
     setCheckoutInitialPhone(undefined);
     setInitialCheckoutStep('plan');
     setInitialDeliveryStep('address');
-    setCheckoutOpen(true);
-  };
-
-  const openCheckoutFromWhatsApp = (phone: string) => {
-    setCheckoutInitialPhone(phone);
-    setInitialCheckoutStep('verification');
-    setInitialDeliveryStep('address');
-    setCheckoutOpen(true);
-  };
+  }, []);
 
   const closeCheckout = () => {
     setCheckoutOpen(false);
@@ -56,8 +131,11 @@ export default function App() {
       <LandingStasPage
         onOrderClick={openCheckout}
         onWhatsAppClick={openCheckoutFromWhatsApp}
+        onContinueClick={openCheckoutResume}
+        onResetPhone={resetPhoneSession}
         onDesignSystemClick={openDesignSystem}
         checkoutOpen={checkoutOpen}
+        isPhoneVerified={phoneSession?.isVerified ?? false}
       />
 
       <CheckoutPage
@@ -66,6 +144,9 @@ export default function App() {
         initialCheckoutStep={initialCheckoutStep}
         initialDeliveryStep={initialDeliveryStep}
         initialPhone={checkoutInitialPhone}
+        initialIsVerified={initialIsVerified}
+        onSessionUpdate={handleSessionUpdate}
+        onResetPhone={() => resetPhoneSession({ closeCheckout: false })}
       />
     </>
   );

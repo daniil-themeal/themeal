@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 
 import { CheckoutHeader } from './CheckoutHeader';
@@ -22,8 +22,10 @@ import { PaymentSuccessScreen } from './PaymentSuccessScreen';
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
 import type { TestAddress } from '../../data/testAddresses';
+import type { PhoneSession } from '../../phoneSession';
+import { mergePhoneSession } from '../../phoneSession';
 import { COLOR_TOKENS } from '../common/colorTokens';
-import { formatUaePhoneInput } from './phoneValidation';
+import { formatUaePhoneInput, normalizeUaePhone, validateUaePhone } from './phoneValidation';
 
 type CheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment' | 'success' | 'failed';
 type DeliveryStep = 'address' | 'details';
@@ -34,6 +36,9 @@ type CheckoutPageProps = {
   initialCheckoutStep?: CheckoutStep;
   initialDeliveryStep?: DeliveryStep;
   initialPhone?: string;
+  initialIsVerified?: boolean;
+  onSessionUpdate?: (session: PhoneSession) => void;
+  onResetPhone?: () => void;
 };
 
 type CheckoutPageCssVariables = CSSProperties & {
@@ -47,16 +52,24 @@ const checkoutPageStyle: CheckoutPageCssVariables = {
 const checkoutStepScrollClassName =
   'flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide';
 
+function phoneDigitsFromInitial(initialPhone?: string): string {
+  if (!initialPhone) return '';
+  return initialPhone.replace(/\D/g, '').replace(/^971/, '').slice(-9);
+}
+
 export function CheckoutPage({
   isOpen,
   onClose,
   initialCheckoutStep = 'plan',
   initialDeliveryStep = 'address',
   initialPhone,
+  initialIsVerified = false,
+  onSessionUpdate,
+  onResetPhone,
 }: CheckoutPageProps) {
   const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>(initialCheckoutStep);
   const [deliveryStep, setDeliveryStep] = useState<DeliveryStep>(initialDeliveryStep);
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(initialIsVerified);
 
   const [plan, setPlan] = useState<Plan>('base');
   const [lightMealOption, setLightMealOption] = useState<LightMealOption>('lunch-dinner');
@@ -84,19 +97,45 @@ export function CheckoutPage({
         ? 'payment'
         : 'delivery';
 
+  const persistSession = useCallback(
+    (
+      patch: Partial<PhoneSession> & {
+        checkoutStep?: PhoneSession['checkoutStep'];
+        deliveryStep?: PhoneSession['deliveryStep'];
+      },
+      verifiedOverride?: boolean,
+    ) => {
+      if (!onSessionUpdate) return;
+
+      const normalized = normalizeUaePhone(phone) ?? patch.phone ?? '';
+      const isVerified = verifiedOverride ?? patch.isVerified ?? isPhoneVerified;
+
+      onSessionUpdate(
+        mergePhoneSession(null, {
+          phone: normalized || patch.phone || '',
+          isVerified,
+          checkoutStep: patch.checkoutStep ?? (checkoutStep === 'success' || checkoutStep === 'failed' ? 'payment' : checkoutStep),
+          deliveryStep: patch.deliveryStep ?? deliveryStep,
+        }),
+      );
+    },
+    [checkoutStep, deliveryStep, isPhoneVerified, onSessionUpdate, phone],
+  );
+
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
       setCheckoutStep(initialCheckoutStep);
       setDeliveryStep(initialDeliveryStep);
+      setIsPhoneVerified(initialIsVerified);
       setMenuOpen(false);
       setSummaryVisible(initialCheckoutStep !== 'plan');
       setPhoneError(undefined);
 
-      if (initialPhone) {
-        const digits = initialPhone.replace(/\D/g, '').replace(/^971/, '').slice(-9);
+      const digits = phoneDigitsFromInitial(initialPhone);
+      if (digits) {
         setPhone(formatUaePhoneInput(digits));
-      } else if (initialCheckoutStep === 'plan') {
+      } else if (initialCheckoutStep === 'plan' && !initialIsVerified) {
         setPhone('');
       }
 
@@ -112,7 +151,7 @@ export function CheckoutPage({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone]);
+  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified]);
 
   useEffect(() => {
     if (!isOpen || checkoutStep !== 'plan') return;
@@ -147,6 +186,17 @@ export function CheckoutPage({
     setPhoneError(undefined);
   };
 
+  const handleResetPhone = useCallback(() => {
+    onResetPhone?.();
+    setIsPhoneVerified(false);
+    setPhone('');
+    setPhoneError(undefined);
+    setCheckoutStep('plan');
+    setDeliveryStep('address');
+    setMenuOpen(false);
+    setSummaryVisible(false);
+  }, [onResetPhone]);
+
   const handleScrollToSummary = () => {
     setMenuOpen(false);
     rightRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
@@ -156,22 +206,29 @@ export function CheckoutPage({
     setMenuOpen(false);
     setSummaryVisible(true);
 
-    const digits = phone.replace(/\D/g, '');
+    if (isPhoneVerified) {
+      setCheckoutStep('delivery');
+      setDeliveryStep('address');
+      persistSession({ checkoutStep: 'delivery', deliveryStep: 'address' });
+      scrollBodyToTop();
+      return;
+    }
 
-    if (!digits) {
-      setPhoneError('Enter your phone number');
+    const validation = validateUaePhone(phone);
+    if (!validation.isValid) {
+      setPhoneError(validation.error);
       handleScrollToSummary();
       return;
     }
 
-    setPhoneError(undefined);
-    setPhone(formatUaePhoneInput(digits));
+    if (validation.formatted) {
+      setPhone(validation.formatted);
+    }
 
-    if (isPhoneVerified) {
-      setCheckoutStep('delivery');
-      setDeliveryStep('address');
-      scrollBodyToTop();
-      return;
+    setPhoneError(undefined);
+    const normalized = normalizeUaePhone(phone);
+    if (normalized) {
+      persistSession({ phone: normalized, checkoutStep: 'verification', isVerified: false });
     }
 
     setCheckoutStep('verification');
@@ -182,6 +239,16 @@ export function CheckoutPage({
     setIsPhoneVerified(true);
     setCheckoutStep('delivery');
     setDeliveryStep('address');
+    const normalized = normalizeUaePhone(phone);
+    persistSession(
+      {
+        phone: normalized ?? phone,
+        checkoutStep: 'delivery',
+        deliveryStep: 'address',
+        isVerified: true,
+      },
+      true,
+    );
     scrollBodyToTop();
   };
 
@@ -189,17 +256,20 @@ export function CheckoutPage({
     if (!selectedAddress) return;
 
     setDeliveryStep('details');
+    persistSession({ checkoutStep: 'delivery', deliveryStep: 'details' });
     scrollBodyToTop();
   };
 
   const handleChangeAddress = () => {
     setCheckoutStep('delivery');
     setDeliveryStep('address');
+    persistSession({ checkoutStep: 'delivery', deliveryStep: 'address' });
     scrollBodyToTop();
   };
 
   const handleDeliveryDetailsContinue = () => {
     setCheckoutStep('payment');
+    persistSession({ checkoutStep: 'payment' });
     scrollBodyToTop();
   };
 
@@ -219,6 +289,7 @@ export function CheckoutPage({
 
   const handleReturnToPayment = () => {
     setCheckoutStep('payment');
+    persistSession({ checkoutStep: 'payment' });
     scrollBodyToTop();
   };
 
@@ -230,12 +301,14 @@ export function CheckoutPage({
     setCheckoutStep('plan');
     setMenuOpen(false);
     setSummaryVisible(true);
+    persistSession({ checkoutStep: 'plan' });
     scrollBodyToTop();
   };
 
   const handleEditDelivery = () => {
     setCheckoutStep('delivery');
     setDeliveryStep('details');
+    persistSession({ checkoutStep: 'delivery', deliveryStep: 'details' });
     scrollBodyToTop();
   };
 
@@ -245,6 +318,7 @@ export function CheckoutPage({
     if (step === 'plan') {
       setCheckoutStep('plan');
       setSummaryVisible(true);
+      persistSession({ checkoutStep: 'plan' });
       scrollBodyToTop();
       return;
     }
@@ -252,11 +326,13 @@ export function CheckoutPage({
     if (step === 'delivery') {
       setCheckoutStep('delivery');
       setDeliveryStep('details');
+      persistSession({ checkoutStep: 'delivery', deliveryStep: 'details' });
       scrollBodyToTop();
       return;
     }
 
     setCheckoutStep('payment');
+    persistSession({ checkoutStep: 'payment' });
     scrollBodyToTop();
   };
 
@@ -264,12 +340,14 @@ export function CheckoutPage({
     if (checkoutStep === 'payment') {
       setCheckoutStep('delivery');
       setDeliveryStep('details');
+      persistSession({ checkoutStep: 'delivery', deliveryStep: 'details' });
       return;
     }
 
     if (checkoutStep === 'delivery') {
       if (deliveryStep === 'details') {
         setDeliveryStep('address');
+        persistSession({ deliveryStep: 'address' });
         return;
       }
 
@@ -277,10 +355,12 @@ export function CheckoutPage({
         setCheckoutStep('plan');
         setMenuOpen(false);
         setSummaryVisible(false);
+        persistSession({ checkoutStep: 'plan' });
         return;
       }
 
       setCheckoutStep('verification');
+      persistSession({ checkoutStep: 'verification' });
       return;
     }
 
@@ -288,6 +368,7 @@ export function CheckoutPage({
       setCheckoutStep('plan');
       setMenuOpen(false);
       setSummaryVisible(false);
+      persistSession({ checkoutStep: 'plan' });
       return;
     }
 
@@ -354,6 +435,8 @@ export function CheckoutPage({
                   phone={phone}
                   onPhoneChange={handlePhoneChange}
                   phoneError={phoneError}
+                  isPhoneVerified={isPhoneVerified}
+                  onResetPhone={handleResetPhone}
                 />
               </div>
             </div>
@@ -384,9 +467,11 @@ export function CheckoutPage({
               setCheckoutStep('plan');
               setMenuOpen(false);
               setSummaryVisible(false);
+              persistSession({ checkoutStep: 'plan' });
             }}
             onContinue={handleSmsContinue}
             onCodeComplete={() => {}}
+            onResetPhone={handleResetPhone}
           />
         </div>
       ) : checkoutStep === 'delivery' && deliveryStep === 'address' ? (

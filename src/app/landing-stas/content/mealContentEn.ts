@@ -419,7 +419,8 @@ export const mealContentEn = {
     "cta": "Get my menu",
     "hint": "We’ll send a verification code via SMS.",
     "done": "Done! Check your WhatsApp",
-    "doneSub": "We’ve sent your menu and offer."
+    "doneSub": "We’ve sent your menu and offer.",
+    "continueCta": "Continue"
   }
 } as const;
 export type MealContentEn = typeof mealContentEn;
