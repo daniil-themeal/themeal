@@ -60,7 +60,7 @@ function Menu({ t, onOrder }) {
             createElement('p', { className:'row menu-head-trusted', style:{ gap:8, margin:0, color:'var(--pink)', fontWeight:600, fontSize:'var(--fs-16)' } }, createElement(Icon.heart,{size:18,fill:'currentColor',sw:0}), t.menu.trusted)
           ),
           createElement('button', {
-            className:'btn btn-primary menu-head-cta',
+            className:'btn menu-head-cta',
             onClick:onOrder,
             style:{
               flexDirection:'row', alignItems:'center', justifyContent:'space-between', gap:16,
