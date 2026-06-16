@@ -9,7 +9,8 @@ function Benefits({ t, onOrder }) {
   return (
     createElement('section', { className:'section section--cream', id:'benefits' },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'center reveal section-intro--md', style:{ maxWidth:680, marginInline:'auto' } },
+        createElement('div', { className:'section-stack' },
+        createElement('div', { className:'center reveal section-intro', style:{ maxWidth:680, marginInline:'auto' } },
           createElement('div', { className:'eyebrow' }, t.benefits.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.benefits.title)
         ),
@@ -37,7 +38,8 @@ function Benefits({ t, onOrder }) {
             );
           })
         ),
-        createElement('div', { className:'center reveal', style:{ marginTop:40 } },
+        ),
+        createElement('div', { className:'center reveal' },
           createElement('p', { className:'lead', style:{ marginBottom:24 } }, t.benefits.bottom),
           createElement('button', { className:'btn btn-secondary btn-lg benefits-cta', onClick:onOrder }, t.benefits.cta, createElement(Icon.clock,{size:20})))
       )
@@ -72,44 +74,44 @@ function FAQ({ t }) {
   const group = t.faq.groups[tab];
   const faqTabsScroll = useHorizontalScroll();
   return (
-    createElement('section', { className:'section section--cream faq-section', id:'qa' },
+    createElement('section', { className:'section section--cream faq-section section-stack', id:'qa' },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'faq-head', style:{ maxWidth:880, marginInline:'auto', width:'100%' } },
-          createElement('div', { className:'center reveal section-intro--sm' },
-            createElement('div', { className:'eyebrow' }, t.faq.eyebrow),
-            createElement('h2', { className:'h2', style:{ margin:0 } }, t.faq.title)
-          )
+        createElement('div', { className:'center reveal section-intro', style:{ maxWidth:880, marginInline:'auto', width:'100%' } },
+          createElement('div', { className:'eyebrow' }, t.faq.eyebrow),
+          createElement('h2', { className:'h2', style:{ margin:0 } }, t.faq.title)
         )
       ),
 
-      createElement('div', {
-        ref: faqTabsScroll.ref,
-        onMouseDown: faqTabsScroll.onMouseDown,
-        className:'faq-tabs no-scrollbar h-scroll gutter-x gutter-x--center reveal',
-      },
-        t.faq.tabs.map((tb,i)=>createElement('button', {
-          key:i,
-          type:'button',
-          className:`menu-day-tab${i===tab ? ' is-active' : ''}`,
-          onClick: faqTabsScroll.guardClick(() => { setTab(i); setOpen(0); }),
-        }, tb))
-      ),
+      createElement('div', { className:'faq-content' },
+        createElement('div', {
+          ref: faqTabsScroll.ref,
+          onMouseDown: faqTabsScroll.onMouseDown,
+          className:'faq-tabs no-scrollbar h-scroll gutter-x gutter-x--center reveal',
+        },
+          t.faq.tabs.map((tb,i)=>createElement('button', {
+            key:i,
+            type:'button',
+            className:`menu-day-tab${i===tab ? ' is-active' : ''}`,
+            onClick: faqTabsScroll.guardClick(() => { setTab(i); setOpen(0); }),
+          }, tb))
+        ),
 
-      createElement('div', { className:'wrap' },
-        createElement('div', { className:'faq-body', style:{ maxWidth:880, marginInline:'auto', width:'100%' } },
-          createElement('div', { className:'stack reveal', style:{ gap:12 } },
-            group.map(([q,a],i)=>{
-              const o = open === i;
-              return createElement('div', { key:i, className:'card', style:{ background:'#fff', overflow:'hidden', boxShadow:o?'var(--shadow-md)':'var(--shadow-sm)' } },
-                createElement('button', { onClick:()=>setOpen(o?-1:i), className:'row',
-                  style:{ width:'100%', textAlign:'start', gap:16, justifyContent:'space-between', padding:'20px 24px', fontWeight:700, fontSize:'20px', color:'var(--ink)' } },
-                  q,
-                  createElement('span', { style:{ flex:'0 0 auto', color:'var(--brand)', transform:o?'rotate(180deg)':'none', transition:'transform .25s var(--ease)' } }, createElement(Icon.chevron,{size:22}))),
-                createElement('div', { style:{ display:'grid', gridTemplateRows:o?'1fr':'0fr', transition:'grid-template-rows .28s var(--ease)' } },
-                  createElement('div', { style:{ overflow:'hidden' } },
-                    createElement('p', { style:{ margin:0, padding:'0 24px 24px', color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.55 } }, a)))
-              );
-            })
+        createElement('div', { className:'wrap' },
+          createElement('div', { className:'faq-body', style:{ maxWidth:880, marginInline:'auto', width:'100%' } },
+            createElement('div', { className:'stack reveal', style:{ gap:12 } },
+              group.map(([q,a],i)=>{
+                const o = open === i;
+                return createElement('div', { key:i, className:'card', style:{ background:'#fff', overflow:'hidden', boxShadow:o?'var(--shadow-md)':'var(--shadow-sm)' } },
+                  createElement('button', { onClick:()=>setOpen(o?-1:i), className:'row',
+                    style:{ width:'100%', textAlign:'start', gap:16, justifyContent:'space-between', padding:'20px 24px', fontWeight:700, fontSize:'20px', color:'var(--ink)' } },
+                    q,
+                    createElement('span', { style:{ flex:'0 0 auto', color:'var(--brand)', transform:o?'rotate(180deg)':'none', transition:'transform .25s var(--ease)' } }, createElement(Icon.chevron,{size:22}))),
+                  createElement('div', { style:{ display:'grid', gridTemplateRows:o?'1fr':'0fr', transition:'grid-template-rows .28s var(--ease)' } },
+                    createElement('div', { style:{ overflow:'hidden' } },
+                      createElement('p', { style:{ margin:0, padding:'0 24px 24px', color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.55 } }, a)))
+                );
+              })
+            )
           )
         )
       )

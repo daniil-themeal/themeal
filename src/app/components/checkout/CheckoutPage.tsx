@@ -52,6 +52,33 @@ const checkoutPageStyle: CheckoutPageCssVariables = {
 const checkoutStepScrollClassName =
   'flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide';
 
+const BOTTOM_FLOAT_HEIGHT = 72;
+const SUMMARY_ANCHOR_THRESHOLD = 0.1;
+
+function getScrollTopToRevealAnchor(
+  body: HTMLElement,
+  anchor: HTMLElement,
+  threshold = SUMMARY_ANCHOR_THRESHOLD,
+  bottomInset = 0,
+) {
+  const bodyRect = body.getBoundingClientRect();
+  const anchorRect = anchor.getBoundingClientRect();
+  const minVisible = anchorRect.height * threshold;
+  const effectiveBodyBottom = bodyRect.bottom - bottomInset;
+
+  const visibleHeight = Math.max(
+    0,
+    Math.min(anchorRect.bottom, effectiveBodyBottom) - Math.max(anchorRect.top, bodyRect.top),
+  );
+
+  if (visibleHeight >= minVisible) return body.scrollTop;
+
+  const intersectionDelta = anchorRect.bottom - bodyRect.top - minVisible;
+  const bottomInsetDelta = anchorRect.bottom - effectiveBodyBottom;
+
+  return body.scrollTop + Math.max(intersectionDelta, bottomInsetDelta, 0);
+}
+
 function phoneDigitsFromInitial(initialPhone?: string): string {
   if (!initialPhone) return '';
   return initialPhone.replace(/\D/g, '').replace(/^971/, '').slice(-9);
@@ -178,8 +205,8 @@ export function CheckoutPage({
     );
   };
 
-  const scrollBodyToTop = () => {
-    bodyRef.current?.scrollTo({ top: 0 });
+  const scrollBodyToTop = (behavior: ScrollBehavior = 'auto') => {
+    bodyRef.current?.scrollTo({ top: 0, behavior });
   };
 
   const handlePhoneChange = (value: string) => {
@@ -200,7 +227,20 @@ export function CheckoutPage({
 
   const handleScrollToSummary = () => {
     setMenuOpen(false);
-    (totalMealsRef.current ?? rightRef.current)?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    const body = bodyRef.current;
+    const anchor = totalMealsRef.current ?? rightRef.current;
+
+    if (!body || !anchor) return;
+
+    const targetScrollTop = getScrollTopToRevealAnchor(
+      body,
+      anchor,
+      SUMMARY_ANCHOR_THRESHOLD,
+      BOTTOM_FLOAT_HEIGHT,
+    );
+
+    body.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
   };
 
   const handleContinueFromPlan = () => {
@@ -386,6 +426,7 @@ export function CheckoutPage({
           onBack={handleBack}
           onClose={onClose}
           onStepSelect={handleStepSelect}
+          onLogoClick={() => scrollBodyToTop('smooth')}
         />
       ) : null}
 

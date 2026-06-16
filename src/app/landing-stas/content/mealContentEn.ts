@@ -412,8 +412,7 @@ export const mealContentEn = {
   "lead": {
     "eyebrow": "Personal offer",
     "title": "Get your menu in WhatsApp",
-    "sub": "We’ll send this week’s full menu and a personal offer just for you.",
-    "fine": "No spam. No commitment.",
+    "sub": "We’ll send this week’s full menu and a personal offer just for you. No spam. No commitment.",
     "cc": "+971",
     "ph": "50 123 4567",
     "cta": "Get my menu",

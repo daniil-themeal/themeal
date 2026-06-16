@@ -248,6 +248,7 @@ function Compare({ t }) {
   return (
     createElement('section', { className:'section section--cream', id:'why' },
       createElement('div', { className:'wrap' },
+        createElement('div', { className:'section-stack' },
         createElement('div', { className:'center reveal section-intro', style:{ maxWidth:760, marginInline:'auto' } },
           createElement('div', { className:'eyebrow' }, t.compare.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.compare.title)
@@ -277,6 +278,7 @@ function Compare({ t }) {
               ))
             )
           )
+        ),
         ),
         /* price — cost per meal (compact) */
         t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'var(--space-24) var(--space-32) clamp(var(--space-24), 3vw, var(--space-32))', marginTop:'var(--space-24)', height:'fit-content' } },
@@ -394,6 +396,7 @@ function HowItWorks({ t }) {
   return (
     createElement('section', { className:'section section--white', id:'how' },
       createElement('div', { className:'wrap' },
+        createElement('div', { className:'section-stack' },
         createElement('div', { className:'center reveal section-intro', style:{ maxWidth:680, marginInline:'auto' } },
           createElement('div', { className:'eyebrow' }, t.how.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.how.title)
@@ -408,6 +411,7 @@ function HowItWorks({ t }) {
               createElement('h3', { className:'h3', style:{ margin:'0 0 var(--space-16)', color:'var(--ink)' } }, s.t),
               createElement('p', { style:{ margin:0, color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.5 } }, s.d))
           ))
+        )
         )
       )
     )

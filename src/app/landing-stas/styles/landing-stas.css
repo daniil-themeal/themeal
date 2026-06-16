@@ -104,8 +104,7 @@ body {
   --space-128: 128px;
 
   --section-intro-gap: clamp(var(--space-32), 8vw, var(--space-64));
-  --section-intro-gap-md: clamp(var(--space-24), 6vw, var(--space-48));
-  --section-intro-gap-sm: clamp(var(--space-20), 5vw, var(--space-40));
+  --delivery-block-gap: clamp(var(--space-32), 8vw, var(--space-64));
 
   /* Legacy landing h1/h2 scale (src/styles/index.css) � stage 2/3 wire-up */
   --landing-h1-fs: clamp(3.75rem, 5.291vw + 2.46rem, 5rem);
@@ -309,14 +308,13 @@ body {
   color:var(--brand);
   margin-bottom:var(--space-16);
 }
+.section-stack {
+  display:flex;
+  flex-direction:column;
+  gap:var(--section-intro-gap);
+}
 .section-intro {
-  margin-bottom:var(--section-intro-gap);
-}
-.section-intro--md {
-  margin-bottom:var(--section-intro-gap-md);
-}
-.section-intro--sm {
-  margin-bottom:var(--section-intro-gap-sm);
+  margin:0;
 }
 .mono { font-family:var(--font); font-variant-numeric:tabular-nums; }
 
@@ -619,6 +617,14 @@ body {
 }
 
 /* ---- benefits section ---- */
+.landing-stas #benefits .wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-intro-gap);
+}
+.landing-stas #benefits .card {
+  border-radius: 50px;
+}
 #benefits .eyebrow {
   margin-bottom: var(--space-24);
 }
@@ -627,7 +633,15 @@ body {
 #fresh .eyebrow {
   margin-bottom: var(--space-24);
 }
+#fresh .fresh-copy {
+  padding-top: var(--space-16);
+  padding-bottom: var(--space-16);
+}
 @media (max-width: 719px) {
+  #fresh .fresh-copy {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
   #fresh .fresh-copy .eyebrow,
   #fresh .fresh-copy .h2 {
     text-align: center;
@@ -803,11 +817,23 @@ body {
   width:100%;
   min-width:0;
 }
+.menu-section .menu-top-stack {
+  display:flex;
+  flex-direction:column;
+  gap:var(--section-intro-gap);
+  width:100%;
+}
+.menu-section .menu-body {
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-24);
+  width:100%;
+}
 .menu-section .menu-days-wrap {
   position:relative;
   width:100%;
   overflow:visible;
-  margin-bottom:var(--space-16);
+  margin-bottom:0;
 }
 .menu-section .menu-days {
   display:flex;
@@ -854,7 +880,7 @@ body {
   width:100%;
   min-width:0;
   overflow:visible;
-  padding-block:12px;
+  padding-block:0;
 }
 .menu-section .menu-grid--cards > .menucard-shell {
   grid-column:span 3;
@@ -909,7 +935,7 @@ body {
     flex-wrap:nowrap;
     gap:var(--space-16);
     width:max-content;
-    padding:12px 0 24px;
+    padding-block:0;
     padding-inline-start:var(--menu-inline-gutter);
     padding-inline-end:0;
     box-sizing:border-box;
@@ -968,6 +994,9 @@ body {
     background:linear-gradient(to left, var(--cream) 20%, transparent);
   }
 }
+.menu-section .menu-head-text {
+  gap: var(--space-24);
+}
 .menu-section .menu-head-cta {
   margin-top: 32px;
 }
@@ -988,6 +1017,7 @@ body {
   }
   .menu-section .menu-head-cta {
     width: 100%;
+    margin-top: 0;
   }
 }
 
@@ -1033,7 +1063,7 @@ body {
 .landing-stas .delivery-left {
   flex: 1 1 280px;
   min-width: 0;
-  gap: 64px;
+  gap: var(--delivery-block-gap);
 }
 .landing-stas .delivery-title {
   margin: 0;
@@ -1041,6 +1071,7 @@ body {
 .landing-stas .delivery-feats {
   flex: 1 1 320px;
   max-width: 540px;
+  height: fit-content;
 }
 .landing-stas .delivery-cta {
   align-self: flex-start;
@@ -1049,6 +1080,8 @@ body {
   .landing-stas .delivery-main {
     flex-direction: column;
     align-items: stretch;
+    justify-content: flex-start;
+    gap: 0;
   }
   .landing-stas .delivery-left {
     display: contents;
@@ -1059,14 +1092,19 @@ body {
   .landing-stas .delivery-title {
     order: 1;
     text-align: center;
+    flex: none;
   }
   .landing-stas .delivery-feats {
+    flex: none;
     order: 2;
     max-width: none;
+    margin-top: var(--delivery-block-gap);
   }
   .landing-stas .delivery-cta {
     order: 3;
-    align-self: flex-start;
+    align-self: center;
+    flex: none;
+    margin-top: var(--delivery-block-gap);
   }
 }
 
@@ -1138,6 +1176,11 @@ body {
 
 /* ---- faq: split layout + edge-to-edge tab scroll (like menu) ---- */
 .faq-section { overflow:visible; }
+.faq-content {
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-24);
+}
 .faq-section .faq-tabs {
   display:flex;
   flex-wrap:nowrap;
@@ -1147,7 +1190,7 @@ body {
   min-width:0;
   gap:8px;
   padding-bottom:4px;
-  margin-bottom:28px;
+  margin-bottom:0;
   cursor:grab;
 }
 .faq-section .faq-tabs:active { cursor:grabbing; }

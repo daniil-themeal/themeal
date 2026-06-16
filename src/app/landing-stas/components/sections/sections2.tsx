@@ -51,12 +51,13 @@ function Menu({ t, onOrder }) {
 
   return (
     createElement('section', { className:'section section--cream menu-section', id:'menu', style:{ paddingBottom:'clamp(var(--space-48), 6vw, var(--space-80))' } },
+      createElement('div', { className:'section-stack menu-top-stack' },
       createElement('div', { className:'wrap', style:{ height:'fit-content' } },
         createElement('div', { className:'menu-head reveal' },
-          createElement('div', { className:'menu-head-text' },
-            createElement('div', { className:'menu-head-intro' },
+          createElement('div', { className:'menu-head-text section-stack' },
+            createElement('div', { className:'section-intro menu-head-intro reveal' },
               createElement('div', { className:'eyebrow menu-eyebrow' }, t.menu.eyebrow),
-              createElement('h2', { className:'h2 menu-head-title' }, t.menu.title),
+              createElement('h2', { className:'h2 menu-head-title', style:{ margin:0 } }, t.menu.title),
             ),
             createElement('p', { className:'row menu-head-trusted', style:{ gap:8, margin:0, color:'var(--pink)', fontWeight:600, fontSize:'var(--fs-16)', textAlign:'left' } }, createElement(Icon.heart,{size:18,fill:'currentColor',sw:0}), t.menu.trusted)
           ),
@@ -75,6 +76,7 @@ function Menu({ t, onOrder }) {
         )
       ),
 
+      createElement('div', { className:'menu-body' },
       /* day tabs — align with .wrap via gutter-x */
       createElement('div', { className:'menu-days-wrap reveal' },
         createElement('div', {
@@ -134,6 +136,8 @@ function Menu({ t, onOrder }) {
           )
         )
       ),
+      ),
+      ),
 
       createElement('div', { className:'wrap', style:{ height:'fit-content' } },
         createElement('p', { className:'menu-note muted reveal' },
@@ -153,15 +157,14 @@ function Menu({ t, onOrder }) {
             gap:16px;
             align-items:flex-start;
             justify-content:space-between;
-            margin-bottom:var(--section-intro-gap);
           }
           .menu-head-text {
             flex:1 1 0;
             min-width:0;
             width:100%;
+            gap:var(--space-24);
           }
           .menu-head-title {
-            margin:0 0 24px;
             width:100%;
           }
           .menucard-shell {
@@ -252,7 +255,8 @@ function Customers({ t }) {
   return (
     createElement('section', { className:'section section--yellow', id:'reviews', style:{ paddingBottom:'clamp(var(--space-48), 6vw, var(--space-80))' } },
       createElement('div', { className:'wrap' },
-        createElement('div', { className:'center reveal section-intro--sm' },
+        createElement('div', { className:'section-stack' },
+        createElement('div', { className:'center reveal section-intro' },
           createElement('div', { className:'eyebrow', style:{ color:'var(--plum-700)' } }, t.customers.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0, color:'var(--plum-800)' } }, t.customers.title)
         ),
@@ -263,6 +267,7 @@ function Customers({ t }) {
             frameBorder:'0', scrolling:'no', width:'100%', height:'960',
             title:t.customers.title,
           })
+        )
         )
       )
     )
@@ -348,9 +353,11 @@ function Fresh({ t }) {
           createElement('div', { className:'row', style:{ position:'absolute', insetInlineEnd:-14, bottom:24, gap:10, background:'#fff', borderRadius:'var(--r-pill)', padding:'12px 18px', boxShadow:'var(--shadow-lg)', color:'var(--blue)', fontWeight:700, fontSize:'var(--fs-16)' } },
             createElement('span', { style:{ width:10, height:10, borderRadius:'50%', background:'var(--blue-bright)', boxShadow:'0 0 0 4px var(--blue-soft)' } }), t.fresh.badge)
         ),
-        createElement('div', { className:'fresh-copy' },
-          createElement('div', { className:'eyebrow reveal' }, t.fresh.eyebrow),
-          createElement('h2', { className:'h2 reveal', style:{ margin:'0 0 var(--section-intro-gap)' } }, t.fresh.title),
+        createElement('div', { className:'fresh-copy section-stack' },
+          createElement('div', { className:'section-intro reveal' },
+            createElement('div', { className:'eyebrow reveal' }, t.fresh.eyebrow),
+            createElement('h2', { className:'h2 reveal', style:{ margin:0 } }, t.fresh.title),
+          ),
           createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:'var(--space-24)' } },
             t.fresh.items.map((it,i)=>createElement('li', { key:i, className:'row reveal', 'data-d':String((i%3)+1), style:{ gap:16, alignItems:'center' } },
               createElement('span', { style:{ flex:'0 0 auto', width:44, height:44, borderRadius:'var(--r-md)', background:'var(--brand-soft)', color:'var(--brand)', display:'grid', placeItems:'center' } }, createElement(ic[i], { size:22 })),
@@ -444,8 +451,7 @@ function LeadCapture({ t, onWhatsAppClick, onContinue, onResetPhone, isPhoneVeri
               createElement('div', { className:'stack lead-copy', style:{ gap:'var(--space-12)' } },
                 createElement('h3', { className:'h3 row lead-title', style:{ margin:0, gap:4, width:'100%' } },
                   ...leadTitleWordSpans(l.title)),
-                createElement('p', { className:'lead', style:{ margin:'0 0 var(--space-4)', width:'100%' } }, l.sub),
-                createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)' } }, l.fine)),
+                createElement('p', { className:'lead', style:{ margin:0, width:'100%' } }, l.sub)),
               createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'0 14px', height:32 } },
                 l.eyebrow),
             ),

@@ -19,6 +19,7 @@ type CheckoutHeaderProps = {
   onBack: () => void;
   onClose: () => void;
   onStepSelect?: (step: CheckoutHeaderStep) => void;
+  onLogoClick?: () => void;
 };
 
 type CheckoutHeaderCssVariables = CSSProperties & {
@@ -209,6 +210,7 @@ export function CheckoutHeader({
   onBack,
   onClose,
   onStepSelect,
+  onLogoClick,
 }: CheckoutHeaderProps) {
   const currentStepperIndex = step === 'plan' ? 0 : step === 'delivery' ? 1 : 2;
   const showBackButton = !title && step !== 'plan';
@@ -235,6 +237,15 @@ export function CheckoutHeader({
               aria-label="Back"
             >
               <ChevronLeftIcon />
+            </button>
+          ) : onLogoClick ? (
+            <button
+              type="button"
+              onClick={onLogoClick}
+              className="flex h-full w-full cursor-pointer items-center justify-center"
+              aria-label="Scroll to top"
+            >
+              <CheckoutLogo />
             </button>
           ) : (
             <CheckoutLogo />

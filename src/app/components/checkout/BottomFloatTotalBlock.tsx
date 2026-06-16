@@ -584,13 +584,13 @@ export function BottomFloatTotalBlock({
                   </div>
 
                   <div
-                    className="pointer-events-none absolute bottom-0 left-0 top-0 w-[20px] md:w-[32px]"
+                    className="pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-[20px] md:w-[32px]"
                     style={{
                       background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})`,
                     }}
                   />
                   <div
-                    className="pointer-events-none absolute bottom-0 right-0 top-0 w-[20px] md:w-[32px]"
+                    className="pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-[20px] md:w-[32px]"
                     style={{
                       background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})`,
                     }}
@@ -605,7 +605,7 @@ export function BottomFloatTotalBlock({
                   <div className="flex flex-1 flex-col items-center justify-start gap-[8px]">
                     <div className="flex items-end gap-[5px] tabular-nums">
                       {pricing.oldPeriodPrice ? (
-                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-[var(--checkout-float-muted)]">
+                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-[var(--checkout-float-muted)] line-through">
                           <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} />
                         </p>
                       ) : null}

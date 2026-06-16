@@ -508,13 +508,13 @@ export function FullMenuModal({
             </div>
 
             <div
-              className="pointer-events-none absolute bottom-0 left-0 top-0 w-[20px] md:w-[32px]"
+              className="pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-[20px] md:w-[32px]"
               style={{
                 background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})`,
               }}
             />
             <div
-              className="pointer-events-none absolute bottom-0 right-0 top-0 w-[20px] md:w-[32px]"
+              className="pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-[20px] md:w-[32px]"
               style={{
                 background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})`,
               }}

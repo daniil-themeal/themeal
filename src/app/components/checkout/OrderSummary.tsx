@@ -348,8 +348,8 @@ export function OrderSummary({
                     </button>
                   ))}
                 </div>
-                <div className="pointer-events-none absolute bottom-[4px] left-0 top-0 w-[20px] md:w-[24px]" style={{ background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})` }} />
-                <div className="pointer-events-none absolute bottom-[4px] right-0 top-0 w-[20px] md:w-[24px]" style={{ background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})` }} />
+                <div className="pointer-events-none absolute bottom-[4px] left-0 top-0 z-20 w-[20px] md:w-[24px]" style={{ background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})` }} />
+                <div className="pointer-events-none absolute bottom-[4px] right-0 top-0 z-20 w-[20px] md:w-[24px]" style={{ background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})` }} />
               </div>
             </div>
 
@@ -357,7 +357,7 @@ export function OrderSummary({
 
             <div
               ref={totalMealsAnchorRef}
-              className="flex items-center gap-[6px] px-[20px] md:px-[24px]"
+              className="flex scroll-mt-4 scroll-mb-[72px] items-center gap-[6px] px-[20px] md:px-[24px]"
             >
               <p className="flex-[1_0_0] whitespace-nowrap font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">Total meals <span className="font-medium">(over <AnimatedNumber value={pricing.paidDays} /> days)</span></p>
               <div className="h-[4px] flex-[1_0_0]" />
