@@ -58,7 +58,7 @@ function Menu({ t, onOrder }) {
               createElement('div', { className:'eyebrow menu-eyebrow' }, t.menu.eyebrow),
               createElement('h2', { className:'h2 menu-head-title' }, t.menu.title),
             ),
-            createElement('p', { className:'row menu-head-trusted', style:{ gap:8, margin:0, color:'var(--pink)', fontWeight:600, fontSize:'var(--fs-16)' } }, createElement(Icon.heart,{size:18,fill:'currentColor',sw:0}), t.menu.trusted)
+            createElement('p', { className:'row menu-head-trusted', style:{ gap:8, margin:0, color:'var(--pink)', fontWeight:600, fontSize:'var(--fs-16)', textAlign:'left' } }, createElement(Icon.heart,{size:18,fill:'currentColor',sw:0}), t.menu.trusted)
           ),
           createElement('button', {
             className:'btn btn-primary menu-head-cta',
@@ -441,10 +441,10 @@ function LeadCapture({ t, onWhatsAppClick, onContinue, onResetPhone, isPhoneVeri
           createElement('div', { style:{ position:'absolute', top:-60, insetInlineEnd:-40, width:240, height:240, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.18), transparent 70%)', pointerEvents:'none' } }),
           createElement('div', { className:'lead-grid' },
             createElement('div', { className:'stack lead-text', style:{ gap:'var(--space-24)' } },
-              createElement('div', { className:'stack lead-copy', style:{ gap:'var(--space-20)' } },
+              createElement('div', { className:'stack lead-copy', style:{ gap:'var(--space-12)' } },
                 createElement('h3', { className:'h3 row lead-title', style:{ margin:0, gap:4, width:'100%' } },
                   ...leadTitleWordSpans(l.title)),
-                createElement('p', { className:'lead', style:{ margin:0, width:'100%' } }, l.sub),
+                createElement('p', { className:'lead', style:{ margin:'0 0 var(--space-4)', width:'100%' } }, l.sub),
                 createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)' } }, l.fine)),
               createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'0 14px', height:32 } },
                 l.eyebrow),

@@ -395,7 +395,7 @@ export function CheckoutPage({
             ref={bodyRef}
             className="flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide"
           >
-            <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-[20px] md:grid md:grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),420px)] md:items-start md:gap-[24px] md:px-[24px] lg:grid-cols-[minmax(0,1fr)_420px] lg:px-[32px] xl:gap-[40px]">
+            <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-[20px] md:grid md:grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:items-start md:gap-[24px] md:px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]">
               <div
                 ref={leftRef}
                 className="flex w-full min-w-0 flex-col gap-[32px] pt-[56px] md:gap-[48px] md:pb-[120px]"
@@ -421,7 +421,7 @@ export function CheckoutPage({
 
               <div
                 ref={rightRef}
-                className="w-full min-w-0 max-md:max-w-none md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),420px)] lg:max-w-[420px] md:sticky md:top-[24px] md:self-start md:pb-[120px]"
+                className="w-full min-w-0 max-md:max-w-none md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] lg:max-w-[460px] md:sticky md:top-[24px] md:self-start md:pb-[120px]"
               >
                 <OrderSummary
                   plan={plan}

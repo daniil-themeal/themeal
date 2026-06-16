@@ -563,10 +563,11 @@ export function BottomFloatTotalBlock({
                           <p
                             className={[
                               TEXT_TRIM_CLASS_NAME,
-                              'w-[150px] font-sans text-[length:var(--checkout-float-meal-meta-font-size)] font-medium leading-[140%] text-[var(--checkout-float-muted)] md:w-[160px]',
+                              'flex w-[150px] flex-wrap items-center gap-x-[0.35em] font-sans text-[length:var(--checkout-float-meal-meta-font-size)] font-medium leading-[140%] text-[var(--checkout-float-muted)] md:w-[160px]',
                             ].join(' ')}
                           >
-                            {meal.kcal} kcal • {meal.weight}g • {meal.type}
+                            <span>{meal.kcal} kcal • {meal.weight} g</span>
+                            <span>{meal.type}</span>
                           </p>
 
                           <p

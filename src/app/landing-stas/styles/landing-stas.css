@@ -250,12 +250,7 @@ body {
   gap:4px;
 }
 .lead-section .lead-card {
-  padding: var(--space-32);
-}
-@media (max-width: 640px) {
-  .lead-section .lead-card {
-    padding: var(--space-24);
-  }
+  padding: 28px var(--space-32);
 }
 /* ---- lead capture form ---- */
 .landing-stas .lead-form {
@@ -988,7 +983,8 @@ body {
     text-align: center;
   }
   .menu-section .menu-head-trusted {
-    justify-content: center;
+    text-align: left;
+    justify-content: flex-start;
   }
   .menu-section .menu-head-cta {
     width: 100%;
