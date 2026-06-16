@@ -316,8 +316,10 @@ function Compare({ t }) {
           #why .compare-card-head__badge {
             color:var(--brand);
             font-weight:700;
-            font-size:16px;
+            font-size:14px;
             line-height:1;
+            letter-spacing:.08em;
+            text-transform:uppercase;
             text-align:start;
           }
           #why .compare-card--solutions .compare-card-head__badge {
