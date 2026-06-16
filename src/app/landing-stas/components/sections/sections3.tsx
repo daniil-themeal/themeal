@@ -130,7 +130,7 @@ function FinalOffer({ t, onOrder }) {
       createElement('h2', { className:'h2', style:{ margin:0, maxWidth:880, letterSpacing:'-0.05rem' } },
         t.final.pre, ' ', createElement('span', { style:{ color:'var(--yellow)' } }, t.final.hi)),
       createElement(HeroStats, { stats:t.hero.stats }),
-      createElement('button', { className:'btn btn-primary btn-lg', onClick:onOrder, style:{ marginTop:4 } }, t.final.cta, createElement(Icon.arrow,{size:20,className:'flip'}))),
+      createElement('button', { className:'btn btn-secondary btn-lg', onClick:onOrder, style:{ marginTop:4 } }, t.final.cta, createElement(Icon.arrow,{size:20,className:'flip'}))),
     createElement('div', { 'aria-hidden':true, style:{ position:'relative', zIndex:1, width:'100%', height:'clamp(160px,18vw,220px)', marginTop:'var(--space-16)', marginBottom:0 } },
       createElement('div', { dir:'ltr', style:{ position:'absolute', left:-18, right:-18, top:0, display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:'clamp(4px,.8vw,14px)' } },
         trays.map((src,i)=>createElement('img', {
