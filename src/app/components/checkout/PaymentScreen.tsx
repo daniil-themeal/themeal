@@ -7,7 +7,6 @@ import {
   getCheckoutPrice,
   getTotalMeals,
 } from '../../data/checkoutPricing';
-import { PromoCodeEstimateHint } from './PromoCodeEstimateHint';
 import type { TestAddress } from '../../data/testAddresses';
 import { Button } from '../common/Button';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
@@ -362,18 +361,15 @@ export function PaymentScreen({
                 />
               }
               action={
-                <div className="flex w-full items-center justify-end gap-[8px] sm:w-auto">
-                  <Button
-                    type="button"
-                    variant="warning"
-                    size="medium"
-                    disabled={!promoCode.trim()}
-                    className="min-w-0 flex-1 sm:w-[140px] sm:flex-none"
-                  >
-                    Activate
-                  </Button>
-                  <PromoCodeEstimateHint />
-                </div>
+                <Button
+                  type="button"
+                  variant="warning"
+                  size="medium"
+                  disabled={!promoCode.trim()}
+                  className="w-full sm:w-[140px]"
+                >
+                  Activate
+                </Button>
               }
             />
           </div>
