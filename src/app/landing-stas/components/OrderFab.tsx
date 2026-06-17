@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { Icon } from './icons';
 
@@ -49,7 +50,7 @@ export function OrderFab({ t, onOrderClick, hidden }: OrderFabProps) {
 
   if (hidden) return null;
 
-  return (
+  return createPortal(
     <div className={`order-fab-group${showOrder ? ' order-fab-group--order-visible' : ''}`}>
       <a
         href={WHATSAPP_URL}
@@ -77,6 +78,7 @@ export function OrderFab({ t, onOrderClick, hidden }: OrderFabProps) {
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

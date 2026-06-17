@@ -270,7 +270,7 @@ export function OrderSummary({
 
             <Divider />
 
-            <div className="flex items-center gap-[8px] px-[20px] md:px-[24px]">
+            <div className="flex items-center gap-[8px] px-[20px] md:px-[32px]">
               <p className="flex-[1_0_0] font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">How many people?</p>
 
               <div className="flex items-center gap-[16px]">
@@ -289,7 +289,7 @@ export function OrderSummary({
             <Divider />
 
             <div className="flex flex-col gap-[16px]">
-              <div className="flex items-center justify-between gap-[16px] px-[20px] md:px-[24px]">
+              <div className="flex items-center justify-between gap-[16px] px-[20px] md:px-[32px]">
                 <p className="font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">What you'll eat</p>
                 <TextLink size="12" onClick={onOpenMenu}>
                   View full menu
@@ -299,7 +299,7 @@ export function OrderSummary({
               <div className="relative">
                 <div
                   ref={mealsScrollRef}
-                  className="flex cursor-grab select-none gap-[16px] overflow-x-auto overflow-y-visible py-[8px] px-[20px] scrollbar-hide active:cursor-grabbing md:px-[24px]"
+                  className="flex cursor-grab select-none gap-[16px] overflow-x-auto overflow-y-visible py-[8px] px-[20px] scrollbar-hide active:cursor-grabbing md:px-[32px]"
                   onMouseDown={(event) => {
                     const el = event.currentTarget;
                     const startX = event.pageX - el.offsetLeft;
@@ -348,8 +348,8 @@ export function OrderSummary({
                     </button>
                   ))}
                 </div>
-                <div className="pointer-events-none absolute bottom-[4px] left-0 top-0 z-20 w-[20px] md:w-[24px]" style={{ background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})` }} />
-                <div className="pointer-events-none absolute bottom-[4px] right-0 top-0 z-20 w-[20px] md:w-[24px]" style={{ background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})` }} />
+                <div className="pointer-events-none absolute bottom-[4px] left-0 top-0 z-20 w-[20px] md:w-[32px]" style={{ background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})` }} />
+                <div className="pointer-events-none absolute bottom-[4px] right-0 top-0 z-20 w-[20px] md:w-[32px]" style={{ background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})` }} />
               </div>
             </div>
 
@@ -357,7 +357,7 @@ export function OrderSummary({
 
             <div
               ref={totalMealsAnchorRef}
-              className="flex scroll-mt-4 scroll-mb-[72px] items-center gap-[16px] px-[20px] md:px-[24px]"
+              className="flex scroll-mt-4 scroll-mb-[72px] items-center gap-[16px] px-[20px] md:px-[32px]"
             >
               <p className="flex-[1_0_0] whitespace-nowrap font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">Total meals <span className="font-medium">(over <AnimatedNumber value={pricing.paidDays} /> days)</span></p>
               <div className="h-[4px] flex-[1_0_0]" />
