@@ -263,8 +263,8 @@ export function OrderSummary({
     <>
       <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none md:pt-[56px]" style={orderSummaryStyle}>
         <div className="rounded-[16px] bg-[var(--order-summary-bg)] py-[28px]">
-          <div className="flex flex-col gap-[20px]">
-            <div className="px-[20px] md:px-[24px]">
+          <div className="flex flex-col gap-[32px]">
+            <div className="px-[20px] md:px-[32px]">
               <PlanTariffSummary title={getPlanTariffTitle(plan)} chips={planTariffChips} />
             </div>
 
@@ -357,7 +357,7 @@ export function OrderSummary({
 
             <div
               ref={totalMealsAnchorRef}
-              className="flex scroll-mt-4 scroll-mb-[72px] items-center gap-[6px] px-[20px] md:px-[24px]"
+              className="flex scroll-mt-4 scroll-mb-[72px] items-center gap-[16px] px-[20px] md:px-[24px]"
             >
               <p className="flex-[1_0_0] whitespace-nowrap font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">Total meals <span className="font-medium">(over <AnimatedNumber value={pricing.paidDays} /> days)</span></p>
               <div className="h-[4px] flex-[1_0_0]" />
@@ -368,7 +368,7 @@ export function OrderSummary({
 
             <Divider />
 
-            <div className="h-fit w-full px-[20px] md:px-[24px]">
+            <div className="h-fit w-full px-[20px] md:px-[32px]">
               <CheckoutTodayTotal
                 oldPeriodPrice={pricing.oldPeriodPrice}
                 periodPrice={pricing.periodPrice}
@@ -376,7 +376,7 @@ export function OrderSummary({
               />
             </div>
 
-            <div className="flex flex-col gap-[12px] px-[20px] md:px-[24px]">
+            <div className="flex flex-col gap-[12px] px-[20px] md:px-[32px]">
               {!isPhoneVerified ? (
                 <PhoneInput
                   id="order-summary-phone"

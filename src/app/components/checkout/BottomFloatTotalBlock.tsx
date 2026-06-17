@@ -367,7 +367,7 @@ export function BottomFloatTotalBlock({
   return (
     <>
       <div
-        className={`fixed bottom-0 left-0 right-0 z-[150] flex flex-col items-end transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed bottom-0 left-0 right-0 z-[150] flex flex-col items-end pb-[env(safe-area-inset-bottom)] transition-transform duration-300 ease-in-out md:hidden ${
           hidden ? 'translate-y-full' : 'translate-y-0'
         }`}
         style={bottomFloatTotalBlockStyle}
@@ -402,8 +402,9 @@ export function BottomFloatTotalBlock({
           </button>
         </div>
 
-        <div className="w-full overflow-hidden bg-[var(--checkout-float-surface)] drop-shadow-[0px_-4px_12px_rgba(0,0,0,0.08)]">
-          <div className="relative">
+        <div className="w-full shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
+          <div className="overflow-hidden bg-[var(--checkout-float-surface)]">
+            <div className="relative">
             {menuVisible && (
               <div
                 className={`${menuClosing ? 'modal-exit-mobile-full' : 'modal-enter-mobile-full'} relative z-0 bg-[var(--checkout-float-surface)]`}
@@ -649,6 +650,7 @@ export function BottomFloatTotalBlock({
 
               <div className="h-px w-full bg-[var(--checkout-float-divider)]" />
             </div>
+          </div>
           </div>
         </div>
       </div>

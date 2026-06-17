@@ -44,7 +44,7 @@ export function CheckoutTodayTotal({
 }: CheckoutTodayTotalProps) {
   return (
     <div
-      className={['flex flex-col gap-[6px]', className].filter(Boolean).join(' ')}
+      className={['flex flex-col gap-[12px]', className].filter(Boolean).join(' ')}
       style={{ ...checkoutTodayTotalStyle, ...style }}
     >
       <div className="box-content flex items-end justify-between gap-[8px]">
