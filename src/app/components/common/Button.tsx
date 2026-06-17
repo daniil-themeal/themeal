@@ -3,6 +3,8 @@ import type { ButtonHTMLAttributes, CSSProperties, ReactNode } from 'react';
 import { BORDER_RADIUS_TOKENS } from './borderRadiusTokens';
 import { COLOR_TOKENS, type ColorPaletteName } from './colorTokens';
 import { FONT_SIZE_TOKENS } from './fontSizeTokens';
+import { LoaderIcon } from './icons/feather/LoaderIcon';
+import type { IconSize } from './icons/iconSize';
 import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
 export const BUTTON_VARIANTS = [
@@ -44,6 +46,7 @@ type ButtonBaseProps = {
   outline?: boolean;
   size?: ButtonSize;
   fullWidth?: boolean;
+  loading?: boolean;
   className?: string;
 };
 
@@ -276,8 +279,24 @@ const ICON_SIZE_CLASS_NAMES: Record<ButtonSize, string> = {
   'x-large': '[&>svg]:size-[32px] [&>img]:size-[32px]',
 };
 
+const LOADER_ICON_SIZE: Record<ButtonSize, IconSize> = {
+  'x-small': 16,
+  small: 16,
+  medium: 24,
+  large: 24,
+  'x-large': 32,
+};
+
+const BUTTON_CONTENT_CLASS_NAMES: Record<ButtonSize, string> = {
+  'x-small': 'inline-flex items-center justify-center gap-[6px]',
+  small: 'inline-flex items-center justify-center gap-[8px]',
+  medium: 'inline-flex items-center justify-center gap-[8px]',
+  large: 'inline-flex items-center justify-center gap-[10px]',
+  'x-large': 'inline-flex items-center justify-center gap-[12px]',
+};
+
 const baseClassName = [
-  'inline-flex items-center justify-center',
+  'relative inline-flex items-center justify-center',
   'rounded-[length:var(--button-border-radius)]',
   'border border-[length:1px] border-[var(--button-border)]',
   "font-sans font-bold leading-none text-[length:var(--button-font-size)]",
@@ -304,18 +323,23 @@ export function Button({
   outline = false,
   size = 'medium',
   fullWidth = false,
+  loading = false,
   leftIcon,
   rightIcon,
   className = '',
   type = 'button',
   style,
+  disabled,
   ...buttonProps
 }: ButtonProps) {
   const iconSlotClassName = getIconSlotClassName(size);
+  const isDisabled = disabled || loading;
 
   return (
     <button
       type={type}
+      disabled={isDisabled}
+      aria-busy={loading || undefined}
       style={{
         ...getButtonStyles(variant, outline),
         '--button-font-size': BUTTON_FONT_SIZE_TOKENS[size],
@@ -332,9 +356,24 @@ export function Button({
         .join(' ')}
       {...buttonProps}
     >
-      {leftIcon ? <span className={iconSlotClassName}>{leftIcon}</span> : null}
-      <span className={[TEXT_TRIM_CLASS_NAME, 'min-w-0'].join(' ')}>{children}</span>
-      {rightIcon ? <span className={iconSlotClassName}>{rightIcon}</span> : null}
+      <span
+        className={[
+          BUTTON_CONTENT_CLASS_NAMES[size],
+          loading ? 'invisible' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        {leftIcon ? <span className={iconSlotClassName}>{leftIcon}</span> : null}
+        <span className={[TEXT_TRIM_CLASS_NAME, 'min-w-0'].join(' ')}>{children}</span>
+        {rightIcon ? <span className={iconSlotClassName}>{rightIcon}</span> : null}
+      </span>
+
+      {loading ? (
+        <span className="absolute inset-0 flex items-center justify-center">
+          <LoaderIcon size={LOADER_ICON_SIZE[size]} className="animate-spin" />
+        </span>
+      ) : null}
     </button>
   );
 }

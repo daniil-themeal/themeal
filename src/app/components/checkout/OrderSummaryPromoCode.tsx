@@ -27,20 +27,29 @@ export function OrderSummaryPromoCode() {
   const [draftCode, setDraftCode] = useState('');
   const [appliedCode, setAppliedCode] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [isActivating, setIsActivating] = useState(false);
 
-  const handleActivate = () => {
+  const handleActivate = async () => {
     const trimmedCode = draftCode.trim();
 
-    if (!trimmedCode) return;
+    if (!trimmedCode || isActivating) return;
 
-    if (!validatePromoCode(trimmedCode)) {
-      setError('Invalid promo code');
-      return;
+    setIsActivating(true);
+
+    try {
+      await new Promise((resolve) => window.setTimeout(resolve, 500));
+
+      if (!validatePromoCode(trimmedCode)) {
+        setError('Invalid promo code');
+        return;
+      }
+
+      setAppliedCode(trimmedCode.toUpperCase());
+      setError(null);
+      setView('applied');
+    } finally {
+      setIsActivating(false);
     }
-
-    setAppliedCode(trimmedCode.toUpperCase());
-    setError(null);
-    setView('applied');
   };
 
   const handleRemove = () => {
@@ -118,9 +127,10 @@ export function OrderSummaryPromoCode() {
             type="button"
             variant="neutral"
             size="medium"
+            loading={isActivating}
             disabled={!draftCode.trim()}
             className="w-full sm:w-[140px]"
-            onClick={handleActivate}
+            onClick={() => void handleActivate()}
           >
             Activate
           </Button>

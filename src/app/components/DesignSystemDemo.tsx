@@ -1831,6 +1831,10 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                     {capitalizeWord(variant)} Disabled
                   </Button>
 
+                  <Button variant={variant} fullWidth loading>
+                    {capitalizeWord(variant)} Loading
+                  </Button>
+
                   <Button variant={variant} outline fullWidth>
                     {capitalizeWord(variant)} Outline
                   </Button>

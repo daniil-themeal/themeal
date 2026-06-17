@@ -9,13 +9,9 @@ const PLANS: { id: Plan; label: string }[] = [
   { id: 'plus', label: 'Plus' },
 ];
 
-const LIGHT_OPTIONS: {
-  id: LightMealOption;
-  title: string;
-  subtitle: string;
-}[] = [
-  { id: 'breakfast-main', title: 'Breakfast', subtitle: '+ Main meal' },
-  { id: 'lunch-dinner', title: 'Lunch', subtitle: '+ Dinner' },
+const LIGHT_OPTIONS: { id: LightMealOption; label: string }[] = [
+  { id: 'breakfast-main', label: 'Breakfast + Main meal' },
+  { id: 'lunch-dinner', label: 'Lunch + Dinner' },
 ];
 
 type FullMenuDayPillCssVariables = CSSProperties & {
@@ -36,6 +32,7 @@ function PlanPill({
   pillSelectedStyle,
   label,
   ariaLabel,
+  compact = false,
 }: {
   selected: boolean;
   onClick: () => void;
@@ -43,7 +40,12 @@ function PlanPill({
   pillSelectedStyle: FullMenuDayPillCssVariables;
   label: string;
   ariaLabel: string;
+  compact?: boolean;
 }) {
+  const textClassName = compact
+    ? 'whitespace-nowrap font-sans text-[length:var(--full-menu-day-meta-font-size)] font-medium leading-none tracking-[-0.12px]'
+    : 'whitespace-nowrap font-sans text-[length:var(--full-menu-day-date-font-size)] font-bold leading-none tracking-[-0.16px]';
+
   return (
     <button
       type="button"
@@ -55,55 +57,11 @@ function PlanPill({
       style={selected ? pillSelectedStyle : pillDefaultStyle}
     >
       <p
-        className={`whitespace-nowrap font-sans text-[length:var(--full-menu-day-date-font-size)] font-bold leading-none tracking-[-0.16px] ${
+        className={`${textClassName} ${
           selected ? 'text-[var(--full-menu-title)]' : 'text-[var(--full-menu-muted)]'
         }`}
       >
         {label}
-      </p>
-    </button>
-  );
-}
-
-function LightOptionPill({
-  selected,
-  onClick,
-  pillDefaultStyle,
-  pillSelectedStyle,
-  title,
-  subtitle,
-}: {
-  selected: boolean;
-  onClick: () => void;
-  pillDefaultStyle: FullMenuDayPillCssVariables;
-  pillSelectedStyle: FullMenuDayPillCssVariables;
-  title: string;
-  subtitle: string;
-}) {
-  return (
-    <button
-      type="button"
-      role="tab"
-      aria-selected={selected}
-      aria-label={`${title} ${subtitle}`}
-      onClick={onClick}
-      className={PILL_CLASS_NAME}
-      style={selected ? pillSelectedStyle : pillDefaultStyle}
-    >
-      <p
-        className={`whitespace-nowrap font-sans text-[length:var(--full-menu-day-date-font-size)] font-bold leading-none tracking-[-0.16px] ${
-          selected ? 'text-[var(--full-menu-title)]' : 'text-[var(--full-menu-muted)]'
-        }`}
-      >
-        {title}
-      </p>
-
-      <p
-        className={`whitespace-nowrap font-sans text-[length:var(--full-menu-day-meta-font-size)] font-medium leading-none tracking-[-0.12px] ${
-          selected ? 'text-[var(--full-menu-title)]' : 'text-[var(--full-menu-muted)]'
-        }`}
-      >
-        {subtitle}
       </p>
     </button>
   );
@@ -150,14 +108,15 @@ export function FullMenuPlanToggle({
           />
 
           {LIGHT_OPTIONS.map((option) => (
-            <LightOptionPill
+            <PlanPill
               key={option.id}
               selected={lightMealOption === option.id}
               onClick={() => onLightMealOptionChange(option.id)}
               pillDefaultStyle={pillDefaultStyle}
               pillSelectedStyle={pillSelectedStyle}
-              title={option.title}
-              subtitle={option.subtitle}
+              label={option.label}
+              ariaLabel={option.label}
+              compact
             />
           ))}
         </>
