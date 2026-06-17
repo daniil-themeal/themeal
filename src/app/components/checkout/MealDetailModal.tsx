@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_28_32 } from './checkoutSpacing';
 import { ModalShell } from '../common/ModalShell';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { XIcon } from '../common/icons';
@@ -30,7 +31,7 @@ const mealDetailModalStyle: MealDetailModalCssVariables = {
   '--meal-detail-divider': COLOR_TOKENS.neutral[500],
   '--meal-detail-close-bg': COLOR_TOKENS.neutral[50],
   '--meal-detail-close-bg-hover': COLOR_TOKENS.neutral[75],
-  '--meal-detail-title-font-size': FONT_SIZE_TOKENS[32],
+  '--meal-detail-title-font-size': CHECKOUT_FONT_CLAMP_28_32,
   '--meal-detail-body-font-size': FONT_SIZE_TOKENS[16],
 };
 

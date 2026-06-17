@@ -4,6 +4,7 @@ import imgMeat from '../../../imports/CheckoutContainer-3/8e481e06f103e33b1c5333
 import imgShrimp from '../../../imports/CheckoutContainer-3/6264db5ca4b4084cd123428e1c871e85b6e699eb.png';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
 import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 const SVG_BAN =
@@ -33,7 +34,6 @@ type IngredientsBlockProps = {
 
 type IngredientsBlockCssVariables = CSSProperties & {
   '--ingredients-item-title-font-size': string;
-  '--ingredients-item-title-font-size-md': string;
   '--ingredients-item-description-font-size': string;
   '--ingredients-text': string;
   '--ingredients-muted': string;
@@ -47,8 +47,7 @@ type IngredientsBlockCssVariables = CSSProperties & {
 };
 
 const ingredientsBlockStyle: IngredientsBlockCssVariables = {
-  '--ingredients-item-title-font-size': FONT_SIZE_TOKENS[16],
-  '--ingredients-item-title-font-size-md': FONT_SIZE_TOKENS[20],
+  '--ingredients-item-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--ingredients-item-description-font-size': FONT_SIZE_TOKENS[14],
   '--ingredients-text': COLOR_TOKENS.neutral[900],
   '--ingredients-muted': COLOR_TOKENS.neutral[500],
@@ -135,7 +134,7 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
                       : 'text-[var(--ingredients-text)]',
                   ].join(' ')}
                 >
-                  <p className="font-sans text-[length:var(--ingredients-item-title-font-size)] font-bold leading-[130%] md:text-[length:var(--ingredients-item-title-font-size-md)]">
+                  <p className="font-sans text-[length:var(--ingredients-item-title-font-size)] font-bold leading-[130%]">
                     {item.label}
                   </p>
 

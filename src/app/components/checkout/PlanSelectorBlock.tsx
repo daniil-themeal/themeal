@@ -7,6 +7,7 @@ import type { BadgeVariant } from '../common/Badge';
 import { Chip } from '../common/Chip';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
 import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 const lightChipsByOption: Record<LightMealOption, string[]> = {
@@ -67,7 +68,6 @@ const plans = [
 
 type PlanSelectorBlockCssVariables = CSSProperties & {
   '--plan-selector-card-title-font-size': string;
-  '--plan-selector-card-title-font-size-md': string;
   '--plan-selector-card-meta-font-size': string;
   '--plan-selector-card-meta-font-size-md': string;
   '--plan-selector-radio-font-size': string;
@@ -86,8 +86,7 @@ type PlanSelectorBlockCssVariables = CSSProperties & {
 };
 
 const planSelectorBlockStyle: PlanSelectorBlockCssVariables = {
-  '--plan-selector-card-title-font-size': FONT_SIZE_TOKENS[16],
-  '--plan-selector-card-title-font-size-md': FONT_SIZE_TOKENS[20],
+  '--plan-selector-card-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--plan-selector-card-meta-font-size': FONT_SIZE_TOKENS[12],
   '--plan-selector-card-meta-font-size-md': FONT_SIZE_TOKENS[14],
   '--plan-selector-radio-font-size': FONT_SIZE_TOKENS[12],
@@ -142,7 +141,7 @@ function PlanCard({
           <div className="flex min-w-0 items-center gap-[4px]">
             <p
               className={[
-                "font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]",
+                "font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%]",
                 selected ? 'text-[var(--plan-selector-active)]' : 'text-[var(--plan-selector-text)]',
               ].join(' ')}
             >
@@ -151,7 +150,7 @@ function PlanCard({
 
             <p
               className={[
-                "whitespace-nowrap font-sans text-[length:var(--plan-selector-card-title-font-size)] font-medium leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]",
+                "whitespace-nowrap font-sans text-[length:var(--plan-selector-card-title-font-size)] font-medium leading-[130%]",
                 selected ? 'text-[var(--plan-selector-active)]' : 'text-[var(--plan-selector-text)]',
               ].join(' ')}
             >
@@ -164,7 +163,7 @@ function PlanCard({
               from
             </p>
 
-            <p className="whitespace-nowrap text-left font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]">
+            <p className="whitespace-nowrap text-left font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%]">
               {plan.pricePerDay}/day
             </p>
           </div>

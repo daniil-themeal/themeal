@@ -8,6 +8,7 @@ import {
   CHECKOUT_STEP_PAGE_LAYOUT,
   CHECKOUT_STEP_PAGE_VARS,
 } from './checkoutStepPageLayoutTokens';
+import { CHECKOUT_FONT_CLAMP_25_31 } from './checkoutSpacing';
 import type { PaymentResultTab } from './PaymentResultHeader';
 import { PaymentResultHeader } from './PaymentResultHeader';
 import { MealCalendarPreview } from './MealCalendar';
@@ -141,7 +142,11 @@ export function PaymentSuccessScreen({
   return (
     <div
       className={CHECKOUT_STEP_PAGE_LAYOUT.page}
-      style={{ ...CHECKOUT_STEP_PAGE_VARS, ...successContactSectionStyle }}
+      style={{
+        ...CHECKOUT_STEP_PAGE_VARS,
+        ...successContactSectionStyle,
+        '--checkout-success-rules-title-fs': CHECKOUT_FONT_CLAMP_25_31,
+      }}
     >
       <PaymentResultHeader activeTab="success" onTabChange={onTabChange} onClose={onClose} />
 
@@ -182,11 +187,11 @@ export function PaymentSuccessScreen({
             className={CHECKOUT_STEP_PAGE_LAYOUT.divider}
           />
 
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionTop}>
+          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionBottom}>
             <h2
               className={[
                 TEXT_TRIM_CLASS_NAME,
-                'w-full text-center font-sans text-[31px] font-bold leading-[130%]',
+                'w-full text-center font-sans text-[length:var(--checkout-success-rules-title-fs)] font-bold leading-[130%]',
               ].join(' ')}
               style={{ color: COLOR_TOKENS.neutral[800] }}
             >

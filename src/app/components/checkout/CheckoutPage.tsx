@@ -31,9 +31,22 @@ import { useModalShell } from '../common/ModalShell';
 import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { formatUaePhoneInput, normalizeUaePhone, validateUaePhone } from './phoneValidation';
+import { isValidTestSmsCode, SMS_CODE_ERROR } from './smsCodeValidation';
 
-type CheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment' | 'success' | 'failed';
+type CheckoutFlowStep = 'plan' | 'verification' | 'delivery' | 'payment';
+type CheckoutStep = CheckoutFlowStep | 'success' | 'failed';
 type DeliveryStep = 'address' | 'details';
+
+function resolveInitialCheckoutState(step: CheckoutStep): {
+  flowStep: CheckoutFlowStep;
+  resultOverlay: PaymentResultTab | null;
+} {
+  if (step === 'success' || step === 'failed') {
+    return { flowStep: 'payment', resultOverlay: step };
+  }
+
+  return { flowStep: step, resultOverlay: null };
+}
 
 type CheckoutPageProps = {
   isOpen: boolean;
@@ -127,7 +140,12 @@ export function CheckoutPage({
     handlePanelAnimationEnd,
   } = useModalShell(onClose);
 
-  const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>(initialCheckoutStep);
+  const initialState = resolveInitialCheckoutState(initialCheckoutStep);
+
+  const [checkoutStep, setCheckoutStep] = useState<CheckoutFlowStep>(initialState.flowStep);
+  const [resultOverlay, setResultOverlay] = useState<PaymentResultTab | null>(
+    initialState.resultOverlay,
+  );
   const [deliveryStep, setDeliveryStep] = useState<DeliveryStep>(initialDeliveryStep);
   const [isPhoneVerified, setIsPhoneVerified] = useState(
     initialIsVerified || sessionIsVerified,
@@ -149,11 +167,14 @@ export function CheckoutPage({
   );
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState<string | undefined>();
+  const [smsError, setSmsError] = useState<string | undefined>();
+  const [appliedPromoCode, setAppliedPromoCode] = useState('');
 
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
   const totalMealsRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
+  const resultBodyRef = useRef<HTMLDivElement>(null);
 
   const headerStep =
     checkoutStep === 'plan'
@@ -179,7 +200,7 @@ export function CheckoutPage({
         mergePhoneSession(null, {
           phone: normalized || patch.phone || '',
           isVerified,
-          checkoutStep: patch.checkoutStep ?? (checkoutStep === 'success' || checkoutStep === 'failed' ? 'payment' : checkoutStep),
+          checkoutStep: patch.checkoutStep ?? checkoutStep,
           deliveryStep: patch.deliveryStep ?? deliveryStep,
         }),
       );
@@ -191,17 +212,19 @@ export function CheckoutPage({
     if (isOpen) {
       resetCloseState();
       document.body.style.overflow = 'hidden';
-      setCheckoutStep(initialCheckoutStep);
+      const nextState = resolveInitialCheckoutState(initialCheckoutStep);
+      setCheckoutStep(nextState.flowStep);
+      setResultOverlay(nextState.resultOverlay);
       setDeliveryStep(initialDeliveryStep);
       setIsPhoneVerified(initialIsVerified || sessionIsVerified);
       setMenuOpen(false);
-      setSummaryVisible(initialCheckoutStep !== 'plan');
+      setSummaryVisible(nextState.flowStep !== 'plan');
       setPhoneError(undefined);
 
       const digits = phoneDigitsFromInitial(initialPhone);
       if (digits) {
         setPhone(formatUaePhoneInput(digits));
-      } else if (initialCheckoutStep === 'plan' && !initialIsVerified && !sessionIsVerified) {
+      } else if (nextState.flowStep === 'plan' && !initialIsVerified && !sessionIsVerified) {
         setPhone('');
       }
 
@@ -209,7 +232,9 @@ export function CheckoutPage({
     }
 
     document.body.style.overflow = '';
-    setCheckoutStep(initialCheckoutStep);
+    const resetState = resolveInitialCheckoutState(initialCheckoutStep);
+    setCheckoutStep(resetState.flowStep);
+    setResultOverlay(resetState.resultOverlay);
     setDeliveryStep(initialDeliveryStep);
     setMenuOpen(false);
     setSummaryVisible(false);
@@ -253,6 +278,15 @@ export function CheckoutPage({
 
   const scrollBodyToTop = (behavior: ScrollBehavior = 'auto') => {
     bodyRef.current?.scrollTo({ top: 0, behavior });
+  };
+
+  const scrollResultToTop = (behavior: ScrollBehavior = 'auto') => {
+    resultBodyRef.current?.scrollTo({ top: 0, behavior });
+  };
+
+  const handleDismissResultOverlay = () => {
+    setResultOverlay(null);
+    scrollBodyToTop();
   };
 
   const handlePhoneChange = (value: string) => {
@@ -339,6 +373,22 @@ export function CheckoutPage({
     scrollBodyToTop();
   };
 
+  const handleSmsCodeComplete = (code: string) => {
+    if (!isValidTestSmsCode(code)) {
+      setSmsError(SMS_CODE_ERROR);
+      return;
+    }
+
+    setSmsError(undefined);
+    handleSmsContinue();
+  };
+
+  const handleSmsCodeChange = (_code: string) => {
+    if (smsError) {
+      setSmsError(undefined);
+    }
+  };
+
   const handleAddressContinue = () => {
     if (!selectedAddress) return;
 
@@ -361,8 +411,8 @@ export function CheckoutPage({
   };
 
   const handlePay = () => {
-    setCheckoutStep('success');
-    scrollBodyToTop();
+    setResultOverlay('success');
+    scrollResultToTop();
   };
 
   const handleGoToMain = () => {
@@ -370,11 +420,12 @@ export function CheckoutPage({
   };
 
   const handleResultTabChange = (tab: PaymentResultTab) => {
-    setCheckoutStep(tab);
-    scrollBodyToTop();
+    setResultOverlay(tab);
+    scrollResultToTop();
   };
 
   const handleReturnToPayment = () => {
+    setResultOverlay(null);
     setCheckoutStep('payment');
     persistSession({ checkoutStep: 'payment' });
     scrollBodyToTop();
@@ -474,8 +525,8 @@ export function CheckoutPage({
 
   const handleEscapeRef = useRef<() => void>(() => {});
   handleEscapeRef.current = () => {
-    if (checkoutStep === 'success' || checkoutStep === 'failed') {
-      requestClose();
+    if (resultOverlay) {
+      handleDismissResultOverlay();
       return;
     }
 
@@ -503,15 +554,14 @@ export function CheckoutPage({
       {...{ [SPACING_ROOT_ATTR]: '' }}
       onAnimationEnd={handlePanelAnimationEnd}
     >
-      {checkoutStep !== 'success' && checkoutStep !== 'failed' ? (
-        <CheckoutHeader
-          step={headerStep}
-          onBack={handleBack}
-          onClose={requestClose}
-          onStepSelect={handleStepSelect}
-          onLogoClick={() => scrollBodyToTop('smooth')}
-        />
-      ) : null}
+      <CheckoutHeader
+        step={headerStep}
+        onBack={handleBack}
+        onClose={requestClose}
+        onStepSelect={handleStepSelect}
+        onLogoClick={() => scrollBodyToTop('smooth')}
+        onResultSelect={handleResultTabChange}
+      />
 
       {checkoutStep === 'plan' ? (
         <>
@@ -569,6 +619,8 @@ export function CheckoutPage({
                   isPhoneVerified={isAuthComplete}
                   onResetPhone={handleResetPhone}
                   totalMealsAnchorRef={totalMealsRef}
+                  appliedPromoCode={appliedPromoCode}
+                  onAppliedPromoCodeChange={setAppliedPromoCode}
                 />
               </div>
             </div>
@@ -598,14 +650,16 @@ export function CheckoutPage({
           <SmsCodeScreen
             phone={phone}
             onPhoneChange={handlePhoneChange}
+            error={smsError}
             onChangeNumber={() => {
               setCheckoutStep('plan');
               setMenuOpen(false);
               setSummaryVisible(false);
+              setSmsError(undefined);
               persistSession({ checkoutStep: 'plan' });
             }}
-            onContinue={handleSmsContinue}
-            onCodeComplete={() => {}}
+            onCodeChange={handleSmsCodeChange}
+            onCodeComplete={handleSmsCodeComplete}
           />
         </div>
       ) : checkoutStep === 'delivery' && deliveryStep === 'address' ? (
@@ -642,29 +696,46 @@ export function CheckoutPage({
             onEditPlan={handleEditPlan}
             onEditDelivery={handleEditDelivery}
             onPay={handlePay}
+            appliedPromoCode={appliedPromoCode}
+            onAppliedPromoCodeChange={setAppliedPromoCode}
           />
         </div>
-      ) : checkoutStep === 'success' ? (
-        <div ref={bodyRef} className={checkoutStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
-          <PaymentSuccessScreen
-            days={days}
-            duration={duration}
-            startDate={deliveryDetails.selectedDate}
-            onClose={requestClose}
-            onTabChange={handleResultTabChange}
-            onGoToMain={handleGoToMain}
+      ) : null}
+
+      {resultOverlay ? (
+        <div className="absolute inset-0 z-10 flex flex-col">
+          <button
+            type="button"
+            className="absolute inset-0 bg-black/40"
+            onClick={handleDismissResultOverlay}
+            aria-label="Close payment result"
           />
+
+          <div
+            ref={resultBodyRef}
+            className="relative flex flex-1 flex-col overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide modal-enter-responsive"
+            {...{ [SPACING_CONTENT_ATTR]: '' }}
+          >
+            {resultOverlay === 'success' ? (
+              <PaymentSuccessScreen
+                days={days}
+                duration={duration}
+                startDate={deliveryDetails.selectedDate}
+                onClose={handleDismissResultOverlay}
+                onTabChange={handleResultTabChange}
+                onGoToMain={handleGoToMain}
+              />
+            ) : (
+              <PaymentFailedScreen
+                onClose={handleDismissResultOverlay}
+                onTabChange={handleResultTabChange}
+                onRepeatPayment={handleReturnToPayment}
+                onChangePaymentMethod={handleReturnToPayment}
+              />
+            )}
+          </div>
         </div>
-      ) : (
-        <div ref={bodyRef} className={checkoutStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
-          <PaymentFailedScreen
-            onClose={requestClose}
-            onTabChange={handleResultTabChange}
-            onRepeatPayment={handleReturnToPayment}
-            onChangePaymentMethod={handleReturnToPayment}
-          />
-        </div>
-      )}
+      ) : null}
     </div>
   );
 }

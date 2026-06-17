@@ -5,9 +5,14 @@ import { iconSizeClassName } from './iconSize';
 type RadioCheckIconProps = {
   size?: IconSize;
   className?: string;
+  checkColor?: string;
 };
 
-export function RadioCheckIcon({ size = 20, className = '' }: RadioCheckIconProps) {
+export function RadioCheckIcon({
+  size = 20,
+  className = '',
+  checkColor = COLOR_TOKENS.base.white,
+}: RadioCheckIconProps) {
   return (
     <svg
       className={[iconSizeClassName[size], className].filter(Boolean).join(' ')}
@@ -18,7 +23,7 @@ export function RadioCheckIcon({ size = 20, className = '' }: RadioCheckIconProp
       <circle cx="10" cy="10" r="10" fill="currentColor" />
       <path
         d="M5.5 10.5L8.5 13.5L14.5 7.5"
-        stroke={COLOR_TOKENS.base.white}
+        stroke={checkColor}
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1.6"

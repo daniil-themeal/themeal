@@ -203,7 +203,7 @@ export function DeliveryDetailsScreen({
 
           <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionBottom}>
             <div
-              className="flex flex-col gap-[24px] md:flex-row md:gap-[16px]"
+              className="flex flex-col gap-[24px] sm:flex-row sm:gap-[16px]"
               style={getFieldSizeStyle('large')}
             >
               <Dropdown
@@ -220,7 +220,7 @@ export function DeliveryDetailsScreen({
                 containerClassName="min-w-0 flex-1"
               />
 
-              <div className="flex shrink-0 items-center md:mt-[22px] md:h-[length:var(--field-height)]">
+              <div className="flex shrink-0 items-center sm:mt-[22px] sm:h-[length:var(--field-height)]">
                 <Checkbox
                   id="leave-at-door"
                   checked={deliveryDetails.leaveAtDoor}

@@ -336,6 +336,12 @@ export function getTotalMeals({
   return pricingTable[duration][days][plan].paidDays * PLAN_MEALS_COUNT[plan] * persons;
 }
 
+export function getFinalPeriodPrice(periodPrice: number, promoDiscount: number | null) {
+  if (promoDiscount === null) return periodPrice;
+
+  return Math.max(0, periodPrice - promoDiscount);
+}
+
 export function formatAed(value: number) {
   return Math.round(value).toString();
 }

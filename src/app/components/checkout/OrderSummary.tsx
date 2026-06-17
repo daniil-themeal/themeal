@@ -4,10 +4,12 @@ import { createPortal } from 'react-dom';
 
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { Button } from '../common/Button';
+import { IconButton } from '../common/IconButton';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
 import { PhoneInput } from '../common/PhoneInput';
 import { TempPhoneResetButton } from '../common/TempPhoneResetButton';
 import { COLOR_TOKENS } from '../common/colorTokens';
+import { Divider } from '../common/Divider';
 import { CHECKOUT_ANIMATION_DURATION_MS, easeInOutCubic } from '../common/easing';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import {
@@ -25,16 +27,20 @@ import type { Meal as MealDetail } from '../../types/meal';
 import {
   DEFAULT_CHECKOUT_PRICING,
   getCheckoutPrice,
+  getFinalPeriodPrice,
   getTotalMeals,
   type CheckoutPricingTable,
   type DayOption,
   type Duration,
   type Plan,
 } from '../../data/checkoutPricing';
+import { getPromoCodeDiscount } from '../../config/promoCodes';
 import { MealDetailModal } from './MealDetailModal';
-import { OrderSummaryPromoCode } from './OrderSummaryPromoCode';
+import { CheckoutPromoCode } from './CheckoutPromoCode';
+import { MinusIcon, PlusIcon } from '../common/icons';
 import { TabbyPromoWidget } from './TabbyPromoWidget';
-import { CHECKOUT_CARD_PADDING_CLAMP } from './checkoutSpacing';
+import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_FONT_CLAMP_16_20, CHECKOUT_SECTION_GAP_CLAMP } from './checkoutSpacing';
+import { CHECKOUT_DIVIDER_BLEED } from './checkoutStepPageLayoutTokens';
 
 function getMaxScrollLeft(element: HTMLElement) {
   return Math.max(0, element.scrollWidth - element.clientWidth);
@@ -78,8 +84,6 @@ function waitForNextFrame(): Promise<void> {
   });
 }
 
-const SVG_PLUS = 'M6.83333 1V12.6667M1 6.83333H12.6667';
-
 type OrderSummaryCssVariables = CSSProperties & {
   '--checkout-card-padding': string;
   '--order-summary-bg': string;
@@ -88,13 +92,8 @@ type OrderSummaryCssVariables = CSSProperties & {
   '--order-summary-subtle': string;
   '--order-summary-primary': string;
   '--order-summary-divider': string;
-  '--order-summary-field-bg': string;
-  '--order-summary-field-bg-hover': string;
-  '--order-summary-field-bg-active': string;
-  '--order-summary-control-icon': string;
   '--order-summary-section-label-font-size': string;
   '--order-summary-title-font-size': string;
-  '--order-summary-title-font-size-md': string;
   '--order-summary-body-font-size': string;
   '--order-summary-small-font-size': string;
   '--order-summary-price-font-size': string;
@@ -109,25 +108,17 @@ const orderSummaryStyle: OrderSummaryCssVariables = {
   '--order-summary-subtle': COLOR_TOKENS.neutral[300],
   '--order-summary-primary': COLOR_TOKENS.primary[500],
   '--order-summary-divider': COLOR_TOKENS.neutral[100],
-  '--order-summary-field-bg': COLOR_TOKENS.neutral[50],
-  '--order-summary-field-bg-hover': COLOR_TOKENS.neutral[100],
-  '--order-summary-field-bg-active': COLOR_TOKENS.neutral[200],
-  '--order-summary-control-icon': COLOR_TOKENS.neutral[500],
   '--order-summary-section-label-font-size': FONT_SIZE_TOKENS[12],
-  '--order-summary-title-font-size': FONT_SIZE_TOKENS[16],
-  '--order-summary-title-font-size-md': FONT_SIZE_TOKENS[20],
+  '--order-summary-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--order-summary-body-font-size': FONT_SIZE_TOKENS[14],
   '--order-summary-small-font-size': FONT_SIZE_TOKENS[12],
   '--order-summary-price-font-size': FONT_SIZE_TOKENS[20],
-  '--order-summary-section-gap': 'clamp(20px, calc(20px + (100vw - 20rem) * 4 / 448), 24px)',
+  '--order-summary-section-gap': CHECKOUT_SECTION_GAP_CLAMP,
 };
 
-function Divider() {
-  return <div className="h-px bg-[var(--order-summary-divider)]" />;
-}
+const orderSummarySectionPx = 'md:px-[length:var(--checkout-card-padding)] max-md:px-0';
 
-const personControlButtonClassName =
-  'flex h-[40px] cursor-pointer items-center justify-center rounded-full bg-[var(--order-summary-field-bg)] px-[12px] transition-colors duration-150 hover:bg-[var(--order-summary-field-bg-hover)] active:bg-[var(--order-summary-field-bg-active)]';
+const orderSummaryDividerClassName = `my-[length:var(--order-summary-section-gap)] ${CHECKOUT_DIVIDER_BLEED}`;
 
 export function OrderSummary({
   plan,
@@ -146,6 +137,8 @@ export function OrderSummary({
   onResetPhone,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
   totalMealsAnchorRef,
+  appliedPromoCode = '',
+  onAppliedPromoCodeChange,
 }: {
   plan: Plan;
   days: DayOption;
@@ -163,6 +156,8 @@ export function OrderSummary({
   onResetPhone?: () => void;
   pricingTable?: CheckoutPricingTable;
   totalMealsAnchorRef?: RefObject<HTMLDivElement | null>;
+  appliedPromoCode?: string;
+  onAppliedPromoCodeChange?: (code: string) => void;
 }) {
   const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
   const [visibleMeals, setVisibleMeals] = useState<MealDetail[]>(() =>
@@ -177,6 +172,8 @@ export function OrderSummary({
 
   const pricing = getCheckoutPrice({ pricingTable, plan, days, duration, persons });
   const mealsCount = getTotalMeals({ pricingTable, plan, days, duration, persons });
+  const promoDiscount = appliedPromoCode ? getPromoCodeDiscount(appliedPromoCode) : null;
+  const finalPeriodPrice = getFinalPeriodPrice(pricing.periodPrice, promoDiscount);
   const previewMeals = useMemo(
     () => getMealsForPlan(testMenuDays[0], plan, lightMealOption),
     [plan, lightMealOption],
@@ -243,35 +240,49 @@ export function OrderSummary({
   return (
     <>
       <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none md:pt-[56px]" style={orderSummaryStyle}>
-        <div className="rounded-[16px] bg-[var(--order-summary-bg)] py-[28px]">
-          <div className="flex flex-col gap-[var(--order-summary-section-gap)]">
-            <div className="px-[length:var(--checkout-card-padding)]">
+        <div className="rounded-[16px] bg-[var(--order-summary-bg)] py-[28px] max-md:px-[length:var(--checkout-card-padding)]">
+          <div className="flex flex-col">
+            <div className={orderSummarySectionPx}>
               <PlanTariffSummary title={getPlanTariffTitle(plan)} chips={planTariffChips} />
             </div>
 
-            <Divider />
+            <Divider color="var(--order-summary-divider)" className={orderSummaryDividerClassName} />
 
-            <div className="flex items-center gap-[8px] px-[length:var(--checkout-card-padding)]">
-              <p className="flex-[1_0_0] font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">How many people?</p>
+            <div className={['flex items-center gap-[8px]', orderSummarySectionPx].join(' ')}>
+              <p className="flex-[1_0_0] font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">How many people?</p>
 
               <div className="flex items-center gap-[16px]">
-                <button type="button" onClick={() => onPersonsChange(Math.max(1, persons - 1))} className={personControlButtonClassName} aria-label="Decrease people count">
-                  <svg width="14" height="2" viewBox="0 0 14 2" fill="none"><path d="M1 1H13" stroke="var(--order-summary-control-icon)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" /></svg>
-                </button>
+                <IconButton
+                  type="button"
+                  variant="neutral"
+                  size="small"
+                  aria-label="Decrease people count"
+                  icon={<MinusIcon size={16} />}
+                  onClick={() => onPersonsChange(Math.max(1, persons - 1))}
+                  className="!rounded-full"
+                  style={{ '--button-border-radius': '9999px' }}
+                />
                 <p className="w-[16px] text-center font-sans text-[length:var(--order-summary-title-font-size)] font-semibold text-[var(--order-summary-text)]">
                   <AnimatedNumber value={persons} />
                 </p>
-                <button type="button" onClick={() => onPersonsChange(persons + 1)} className={personControlButtonClassName} aria-label="Increase people count">
-                  <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d={SVG_PLUS} stroke="var(--order-summary-control-icon)" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" /></svg>
-                </button>
+                <IconButton
+                  type="button"
+                  variant="neutral"
+                  size="small"
+                  aria-label="Increase people count"
+                  icon={<PlusIcon size={16} />}
+                  onClick={() => onPersonsChange(persons + 1)}
+                  className="!rounded-full"
+                  style={{ '--button-border-radius': '9999px' }}
+                />
               </div>
             </div>
 
-            <Divider />
+            <Divider color="var(--order-summary-divider)" className={orderSummaryDividerClassName} />
 
             <div className="flex flex-col gap-[16px]">
-              <div className="flex items-center justify-between gap-[16px] px-[length:var(--checkout-card-padding)]">
-                <p className="font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">What you'll eat</p>
+              <div className={['flex items-center justify-between gap-[16px]', orderSummarySectionPx].join(' ')}>
+                <p className="font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">What you'll eat</p>
                 <TextLink size="12" onClick={onOpenMenu}>
                   View full menu
                 </TextLink>
@@ -280,7 +291,10 @@ export function OrderSummary({
               <div className="relative">
                 <div
                   ref={mealsScrollRef}
-                  className="flex cursor-grab select-none gap-[16px] overflow-x-auto overflow-y-visible py-0 px-[length:var(--checkout-card-padding)] scrollbar-hide active:cursor-grabbing"
+                  className={[
+                    'flex cursor-grab select-none gap-[16px] overflow-x-auto overflow-y-visible py-0 scrollbar-hide active:cursor-grabbing',
+                    orderSummarySectionPx,
+                  ].join(' ')}
                   onMouseDown={(event) => {
                     const el = event.currentTarget;
                     const startX = event.pageX - el.offsetLeft;
@@ -334,36 +348,44 @@ export function OrderSummary({
               </div>
             </div>
 
-            <Divider />
+            <Divider color="var(--order-summary-divider)" className={orderSummaryDividerClassName} />
 
             <div
               ref={totalMealsAnchorRef}
-              className="flex scroll-mt-4 scroll-mb-[72px] items-center gap-[16px] px-[length:var(--checkout-card-padding)]"
+              className={[
+                'flex scroll-mt-4 scroll-mb-[72px] items-center gap-[16px]',
+                orderSummarySectionPx,
+              ].join(' ')}
             >
-              <p className="flex-[1_0_0] whitespace-nowrap font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">Total meals <span className="font-medium">(over <AnimatedNumber value={pricing.paidDays} /> days)</span></p>
+              <p className="flex-[1_0_0] whitespace-nowrap font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">Total meals <span className="font-medium">(over <AnimatedNumber value={pricing.paidDays} /> days)</span></p>
               <div className="h-[4px] flex-[1_0_0]" />
-              <p className="text-center font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[150%] text-[var(--order-summary-text)] md:text-[length:var(--order-summary-title-font-size-md)]">
+              <p className="text-center font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[150%] text-[var(--order-summary-text)]">
                 <AnimatedNumber value={mealsCount} />
               </p>
             </div>
 
-            <Divider />
+            <Divider color="var(--order-summary-divider)" className={orderSummaryDividerClassName} />
 
-            <div className="px-[length:var(--checkout-card-padding)]">
-              <OrderSummaryPromoCode />
+            <div className={orderSummarySectionPx}>
+              <CheckoutPromoCode
+                variant="summary"
+                inputId="order-summary-promo-code"
+                appliedCode={appliedPromoCode}
+                onAppliedCodeChange={onAppliedPromoCodeChange ?? (() => {})}
+              />
             </div>
 
-            <Divider />
+            <Divider color="var(--order-summary-divider)" className={orderSummaryDividerClassName} />
 
-            <div className="h-fit w-full px-[length:var(--checkout-card-padding)]">
+            <div className={['h-fit w-full', orderSummarySectionPx].join(' ')}>
               <CheckoutTodayTotal
                 oldPeriodPrice={pricing.oldPeriodPrice}
-                periodPrice={pricing.periodPrice}
+                periodPrice={finalPeriodPrice}
                 pricePerDay={pricing.pricePerDay}
               />
             </div>
 
-            <div className="flex flex-col gap-[12px] px-[length:var(--checkout-card-padding)]">
+            <div className={['mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[12px]', orderSummarySectionPx].join(' ')}>
               {!isPhoneVerified ? (
                 <PhoneInput
                   id="order-summary-phone"
@@ -388,7 +410,7 @@ export function OrderSummary({
         </div>
 
         <TabbyPromoWidget
-          price={pricing.periodPrice}
+          price={finalPeriodPrice}
           pricePerMonth={pricing.pricePerMonth}
           source="cart"
         />

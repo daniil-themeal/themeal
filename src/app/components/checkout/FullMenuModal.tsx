@@ -6,6 +6,10 @@ import type { Plan } from '../../data/checkoutPricing';
 import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import {
+  CHECKOUT_FONT_CLAMP_14_16,
+  CHECKOUT_FONT_CLAMP_20_25,
+} from './checkoutSpacing';
 import { ModalShell } from '../common/ModalShell';
 import { SPACING_CONTENT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
@@ -59,12 +63,10 @@ type FullMenuModalCssVariables = CSSProperties & {
   '--full-menu-close-bg': string;
   '--full-menu-close-bg-hover': string;
   '--full-menu-heading-font-size': string;
-  '--full-menu-heading-font-size-md': string;
   '--full-menu-day-date-font-size': string;
   '--full-menu-day-meta-font-size': string;
   '--full-menu-meal-meta-font-size': string;
   '--full-menu-meal-title-font-size': string;
-  '--full-menu-meal-title-font-size-md': string;
 };
 
 const fullMenuModalStyle: FullMenuModalCssVariables = {
@@ -77,13 +79,11 @@ const fullMenuModalStyle: FullMenuModalCssVariables = {
   '--full-menu-active-muted': COLOR_TOKENS.primary[400],
   '--full-menu-close-bg': COLOR_TOKENS.neutral[50],
   '--full-menu-close-bg-hover': COLOR_TOKENS.neutral[75],
-  '--full-menu-heading-font-size': FONT_SIZE_TOKENS[20],
-  '--full-menu-heading-font-size-md': FONT_SIZE_TOKENS[25],
+  '--full-menu-heading-font-size': CHECKOUT_FONT_CLAMP_20_25,
   '--full-menu-day-date-font-size': FONT_SIZE_TOKENS[16],
   '--full-menu-day-meta-font-size': FONT_SIZE_TOKENS[12],
   '--full-menu-meal-meta-font-size': FONT_SIZE_TOKENS[12],
-  '--full-menu-meal-title-font-size': FONT_SIZE_TOKENS[14],
-  '--full-menu-meal-title-font-size-md': FONT_SIZE_TOKENS[16],
+  '--full-menu-meal-title-font-size': CHECKOUT_FONT_CLAMP_14_16,
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -365,7 +365,7 @@ export function FullMenuModal({
             </style>
 
             <div className="flex h-[56px] shrink-0 items-center gap-[8px] border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
-              <p className="shrink-0 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px] md:text-[length:var(--full-menu-heading-font-size-md)]">
+              <p className="shrink-0 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px]">
                 Full menu
               </p>
 
@@ -539,7 +539,7 @@ export function FullMenuModal({
                     <p
                       className={[
                         TEXT_TRIM_CLASS_NAME,
-                        'w-[150px] font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)] md:w-[160px] md:text-[length:var(--full-menu-meal-title-font-size-md)]',
+                        'w-[150px] font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)] md:w-[160px]',
                       ].join(' ')}
                     >
                       {meal.name}

@@ -1,7 +1,10 @@
 import type { CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from '../common/colorTokens';
-import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import {
+  CHECKOUT_FONT_CLAMP_12_14,
+  CHECKOUT_FONT_CLAMP_20_25,
+} from './checkoutSpacing';
 
 export const CHECKOUT_SECTION_HEADER_LAYOUT = {
   wrapper: 'flex w-full flex-col px-[4px]',
@@ -11,17 +14,13 @@ export const CHECKOUT_SECTION_HEADER_LAYOUT = {
 
 type CheckoutSectionHeaderCssVariables = CSSProperties & {
   '--checkout-section-title-font-size': string;
-  '--checkout-section-title-font-size-md': string;
   '--checkout-section-subtitle-font-size': string;
-  '--checkout-section-subtitle-font-size-md': string;
   '--checkout-section-text': string;
 };
 
 const checkoutSectionHeaderStyle: CheckoutSectionHeaderCssVariables = {
-  '--checkout-section-title-font-size': FONT_SIZE_TOKENS[20],
-  '--checkout-section-title-font-size-md': FONT_SIZE_TOKENS[25],
-  '--checkout-section-subtitle-font-size': FONT_SIZE_TOKENS[12],
-  '--checkout-section-subtitle-font-size-md': FONT_SIZE_TOKENS[14],
+  '--checkout-section-title-font-size': CHECKOUT_FONT_CLAMP_20_25,
+  '--checkout-section-subtitle-font-size': CHECKOUT_FONT_CLAMP_12_14,
   '--checkout-section-text': COLOR_TOKENS.neutral[900],
 };
 
@@ -46,7 +45,7 @@ export function CheckoutSectionHeader({
         : '';
 
   const titleClassName =
-    'font-sans text-[length:var(--checkout-section-title-font-size)] font-bold leading-[130%] text-[var(--checkout-section-text)] md:text-[length:var(--checkout-section-title-font-size-md)]';
+    'font-sans text-[length:var(--checkout-section-title-font-size)] font-bold leading-[130%] text-[var(--checkout-section-text)]';
 
   return (
     <div
@@ -58,7 +57,7 @@ export function CheckoutSectionHeader({
       <p className={titleClassName}>{title}</p>
 
       {subtitle ? (
-        <p className="font-sans text-[length:var(--checkout-section-subtitle-font-size)] font-medium leading-[130%] text-[var(--checkout-section-text)] md:text-[length:var(--checkout-section-subtitle-font-size-md)]">
+        <p className="font-sans text-[length:var(--checkout-section-subtitle-font-size)] font-medium leading-[130%] text-[var(--checkout-section-text)]">
           {subtitle}
         </p>
       ) : null}

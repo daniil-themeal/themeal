@@ -87,19 +87,34 @@ export default function App() {
     openCheckoutAt('plan', 'address');
   }, [openCheckoutAt, openCheckoutResume, phoneSession]);
 
-  const openCheckoutFromWhatsApp = useCallback(
+  const handleLeadPhoneSubmit = useCallback(
     (phone: string) => {
       const next = mergePhoneSession(phoneSession, {
         phone,
         isVerified: false,
-        checkoutStep: 'verification',
+        checkoutStep: 'plan',
         deliveryStep: 'address',
       });
       handleSessionUpdate(next);
-      openCheckoutAt('verification', 'address', phone, false);
     },
-    [handleSessionUpdate, openCheckoutAt, phoneSession],
+    [handleSessionUpdate, phoneSession],
   );
+
+  const handleLeadSmsVerified = useCallback(
+    (phone: string) => {
+      const next = mergePhoneSession(phoneSession, {
+        phone,
+        isVerified: true,
+        checkoutStep: 'plan',
+        deliveryStep: 'address',
+      });
+      handleSessionUpdate(next);
+    },
+    [handleSessionUpdate, phoneSession],
+  );
+
+  const pendingPhone =
+    phoneSession && !phoneSession.isVerified ? phoneSession.phone : undefined;
 
   const resetPhoneSession = useCallback((options?: { closeCheckout?: boolean }) => {
     clearPhoneSession();
@@ -133,14 +148,17 @@ export default function App() {
     <>
       <LandingStasPage
         onOrderClick={openCheckout}
-        onWhatsAppClick={openCheckoutFromWhatsApp}
+        onPhoneSubmit={handleLeadPhoneSubmit}
+        onSmsVerified={handleLeadSmsVerified}
         onContinueClick={openCheckoutResume}
         onResetPhone={resetPhoneSession}
         onDesignSystemClick={openDesignSystem}
         checkoutOpen={checkoutOpen}
         isPhoneVerified={phoneSession?.isVerified ?? false}
+        pendingPhone={pendingPhone}
       />
 
+      {/* BACKLOG: full-page checkout вместо overlay — docs/backlog/checkout-fullpage.md */}
       <CheckoutPage
         isOpen={checkoutOpen}
         onClose={closeCheckout}

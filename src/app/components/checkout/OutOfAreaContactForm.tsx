@@ -4,6 +4,7 @@ import type { CSSProperties } from 'react';
 import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_18_20 } from './checkoutSpacing';
 import { ModalShell } from '../common/ModalShell';
 import { TextInput } from '../common/TextInput';
 
@@ -32,7 +33,7 @@ const outOfAreaContactStyle: OutOfAreaContactCssVariables = {
   '--out-of-area-text': COLOR_TOKENS.neutral[900],
   '--out-of-area-handle-bg': COLOR_TOKENS.neutral[100],
   '--out-of-area-notice-font-size': FONT_SIZE_TOKENS[16],
-  '--out-of-area-title-font-size': FONT_SIZE_TOKENS[20],
+  '--out-of-area-title-font-size': CHECKOUT_FONT_CLAMP_18_20,
 };
 
 export function OutOfAreaContactNotice({

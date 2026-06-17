@@ -25,6 +25,7 @@ import { AnimatedNumber } from '../common/AnimatedNumber';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_14_16 } from './checkoutSpacing';
 
 import { MealDetailModal } from './MealDetailModal';
 
@@ -50,7 +51,6 @@ type BottomFloatTotalBlockCssVariables = CSSProperties & {
   '--checkout-float-font-size-sm': string;
   '--checkout-float-font-size-md': string;
   '--checkout-float-meal-title-font-size': string;
-  '--checkout-float-meal-title-font-size-md': string;
   '--checkout-float-meal-meta-font-size': string;
   '--checkout-float-font-size-lg': string;
   '--checkout-float-discount': string;
@@ -70,8 +70,7 @@ const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
   '--checkout-float-button-text': COLOR_TOKENS.base.white,
   '--checkout-float-font-size-sm': FONT_SIZE_TOKENS[12],
   '--checkout-float-font-size-md': FONT_SIZE_TOKENS[16],
-  '--checkout-float-meal-title-font-size': FONT_SIZE_TOKENS[14],
-  '--checkout-float-meal-title-font-size-md': FONT_SIZE_TOKENS[16],
+  '--checkout-float-meal-title-font-size': CHECKOUT_FONT_CLAMP_14_16,
   '--checkout-float-meal-meta-font-size': FONT_SIZE_TOKENS[12],
   '--checkout-float-font-size-lg': FONT_SIZE_TOKENS[20],
   '--checkout-float-discount': COLOR_TOKENS.neutral[300],
@@ -577,7 +576,7 @@ export function BottomFloatTotalBlock({
                           <p
                             className={[
                               TEXT_TRIM_CLASS_NAME,
-                              'w-[150px] font-sans text-[length:var(--checkout-float-meal-title-font-size)] font-semibold leading-[140%] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)] md:w-[160px] md:text-[length:var(--checkout-float-meal-title-font-size-md)]',
+                              'w-[150px] font-sans text-[length:var(--checkout-float-meal-title-font-size)] font-semibold leading-[140%] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)] md:w-[160px]',
                             ].join(' ')}
                           >
                             {meal.name}

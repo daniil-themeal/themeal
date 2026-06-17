@@ -3,6 +3,8 @@ import { createElement, Fragment, useState, useEffect, useRef } from 'react';
 import { PhoneInput } from '../../../components/common/PhoneInput';
 import { TempPhoneResetButton } from '../../../components/common/TempPhoneResetButton';
 import { formatUaePhoneInput, normalizeUaePhone, validateUaePhone } from '../../../components/checkout/phoneValidation';
+import { isValidTestSmsCode } from '../../../components/checkout/smsCodeValidation';
+import { LeadSmsStep } from '../LeadSmsStep';
 import { MealDetailModal } from '../../../components/checkout/MealDetailModal';
 import { buildMealDetail } from '../../../data/testMeals';
 import { useTestimonialIframe } from '../../useTestimonialIframe';
@@ -66,7 +68,7 @@ function Menu({ t, onOrder }) {
             onClick:onOrder,
             style:{
               flexDirection:'row', alignItems:'center', justifyContent:'space-between', gap:16,
-              whiteSpace:'normal', textAlign:'start',
+              textAlign:'start',
             },
           },
             createElement('span', { className:'stack', style:{ alignItems:'flex-start', gap:8 } },
@@ -416,15 +418,60 @@ function leadTitleWordSpans(title) {
   });
 }
 
-function LeadCapture({ t, onWhatsAppClick, onContinue, onResetPhone, isPhoneVerified = false }) {
-  const [error, setError] = useState('');
-  const [phone, setPhone] = useState('');
+function normalizedToDisplayPhone(normalized) {
+  const digits = normalized.replace(/\D/g, '').slice(-9);
+  return formatUaePhoneInput(digits);
+}
+
+function LeadCapture({
+  t,
+  onPhoneSubmit,
+  onSmsVerified,
+  onContinue,
+  onResetPhone,
+  isPhoneVerified = false,
+  pendingPhone,
+}) {
   const l = t.lead;
+  const [step, setStep] = useState(() => (pendingPhone && !isPhoneVerified ? 'sms' : 'phone'));
+  const [phone, setPhone] = useState(() => (pendingPhone ? normalizedToDisplayPhone(pendingPhone) : ''));
+  const [normalizedPhone, setNormalizedPhone] = useState(pendingPhone || '');
+  const [error, setError] = useState('');
+  const [smsCode, setSmsCode] = useState('');
+  const [smsError, setSmsError] = useState('');
+
+  useEffect(() => {
+    if (pendingPhone && !isPhoneVerified) {
+      setStep('sms');
+      setNormalizedPhone(pendingPhone);
+      setPhone(normalizedToDisplayPhone(pendingPhone));
+    }
+  }, [pendingPhone, isPhoneVerified]);
+
+  useEffect(() => {
+    if (isPhoneVerified) {
+      setStep('phone');
+      setSmsCode('');
+      setSmsError('');
+    }
+  }, [isPhoneVerified]);
+
   const handleResetPhone = () => {
     setPhone('');
+    setNormalizedPhone('');
     setError('');
+    setSmsCode('');
+    setSmsError('');
+    setStep('phone');
     onResetPhone?.();
   };
+
+  const handleChangeNumber = () => {
+    setStep('phone');
+    setSmsCode('');
+    setSmsError('');
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const result = validateUaePhone(phone);
@@ -433,10 +480,31 @@ function LeadCapture({ t, onWhatsAppClick, onContinue, onResetPhone, isPhoneVeri
       return;
     }
     const normalized = normalizeUaePhone(phone);
-    if (normalized && onWhatsAppClick) {
-      onWhatsAppClick(normalized);
+    if (normalized) {
+      setNormalizedPhone(normalized);
+      setSmsCode('');
+      setSmsError('');
+      onPhoneSubmit?.(normalized);
+      setStep('sms');
     }
   };
+
+  const handleSmsCodeChange = (code) => {
+    setSmsCode(code);
+    if (smsError) setSmsError('');
+  };
+
+  const handleSmsComplete = (code) => {
+    if (!isValidTestSmsCode(code)) {
+      setSmsError(l.smsError);
+      return;
+    }
+    setSmsError('');
+    onSmsVerified?.(normalizedPhone);
+  };
+
+  const formattedPhone = normalizedPhone || (phone ? `+971 ${phone}` : '');
+
   return (
     createElement('section', { className:'section section--cream lead-section', id:'lead', style:{ paddingTop:0, paddingBottom:'clamp(var(--space-64), 8vw, var(--space-96))' } },
       createElement('div', { className:'wrap' },
@@ -467,17 +535,28 @@ function LeadCapture({ t, onWhatsAppClick, onContinue, onResetPhone, isPhoneVeri
                       createElement('p', { className:'lead', style:{ margin:0, textAlign:'center', fontWeight:600, paddingInline:'32px' } }, l.done),
                       createElement('p', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center', margin:'8px 0 0' } }, l.doneSub)),
                       createElement('button', { type:'button', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 }, onClick: onContinue }, l.continueCta))
-                : createElement(Fragment, null,
-                    createElement('form', { className:'lead-form', onSubmit: handleSubmit },
-                      createElement(PhoneInput, {
-                        id: 'lead-phone',
-                        value: phone,
-                        onChange: (v) => { setPhone(formatUaePhoneInput(v)); setError(''); },
-                        error: error,
-                        placeholder: l.ph,
-                      }),
-                      createElement('button', { type:'submit', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 } }, l.cta)),
-                    createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center' } }, l.hint)))
+                : step === 'sms'
+                  ? createElement(LeadSmsStep, {
+                      title: l.smsTitle,
+                      formattedPhone,
+                      smsCode,
+                      onSmsCodeChange: handleSmsCodeChange,
+                      onSmsComplete: handleSmsComplete,
+                      smsError: smsError || undefined,
+                      changeNumberLabel: l.changeNumber,
+                      onChangeNumber: handleChangeNumber,
+                    })
+                  : createElement(Fragment, null,
+                      createElement('form', { className:'lead-form', onSubmit: handleSubmit },
+                        createElement(PhoneInput, {
+                          id: 'lead-phone',
+                          value: phone,
+                          onChange: (v) => { setPhone(formatUaePhoneInput(v)); setError(''); },
+                          error: error,
+                          placeholder: l.ph,
+                        }),
+                        createElement('button', { type:'submit', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 } }, l.cta)),
+                      createElement('span', { className:'muted', style:{ fontSize:'var(--fs-14)', textAlign:'center' } }, l.hint)))
           )
         )
       )

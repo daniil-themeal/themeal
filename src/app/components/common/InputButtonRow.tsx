@@ -9,9 +9,16 @@ type InputButtonRowProps = {
   action: ReactNode;
   error?: ReactNode;
   className?: string;
+  actionClassName?: string;
 };
 
-export function InputButtonRow({ input, action, error, className = '' }: InputButtonRowProps) {
+export function InputButtonRow({
+  input,
+  action,
+  error,
+  className = '',
+  actionClassName = '',
+}: InputButtonRowProps) {
   return (
     <div
       className={[
@@ -22,9 +29,13 @@ export function InputButtonRow({ input, action, error, className = '' }: InputBu
         .filter(Boolean)
         .join(' ')}
     >
-      <div className="flex w-full flex-col gap-[12px] sm:flex-row sm:items-end">
+      <div className="flex w-full flex-col gap-[12px] min-[400px]:flex-row min-[400px]:items-end">
         <div className="min-w-0 flex-1">{input}</div>
-        <div className="w-full shrink-0 sm:w-auto">{action}</div>
+        <div
+          className={['w-full shrink-0 min-[400px]:w-auto', actionClassName].filter(Boolean).join(' ')}
+        >
+          {action}
+        </div>
       </div>
 
       {error ? (

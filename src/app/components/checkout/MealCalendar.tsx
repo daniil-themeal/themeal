@@ -338,10 +338,10 @@ export function MealCalendar({
     >
       {title ? <FormSectionHeading title={title} subtitle={subtitle} /> : null}
 
-      <div className="relative -mx-[20px] md:-mx-[32px]">
+      <div className="relative -mx-[length:var(--checkout-card-padding)]">
         <div
           ref={datePillsScrollRef}
-          className="flex w-full min-w-0 cursor-grab touch-pan-x select-none gap-[8px] overflow-x-auto px-[20px] pb-[4px] scrollbar-hide active:cursor-grabbing md:px-[32px]"
+          className="flex w-full min-w-0 cursor-grab touch-pan-x select-none gap-[8px] overflow-x-auto px-[length:var(--checkout-card-padding)] pb-[4px] scrollbar-hide active:cursor-grabbing"
             onMouseDown={(event) => {
               const scrollElement = event.currentTarget;
               const startX = event.pageX - scrollElement.offsetLeft;

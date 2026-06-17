@@ -15,11 +15,11 @@ import { Badge } from '../common/Badge';
 import type { BadgeVariant } from '../common/Badge';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
 import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 type DurationBlockCssVariables = CSSProperties & {
   '--duration-card-title-font-size': string;
-  '--duration-card-title-font-size-md': string;
   '--duration-meta-font-size': string;
   '--duration-meta-font-size-md': string;
   '--duration-card-bg': string;
@@ -37,8 +37,7 @@ type DurationBlockCssVariables = CSSProperties & {
 };
 
 const durationBlockStyle: DurationBlockCssVariables = {
-  '--duration-card-title-font-size': FONT_SIZE_TOKENS[16],
-  '--duration-card-title-font-size-md': FONT_SIZE_TOKENS[20],
+  '--duration-card-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--duration-meta-font-size': FONT_SIZE_TOKENS[12],
   '--duration-meta-font-size-md': FONT_SIZE_TOKENS[14],
   '--duration-badge-font-size': FONT_SIZE_TOKENS[12],
@@ -132,7 +131,7 @@ function DurationCard({
       <div className="flex flex-col items-end gap-[12px] p-[var(--checkout-card-padding)]">
         <div className="flex w-full items-center gap-[12px]">
           <div className="flex flex-[1_0_0] flex-col items-start gap-[12px]">
-            <p className="font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)] md:text-[length:var(--duration-card-title-font-size-md)]">
+            <p className="font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)]">
               {meta.label}
             </p>
 
@@ -142,7 +141,7 @@ function DurationCard({
           </div>
 
           <div className="flex flex-col items-end gap-[12px]">
-            <p className="whitespace-nowrap text-right font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-active)] md:text-[length:var(--duration-card-title-font-size-md)]">
+            <p className="whitespace-nowrap text-right font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-active)]">
               AED {formatPricePerDay(price.pricePerDay)}/day
             </p>
 

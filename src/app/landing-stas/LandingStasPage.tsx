@@ -26,22 +26,26 @@ import './styles/landing-stas.css';
 
 type LandingStasPageProps = {
   onOrderClick: () => void;
-  onWhatsAppClick: (phone: string) => void;
+  onPhoneSubmit: (phone: string) => void;
+  onSmsVerified: (phone: string) => void;
   onContinueClick: () => void;
   onResetPhone?: () => void;
   onDesignSystemClick?: () => void;
   checkoutOpen?: boolean;
   isPhoneVerified?: boolean;
+  pendingPhone?: string;
 };
 
 export default function LandingStasPage({
   onOrderClick,
-  onWhatsAppClick,
+  onPhoneSubmit,
+  onSmsVerified,
   onContinueClick,
   onResetPhone,
   onDesignSystemClick,
   checkoutOpen = false,
   isPhoneVerified = false,
+  pendingPhone,
 }: LandingStasPageProps) {
   const t = mealContentEn;
 
@@ -64,10 +68,12 @@ export default function LandingStasPage({
         <Menu t={t} onOrder={onOrderClick} />
         <LeadCapture
           t={t}
-          onWhatsAppClick={onWhatsAppClick}
+          onPhoneSubmit={onPhoneSubmit}
+          onSmsVerified={onSmsVerified}
           onContinue={onContinueClick}
           onResetPhone={onResetPhone}
           isPhoneVerified={isPhoneVerified}
+          pendingPhone={pendingPhone}
         />
         <Customers t={t} />
         <Fresh t={t} />

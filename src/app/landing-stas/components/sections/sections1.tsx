@@ -274,7 +274,7 @@ function Hero({ t, onOrder }) {
             onClick:onOrder,
             style:{
               flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'var(--space-8)',
-              whiteSpace:'normal', textAlign:'center',
+              textAlign:'center',
             },
           },
             createElement('span', { className:'stack', style:{ alignItems:'center', gap:'var(--space-8)' } },

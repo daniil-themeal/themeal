@@ -206,6 +206,10 @@
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
+
+  .corner-shape-squircle {
+    corner-shape: squircle;
+  }
 }
 
 @keyframes modal-slide-up-full {

@@ -305,7 +305,7 @@ const BUTTON_CONTENT_CLASS_NAMES: Record<ButtonSize, string> = {
 
 export const BUTTON_VISUAL_CLASS_NAME = [
   'relative inline-flex items-center justify-center',
-  'rounded-[length:var(--button-border-radius)]',
+  'rounded-[length:var(--button-border-radius)] corner-shape-squircle',
   'border border-[length:1px] border-[var(--button-border)]',
   'bg-[var(--button-bg)] text-[var(--button-text)]',
   '[box-shadow:var(--button-shadow)]',

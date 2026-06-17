@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import type { DayOption } from '../../data/checkoutPricing';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
 import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -21,7 +22,6 @@ const options: { id: DayOption; label: string }[] = [
 
 type DaysBlockCssVariables = CSSProperties & {
   '--days-card-title-font-size': string;
-  '--days-card-title-font-size-md': string;
   '--days-chip-font-size': string;
   '--days-text': string;
   '--days-active': string;
@@ -40,8 +40,7 @@ type DaysBlockCssVariables = CSSProperties & {
 };
 
 const daysBlockStyle: DaysBlockCssVariables = {
-  '--days-card-title-font-size': FONT_SIZE_TOKENS[16],
-  '--days-card-title-font-size-md': FONT_SIZE_TOKENS[20],
+  '--days-card-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--days-chip-font-size': FONT_SIZE_TOKENS[12],
   '--days-text': COLOR_TOKENS.neutral[900],
   '--days-active': COLOR_TOKENS.primary[500],
@@ -117,7 +116,7 @@ function DayCard({
       <div className="flex flex-col items-start gap-[12px] p-[var(--checkout-card-padding)]">
         <p
           className={[
-            'w-full font-sans text-[length:var(--days-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--days-card-title-font-size-md)]',
+            'w-full font-sans text-[length:var(--days-card-title-font-size)] font-bold leading-[130%]',
             selected ? 'text-[var(--days-card-selected-text)]' : 'text-[var(--days-text)]',
           ].join(' ')}
         >

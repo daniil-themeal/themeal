@@ -13,6 +13,10 @@ import { COLOR_TOKENS } from '../common/colorTokens';
 import { MapPinIcon } from '../common/icons';
 import { FONT_FAMILY_TOKENS } from '../common/fontFamilyTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import {
+  CHECKOUT_FONT_CLAMP_12_14,
+  CHECKOUT_FONT_CLAMP_16_20,
+} from './checkoutSpacing';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import {
   searchTestUaeAddresses,
@@ -91,8 +95,8 @@ const deliveryAddressScreenStyle: DeliveryAddressScreenCssVariables = {
   '--delivery-address-button-disabled-bg': COLOR_TOKENS.neutral[75],
   '--delivery-address-button-disabled-text': COLOR_TOKENS.neutral[300],
   '--delivery-address-input-font-size': FONT_SIZE_TOKENS[16],
-  '--delivery-address-title-font-size': FONT_SIZE_TOKENS[16],
-  '--delivery-address-subtitle-font-size': FONT_SIZE_TOKENS[12],
+  '--delivery-address-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
+  '--delivery-address-subtitle-font-size': CHECKOUT_FONT_CLAMP_12_14,
   '--delivery-address-empty-font-size': FONT_SIZE_TOKENS[14],
 };
 

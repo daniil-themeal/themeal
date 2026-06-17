@@ -5,6 +5,7 @@ import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { XIcon } from '../common/icons';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
+import { PaymentResultTabs, type PaymentResultTab } from './PaymentResultTabs';
 
 const steps = ['Plan', 'Delivery', 'Payment'] as const;
 
@@ -20,6 +21,7 @@ type CheckoutHeaderProps = {
   onClose: () => void;
   onStepSelect?: (step: CheckoutHeaderStep) => void;
   onLogoClick?: () => void;
+  onResultSelect?: (tab: PaymentResultTab) => void;
 };
 
 type CheckoutHeaderCssVariables = CSSProperties & {
@@ -211,6 +213,7 @@ export function CheckoutHeader({
   onClose,
   onStepSelect,
   onLogoClick,
+  onResultSelect,
 }: CheckoutHeaderProps) {
   const currentStepperIndex = step === 'plan' ? 0 : step === 'delivery' ? 1 : 2;
   const showBackButton = !title && step !== 'plan';
@@ -263,7 +266,15 @@ export function CheckoutHeader({
               {title}
             </p>
           ) : (
-            <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
+            <div className="flex h-full items-center justify-center">
+              <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
+              {import.meta.env.DEV && onResultSelect ? (
+                <div className="hidden items-center md:flex">
+                  <div className="mx-[8px] h-px w-[12px] bg-[var(--checkout-header-border)]" />
+                  <PaymentResultTabs onTabChange={onResultSelect} />
+                </div>
+              ) : null}
+            </div>
           )}
         </div>
 

@@ -1248,7 +1248,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 />
               }
               action={
-                <Button type="button" variant="neutral" size="medium" className="w-full sm:w-[140px]">
+                <Button type="button" variant="neutral" size="medium" className="w-full min-[400px]:w-[140px]">
                   Action
                 </Button>
               }
