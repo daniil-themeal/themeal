@@ -88,67 +88,154 @@ function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
 }
 
 /* ---------------- TrayBelt: looping conveyor shaped as a fan ---------------- */
+const TRAY_BELT_AUTO_SPEED = 26; // px per second
+const TRAY_BELT_MOMENTUM_FRICTION = 4.5;
+const TRAY_BELT_MOMENTUM_THRESHOLD = 8; // px/s
+const TRAY_BELT_MAX_VELOCITY = 2400; // px/s
+
 function TrayBelt({ meals }) {
   const trackRef = useRef(null);
+  const offsetRef = useRef(0);
+  const velocityRef = useRef(0);
+  const isDraggingRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const dragStartOffsetRef = useRef(0);
+  const lastPointerXRef = useRef(0);
+  const lastPointerTimeRef = useRef(0);
+  const halfWRef = useRef(1);
+  const metasRef = useRef([]);
+
+  const normalizeOffset = (value) => {
+    const halfW = halfWRef.current;
+    if (halfW <= 0) return value;
+    let next = value;
+    while (next > 0) next -= halfW;
+    while (next <= -halfW) next += halfW;
+    return next;
+  };
 
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
     const imgs = Array.from(track.querySelectorAll('img'));
-    let metas = [], halfW = 1;
     const measure = () => {
-      metas = imgs.map(im => ({ im, l: im.offsetLeft, w: im.offsetWidth }));
-      halfW = track.scrollWidth / 2;
+      metasRef.current = imgs.map((im) => ({ im, l: im.offsetLeft, w: im.offsetWidth }));
+      halfWRef.current = track.scrollWidth / 2;
     };
     measure();
-    imgs.forEach(im => {
+    imgs.forEach((im) => {
       if (!im.complete) im.addEventListener('load', measure, { once: true });
     });
     window.addEventListener('resize', measure);
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const speed = 26; // px per second
-    let offset = 0, last = performance.now(), raf = 0, frames = 0;
+    let last = performance.now(), raf = 0, frames = 0;
 
     const tick = (now) => {
       const dt = Math.min((now - last) / 1000, 0.05); last = now;
-      if (!reduced && halfW > 0) {
-        offset += -speed * dt;
-        if (offset <= -halfW) offset += halfW;
-        track.style.transform = `translateX(${offset}px)`;
+      if (!reduced && halfWRef.current > 0 && !isDraggingRef.current) {
+        if (Math.abs(velocityRef.current) > TRAY_BELT_MOMENTUM_THRESHOLD) {
+          offsetRef.current = normalizeOffset(offsetRef.current + velocityRef.current * dt);
+          velocityRef.current *= Math.exp(-TRAY_BELT_MOMENTUM_FRICTION * dt);
+        } else {
+          velocityRef.current = 0;
+          offsetRef.current = normalizeOffset(offsetRef.current - TRAY_BELT_AUTO_SPEED * dt);
+        }
       }
+      track.style.transform = `translateX(${offsetRef.current}px)`;
+
       const rect = track.getBoundingClientRect();
       const cx = window.innerWidth / 2;
-      for (const m of metas) {
+      for (const m of metasRef.current) {
         const x = rect.left + m.l + m.w / 2;
         let t = (x - cx) / cx;
         t = Math.max(-1.2, Math.min(1.2, t));
         m.im.style.transform = `translateY(${-3.6 + 25.2 * t * t}px) rotate(${6.75 * t}deg)`;
       }
       frames++;
-      if (reduced && frames > 2) return; // static fan for reduced motion
+      if (reduced && frames > 2 && !isDraggingRef.current && Math.abs(velocityRef.current) <= TRAY_BELT_MOMENTUM_THRESHOLD) return;
       raf = requestAnimationFrame(tick);
     };
     raf = requestAnimationFrame(tick);
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', measure);
-      imgs.forEach(im => im.removeEventListener('load', measure));
+      imgs.forEach((im) => im.removeEventListener('load', measure));
     };
   }, [meals]);
 
+  const onPointerDown = (e) => {
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    isDraggingRef.current = true;
+    velocityRef.current = 0;
+    dragStartXRef.current = e.clientX;
+    dragStartOffsetRef.current = offsetRef.current;
+    lastPointerXRef.current = e.clientX;
+    lastPointerTimeRef.current = performance.now();
+    e.currentTarget.setPointerCapture(e.pointerId);
+    e.currentTarget.style.cursor = 'grabbing';
+  };
+
+  const onPointerMove = (e) => {
+    if (!isDraggingRef.current) return;
+    const track = trackRef.current;
+    if (!track) return;
+
+    const now = performance.now();
+    const dt = Math.max(now - lastPointerTimeRef.current, 1);
+    const dx = e.clientX - lastPointerXRef.current;
+    const instantVelocity = (dx / dt) * 1000;
+    velocityRef.current = Math.max(
+      -TRAY_BELT_MAX_VELOCITY,
+      Math.min(TRAY_BELT_MAX_VELOCITY, instantVelocity),
+    );
+    lastPointerXRef.current = e.clientX;
+    lastPointerTimeRef.current = now;
+
+    const delta = e.clientX - dragStartXRef.current;
+    offsetRef.current = normalizeOffset(dragStartOffsetRef.current + delta);
+    track.style.transform = `translateX(${offsetRef.current}px)`;
+  };
+
+  const onPointerUp = (e) => {
+    if (!isDraggingRef.current) return;
+    if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    }
+    isDraggingRef.current = false;
+    e.currentTarget.style.cursor = 'grab';
+  };
+
   return (
-    createElement('div', { 'aria-hidden':true, dir:'ltr', style:{ position:'relative', zIndex:1, height:'clamp(198px,25.2vh,270px)', marginTop:-6, overflow:'hidden' } },
+    createElement('div', {
+      'aria-hidden': true,
+      dir: 'ltr',
+      onPointerDown,
+      onPointerMove,
+      onPointerUp,
+      onPointerCancel: onPointerUp,
+      style: {
+        position: 'relative',
+        zIndex: 1,
+        height: 'clamp(198px,25.2vh,270px)',
+        marginTop: -6,
+        overflow: 'hidden',
+        cursor: 'grab',
+        touchAction: 'none',
+        userSelect: 'none',
+      },
+    },
       createElement('div', { ref:trackRef, style:{ position:'absolute', bottom:13, left:0, display:'flex', alignItems:'flex-end', width:'max-content', willChange:'transform' } },
         [0,1].map(half =>
           createElement('div', { key:half, style:{ display:'flex', alignItems:'flex-end', gap:'clamp(14px,2.16vw,32px)', paddingInlineEnd:'clamp(14px,2.16vw,32px)' } },
             Array.from({length:15}).map((_,i)=>
               createElement('img', {
-                key:`${half}-${i}`, src:meals[i % meals.length], alt:'',
+                key:`${half}-${i}`, src:meals[i % meals.length], alt:'', draggable:false,
                 style:{
                   width:'clamp(135px, 15.3vw, 225px)',
                   transform:`translateY(${[18,5,-2,5,18][i%5]}px) rotate(${[-6,-3,0,3,6][i%5]}deg)`,
                   filter:'drop-shadow(0 16px 27px rgba(0,0,0,.4))',
+                  pointerEvents:'none',
                 }
               })
             )
