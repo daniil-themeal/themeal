@@ -2,6 +2,7 @@
 
 node_modules/
 dist/
+.env
 telegram-cursor-bot/.env
 telegram-cursor-bot/node_modules/
 

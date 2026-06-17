@@ -3,7 +3,7 @@ import { useGridOverlay } from '../useGridOverlay';
 
 export function ViewportLabel() {
   const [size, setSize] = useState({ w: 0, h: 0 });
-  const { cols, rows, spacing, devLabelsVisible, toggleCols, toggleRows, toggleSpacing } = useGridOverlay();
+  const { cols, rows, spacing, horizontalSpacing, devLabelsVisible, toggleCols, toggleRows, toggleSpacing, toggleHorizontalSpacing } = useGridOverlay();
 
   useEffect(() => {
     const update = () => setSize({ w: window.innerWidth, h: window.innerHeight });
@@ -46,6 +46,16 @@ export function ViewportLabel() {
           onClick={toggleSpacing}
         >
           S
+        </button>
+        <button
+          type="button"
+          className={`dev-label grid-label${horizontalSpacing ? ' is-on' : ''}`}
+          aria-pressed={horizontalSpacing}
+          aria-label="Toggle horizontal spacing overlay"
+          title="Horizontal spacing · Shift+X"
+          onClick={toggleHorizontalSpacing}
+        >
+          X
         </button>
       </div>
 

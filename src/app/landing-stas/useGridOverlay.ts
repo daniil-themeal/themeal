@@ -3,24 +3,29 @@ import { useSyncExternalStore } from 'react';
 const COLS_KEY = 'landing-stas-grid-cols';
 const ROWS_KEY = 'landing-stas-grid-rows';
 const SPACING_KEY = 'landing-stas-grid-spacing';
+const HORIZONTAL_SPACING_KEY = 'landing-stas-grid-h-spacing';
 const LEGACY_KEY = 'landing-stas-grid';
 const LABELS_KEY = 'landing-stas-dev-labels';
 
-export type GridState = { cols: boolean; rows: boolean; spacing: boolean };
+export type GridState = { cols: boolean; rows: boolean; spacing: boolean; horizontalSpacing: boolean };
 
 function readInitialState(): GridState {
-  if (typeof window === 'undefined') return { cols: false, rows: false, spacing: false };
+  if (typeof window === 'undefined') return { cols: false, rows: false, spacing: false, horizontalSpacing: false };
 
   const params = new URLSearchParams(window.location.search);
+  if (params.get('hspacing') === '1') {
+    return { cols: false, rows: false, spacing: false, horizontalSpacing: true };
+  }
   if (params.get('spacing') === '1') {
-    return { cols: false, rows: false, spacing: true };
+    return { cols: false, rows: false, spacing: true, horizontalSpacing: false };
   }
   if (params.has('grid')) {
     const mode = params.get('grid');
-    if (mode === 'spacing' || mode === 's') return { cols: false, rows: false, spacing: true };
-    if (mode === 'rows' || mode === 'h') return { cols: false, rows: true, spacing: false };
-    if (mode === 'cols' || mode === 'v') return { cols: true, rows: false, spacing: false };
-    return { cols: true, rows: true, spacing: false };
+    if (mode === 'hspacing' || mode === 'x') return { cols: false, rows: false, spacing: false, horizontalSpacing: true };
+    if (mode === 'spacing' || mode === 's') return { cols: false, rows: false, spacing: true, horizontalSpacing: false };
+    if (mode === 'rows' || mode === 'h') return { cols: false, rows: true, spacing: false, horizontalSpacing: false };
+    if (mode === 'cols' || mode === 'v') return { cols: true, rows: false, spacing: false, horizontalSpacing: false };
+    return { cols: true, rows: true, spacing: false, horizontalSpacing: false };
   }
 
   const legacy = sessionStorage.getItem(LEGACY_KEY) === '1';
@@ -28,6 +33,7 @@ function readInitialState(): GridState {
     cols: sessionStorage.getItem(COLS_KEY) === '1' || legacy,
     rows: sessionStorage.getItem(ROWS_KEY) === '1',
     spacing: sessionStorage.getItem(SPACING_KEY) === '1',
+    horizontalSpacing: sessionStorage.getItem(HORIZONTAL_SPACING_KEY) === '1',
   };
 }
 
@@ -73,7 +79,7 @@ function getSnapshot() {
 }
 
 function getServerSnapshot(): GridState {
-  return { cols: false, rows: false, spacing: false };
+  return { cols: false, rows: false, spacing: false, horizontalSpacing: false };
 }
 
 function isTypingTarget(target: EventTarget | null) {
@@ -97,6 +103,12 @@ export function toggleGridRows() {
 export function toggleGridSpacing() {
   state = { ...state, spacing: !state.spacing };
   sessionStorage.setItem(SPACING_KEY, state.spacing ? '1' : '0');
+  emit();
+}
+
+export function toggleGridHorizontalSpacing() {
+  state = { ...state, horizontalSpacing: !state.horizontalSpacing };
+  sessionStorage.setItem(HORIZONTAL_SPACING_KEY, state.horizontalSpacing ? '1' : '0');
   emit();
 }
 
@@ -131,6 +143,12 @@ function onKeyDown(event: KeyboardEvent) {
   if (event.key === 'S') {
     event.preventDefault();
     toggleGridSpacing();
+    return;
+  }
+
+  if (event.key === 'X') {
+    event.preventDefault();
+    toggleGridHorizontalSpacing();
   }
 }
 
@@ -151,10 +169,12 @@ export function useGridOverlay() {
     cols: grid.cols,
     rows: grid.rows,
     spacing: grid.spacing,
+    horizontalSpacing: grid.horizontalSpacing,
     devLabelsVisible,
     toggleCols: toggleGridCols,
     toggleRows: toggleGridRows,
     toggleSpacing: toggleGridSpacing,
+    toggleHorizontalSpacing: toggleGridHorizontalSpacing,
     toggleDevLabels,
   };
 }

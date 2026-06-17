@@ -835,11 +835,14 @@ export function DeliveryAddressScreen({
     }
 
     if (event.key === 'Escape') {
-      setActiveSuggestionIndex(0);
-
       if (mobileSearchOpen) {
+        event.stopPropagation();
+        setActiveSuggestionIndex(0);
         setMobileSearchOpen(false);
+        return;
       }
+
+      setActiveSuggestionIndex(0);
     }
   };
 
@@ -937,7 +940,7 @@ export function DeliveryAddressScreen({
 
   return (
     <div
-      className="relative h-full min-h-full overflow-hidden bg-[var(--delivery-address-page-bg)]"
+      className="relative h-full min-h-full overflow-hidden bg-white md:bg-[var(--delivery-address-page-bg)]"
       style={deliveryAddressScreenStyle}
     >
       <style>

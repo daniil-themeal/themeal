@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { socialLinks } from '../../../config/socialLinks';
 import { COLOR_TOKENS } from '../../common/colorTokens';
 import { FacebookIcon, InstagramIcon, YoutubeIcon } from '../../common/icons/feather';
 import { TEXT_TRIM_CLASS_NAME } from '../../common/textTrimTokens';
@@ -151,13 +152,13 @@ export function SuccessContactSection() {
         </p>
 
         <div className="flex items-center gap-[16px]">
-          <ContactIconButton label="WhatsApp">
+          <ContactIconButton label="WhatsApp" href={socialLinks.whatsapp}>
             <div className="size-[29px]">
               <WhatsAppIcon />
             </div>
           </ContactIconButton>
 
-          <ContactIconButton label="Telegram">
+          <ContactIconButton label="Telegram" href={socialLinks.telegram}>
             <div className="size-[30px]">
               <TelegramIcon />
             </div>
@@ -177,21 +178,21 @@ export function SuccessContactSection() {
         </p>
 
         <div className="flex w-full items-center justify-center gap-[16px] px-[24px]">
-          <SocialIconButton label="Facebook">
+          <SocialIconButton label="Facebook" href={socialLinks.facebook}>
             <FacebookIcon size={40} className="text-[var(--success-social-icon)]" />
           </SocialIconButton>
 
-          <SocialIconButton label="TikTok">
+          <SocialIconButton label="TikTok" href={socialLinks.tiktok}>
             <div className="size-[40px] text-[var(--success-social-icon)]">
               <TikTokIcon />
             </div>
           </SocialIconButton>
 
-          <SocialIconButton label="Instagram">
+          <SocialIconButton label="Instagram" href={socialLinks.instagram}>
             <InstagramIcon size={40} className="text-[var(--success-social-icon)]" />
           </SocialIconButton>
 
-          <SocialIconButton label="YouTube">
+          <SocialIconButton label="YouTube" href={socialLinks.youtube}>
             <YoutubeIcon size={40} className="text-[var(--success-social-icon)]" />
           </SocialIconButton>
         </div>

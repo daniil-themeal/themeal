@@ -410,8 +410,9 @@ export function PaymentScreen({
                   'w-full text-left font-sans text-[length:var(--payment-small-fs)] font-medium leading-[140%] text-[var(--payment-muted)]',
                 ].join(' ')}
               >
-                Your subscription renews automatically — we&apos;ll send the upcoming amount 5 days
-                before each charge. Change or cancel anytime.
+                {paymentMethod === 'tabby'
+                  ? 'This is a one-time order via Tabby — to continue your meals, place a new order at the end of this period'
+                  : "Your subscription renews automatically — we'll send the upcoming amount 5 days before each charge. Change or cancel anytime."}
               </p>
 
               <p

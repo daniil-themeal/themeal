@@ -41,6 +41,9 @@ export default function App() {
   const handleSessionUpdate = useCallback((session: PhoneSession) => {
     setPhoneSession(session);
     savePhoneSession(session);
+    if (session.isVerified) {
+      setInitialIsVerified(true);
+    }
   }, []);
 
   const openCheckoutAt = useCallback(
@@ -145,6 +148,7 @@ export default function App() {
         initialDeliveryStep={initialDeliveryStep}
         initialPhone={checkoutInitialPhone}
         initialIsVerified={initialIsVerified}
+        sessionIsVerified={phoneSession?.isVerified ?? false}
         onSessionUpdate={handleSessionUpdate}
         onResetPhone={() => resetPhoneSession({ closeCheckout: false })}
       />

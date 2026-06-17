@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 
+import { useEscapeLayer } from './escapeStack';
+import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { Z_INDEX_TOKENS } from './zIndexTokens';
 
 export const MODAL_SHELL_EXIT_FALLBACK_MS = 260;
@@ -96,6 +98,11 @@ export function ModalShell({
     handlePanelAnimationEnd,
   } = useModalShell(onClose);
 
+  useEscapeLayer(isOpen, zIndex, () => {
+    if (onEscape?.()) return;
+    requestClose();
+  });
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -104,20 +111,10 @@ export function ModalShell({
     const previousBodyOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        if (onEscape?.()) return;
-        requestClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
     return () => {
       document.body.style.overflow = previousBodyOverflow;
-      document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, onEscape, requestClose, resetCloseState]);
+  }, [isOpen, resetCloseState]);
 
   if (!isOpen) return null;
 
@@ -133,6 +130,7 @@ export function ModalShell({
           .filter(Boolean)
           .join(' ')}
         style={{ zIndex }}
+        {...{ [SPACING_ROOT_ATTR]: '' }}
         onClick={disableOverlayClick ? undefined : requestClose}
       >
         <div className="min-h-full sm:flex sm:items-center sm:justify-center">
@@ -140,6 +138,7 @@ export function ModalShell({
             className={panelClasses}
             onClick={(event) => event.stopPropagation()}
             onAnimationEnd={handlePanelAnimationEnd}
+            {...{ [SPACING_CONTENT_ATTR]: '' }}
           >
             {panelChildren}
           </div>
@@ -158,6 +157,7 @@ export function ModalShell({
         .filter(Boolean)
         .join(' ')}
       style={{ zIndex }}
+      {...{ [SPACING_ROOT_ATTR]: '' }}
     >
       <div
         className={['absolute inset-0 bg-black/40', overlayClassName].filter(Boolean).join(' ')}
@@ -168,6 +168,7 @@ export function ModalShell({
         className={panelClasses}
         onClick={(event) => event.stopPropagation()}
         onAnimationEnd={handlePanelAnimationEnd}
+        {...{ [SPACING_CONTENT_ATTR]: '' }}
       >
         {panelChildren}
       </div>

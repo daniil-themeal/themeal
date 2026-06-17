@@ -126,10 +126,10 @@ function DurationCard({
       ].join(' ')}
     >
       {meta.badge ? (
-        <Badge variant={meta.badge} className="absolute right-[18px] top-[-4px] z-[1]" />
+        <Badge variant={meta.badge} className="absolute right-[var(--checkout-card-padding)] top-[-4px] z-[1]" />
       ) : null}
 
-      <div className="flex flex-col items-end gap-[12px] px-[20px] py-[24px] md:px-[24px]">
+      <div className="flex flex-col items-end gap-[12px] p-[var(--checkout-card-padding)]">
         <div className="flex w-full items-center gap-[12px]">
           <div className="flex flex-[1_0_0] flex-col items-start gap-[12px]">
             <p className="font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)] md:text-[length:var(--duration-card-title-font-size-md)]">

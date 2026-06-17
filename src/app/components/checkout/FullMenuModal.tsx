@@ -7,11 +7,24 @@ import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { ModalShell } from '../common/ModalShell';
+import { SPACING_CONTENT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
+import { FullMenuPlanToggle } from './FullMenuPlanToggle';
 import { MealDetailModal } from './MealDetailModal';
 import { XIcon } from '../common/icons';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
+
+const PLAN_ORDER: Record<Plan, number> = {
+  light: 0,
+  base: 1,
+  plus: 2,
+};
+
+const LIGHT_OPTION_ORDER: Record<LightMealOption, number> = {
+  'breakfast-main': 0,
+  'lunch-dinner': 1,
+};
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -97,11 +110,15 @@ export function FullMenuModal({
   onClose,
   plan,
   lightMealOption,
+  onPlanChange,
+  onLightMealOptionChange,
 }: {
   isOpen: boolean;
   onClose: () => void;
   plan: Plan;
   lightMealOption: LightMealOption;
+  onPlanChange: (plan: Plan) => void;
+  onLightMealOptionChange: (option: LightMealOption) => void;
 }) {
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState<SlideDirection>('left');
@@ -257,6 +274,22 @@ export function FullMenuModal({
     setSelectedMeal(meal);
   };
 
+  const handlePlanChange = (nextPlan: Plan) => {
+    if (nextPlan === plan) return;
+
+    setSlideDirection(PLAN_ORDER[nextPlan] > PLAN_ORDER[plan] ? 'left' : 'right');
+    onPlanChange(nextPlan);
+  };
+
+  const handleLightMealOptionChange = (option: LightMealOption) => {
+    if (option === lightMealOption) return;
+
+    setSlideDirection(
+      LIGHT_OPTION_ORDER[option] > LIGHT_OPTION_ORDER[lightMealOption] ? 'left' : 'right',
+    );
+    onLightMealOptionChange(option);
+  };
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -331,27 +364,36 @@ export function FullMenuModal({
               `}
             </style>
 
-            <div className="flex h-[56px] shrink-0 items-center justify-between border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
-          <p className="pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px] md:text-[length:var(--full-menu-heading-font-size-md)]">
-            Full menu
-          </p>
+            <div className="flex h-[56px] shrink-0 items-center gap-[8px] border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
+              <p className="shrink-0 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px] md:text-[length:var(--full-menu-heading-font-size-md)]">
+                Full menu
+              </p>
 
-          <button
-            type="button"
-            onClick={requestClose}
-            className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
-            aria-label="Close"
-          >
-            <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--full-menu-close-bg)] transition-colors duration-150 group-hover:bg-[var(--full-menu-close-bg-hover)]">
-              <span
-                className={iconColorClassName.emphasis}
-                style={iconColorStyle.emphasis}
+              <FullMenuPlanToggle
+                plan={plan}
+                lightMealOption={lightMealOption}
+                onPlanChange={handlePlanChange}
+                onLightMealOptionChange={handleLightMealOptionChange}
+                pillDefaultStyle={FULL_MENU_DAY_PILL_DEFAULT_STYLE}
+                pillSelectedStyle={FULL_MENU_DAY_PILL_SELECTED_STYLE}
+              />
+
+              <button
+                type="button"
+                onClick={requestClose}
+                className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
+                aria-label="Close"
               >
-                <XIcon size={16} />
-              </span>
-            </span>
-          </button>
-        </div>
+                <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--full-menu-close-bg)] transition-colors duration-150 group-hover:bg-[var(--full-menu-close-bg-hover)]">
+                  <span
+                    className={iconColorClassName.emphasis}
+                    style={iconColorStyle.emphasis}
+                  >
+                    <XIcon size={16} />
+                  </span>
+                </span>
+              </button>
+            </div>
 
         <div className="shrink-0 px-[8px] py-[12px]">
           <div className="flex w-full items-stretch" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
@@ -448,7 +490,7 @@ export function FullMenuModal({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
+        <div className="flex-1 overflow-y-auto" {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <div className="relative overflow-visible">
             <div
               key={`${testMenuDays[selectedDayIndex]?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}

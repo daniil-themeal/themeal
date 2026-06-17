@@ -406,7 +406,22 @@ body {
 }
 .section--cream { background:var(--cream); }
 
-/* ---- layout grid overlay (Shift+G cols, Shift+H rows, Shift+S spacing, Shift+D dev labels, or ?grid=1) ---- */
+/* ---- dev tools layer (portaled to body, above checkout/modals) ---- */
+.landing-dev-tools {
+  position:fixed; inset:0; z-index:10050;
+  pointer-events:none;
+}
+.landing-dev-tools .grid-labels,
+.landing-dev-tools .grid-label {
+  pointer-events:auto;
+}
+.landing-dev-tools .spacing-overlay,
+.landing-dev-tools .horizontal-spacing-overlay,
+.landing-dev-tools .landing-grid-overlay {
+  z-index:0;
+}
+
+/* ---- layout grid overlay (Shift+G cols, Shift+H rows, Shift+S vertical spacing, Shift+X horizontal spacing, Shift+D dev labels, or ?grid=1) ---- */
 .landing-grid-overlay {
   position:fixed; inset:0; z-index:9999;
   pointer-events:none; overflow:hidden;
@@ -440,7 +455,7 @@ body {
 /* ---- vertical spacing overlay (Shift+S, or ?spacing=1) ---- */
 .spacing-overlay {
   position:fixed; inset:0; z-index:9998;
-  pointer-events:none; overflow:hidden;
+  pointer-events:none; overflow:visible;
 }
 .spacing-overlay__zone {
   position:fixed; left:0; right:0;
@@ -450,6 +465,26 @@ body {
 }
 .spacing-overlay__label {
   position:fixed; transform:translateY(-50%);
+  font-family:var(--font); font-size:12px; font-weight:600;
+  font-variant-numeric:tabular-nums; line-height:1;
+  padding:2px 6px; border-radius:4px;
+  background:rgba(46, 15, 74, .3); color:#fff;
+  white-space:nowrap;
+}
+
+/* ---- horizontal spacing overlay (Shift+X, or ?hspacing=1) ---- */
+.horizontal-spacing-overlay {
+  position:fixed; inset:0; z-index:9998;
+  pointer-events:none; overflow:visible;
+}
+.horizontal-spacing-overlay__zone {
+  position:fixed; top:0; bottom:0;
+  box-sizing:border-box;
+  border-left:1px solid rgba(46, 15, 74, .55);
+  border-right:1px solid rgba(46, 15, 74, .55);
+}
+.horizontal-spacing-overlay__label {
+  position:fixed; transform:translateX(-50%);
   font-family:var(--font); font-size:12px; font-weight:600;
   font-variant-numeric:tabular-nums; line-height:1;
   padding:2px 6px; border-radius:4px;

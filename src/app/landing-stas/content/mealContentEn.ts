@@ -299,67 +299,79 @@ export const mealContentEn = {
     "eyebrow": "Q&A",
     "title": "Any questions?",
     "tabs": [
-      "Meal plans basics",
-      "Products & storage",
-      "Payment & delivery"
+      "About our Meal Plans",
+      "Products and Storage",
+      "Payment and Delivery"
     ],
     "groups": [
       [
         [
-          "What is theMeal?",
-          "We deliver fresh, ready-to-eat meals across the UAE — no shopping, no cooking, no washing up. Just open and eat."
+          "What is \"TheMeal\"?",
+          "TheMeal delivers fresh, ready-to-eat meals to your home in Dubai, Abu Dhabi, Sharjah, Ajman, Al Ain, Ras Al Khaimah, Umm Al Quwain, Fujairah, Al Ghadeer. You always have tasty, ready-to-eat food without shopping or cooking."
         ],
         [
-          "What does the plan include?",
-          "Deliveries every Wednesday and Sunday in your chosen slot. Pick 2, 3 or 4 meals a day depending on your goals."
+          "What does the meal plan include?",
+          "Our meal plans include food for a month, delivered every Wednesday and Sunday at the time that is convenient for you. Every box contains fresh meals for the next 2–4 days. No need to worry about grocery shopping or cooking."
         ],
         [
-          "Do you offer a trial?",
-          "Yes — a one-week plan with 2 deliveries covering 5–7 days, so you can sample before committing."
+          "Do you offer a trial order?",
+          "Yes. You can try TheMeal with a one-week plan before choosing a longer option. It has 2 deliveries for 5–7 days of meals. You will be able to try our meals and decide on your meal plan for the month."
         ],
         [
-          "Can I customize my order?",
-          "The menu is curated and fixed, but meals repeat no more than once every two weeks, so there’s always variety."
+          "Can I customise my order?",
+          "No, the menu is fixed. It's balanced, varied, and meals repeat no more than once every two weeks. While we currently don't offer customization options, we take great care in planning our menu to ensure the meals are both nutritionally balanced and varied. We are constantly developing new dishes and menu lines."
         ],
         [
-          "How do I pause my plan?",
-          "Message your account manager at least 3 days before the next delivery. Free pause duration varies by plan."
+          "How to pause the plan?",
+          "It's easy to pause your plan. Just inform our account manager via any messenger. You can reschedule or pause your delivery by contacting us at least 3 days before your next planned delivery date. Depending on your plan, you have 1 to 2 weeks of free pause. Ask your manager about paid options for longer periods."
+        ],
+        [
+          "Do you have low-or high-carb food?",
+          "We offer balanced daily meal sets made from natural ingredients. 2 meals per day: about 800 calories. 3 meals per day: about 1300 calories. 4 meals per day: about 1450 calories. Each plan provides all essential nutrients to support a healthy diet. You can use our meal plan as a basis for your diet when losing weight."
+        ],
+        [
+          "Can I see food details and a full menu?",
+          "Sure! It's in the \"Menu Sample\" section. We are constantly improving our ready-to-eat meals, so the menu is regularly updated and changed."
         ]
       ],
       [
         [
-          "How should I store the meals?",
-          "Refrigerate at 2–4°C. Twice-weekly deliveries keep your supply fresh."
+          "How do I store meals?",
+          "Simply keep the meals in the fridge at 2–4°C. We deliver fresh food twice a week, so you always have a new supply on hand and enough space in the refrigerator."
         ],
         [
-          "Fresh or frozen?",
-          "Always fresh — prepared the night before delivery and chilled, never frozen."
+          "Do you deliver fresh or frozen food?",
+          "We deliver fresh, chilled meals prepared the night before delivery — never frozen — according to UAE food safety standards."
         ],
         [
-          "How is freshness maintained?",
-          "Quality ingredients, food-safe sealed packaging and a full cold chain keep meals fresh up to 5 days."
+          "How do you maintain the freshness of the food?",
+          "We cook with quality ingredients, seal meals in food-safe packaging with potassium sorbate — a widely used, approved preservative — and keep them chilled all the way to your doorstep. All you need to do — put food in the refrigerator as soon as you receive it."
         ],
         [
-          "Can I see the full menu?",
-          "Yes — check the menu sample on the site. It updates regularly to keep things exciting."
+          "Why is this necessary?",
+          "Potassium sorbate is an internationally approved food preservative (E202) that inhibits mould and bacteria growth, keeping meals fresh and safe. Combined with our cold chain, it allows us to maintain a shelf life of up to 5 days while preserving the taste and nutritional value of your food."
         ]
       ],
       [
         [
-          "When do you deliver?",
-          "Twice a week in 2–3 hour slots between 03:00 and 22:00. You choose your preferred window."
+          "When and how often do you deliver?",
+          "We deliver only on Wednesdays and Sundays. We deliver within 2–3-hour slots only between 03:00–22:00. Check the time slots for your Emirate. Every box contains fresh meals for the next 2–4 days."
         ],
         [
           "How does delivery work?",
-          "Your courier texts 15–30 min before arrival. Enable “leave at the door” for an SMS drop-off."
+          "During daytime and evening deliveries the courier will text you 15–30 minutes before delivery. If you have the \"Leave at the door\" option enabled, you will be notified by SMS upon delivery. Put food in the refrigerator as soon as you receive it."
         ],
         [
           "Where do you deliver?",
-          "Dubai, Abu Dhabi, Sharjah, Ajman, Al Ain, RAK, UAQ, Fujairah and Al Ghadeer."
+          "We deliver in Dubai, Abu Dhabi, Sharjah, Ajman, Al Ain, Ras Al Khaimah, Umm Al Quwain, Fujairah, Al Ghadeer. We do not currently deliver to other Emirates because we want to ensure that you always receive fresh food on time."
         ],
         [
-          "Is payment secure?",
-          "Fully — theMeal is a licensed UAE company, cards processed securely. Interest-free installments via Tabby."
+          "Do you have any promos or discounts?",
+          "We have fine-tuned all business processes and set up production so that we can deliver great food at low prices. For this reason, we currently don't offer special promotions or discounts. You can check all current special offers with our manager — he will be happy to tell you about all available discounts and advantageous options."
+        ],
+        [
+          "Can I trust you, and what payment methods are available?",
+          "Yes. TheMeal is a licensed company in the UAE. Payments are made securely online by bank card, and we never see your card details. You can also pay in interest-free installments with Tabby. You can read more about our company on our website in the sections Privacy Policy and Terms & conditions."
         ]
       ]
     ]
@@ -412,7 +424,7 @@ export const mealContentEn = {
   "lead": {
     "eyebrow": "Personal offer",
     "title": "Get your menu in WhatsApp",
-    "sub": "We’ll send this week’s full menu and a personal offer just for you. No spam. No commitment.",
+    "sub": "We’ll send this week’s full menu and a personal offer just for you. No spam. No commitment.",
     "cc": "+971",
     "ph": "50 123 4567",
     "cta": "Get my menu",

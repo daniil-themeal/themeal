@@ -25,7 +25,11 @@ import type { TestAddress } from '../../data/testAddresses';
 import type { PhoneSession } from '../../phoneSession';
 import { mergePhoneSession } from '../../phoneSession';
 import { COLOR_TOKENS } from '../common/colorTokens';
+import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
+import { useEscapeLayer } from '../common/escapeStack';
 import { useModalShell } from '../common/ModalShell';
+import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
+import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { formatUaePhoneInput, normalizeUaePhone, validateUaePhone } from './phoneValidation';
 
 type CheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment' | 'success' | 'failed';
@@ -38,6 +42,7 @@ type CheckoutPageProps = {
   initialDeliveryStep?: DeliveryStep;
   initialPhone?: string;
   initialIsVerified?: boolean;
+  sessionIsVerified?: boolean;
   onSessionUpdate?: (session: PhoneSession) => void;
   onResetPhone?: () => void;
 };
@@ -50,8 +55,27 @@ const checkoutPageStyle: CheckoutPageCssVariables = {
   '--checkout-page-bg': COLOR_TOKENS.base.cream,
 };
 
+type CheckoutLeftColumnCssVariables = CSSProperties & {
+  '--checkout-step-header-pt': string;
+};
+
+const checkoutLeftColumnStyle: CheckoutLeftColumnCssVariables = {
+  '--checkout-step-header-pt': CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP,
+};
+
+type CheckoutPlanGridCssVariables = CSSProperties & {
+  '--checkout-card-padding': string;
+};
+
+const checkoutPlanGridStyle: CheckoutPlanGridCssVariables = {
+  '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
+};
+
 const checkoutStepScrollClassName =
   'flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide';
+
+const checkoutFormStepScrollClassName =
+  'flex-1 overflow-y-auto bg-white md:bg-[var(--checkout-page-bg)] scrollbar-hide';
 
 const BOTTOM_FLOAT_HEIGHT = 72;
 const SUMMARY_ANCHOR_THRESHOLD = 0.1;
@@ -92,6 +116,7 @@ export function CheckoutPage({
   initialDeliveryStep = 'address',
   initialPhone,
   initialIsVerified = false,
+  sessionIsVerified = false,
   onSessionUpdate,
   onResetPhone,
 }: CheckoutPageProps) {
@@ -104,7 +129,11 @@ export function CheckoutPage({
 
   const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>(initialCheckoutStep);
   const [deliveryStep, setDeliveryStep] = useState<DeliveryStep>(initialDeliveryStep);
-  const [isPhoneVerified, setIsPhoneVerified] = useState(initialIsVerified);
+  const [isPhoneVerified, setIsPhoneVerified] = useState(
+    initialIsVerified || sessionIsVerified,
+  );
+
+  const isAuthComplete = isPhoneVerified || sessionIsVerified;
 
   const [plan, setPlan] = useState<Plan>('base');
   const [lightMealOption, setLightMealOption] = useState<LightMealOption>('lunch-dinner');
@@ -144,7 +173,7 @@ export function CheckoutPage({
       if (!onSessionUpdate) return;
 
       const normalized = normalizeUaePhone(phone) ?? patch.phone ?? '';
-      const isVerified = verifiedOverride ?? patch.isVerified ?? isPhoneVerified;
+      const isVerified = verifiedOverride ?? patch.isVerified ?? isAuthComplete;
 
       onSessionUpdate(
         mergePhoneSession(null, {
@@ -155,7 +184,7 @@ export function CheckoutPage({
         }),
       );
     },
-    [checkoutStep, deliveryStep, isPhoneVerified, onSessionUpdate, phone],
+    [checkoutStep, deliveryStep, isAuthComplete, onSessionUpdate, phone],
   );
 
   useEffect(() => {
@@ -164,7 +193,7 @@ export function CheckoutPage({
       document.body.style.overflow = 'hidden';
       setCheckoutStep(initialCheckoutStep);
       setDeliveryStep(initialDeliveryStep);
-      setIsPhoneVerified(initialIsVerified);
+      setIsPhoneVerified(initialIsVerified || sessionIsVerified);
       setMenuOpen(false);
       setSummaryVisible(initialCheckoutStep !== 'plan');
       setPhoneError(undefined);
@@ -172,7 +201,7 @@ export function CheckoutPage({
       const digits = phoneDigitsFromInitial(initialPhone);
       if (digits) {
         setPhone(formatUaePhoneInput(digits));
-      } else if (initialCheckoutStep === 'plan' && !initialIsVerified) {
+      } else if (initialCheckoutStep === 'plan' && !initialIsVerified && !sessionIsVerified) {
         setPhone('');
       }
 
@@ -188,7 +217,15 @@ export function CheckoutPage({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified, resetCloseState]);
+  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified, sessionIsVerified, resetCloseState]);
+
+  useEffect(() => {
+    if (!isOpen || !isAuthComplete || checkoutStep !== 'verification') return;
+
+    setCheckoutStep('delivery');
+    setDeliveryStep('address');
+    persistSession({ checkoutStep: 'delivery', deliveryStep: 'address' });
+  }, [isOpen, isAuthComplete, checkoutStep, persistSession]);
 
   useEffect(() => {
     if (!isOpen || checkoutStep !== 'plan') return;
@@ -256,7 +293,7 @@ export function CheckoutPage({
     setMenuOpen(false);
     setSummaryVisible(true);
 
-    if (isPhoneVerified) {
+    if (isAuthComplete) {
       setCheckoutStep('delivery');
       setDeliveryStep('address');
       persistSession({ checkoutStep: 'delivery', deliveryStep: 'address' });
@@ -391,6 +428,7 @@ export function CheckoutPage({
       setCheckoutStep('delivery');
       setDeliveryStep('details');
       persistSession({ checkoutStep: 'delivery', deliveryStep: 'details' });
+      scrollBodyToTop();
       return;
     }
 
@@ -398,32 +436,60 @@ export function CheckoutPage({
       if (deliveryStep === 'details') {
         setDeliveryStep('address');
         persistSession({ deliveryStep: 'address' });
+        scrollBodyToTop();
         return;
       }
 
-      if (isPhoneVerified) {
+      if (isAuthComplete) {
         setCheckoutStep('plan');
         setMenuOpen(false);
-        setSummaryVisible(false);
-        persistSession({ checkoutStep: 'plan' });
+        setSummaryVisible(true);
+        setDeliveryStep('address');
+        persistSession({ checkoutStep: 'plan', deliveryStep: 'address' });
+        scrollBodyToTop();
         return;
       }
 
       setCheckoutStep('verification');
       persistSession({ checkoutStep: 'verification' });
+      scrollBodyToTop();
       return;
     }
 
     if (checkoutStep === 'verification') {
       setCheckoutStep('plan');
       setMenuOpen(false);
-      setSummaryVisible(false);
-      persistSession({ checkoutStep: 'plan' });
+      setSummaryVisible(isAuthComplete);
+      persistSession({
+        checkoutStep: 'plan',
+        ...(isAuthComplete ? { deliveryStep: 'address' } : {}),
+      });
+      scrollBodyToTop();
       return;
     }
 
     setCheckoutStep('plan');
+    scrollBodyToTop();
   };
+
+  const handleEscapeRef = useRef<() => void>(() => {});
+  handleEscapeRef.current = () => {
+    if (checkoutStep === 'success' || checkoutStep === 'failed') {
+      requestClose();
+      return;
+    }
+
+    if (checkoutStep !== 'plan') {
+      handleBack();
+      return;
+    }
+
+    requestClose();
+  };
+
+  useEscapeLayer(isOpen, Z_INDEX_TOKENS.checkout, () => {
+    handleEscapeRef.current();
+  });
 
   if (!isOpen) return null;
 
@@ -434,6 +500,7 @@ export function CheckoutPage({
         isClosing ? 'pointer-events-none modal-exit-responsive' : 'modal-enter-responsive',
       ].join(' ')}
       style={checkoutPageStyle}
+      {...{ [SPACING_ROOT_ATTR]: '' }}
       onAnimationEnd={handlePanelAnimationEnd}
     >
       {checkoutStep !== 'success' && checkoutStep !== 'failed' ? (
@@ -451,11 +518,16 @@ export function CheckoutPage({
           <div
             ref={bodyRef}
             className="flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide"
+            {...{ [SPACING_CONTENT_ATTR]: '' }}
           >
-            <div className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-[20px] md:grid md:grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:items-start md:gap-[24px] md:px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]">
+            <div
+              className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-[20px] md:grid md:grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:items-start md:gap-[24px] md:px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]"
+              style={checkoutPlanGridStyle}
+            >
               <div
                 ref={leftRef}
-                className="flex w-full min-w-0 flex-col gap-[32px] pt-[56px] md:gap-[48px] md:pb-[120px]"
+                style={checkoutLeftColumnStyle}
+                className="flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pt-[56px] md:pb-[120px]"
               >
                 <PlanSelectorBlock
                   selected={plan}
@@ -494,7 +566,7 @@ export function CheckoutPage({
                   phone={phone}
                   onPhoneChange={handlePhoneChange}
                   phoneError={phoneError}
-                  isPhoneVerified={isPhoneVerified}
+                  isPhoneVerified={isAuthComplete}
                   onResetPhone={handleResetPhone}
                   totalMealsAnchorRef={totalMealsRef}
                 />
@@ -507,6 +579,8 @@ export function CheckoutPage({
             onClose={() => setMenuOpen(false)}
             plan={plan}
             lightMealOption={lightMealOption}
+            onPlanChange={setPlan}
+            onLightMealOptionChange={setLightMealOption}
           />
 
           <BottomFloatTotalBlock
@@ -520,7 +594,7 @@ export function CheckoutPage({
           />
         </>
       ) : checkoutStep === 'verification' ? (
-        <div ref={bodyRef} className={checkoutStepScrollClassName}>
+        <div ref={bodyRef} className={checkoutStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <SmsCodeScreen
             phone={phone}
             onPhoneChange={handlePhoneChange}
@@ -535,7 +609,7 @@ export function CheckoutPage({
           />
         </div>
       ) : checkoutStep === 'delivery' && deliveryStep === 'address' ? (
-        <div ref={bodyRef} className={checkoutStepScrollClassName}>
+        <div ref={bodyRef} className={checkoutFormStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <DeliveryAddressScreen
             selectedAddress={selectedAddress}
             onSelectedAddressChange={setSelectedAddress}
@@ -543,7 +617,7 @@ export function CheckoutPage({
           />
         </div>
       ) : checkoutStep === 'delivery' && deliveryStep === 'details' ? (
-        <div ref={bodyRef} className={checkoutStepScrollClassName}>
+        <div ref={bodyRef} className={checkoutFormStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <DeliveryDetailsScreen
             selectedAddress={selectedAddress}
             deliveryDetails={deliveryDetails}
@@ -555,7 +629,7 @@ export function CheckoutPage({
           />
         </div>
       ) : checkoutStep === 'payment' ? (
-        <div ref={bodyRef} className={checkoutStepScrollClassName}>
+        <div ref={bodyRef} className={checkoutFormStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <PaymentScreen
             plan={plan}
             days={days}
@@ -571,7 +645,7 @@ export function CheckoutPage({
           />
         </div>
       ) : checkoutStep === 'success' ? (
-        <div ref={bodyRef} className={checkoutStepScrollClassName}>
+        <div ref={bodyRef} className={checkoutStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <PaymentSuccessScreen
             days={days}
             duration={duration}
@@ -582,7 +656,7 @@ export function CheckoutPage({
           />
         </div>
       ) : (
-        <div ref={bodyRef} className={checkoutStepScrollClassName}>
+        <div ref={bodyRef} className={checkoutStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <PaymentFailedScreen
             onClose={requestClose}
             onTabChange={handleResultTabChange}

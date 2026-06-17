@@ -1,3 +1,6 @@
+import type { SpacingMeasureContext } from './getSpacingMeasureRoot';
+import { isInsideMeasureRoot } from './spacingMeasureContext';
+
 export type SpacingLabel = {
   top: number;
   height: number;
@@ -9,8 +12,10 @@ const MIN_SPACING = 4;
 const DEDUPE_TOLERANCE = 2;
 
 const OVERLAY_SELECTORS = [
+  '.landing-dev-tools',
   '.landing-grid-overlay',
   '.spacing-overlay',
+  '.horizontal-spacing-overlay',
   '.dev-label',
   '.grid-labels',
 ];
@@ -19,8 +24,9 @@ function isOverlayElement(el: Element): boolean {
   return OVERLAY_SELECTORS.some((sel) => el.closest(sel));
 }
 
-function isVisible(el: Element): el is HTMLElement {
+function isVisible(el: Element, context: SpacingMeasureContext | null): el is HTMLElement {
   if (!(el instanceof HTMLElement)) return false;
+  if (!isInsideMeasureRoot(el, context)) return false;
   if (isOverlayElement(el)) return false;
 
   const style = getComputedStyle(el);
@@ -33,8 +39,8 @@ function isVisible(el: Element): el is HTMLElement {
   return rect.width > 0 && rect.height > 0;
 }
 
-function getVisibleChildren(el: HTMLElement): HTMLElement[] {
-  return [...el.children].filter(isVisible) as HTMLElement[];
+function getVisibleChildren(el: HTMLElement, context: SpacingMeasureContext | null): HTMLElement[] {
+  return [...el.children].filter((child) => isVisible(child, context)) as HTMLElement[];
 }
 
 function pushLabel(labels: SpacingLabel[], label: SpacingLabel) {
@@ -110,7 +116,7 @@ function addSiblingGapLabels(children: HTMLElement[], labels: SpacingLabel[]) {
 function isVerticalFlow(style: CSSStyleDeclaration): boolean {
   const display = style.display;
   if (display.includes('flex')) {
-    const direction = style.flexDirection;
+    const direction = style.flexDirection || 'row';
     return direction === 'column' || direction === 'column-reverse';
   }
   if (display.includes('grid')) {
@@ -119,20 +125,25 @@ function isVerticalFlow(style: CSSStyleDeclaration): boolean {
   return display === 'block' || display === 'list-item' || display === 'flow-root';
 }
 
-function walk(el: HTMLElement, labels: SpacingLabel[]) {
-  if (!isVisible(el)) return;
+function walk(el: HTMLElement, labels: SpacingLabel[], context: SpacingMeasureContext | null) {
+  if (isVisible(el, context)) {
+    const style = getComputedStyle(el);
+    const children = getVisibleChildren(el, context);
 
-  const style = getComputedStyle(el);
-  const children = getVisibleChildren(el);
+    addPaddingLabels(el, style, labels);
+    addMarginLabels(el, style, labels);
 
-  addPaddingLabels(el, style, labels);
-  addMarginLabels(el, style, labels);
+    if (children.length >= 2 && isVerticalFlow(style)) {
+      addSiblingGapLabels(children, labels);
+    }
 
-  if (children.length >= 2 && isVerticalFlow(style)) {
-    addSiblingGapLabels(children, labels);
+    children.forEach((child) => walk(child, labels, context));
+    return;
   }
 
-  children.forEach((child) => walk(child, labels));
+  [...el.children]
+    .filter((child): child is HTMLElement => child instanceof HTMLElement)
+    .forEach((child) => walk(child, labels, context));
 }
 
 function dedupeLabels(labels: SpacingLabel[]): SpacingLabel[] {
@@ -150,9 +161,9 @@ function dedupeLabels(labels: SpacingLabel[]): SpacingLabel[] {
   return result.sort((a, b) => a.top - b.top);
 }
 
-export function measureVerticalSpacings(root: HTMLElement | null): SpacingLabel[] {
-  if (!root) return [];
+export function measureVerticalSpacings(context: SpacingMeasureContext | null): SpacingLabel[] {
+  if (!context) return [];
   const labels: SpacingLabel[] = [];
-  walk(root, labels);
+  walk(context.root, labels, context);
   return dedupeLabels(labels);
 }

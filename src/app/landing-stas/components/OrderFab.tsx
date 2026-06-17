@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
+import { socialLinks } from '../../config/socialLinks';
 import { Icon } from './icons';
 
 import type { MealContentEn } from './content/mealContentEn';
-
-const WHATSAPP_URL = 'https://wa.me/971544595462?text=';
 
 function OrderFabWhatsAppIcon() {
   return (
@@ -53,7 +52,7 @@ export function OrderFab({ t, onOrderClick, hidden }: OrderFabProps) {
   return createPortal(
     <div className={`order-fab-group${showOrder ? ' order-fab-group--order-visible' : ''}`}>
       <a
-        href={WHATSAPP_URL}
+        href={socialLinks.whatsapp}
         target="_blank"
         rel="noopener noreferrer"
         aria-label="WhatsApp"

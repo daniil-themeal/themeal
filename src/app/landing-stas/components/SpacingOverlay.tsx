@@ -1,43 +1,21 @@
 import { useCallback, useEffect, useState } from 'react';
 import { measureVerticalSpacings, type SpacingLabel } from '../measureVerticalSpacings';
+import { getSpacingMeasureContext } from '../getSpacingMeasureRoot';
+import { useSpacingMeasureSchedule } from '../useSpacingMeasureSchedule';
 import { useGridOverlay } from '../useGridOverlay';
 
 function useSpacingLabels(enabled: boolean) {
   const [labels, setLabels] = useState<SpacingLabel[]>([]);
 
   const measure = useCallback(() => {
-    const root = document.querySelector('.landing-stas') as HTMLElement | null;
-    setLabels(measureVerticalSpacings(root));
+    setLabels(measureVerticalSpacings(getSpacingMeasureContext()));
   }, []);
 
+  useSpacingMeasureSchedule(enabled, measure);
+
   useEffect(() => {
-    if (!enabled) {
-      setLabels([]);
-      return;
-    }
-
-    let timeout = 0;
-    const schedule = () => {
-      window.clearTimeout(timeout);
-      timeout = window.setTimeout(measure, 100);
-    };
-
-    schedule();
-
-    window.addEventListener('resize', schedule, { passive: true });
-    window.addEventListener('scroll', schedule, { passive: true });
-
-    const root = document.querySelector('.landing-stas');
-    const observer = root ? new ResizeObserver(schedule) : null;
-    if (root && observer) observer.observe(root);
-
-    return () => {
-      window.clearTimeout(timeout);
-      window.removeEventListener('resize', schedule);
-      window.removeEventListener('scroll', schedule);
-      observer?.disconnect();
-    };
-  }, [enabled, measure]);
+    if (!enabled) setLabels([]);
+  }, [enabled]);
 
   return labels;
 }

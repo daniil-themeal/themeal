@@ -2,9 +2,7 @@ import { useEffect } from 'react';
 import { mealContentEn } from './content/mealContentEn';
 import { useScrollReveal } from './useScrollReveal';
 import { OrderFab } from './components/OrderFab';
-import { GridOverlay } from './components/GridOverlay';
-import { SpacingOverlay } from './components/SpacingOverlay';
-import { ViewportLabel } from './components/ViewportLabel';
+import { DevToolsOverlays } from './components/DevToolsOverlays';
 import {
   Header,
   Hero,
@@ -80,9 +78,7 @@ export default function LandingStasPage({
       </main>
       <Footer t={t} />
       <OrderFab t={t} onOrderClick={onOrderClick} hidden={checkoutOpen} />
-      <GridOverlay />
-      <SpacingOverlay />
-      <ViewportLabel />
+      <DevToolsOverlays />
     </div>
   );
 }

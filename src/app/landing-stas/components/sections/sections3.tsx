@@ -1,6 +1,7 @@
 // @ts-nocheck
 import { createElement, Fragment, useState, useEffect, useRef } from 'react';
 import { useHorizontalScroll } from '../../useHorizontalScroll';
+import { landingFooterSocials } from '../../../config/socialLinks';
 import { Icon, Logo, Stars, Social } from '../icons';
 import { HeroStats } from '../HeroStats';
 
@@ -150,7 +151,7 @@ function FinalOffer({ t, onOrder }) {
 /* ---------------- Footer ---------------- */
 function Footer({ t, lang, setLang }) {
   const links = [[t.nav.menu,'#menu'], [t.nav.delivery,'#delivery'], [t.nav.qa,'#qa'], [t.footer.privacy,'#'], [t.footer.terms,'#']];
-  const socials = [['facebook','#'],['instagram','#'],['tiktok','#'],['youtube','#'],['whatsapp','#'],['telegram','#']];
+  const socials = landingFooterSocials;
   return (
     createElement('footer', { style:{ position:'relative', zIndex:10, background:'var(--plum-950)', color:'rgba(255,255,255,.7)', paddingBlock:'var(--space-64) var(--space-40)' } },
       createElement('div', { className:'wrap' },
@@ -163,7 +164,7 @@ function Footer({ t, lang, setLang }) {
               links.map(([l,href],i)=>createElement('a', { key:i, href, style:{ color:'rgba(255,255,255,.75)', transition:'color .15s' },
                 onMouseEnter:e=>e.target.style.color='#fff', onMouseLeave:e=>e.target.style.color='rgba(255,255,255,.75)' }, l))),
             createElement('div', { className:'row', style:{ gap:10, flexWrap:'wrap' } },
-              socials.map(([k,href])=>createElement('a', { key:k, href, 'aria-label':k, title:k,
+              socials.map(([k,href])=>createElement('a', { key:k, href, target:'_blank', rel:'noopener noreferrer', 'aria-label':k, title:k,
                 style:{ width:42, height:42, borderRadius:'50%', display:'grid', placeItems:'center', color:'rgba(255,255,255,.8)', background:'rgba(255,255,255,.08)', transition:'all .15s var(--ease)' },
                 onMouseEnter:e=>{ e.currentTarget.style.background='var(--brand)'; e.currentTarget.style.color='#fff'; },
                 onMouseLeave:e=>{ e.currentTarget.style.background='rgba(255,255,255,.08)'; e.currentTarget.style.color='rgba(255,255,255,.8)'; } },

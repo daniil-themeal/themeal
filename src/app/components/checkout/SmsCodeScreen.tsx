@@ -340,7 +340,10 @@ export function SmsCodeScreen({
     }
 
     if (event.key === 'Escape') {
-      setIsAllSelected(false);
+      if (isAllSelected) {
+        event.stopPropagation();
+        setIsAllSelected(false);
+      }
     }
   };
 

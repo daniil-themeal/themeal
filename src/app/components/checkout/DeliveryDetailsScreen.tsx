@@ -20,7 +20,7 @@ import type { DeliveryDetailsData } from './deliveryDetailsTypes';
 import { MealCalendar } from './MealCalendar';
 import { getUpcomingDeliveryDates } from './mealCalendarUtils';
 
-const TIME_SLOTS = ['07:00 – 11:00', '12:00 – 16:00', '18:00 – 22:00'];
+const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
 
 function InfoIcon() {
   return (

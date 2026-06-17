@@ -126,10 +126,10 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
                   : 'border-transparent bg-[var(--ingredients-card-bg)]',
               ].join(' ')}
             >
-              <div className="flex cursor-pointer items-center gap-[12px] px-[20px] md:px-[24px]">
+              <div className="flex cursor-pointer items-center gap-[12px] p-[var(--checkout-card-padding)]">
                 <div
                   className={[
-                    'flex flex-[1_0_0] flex-col gap-[12px] py-[24px]',
+                    'flex flex-[1_0_0] flex-col gap-[12px]',
                     checked
                       ? 'text-[var(--ingredients-active)]'
                       : 'text-[var(--ingredients-text)]',
@@ -163,7 +163,7 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
                     </div>
                   </div>
 
-                  <div className="flex items-center py-[16px]">
+                  <div className="flex items-center">
                     <div
                       className={[
                         'relative size-[20px] rounded-full transition-colors duration-150',

@@ -1,6 +1,9 @@
 import { useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
+import { useEscapeLayer } from './common/escapeStack';
+import { Z_INDEX_TOKENS } from './common/zIndexTokens';
+
 import { Badge, BADGE_VARIANTS } from './common/Badge';
 import { Button, BUTTON_SIZE_LABELS, BUTTON_SIZES, BUTTON_VARIANTS } from './common/Button';
 import { Checkbox } from './common/Checkbox';
@@ -39,7 +42,6 @@ import {
   typographyRoleStyle,
 } from './common/typographyTokens';
 import { TextLink, TEXT_LINK_SIZES } from './common/TextLink';
-import { Z_INDEX_TOKENS } from './common/zIndexTokens';
 import { formatUaePhoneInput } from './checkout/phoneValidation';
 import {
   FONT_FAMILY_CLASS_NAMES,
@@ -722,6 +724,8 @@ function IconCatalogRow({
 }
 
 export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
+  useEscapeLayer(true, Z_INDEX_TOKENS.checkout, onClose);
+
   const [email, setEmail] = useState('email@themeal.menu');
   const [name, setName] = useState('');
   const [checkboxChecked, setCheckboxChecked] = useState(false);
