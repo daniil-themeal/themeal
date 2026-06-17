@@ -13,6 +13,7 @@ import { RadioCheckIcon } from '../common/icons/RadioCheckIcon';
 import { PromoCodeIcon } from '../common/icons/PromoCodeIcon';
 import { XIcon } from '../common/icons/feather/XIcon';
 import { TextInput } from '../common/TextInput';
+import { CHECKOUT_PROMO_ACTIVATE_BUTTON_WIDTH_CLAMP } from './checkoutSpacing';
 
 type PromoCodeView = 'collapsed' | 'input' | 'applied';
 type CheckoutPromoCodeVariant = 'summary' | 'payment';
@@ -22,16 +23,23 @@ type CheckoutPromoCodeCssVariables = CSSProperties & {
   '--promo-code-muted': string;
   '--promo-code-primary': string;
   '--promo-code-title-fs': string;
+  '--promo-activate-btn-width': string;
+};
+
+const promoCodeSharedStyle: Pick<CheckoutPromoCodeCssVariables, '--promo-activate-btn-width'> = {
+  '--promo-activate-btn-width': CHECKOUT_PROMO_ACTIVATE_BUTTON_WIDTH_CLAMP,
 };
 
 const VARIANT_STYLE: Record<CheckoutPromoCodeVariant, CheckoutPromoCodeCssVariables> = {
   summary: {
+    ...promoCodeSharedStyle,
     '--promo-code-text': 'var(--order-summary-text)',
     '--promo-code-muted': 'var(--order-summary-muted)',
     '--promo-code-primary': 'var(--order-summary-primary)',
     '--promo-code-title-fs': 'var(--order-summary-title-font-size)',
   },
   payment: {
+    ...promoCodeSharedStyle,
     '--promo-code-text': 'var(--payment-text)',
     '--promo-code-muted': 'var(--payment-muted)',
     '--promo-code-primary': 'var(--payment-primary)',
@@ -181,9 +189,7 @@ export function CheckoutPromoCode({
   }
 
   const activateButtonClassName =
-    variant === 'summary'
-      ? 'w-full min-w-0 min-[400px]:w-auto min-[400px]:max-w-[140px] min-[400px]:shrink min-[400px]:px-[12px]'
-      : 'w-full min-w-0 min-[400px]:w-[140px] min-[400px]:flex-none';
+    'w-full min-w-0 min-[400px]:w-[length:var(--promo-activate-btn-width)] min-[400px]:shrink-0 min-[400px]:px-[12px]';
 
   const activateAction = (
     <Button
@@ -202,9 +208,6 @@ export function CheckoutPromoCode({
   const inputRow = (
     <InputButtonRow
       error={error}
-      actionClassName={
-        variant === 'summary' ? 'min-[400px]:min-w-0 min-[400px]:shrink' : undefined
-      }
       input={
         <TextInput
           id={inputId}

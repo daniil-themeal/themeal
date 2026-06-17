@@ -15,6 +15,9 @@ export const CHECKOUT_CARD_PADDING_CLAMP =
 export const CHECKOUT_SECTION_GAP_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 4 / 448), 24px)';
 
+export const CHECKOUT_PROMO_ACTIVATE_BUTTON_WIDTH_CLAMP =
+  'clamp(140px, calc(140px + (100vw - 25rem) * 20 / 448), 160px)';
+
 export const CHECKOUT_HEADER_TO_CARD_GAP_CLAMP =
   'clamp(24px, calc(24px + (100vw - 20rem) * 12 / 448), 36px)';
 
