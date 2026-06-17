@@ -6,6 +6,7 @@ import { Z_INDEX_TOKENS } from './common/zIndexTokens';
 
 import { Badge, BADGE_VARIANTS } from './common/Badge';
 import { Button, BUTTON_SIZE_LABELS, BUTTON_SIZES, BUTTON_VARIANTS } from './common/Button';
+import { IconButton } from './common/IconButton';
 import { Checkbox } from './common/Checkbox';
 import { CHECKBOX_SIZE_LABELS, CHECKBOX_SIZES, RADIO_SIZE_LABELS, RADIO_SIZES } from './common/checkboxSizeTokens';
 import { Radio, RadioGroup } from './common/Radio';
@@ -29,6 +30,7 @@ import {
   RadioCheckIcon,
   SuccessIcon,
   TruckIcon,
+  XIcon,
 } from './common/icons';
 import type { IconSize } from './common/icons/iconSize';
 import { FEATHER_ICON_CATALOG_ENTRIES } from './common/icons/feather/iconCatalog';
@@ -120,6 +122,8 @@ type DemoAnchorId =
   | 'button-variants'
   | 'button-sizes'
   | 'button-icons'
+  | 'icon-button-variants'
+  | 'icon-button-sizes'
   | 'badge-variants';
 
 type DemoNavigationItem = {
@@ -200,6 +204,8 @@ const demoNavigationItems: DemoNavigationItem[] = [
       { id: 'button-variants', label: 'Button variants' },
       { id: 'button-sizes', label: 'Button sizes' },
       { id: 'button-icons', label: 'Button icons' },
+      { id: 'icon-button-variants', label: 'IconButton variants' },
+      { id: 'icon-button-sizes', label: 'IconButton sizes' },
     ],
   },
   {
@@ -1929,6 +1935,81 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
               >
                 Outline + left icon
               </Button>
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="icon-button-variants"
+            title="IconButton variants"
+            description="Square icon-only buttons with the same color variants as Button. Width equals height for each size token."
+          >
+            <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
+              {BUTTON_VARIANTS.map((variant) => (
+                <div key={variant} className="flex flex-col gap-[8px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`variant="${variant}"`}</CodeLabel>
+                  </DemoSubheading>
+
+                  <div className="flex flex-wrap items-center gap-[8px]">
+                    <IconButton
+                      variant={variant}
+                      aria-label={`${capitalizeWord(variant)} action`}
+                      icon={<XIcon />}
+                    />
+
+                    <IconButton
+                      variant={variant}
+                      aria-label={`${capitalizeWord(variant)} action disabled`}
+                      icon={<XIcon />}
+                      disabled
+                    />
+
+                    <IconButton
+                      variant={variant}
+                      aria-label={`${capitalizeWord(variant)} action loading`}
+                      icon={<XIcon />}
+                      loading
+                    />
+
+                    <IconButton
+                      variant={variant}
+                      outline
+                      aria-label={`${capitalizeWord(variant)} outline action`}
+                      icon={<XIcon />}
+                    />
+
+                    <IconButton
+                      variant={variant}
+                      outline
+                      aria-label={`${capitalizeWord(variant)} outline action disabled`}
+                      icon={<XIcon />}
+                      disabled
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="icon-button-sizes"
+            title="IconButton sizes"
+            description="Square dimensions match Button height tokens: 32 / 40 / 48 / 64 / 72 px. Icon size scales with button size."
+          >
+            <div className="flex flex-wrap items-end gap-[16px]">
+              {BUTTON_SIZES.map((size) => (
+                <div key={size} className="flex flex-col items-center gap-[8px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`size="${size}"`}</CodeLabel>
+                  </DemoSubheading>
+
+                  <IconButton
+                    size={size}
+                    aria-label={`${BUTTON_SIZE_LABELS[size]} icon action`}
+                    icon={<XIcon />}
+                  />
+                </div>
+              ))}
             </div>
           </DemoCard>
         </PageSection>

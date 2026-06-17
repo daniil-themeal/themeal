@@ -1,10 +1,4 @@
-import { useMemo, useState } from 'react';
-
 import { formatTabbyPrice } from '../../config/tabbyConfig';
-import { ModalShell } from '../common/ModalShell';
-import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
-import { XIcon } from '../common/icons';
-import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 
 const SVG_TABBY_BG =
   'M52.2688 24H7.7312C3.4402 24 0 20.6278 0 16.5022V7.49776C0 3.33632 3.47719 0 7.7312 0H52.2688C56.5598 0 60 3.3722 60 7.49776V16.5022C60 20.6278 56.5598 24 52.2688 24Z';
@@ -14,17 +8,10 @@ const SVG_TABBY_TEXT2 =
   'M6.73662 2.08178L0 3.08678V4.73784L6.73662 3.73285V2.08178ZM6.73662 4.52249L0 5.52748V7.10676L6.73662 6.10177V4.52249ZM14.2876 5.27624C14.1765 3.44571 12.9921 2.33303 11.0673 2.33303C9.95687 2.33303 9.03151 2.76374 8.40227 3.55338C7.77302 4.34302 7.43989 5.49159 7.43989 6.89141C7.43989 8.29123 7.77302 9.43979 8.40227 10.2294C9.03151 11.0191 9.95687 11.4139 11.0673 11.4139C12.9921 11.4139 14.1765 10.3371 14.2876 8.47069V11.2344H16.6935V2.54838L14.2876 2.90731V5.27624ZM14.4356 6.89141C14.4356 8.50658 13.5473 9.58336 12.1777 9.58336C10.7712 9.58336 9.91986 8.57837 9.91986 6.89141C9.91986 5.20445 10.7712 4.19945 12.1777 4.19945C12.844 4.19945 13.4362 4.4507 13.8434 4.9532C14.2135 5.41981 14.4356 6.10177 14.4356 6.89141ZM23.6892 2.33303C21.7645 2.33303 20.58 3.40981 20.469 5.27624V0L18.063 0.358927V11.2344H20.469V8.47069C20.58 10.3371 21.7645 11.4139 23.6892 11.4139C25.9471 11.4139 27.3166 9.72694 27.3166 6.89141C27.3166 4.05588 25.9471 2.33303 23.6892 2.33303ZM22.6158 9.58336C21.2463 9.58336 20.3579 8.54248 20.3579 6.89141C20.3579 6.10177 20.58 5.41981 20.9501 4.9532C21.3573 4.4507 21.9125 4.19945 22.6158 4.19945C24.0223 4.19945 24.8737 5.20445 24.8737 6.89141C24.8737 8.57837 24.0223 9.58336 22.6158 9.58336ZM33.8312 2.33303C31.9064 2.33303 30.722 3.40981 30.6109 5.27624V0L28.205 0.358927V11.2344H30.6109V8.47069C30.722 10.3371 31.9064 11.4139 33.8312 11.4139C36.089 11.4139 37.4586 9.72694 37.4586 6.89141C37.4586 4.05588 36.089 2.33303 33.8312 2.33303ZM32.7577 9.58336C31.3882 9.58336 30.4999 8.54248 30.4999 6.89141C30.4999 6.10177 30.722 5.41981 31.0921 4.9532C31.4993 4.4507 32.0545 4.19945 32.7577 4.19945C34.1643 4.19945 35.0156 5.20445 35.0156 6.89141C35.0156 8.57837 34.1643 9.58336 32.7577 9.58336ZM37.4586 2.51249H40.0126L42.0854 11.2344H39.7905L37.4586 2.51249ZM48.7109 3.40981V2.72785H48.4148V2.58428H49.1921V2.72785H48.896V3.40981H48.7109ZM49.2291 3.40981V2.54838H49.5253L49.6733 2.94321C49.7103 3.05089 49.7473 3.08678 49.7473 3.12267C49.7473 3.08678 49.7844 3.05089 49.8214 2.94321L49.9694 2.54838H50.2655V3.40981H50.0805V2.72785L49.8214 3.40981H49.6363L49.4142 2.72785V3.40981H49.2291Z';
 
 const INSTALLMENT_COUNT = 4;
-const INSTALLMENT_INTERVAL_DAYS = 14;
 
 type TabbyPromoFallbackProps = {
   price: number;
   pricePerMonth?: number | null;
-};
-
-type InstallmentItem = {
-  index: number;
-  amount: number;
-  dueLabel: string;
 };
 
 function TabbyLogo() {
@@ -47,138 +34,19 @@ function TabbyLogo() {
   );
 }
 
-function formatDueLabel(date: Date) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const target = new Date(date);
-  target.setHours(0, 0, 0, 0);
-
-  if (target.getTime() === today.getTime()) return 'Today';
-
-  return target.toLocaleDateString('en-AE', {
-    day: 'numeric',
-    month: 'short',
-  });
-}
-
-function getInstallmentSchedule(price: number): InstallmentItem[] {
-  const amount = price / INSTALLMENT_COUNT;
-  const startDate = new Date();
-  startDate.setHours(0, 0, 0, 0);
-
-  return Array.from({ length: INSTALLMENT_COUNT }, (_, index) => {
-    const dueDate = new Date(startDate);
-    dueDate.setDate(dueDate.getDate() + index * INSTALLMENT_INTERVAL_DAYS);
-
-    return {
-      index: index + 1,
-      amount,
-      dueLabel: formatDueLabel(dueDate),
-    };
-  });
-}
-
-function TabbyInstallmentsModal({
-  isOpen,
-  onClose,
-  price,
-}: {
-  isOpen: boolean;
-  onClose: () => void;
-  price: number;
-}) {
-  const schedule = useMemo(() => getInstallmentSchedule(price), [price]);
-
-  return (
-    <ModalShell
-      isOpen={isOpen}
-      onClose={onClose}
-      variant="centered-scroll"
-      zIndex={Z_INDEX_TOKENS.modal}
-      rootClassName="bg-black/40 px-[20px] py-[24px]"
-      panelClassName="w-full max-w-[400px] overflow-hidden rounded-[16px] bg-white shadow-2xl"
-    >
-      {(requestClose) => (
-        <div className="flex flex-col">
-          <div className="flex items-center justify-between border-b border-[var(--order-summary-divider,#f3f4f6)] px-[20px] py-[16px]">
-            <p className="font-sans text-[16px] font-bold leading-[130%] text-[var(--order-summary-text,#111827)]">
-              Pay in 4 interest-free payments
-            </p>
-            <button
-              type="button"
-              onClick={requestClose}
-              className="group flex size-[40px] shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#f9fafb] transition-colors hover:bg-[#f3f4f6]"
-              aria-label="Close"
-            >
-              <XIcon size={20} className={iconColorClassName} style={iconColorStyle('neutral', 500)} />
-            </button>
-          </div>
-
-          <div className="flex flex-col gap-[12px] px-[20px] py-[20px]">
-            {schedule.map((item) => (
-              <div key={item.index} className="flex items-center justify-between gap-[12px]">
-                <div className="flex flex-col gap-[2px]">
-                  <p className="font-sans text-[14px] font-bold leading-[150%] text-[var(--order-summary-text,#111827)]">
-                    Payment {item.index} of {INSTALLMENT_COUNT}
-                  </p>
-                  <p className="font-sans text-[12px] font-medium leading-[140%] text-[var(--order-summary-muted,#6b7280)]">
-                    {item.dueLabel}
-                  </p>
-                </div>
-                <p className="font-sans text-[14px] font-bold leading-[150%] text-[var(--order-summary-text,#111827)]">
-                  AED {formatTabbyPrice(item.amount)}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          <div className="border-t border-[var(--order-summary-divider,#f3f4f6)] px-[20px] py-[16px]">
-            <div className="flex items-center justify-between gap-[12px]">
-              <p className="font-sans text-[14px] font-medium leading-[150%] text-[var(--order-summary-muted,#6b7280)]">
-                Total
-              </p>
-              <p className="font-sans text-[16px] font-bold leading-[150%] text-[var(--order-summary-text,#111827)]">
-                AED {formatTabbyPrice(price)}
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-    </ModalShell>
-  );
-}
-
 export function TabbyPromoFallback({ price, pricePerMonth = null }: TabbyPromoFallbackProps) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const installmentAmount = price / INSTALLMENT_COUNT;
   const monthlyAmount = pricePerMonth ?? installmentAmount;
 
   if (price <= 0) return null;
 
   return (
-    <>
-      <div className="flex items-center gap-[12px]">
-        <p className="flex-[1_0_0] font-sans text-[length:var(--order-summary-small-font-size)] font-normal leading-[150%] text-[var(--order-summary-muted)]">
-          As low as <strong>{formatTabbyPrice(monthlyAmount)}/month</strong> or 4 interest-free payments.{' '}
-          <strong>
-            <button
-              type="button"
-              onClick={() => setIsModalOpen(true)}
-              className="cursor-pointer font-bold text-inherit"
-            >
-              More options
-            </button>
-          </strong>
-        </p>
-        <TabbyLogo />
-      </div>
-
-      <TabbyInstallmentsModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        price={price}
-      />
-    </>
+    <div className="flex items-center gap-[12px]">
+      <p className="flex-[1_0_0] font-sans text-[length:var(--order-summary-small-font-size)] font-normal leading-[150%] text-[var(--order-summary-muted)]">
+        As low as <strong>{formatTabbyPrice(monthlyAmount)}/month</strong> or 4 interest-free payments.{' '}
+        <strong>More options</strong>
+      </p>
+      <TabbyLogo />
+    </div>
   );
 }

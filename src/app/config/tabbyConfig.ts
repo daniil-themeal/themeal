@@ -23,8 +23,11 @@ export function getTabbyInstallmentsPopupUrl(price: number) {
     price: formatTabbyPrice(price),
     currency: tabbyConfig.currency,
     merchant_code: tabbyConfig.merchantCode,
-    public_key: tabbyConfig.publicKey,
   });
+
+  if (tabbyConfig.publicKey) {
+    params.set('public_key', tabbyConfig.publicKey);
+  }
 
   return `https://checkout.tabby.ai/promos/product-page/installments/${tabbyConfig.lang}/?${params}`;
 }

@@ -1,5 +1,16 @@
-import { useCallback, useEffect, useId, useRef, useState, type CSSProperties, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+  type CSSProperties,
+  type KeyboardEvent,
+  type ReactNode,
+} from 'react';
 
+import { BUTTON_VISUAL_CLASS_NAME, getButtonStyles } from '../common/Button';
+import { BORDER_RADIUS_TOKENS } from '../common/borderRadiusTokens';
 import {
   formatTabbyPrice,
   isTabbyConfigured,
@@ -7,6 +18,7 @@ import {
   tabbyConfig,
 } from '../../config/tabbyConfig';
 import { TabbyPromoFallback } from './TabbyPromoFallback';
+import { TabbyPromoModal } from './TabbyPromoModal';
 
 type TabbyPromoSource = 'product' | 'cart';
 
@@ -19,6 +31,7 @@ type TabbyPromoWidgetProps = {
 };
 
 const TABBY_PROMO_INIT_TIMEOUT_MS = 2000;
+const TABBY_DIALOG_HIDE_STYLE_ID = 'tabby-dialog-hide-style';
 
 declare global {
   interface Window {
@@ -35,14 +48,50 @@ declare global {
   }
 }
 
-function TabbyPromoShell({ children }: { children: ReactNode }) {
+function useTabbyDialogGuard() {
+  useEffect(() => {
+    if (document.getElementById(TABBY_DIALOG_HIDE_STYLE_ID)) return;
+
+    const style = document.createElement('style');
+    style.id = TABBY_DIALOG_HIDE_STYLE_ID;
+    style.textContent = '#TabbyDialogContainer { display: none !important; }';
+    document.head.appendChild(style);
+  }, []);
+}
+
+function TabbyPromoShell({
+  children,
+  onOpen,
+  ariaLabel = 'View Tabby payment options',
+}: {
+  children: ReactNode;
+  onOpen: () => void;
+  ariaLabel?: string;
+}) {
+  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      onOpen();
+    }
+  };
+
   return (
-    <div className="relative w-full rounded-[8px]">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 rounded-[8px] border border-[var(--order-summary-divider)]"
-      />
-      <div className="px-[12px] py-[12px]">{children}</div>
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={onOpen}
+      onKeyDown={handleKeyDown}
+      aria-label={ariaLabel}
+      className={[
+        BUTTON_VISUAL_CLASS_NAME,
+        'block w-full px-[12px] py-[12px] text-left',
+      ].join(' ')}
+      style={{
+        ...getButtonStyles('neutral', true),
+        '--button-border-radius': BORDER_RADIUS_TOKENS[8],
+      }}
+    >
+      <div className="pointer-events-none">{children}</div>
     </div>
   );
 }
@@ -178,10 +227,17 @@ export function TabbyPromoWidget({
   className = '',
   style,
 }: TabbyPromoWidgetProps) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [officialPromoFailed, setOfficialPromoFailed] = useState(false);
+
+  useTabbyDialogGuard();
 
   const handleInitFailed = useCallback(() => {
     setOfficialPromoFailed(true);
+  }, []);
+
+  const handleOpenModal = useCallback(() => {
+    setIsModalOpen(true);
   }, []);
 
   useEffect(() => {
@@ -193,18 +249,26 @@ export function TabbyPromoWidget({
   const useFallback = !isTabbyConfigured() || officialPromoFailed;
 
   return (
-    <TabbyPromoShell>
-      {useFallback ? (
-        <TabbyPromoFallback price={price} pricePerMonth={pricePerMonth} />
-      ) : (
-        <TabbyOfficialPromo
-          price={price}
-          source={source}
-          className={className}
-          style={style}
-          onInitFailed={handleInitFailed}
-        />
-      )}
-    </TabbyPromoShell>
+    <>
+      <TabbyPromoShell onOpen={handleOpenModal}>
+        {useFallback ? (
+          <TabbyPromoFallback price={price} pricePerMonth={pricePerMonth} />
+        ) : (
+          <TabbyOfficialPromo
+            price={price}
+            source={source}
+            className={className}
+            style={style}
+            onInitFailed={handleInitFailed}
+          />
+        )}
+      </TabbyPromoShell>
+
+      <TabbyPromoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        price={price}
+      />
+    </>
   );
 }

@@ -7,7 +7,7 @@ import {
   getCheckoutPrice,
   getTotalMeals,
 } from '../../data/checkoutPricing';
-import type { LightMealOption } from '../../data/testMeals';
+import { PromoCodeEstimateHint } from './PromoCodeEstimateHint';
 import type { TestAddress } from '../../data/testAddresses';
 import { Button } from '../common/Button';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
@@ -356,20 +356,24 @@ export function PaymentScreen({
                   leftIcon={
                     <PromoCodeIcon
                       size={FIELD_SIZE_CONFIG.large.iconSizePx as 20 | 24}
+                      color={COLOR_TOKENS.neutral[200]}
                     />
                   }
                 />
               }
               action={
-                <Button
-                  type="button"
-                  variant="neutral"
-                  size="medium"
-                  disabled={!promoCode.trim()}
-                  className="w-full sm:w-[140px]"
-                >
-                  Activate
-                </Button>
+                <div className="flex w-full items-center justify-end gap-[8px] sm:w-auto">
+                  <Button
+                    type="button"
+                    variant="warning"
+                    size="medium"
+                    disabled={!promoCode.trim()}
+                    className="min-w-0 flex-1 sm:w-[140px] sm:flex-none"
+                  >
+                    Activate
+                  </Button>
+                  <PromoCodeEstimateHint />
+                </div>
               }
             />
           </div>

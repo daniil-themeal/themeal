@@ -240,14 +240,14 @@ function getOutlineStyles(variant: ButtonVariant): Omit<ButtonCssVariables, '--b
   };
 }
 
-function getButtonStyles(
+export function getButtonStyles(
   variant: ButtonVariant,
   outline: boolean,
 ): Omit<ButtonCssVariables, '--button-font-size'> {
   return outline ? getOutlineStyles(variant) : BUTTON_FILLED_STYLES[variant];
 }
 
-const BUTTON_BORDER_RADIUS: Record<ButtonSize, string> = {
+export const BUTTON_BORDER_RADIUS: Record<ButtonSize, string> = {
   'x-small': BORDER_RADIUS_TOKENS[8],
   small: BORDER_RADIUS_TOKENS[8],
   medium: BORDER_RADIUS_TOKENS[12],
@@ -279,12 +279,20 @@ const ICON_SIZE_CLASS_NAMES: Record<ButtonSize, string> = {
   'x-large': '[&>svg]:size-[32px] [&>img]:size-[32px]',
 };
 
-const LOADER_ICON_SIZE: Record<ButtonSize, IconSize> = {
+export const LOADER_ICON_SIZE: Record<ButtonSize, IconSize> = {
   'x-small': 16,
   small: 16,
   medium: 24,
   large: 24,
   'x-large': 32,
+};
+
+export const ICON_BUTTON_SIZE_CLASS_NAMES: Record<ButtonSize, string> = {
+  'x-small': 'size-[32px]',
+  small: 'size-[40px]',
+  medium: 'size-[48px]',
+  large: 'size-[64px]',
+  'x-large': 'size-[72px]',
 };
 
 const BUTTON_CONTENT_CLASS_NAMES: Record<ButtonSize, string> = {
@@ -295,11 +303,10 @@ const BUTTON_CONTENT_CLASS_NAMES: Record<ButtonSize, string> = {
   'x-large': 'inline-flex items-center justify-center gap-[12px]',
 };
 
-const baseClassName = [
+export const BUTTON_VISUAL_CLASS_NAME = [
   'relative inline-flex items-center justify-center',
   'rounded-[length:var(--button-border-radius)]',
   'border border-[length:1px] border-[var(--button-border)]',
-  "font-sans font-bold leading-none text-[length:var(--button-font-size)]",
   'bg-[var(--button-bg)] text-[var(--button-text)]',
   '[box-shadow:var(--button-shadow)]',
   'cursor-pointer transition-[background-color,border-color,box-shadow]',
@@ -309,7 +316,12 @@ const baseClassName = [
   'focus-visible:outline-none',
 ].join(' ');
 
-function getIconSlotClassName(size: ButtonSize) {
+const baseClassName = [
+  BUTTON_VISUAL_CLASS_NAME,
+  "font-sans font-bold leading-none text-[length:var(--button-font-size)]",
+].join(' ');
+
+export function getIconSlotClassName(size: ButtonSize) {
   return [
     'inline-flex shrink-0 items-center justify-center',
     ICON_SIZE_CLASS_NAMES[size],
