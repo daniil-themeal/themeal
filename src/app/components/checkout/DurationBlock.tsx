@@ -85,6 +85,7 @@ function DurationCard({
   duration,
   plan,
   days,
+  persons,
   selected,
   onSelect,
   pricingTable,
@@ -92,6 +93,7 @@ function DurationCard({
   duration: Duration;
   plan: Plan;
   days: DayOption;
+  persons: number;
   selected: boolean;
   onSelect: () => void;
   pricingTable: CheckoutPricingTable;
@@ -103,6 +105,7 @@ function DurationCard({
     plan,
     days,
     duration,
+    persons,
   });
 
   const discountPct = formatDiscountPercent(price.discountPercent);
@@ -161,12 +164,14 @@ export function DurationBlock({
   onSelect,
   plan,
   days,
+  persons = 1,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
 }: {
   selected: Duration;
   onSelect: (d: Duration) => void;
   plan: Plan;
   days: DayOption;
+  persons?: number;
   pricingTable?: CheckoutPricingTable;
 }) {
   return (
@@ -183,6 +188,7 @@ export function DurationBlock({
             duration={duration}
             plan={plan}
             days={days}
+            persons={persons}
             pricingTable={pricingTable}
             selected={selected === duration}
             onSelect={() => onSelect(duration)}

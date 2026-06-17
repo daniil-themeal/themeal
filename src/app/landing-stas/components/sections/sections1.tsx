@@ -2,6 +2,7 @@
 import { createElement, Fragment, useState, useEffect, useRef } from 'react';
 import { Icon, Logo, Stars, Social } from '../icons';
 import { HeroStats } from '../HeroStats';
+import { HeroPrice } from '../HeroPrice';
 
 /* ---------------- Header (scroll + cursor reveal — Bender) ---------------- */
 function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
@@ -177,10 +178,7 @@ function Hero({ t, onOrder }) {
           createElement('span', { className:'hero-title__line' }, t.hero.title),
           createElement('span', { className:'hero-title__offer' },
             createElement('span', { className:'hero-title__only' }, t.hero.only),
-            createElement('span', { className:'hero-title__price' },
-              createElement('span', { className:'hero-title__was mono' }, t.hero.was),
-              createElement('span', { className:'hero-title__now' }, t.hero.now),
-              createElement('span', { className:'hero-title__cur' }, t.hero.cur)))),
+            createElement(HeroPrice, { was: t.hero.was, now: t.hero.now, cur: t.hero.cur }))),
 
         /* cta + price-per-day */
         createElement('div', { className:'reveal', 'data-d':'2', style:{ marginTop:2 } },

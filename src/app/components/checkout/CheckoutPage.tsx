@@ -25,6 +25,7 @@ import type { TestAddress } from '../../data/testAddresses';
 import type { PhoneSession } from '../../phoneSession';
 import { mergePhoneSession } from '../../phoneSession';
 import { COLOR_TOKENS } from '../common/colorTokens';
+import { useModalShell } from '../common/ModalShell';
 import { formatUaePhoneInput, normalizeUaePhone, validateUaePhone } from './phoneValidation';
 
 type CheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment' | 'success' | 'failed';
@@ -94,6 +95,13 @@ export function CheckoutPage({
   onSessionUpdate,
   onResetPhone,
 }: CheckoutPageProps) {
+  const {
+    isClosing,
+    requestClose,
+    resetCloseState,
+    handlePanelAnimationEnd,
+  } = useModalShell(onClose);
+
   const [checkoutStep, setCheckoutStep] = useState<CheckoutStep>(initialCheckoutStep);
   const [deliveryStep, setDeliveryStep] = useState<DeliveryStep>(initialDeliveryStep);
   const [isPhoneVerified, setIsPhoneVerified] = useState(initialIsVerified);
@@ -152,6 +160,7 @@ export function CheckoutPage({
 
   useEffect(() => {
     if (isOpen) {
+      resetCloseState();
       document.body.style.overflow = 'hidden';
       setCheckoutStep(initialCheckoutStep);
       setDeliveryStep(initialDeliveryStep);
@@ -179,7 +188,7 @@ export function CheckoutPage({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified]);
+  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified, resetCloseState]);
 
   useEffect(() => {
     if (!isOpen || checkoutStep !== 'plan') return;
@@ -320,7 +329,7 @@ export function CheckoutPage({
   };
 
   const handleGoToMain = () => {
-    onClose();
+    requestClose();
   };
 
   const handleResultTabChange = (tab: PaymentResultTab) => {
@@ -419,12 +428,19 @@ export function CheckoutPage({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex flex-col" style={checkoutPageStyle}>
+    <div
+      className={[
+        'fixed inset-0 z-[200] flex flex-col',
+        isClosing ? 'pointer-events-none modal-exit-responsive' : 'modal-enter-responsive',
+      ].join(' ')}
+      style={checkoutPageStyle}
+      onAnimationEnd={handlePanelAnimationEnd}
+    >
       {checkoutStep !== 'success' && checkoutStep !== 'failed' ? (
         <CheckoutHeader
           step={headerStep}
           onBack={handleBack}
-          onClose={onClose}
+          onClose={requestClose}
           onStepSelect={handleStepSelect}
           onLogoClick={() => scrollBodyToTop('smooth')}
         />
@@ -457,6 +473,7 @@ export function CheckoutPage({
                   onSelect={setDuration}
                   plan={plan}
                   days={days}
+                  persons={persons}
                 />
               </div>
 
@@ -496,6 +513,7 @@ export function CheckoutPage({
             plan={plan}
             days={days}
             duration={duration}
+            persons={persons}
             lightMealOption={lightMealOption}
             onScrollToSummary={handleScrollToSummary}
             hidden={summaryVisible}
@@ -558,7 +576,7 @@ export function CheckoutPage({
             days={days}
             duration={duration}
             startDate={deliveryDetails.selectedDate}
-            onClose={onClose}
+            onClose={requestClose}
             onTabChange={handleResultTabChange}
             onGoToMain={handleGoToMain}
           />
@@ -566,7 +584,7 @@ export function CheckoutPage({
       ) : (
         <div ref={bodyRef} className={checkoutStepScrollClassName}>
           <PaymentFailedScreen
-            onClose={onClose}
+            onClose={requestClose}
             onTabChange={handleResultTabChange}
             onRepeatPayment={handleReturnToPayment}
             onChangePaymentMethod={handleReturnToPayment}

@@ -100,6 +100,7 @@ export function BottomFloatTotalBlock({
   plan,
   days,
   duration,
+  persons = 1,
   lightMealOption,
   onScrollToSummary,
   hidden = false,
@@ -108,6 +109,7 @@ export function BottomFloatTotalBlock({
   plan: Plan;
   days: DayOption;
   duration: Duration;
+  persons?: number;
   lightMealOption: LightMealOption;
   onScrollToSummary: () => void;
   hidden?: boolean;
@@ -140,6 +142,7 @@ export function BottomFloatTotalBlock({
     plan,
     days,
     duration,
+    persons,
   });
 
   const menuDays = getMenuDays();
