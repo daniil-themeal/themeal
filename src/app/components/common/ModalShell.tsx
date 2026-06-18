@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
 
+import { useEscapeLayer } from './escapeStack';
+import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { Z_INDEX_TOKENS } from './zIndexTokens';
 
 export const MODAL_SHELL_EXIT_FALLBACK_MS = 260;
 
-export type ModalShellVariant = 'bottom-sheet' | 'centered-scroll';
+export type ModalShellVariant = 'bottom-sheet' | 'centered-scroll' | 'fullscreen';
 
 type ModalShellProps = {
   isOpen: boolean;
@@ -96,6 +98,11 @@ export function ModalShell({
     handlePanelAnimationEnd,
   } = useModalShell(onClose);
 
+  useEscapeLayer(isOpen, zIndex, () => {
+    if (onEscape?.()) return;
+    requestClose();
+  });
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -104,20 +111,10 @@ export function ModalShell({
     const previousBodyOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        if (onEscape?.()) return;
-        requestClose();
-      }
-    };
-
-    document.addEventListener('keydown', handleKeyDown);
-
     return () => {
       document.body.style.overflow = previousBodyOverflow;
-      document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen, onEscape, requestClose, resetCloseState]);
+  }, [isOpen, resetCloseState]);
 
   if (!isOpen) return null;
 
@@ -126,6 +123,36 @@ export function ModalShell({
   const panelChildren =
     typeof children === 'function' ? children(requestClose) : children;
 
+  if (variant === 'fullscreen') {
+    return (
+      <div
+        className={[
+          'fixed inset-0 flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden scrollbar-hide',
+          'sm:h-auto sm:max-h-none sm:block sm:overflow-y-auto',
+          rootClassName,
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        style={{ zIndex }}
+        {...{ [SPACING_ROOT_ATTR]: '' }}
+        onClick={disableOverlayClick ? undefined : requestClose}
+      >
+        <div className="flex min-h-0 flex-1 flex-col sm:min-h-full sm:flex sm:items-center sm:justify-center">
+          <div
+            className={['min-h-0 flex-1 overflow-y-auto scrollbar-hide sm:flex-none', panelClasses]
+              .filter(Boolean)
+              .join(' ')}
+            onClick={(event) => event.stopPropagation()}
+            onAnimationEnd={handlePanelAnimationEnd}
+            {...{ [SPACING_CONTENT_ATTR]: '' }}
+          >
+            {panelChildren}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (variant === 'centered-scroll') {
     return (
       <div
@@ -133,13 +160,15 @@ export function ModalShell({
           .filter(Boolean)
           .join(' ')}
         style={{ zIndex }}
+        {...{ [SPACING_ROOT_ATTR]: '' }}
         onClick={disableOverlayClick ? undefined : requestClose}
       >
-        <div className="min-h-full md:flex md:items-center md:justify-center">
+        <div className="min-h-full sm:flex sm:items-center sm:justify-center">
           <div
             className={panelClasses}
             onClick={(event) => event.stopPropagation()}
             onAnimationEnd={handlePanelAnimationEnd}
+            {...{ [SPACING_CONTENT_ATTR]: '' }}
           >
             {panelChildren}
           </div>
@@ -158,6 +187,7 @@ export function ModalShell({
         .filter(Boolean)
         .join(' ')}
       style={{ zIndex }}
+      {...{ [SPACING_ROOT_ATTR]: '' }}
     >
       <div
         className={['absolute inset-0 bg-black/40', overlayClassName].filter(Boolean).join(' ')}
@@ -168,6 +198,7 @@ export function ModalShell({
         className={panelClasses}
         onClick={(event) => event.stopPropagation()}
         onAnimationEnd={handlePanelAnimationEnd}
+        {...{ [SPACING_CONTENT_ATTR]: '' }}
       >
         {panelChildren}
       </div>

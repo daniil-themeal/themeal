@@ -1,4 +1,5 @@
-import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
+import { useState } from 'react';
+import type { ChangeEvent, ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
 import {
@@ -7,6 +8,7 @@ import {
   type FieldSize,
 } from './fieldSizeTokens';
 import { FormLabel } from './FormLabel';
+import { InputClearButton } from './InputClearButton';
 import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
 export const TEXT_AREA_STATES = ['default', 'focus', 'success', 'error'] as const;
@@ -20,6 +22,7 @@ type TextAreaProps = {
   hint?: ReactNode;
   counter?: ReactNode;
   state?: TextAreaState;
+  clearable?: boolean;
   containerClassName?: string;
   labelClassName?: string;
   fieldClassName?: string;
@@ -72,7 +75,7 @@ const FIELD_STATE_STYLES: Record<TextAreaState, TextAreaCssVariables> = {
 };
 
 const fieldBaseClassName = [
-  'w-full rounded-[length:var(--field-border-radius)] border',
+  'relative w-full rounded-[length:var(--field-border-radius)] border',
   'border-[var(--text-area-border)] bg-[var(--text-area-bg)]',
   'transition-colors',
   'focus-within:border-[var(--text-area-focus-border)]',
@@ -133,6 +136,7 @@ export function TextArea({
   error,
   hint,
   counter,
+  clearable = true,
   state: explicitState,
   containerClassName = '',
   labelClassName = '',
@@ -142,12 +146,29 @@ export function TextArea({
   disabled,
   rows = TEXT_AREA_DEFAULT_ROWS,
   style,
+  value,
+  onChange,
+  onFocus,
+  onBlur,
   ...textareaProps
 }: TextAreaProps) {
+  const [isFocused, setIsFocused] = useState(false);
   const hasError = Boolean(error);
   const fieldState = getFieldState({ explicitState, hasError });
   const descriptionId = id && (error || hint) ? `${id}-description` : undefined;
   const safeRows = getSafeRows(rows);
+  const stringValue = value == null ? '' : String(value);
+  const hasValue = stringValue.length > 0;
+  const showClearButton = clearable && hasValue && !disabled && isFocused;
+
+  const handleClear = () => {
+    if (!onChange) return;
+
+    onChange({
+      target: { value: '' },
+      currentTarget: { value: '' },
+    } as ChangeEvent<HTMLTextAreaElement>);
+  };
 
   return (
     <div
@@ -185,15 +206,38 @@ export function TextArea({
           id={id}
           disabled={disabled}
           rows={safeRows}
+          value={value}
+          onChange={onChange}
+          onFocus={(event) => {
+            setIsFocused(true);
+            onFocus?.(event);
+          }}
+          onBlur={(event) => {
+            setIsFocused(false);
+            onBlur?.(event);
+          }}
           aria-invalid={hasError || undefined}
           aria-describedby={descriptionId}
-          className={[textareaBaseClassName, className].filter(Boolean).join(' ')}
+          className={[
+            textareaBaseClassName,
+            showClearButton ? 'pr-[length:var(--field-icon-slot-width)]' : '',
+            className,
+          ]
+            .filter(Boolean)
+            .join(' ')}
           style={{
             minHeight: getMinHeightForRows(size, safeRows),
             ...style,
           }}
           {...textareaProps}
         />
+
+        {showClearButton ? (
+          <InputClearButton
+            onClick={handleClear}
+            className="absolute top-0 right-0"
+          />
+        ) : null}
       </div>
 
       {error || hint ? (

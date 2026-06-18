@@ -7,6 +7,8 @@ import type { BadgeVariant } from '../common/Badge';
 import { Chip } from '../common/Chip';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
+import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 const lightChipsByOption: Record<LightMealOption, string[]> = {
   'breakfast-main': ['Breakfast', 'Lunch'],
@@ -65,9 +67,7 @@ const plans = [
 ];
 
 type PlanSelectorBlockCssVariables = CSSProperties & {
-  '--plan-selector-title-font-size': string;
   '--plan-selector-card-title-font-size': string;
-  '--plan-selector-card-title-font-size-md': string;
   '--plan-selector-card-meta-font-size': string;
   '--plan-selector-card-meta-font-size-md': string;
   '--plan-selector-radio-font-size': string;
@@ -80,13 +80,13 @@ type PlanSelectorBlockCssVariables = CSSProperties & {
   '--plan-selector-card-selected-border': string;
   '--plan-selector-radio-bg': string;
   '--plan-selector-radio-selected-bg': string;
+  '--plan-selector-radio-hover-bg': string;
   '--plan-selector-radio-dot': string;
+  '--plan-selector-option-hover-text': string;
 };
 
 const planSelectorBlockStyle: PlanSelectorBlockCssVariables = {
-  '--plan-selector-title-font-size': FONT_SIZE_TOKENS[32],
-  '--plan-selector-card-title-font-size': FONT_SIZE_TOKENS[16],
-  '--plan-selector-card-title-font-size-md': FONT_SIZE_TOKENS[20],
+  '--plan-selector-card-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--plan-selector-card-meta-font-size': FONT_SIZE_TOKENS[12],
   '--plan-selector-card-meta-font-size-md': FONT_SIZE_TOKENS[14],
   '--plan-selector-radio-font-size': FONT_SIZE_TOKENS[12],
@@ -99,7 +99,9 @@ const planSelectorBlockStyle: PlanSelectorBlockCssVariables = {
   '--plan-selector-card-selected-border': COLOR_TOKENS.primary[200],
   '--plan-selector-radio-bg': COLOR_TOKENS.neutral[50],
   '--plan-selector-radio-selected-bg': COLOR_TOKENS.primary[100],
+  '--plan-selector-radio-hover-bg': COLOR_TOKENS.primary[75],
   '--plan-selector-radio-dot': COLOR_TOKENS.primary[500],
+  '--plan-selector-option-hover-text': COLOR_TOKENS.primary[500],
 };
 
 function PlanCard({
@@ -124,21 +126,22 @@ function PlanCard({
       onClick={onSelect}
       className={[
         'relative w-full shrink-0 cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
+        'hover:border-[var(--plan-selector-active)]',
         selected
           ? 'border-[var(--plan-selector-card-selected-border)] bg-[var(--plan-selector-card-selected-bg)]'
           : 'border-transparent bg-[var(--plan-selector-card-bg)]',
       ].join(' ')}
     >
       {plan.badge ? (
-        <Badge variant={plan.badge} className="absolute right-[20px] top-[-4px] z-[1]" />
+        <Badge variant={plan.badge} className="absolute right-[var(--checkout-selector-card-padding)] top-[-4px] z-[1]" />
       ) : null}
 
-      <div className="flex flex-col items-start gap-[12px] p-[20px] md:px-[24px]">
-        <div className="flex w-full items-start gap-[16px]">
-          <div className="flex flex-[1_0_0] items-center gap-[4px]">
+      <div className="flex flex-col items-start gap-[12px] p-[var(--checkout-selector-card-padding)]">
+        <div className="flex w-full min-w-0 flex-wrap items-baseline justify-between gap-x-[16px] gap-y-[8px]">
+          <div className="flex min-w-0 items-center gap-[4px]">
             <p
               className={[
-                "font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]",
+                "font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%]",
                 selected ? 'text-[var(--plan-selector-active)]' : 'text-[var(--plan-selector-text)]',
               ].join(' ')}
             >
@@ -147,7 +150,7 @@ function PlanCard({
 
             <p
               className={[
-                "whitespace-nowrap font-sans text-[length:var(--plan-selector-card-title-font-size)] font-medium leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]",
+                "whitespace-nowrap font-sans text-[length:var(--plan-selector-card-title-font-size)] font-medium leading-[130%]",
                 selected ? 'text-[var(--plan-selector-active)]' : 'text-[var(--plan-selector-text)]',
               ].join(' ')}
             >
@@ -155,12 +158,12 @@ function PlanCard({
             </p>
           </div>
 
-          <div className="flex items-baseline gap-[4px] text-right text-[var(--plan-selector-active)]">
+          <div className="flex shrink-0 items-baseline gap-[4px] text-left text-[var(--plan-selector-active)]">
             <p className="font-sans text-[length:var(--plan-selector-card-meta-font-size)] font-medium leading-[130%] md:text-[length:var(--plan-selector-card-meta-font-size-md)]">
               from
             </p>
 
-            <p className="whitespace-nowrap text-right font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--plan-selector-card-title-font-size-md)]">
+            <p className="whitespace-nowrap text-left font-sans text-[length:var(--plan-selector-card-title-font-size)] font-bold leading-[130%]">
               {plan.pricePerDay}/day
             </p>
           </div>
@@ -183,7 +186,16 @@ function PlanCard({
               return (
                 <span
                   key={option.id}
-                  className="flex cursor-pointer items-center gap-[6px] py-[4px]"
+                  role="radio"
+                  aria-checked={optionSelected}
+                  tabIndex={0}
+                  className={[
+                    'group flex cursor-pointer items-center gap-[6px] rounded-[8px] px-[8px] -mx-[8px] py-[4px]',
+                    'transition-[color,transform] duration-150 will-change-transform',
+                    'hover:-translate-y-[2px] focus-visible:-translate-y-[2px]',
+                    'active:translate-y-0',
+                    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--plan-selector-active)] focus-visible:ring-offset-2',
+                  ].join(' ')}
                   onClick={(event) => {
                     event.stopPropagation();
                     onLightMealOptionChange(option.id);
@@ -192,13 +204,24 @@ function PlanCard({
                       onSelect();
                     }
                   }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault();
+                      event.stopPropagation();
+                      onLightMealOptionChange(option.id);
+
+                      if (!selected) {
+                        onSelect();
+                      }
+                    }
+                  }}
                 >
                   <span
                     className={[
                       'flex size-[16px] items-center justify-center rounded-full transition-colors duration-150',
                       radioActiveBackground
                         ? 'bg-[var(--plan-selector-radio-selected-bg)]'
-                        : 'bg-[var(--plan-selector-radio-bg)]',
+                        : 'bg-[var(--plan-selector-radio-bg)] group-hover:bg-[var(--plan-selector-radio-hover-bg)] group-focus-visible:bg-[var(--plan-selector-radio-hover-bg)]',
                     ].join(' ')}
                   >
                     {optionSelected ? (
@@ -206,7 +229,14 @@ function PlanCard({
                     ) : null}
                   </span>
 
-                  <span className="font-sans text-[length:var(--plan-selector-radio-font-size)] font-medium leading-[130%] text-[var(--plan-selector-text)]">
+                  <span
+                    className={[
+                      'font-sans text-[length:var(--plan-selector-radio-font-size)] font-medium leading-[130%] transition-colors duration-150',
+                      optionSelected
+                        ? 'text-[var(--plan-selector-text)]'
+                        : 'text-[var(--plan-selector-text)] group-hover:text-[var(--plan-selector-option-hover-text)] group-focus-visible:text-[var(--plan-selector-option-hover-text)]',
+                    ].join(' ')}
+                  >
                     {option.label}
                   </span>
                 </span>
@@ -257,12 +287,10 @@ export function PlanSelectorBlock({
 }) {
   return (
     <div
-      className="flex w-full flex-col items-start gap-[16px]"
+      className="flex w-full min-w-0 flex-col items-start gap-[20px]"
       style={planSelectorBlockStyle}
     >
-      <p className="w-full px-[4px] font-sans text-[length:var(--plan-selector-title-font-size)] font-bold leading-[130%] text-[var(--plan-selector-text)]">
-        Choose your plan
-      </p>
+      <CheckoutSectionHeader title="Choose your plan" />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">
         {plans.map((plan) => (

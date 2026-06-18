@@ -1,0 +1,19 @@
+name: Vercel Production Deploy
+
+on:
+  push:
+    branches:
+      - feature/next
+    paths-ignore:
+      - "telegram-cursor-bot/**"
+      - ".github/**"
+      - "**/*.md"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel production deploy
+        run: curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}

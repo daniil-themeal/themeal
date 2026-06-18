@@ -1,0 +1,46 @@
+# Render Blueprint — https://dashboard.render.com/blueprints
+# 1. Dashboard → New → Blueprint → connect daniil-themeal/themeal → branch feature/next
+# 2. After create: Environment → add secret values (TELEGRAM_BOT_TOKEN, CURSOR_API_KEY, …)
+# 3. Manual Deploy → Deploy latest commit
+# 4. Logs must show: "Bot started (cloud, ...)" and "Health check on :PORT/health"
+# 5. Do NOT run npm start locally while Render is Live (Telegram 409 conflict)
+
+services:
+  - type: web
+    name: themeal-telegram-bot
+    runtime: docker
+    rootDir: telegram-cursor-bot
+    branch: feature/next
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: AGENT_MODE
+        value: cloud
+      - key: AUTO_PUSH
+        value: "true"
+      - key: CLOUD_REPO_URL
+        value: https://github.com/daniil-themeal/themeal.git
+      - key: CLOUD_REPO_REF
+        value: feature/next
+      - key: CURSOR_MODEL
+        value: composer-2.5
+      - key: VERCEL_URL
+        value: https://landing-20-05-test.vercel.app
+      - key: TASK_OWNER_ID
+        value: "113321584"
+      - key: WHISPER_PROVIDER
+        value: groq
+      - key: WHISPER_LANGUAGE
+        value: ru
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: CURSOR_API_KEY
+        sync: false
+      - key: ALLOWED_USER_IDS
+        sync: false
+      - key: USER_NAMES
+        sync: false
+      - key: VERCEL_DEPLOY_HOOK
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false

@@ -5,21 +5,17 @@ import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import {
   formatAed,
   getCheckoutPrice,
+  getFinalPeriodPrice,
   getTotalMeals,
 } from '../../data/checkoutPricing';
-import type { LightMealOption } from '../../data/testMeals';
 import type { TestAddress } from '../../data/testAddresses';
+import { getPromoCodeDiscount } from '../../config/promoCodes';
 import { Button } from '../common/Button';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { Divider } from '../common/Divider';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
-import { FIELD_SIZE_CONFIG } from '../common/fieldSizeTokens';
-import { FormLabel } from '../common/FormLabel';
-import { InputButtonRow } from '../common/InputButtonRow';
 import { MapPinIcon, PackageIcon, SmileIcon, TruckIcon } from '../common/icons';
-import { PromoCodeIcon } from '../common/icons/PromoCodeIcon';
-import { TextInput } from '../common/TextInput';
 import {
   PAYMENT_METHODS,
   PaymentMethodSelector,
@@ -37,8 +33,10 @@ import {
   CHECKOUT_STEP_PAGE_LAYOUT,
   CHECKOUT_STEP_PAGE_VARS,
 } from './checkoutStepPageLayoutTokens';
+import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
 import { IconTextRow } from '../common/IconTextRow';
 import { ICON_TEXT_ROW_LAYOUT } from '../common/iconTextRowLayoutTokens';
+import { CheckoutPromoCode } from './CheckoutPromoCode';
 
 const SESSION_SECONDS = 8 * 60 + 59;
 
@@ -51,7 +49,6 @@ type PaymentScreenCssVariables = CSSProperties & {
   '--payment-divider': string;
   '--payment-dotted-border': string;
   '--payment-section-title-fs': string;
-  '--payment-section-title-fs-md': string;
   '--payment-body-fs': string;
   '--payment-small-fs': string;
 };
@@ -65,8 +62,7 @@ const paymentScreenStyle: PaymentScreenCssVariables = {
   '--payment-success': COLOR_TOKENS.success[500],
   '--payment-divider': COLOR_TOKENS.neutral[75],
   '--payment-dotted-border': COLOR_TOKENS.neutral[200],
-  '--payment-section-title-fs': FONT_SIZE_TOKENS[16],
-  '--payment-section-title-fs-md': FONT_SIZE_TOKENS[20],
+  '--payment-section-title-fs': CHECKOUT_FONT_CLAMP_16_20,
   '--payment-body-fs': FONT_SIZE_TOKENS[16],
   '--payment-small-fs': FONT_SIZE_TOKENS[14],
 };
@@ -97,7 +93,7 @@ function SectionHeader({
       <p
         className={[
           TEXT_TRIM_FIT_CLASS_NAME,
-          'min-w-0 w-full font-sans text-[length:var(--payment-section-title-fs)] font-bold leading-[130%] text-[var(--payment-text)] md:text-[length:var(--payment-section-title-fs-md)]',
+          'min-w-0 w-full font-sans text-[length:var(--payment-section-title-fs)] font-bold leading-[130%] text-[var(--payment-text)]',
         ].join(' ')}
       >
         {title}
@@ -132,17 +128,17 @@ function PriceRow({
     valueVariant === 'success' ? 'text-[var(--payment-success)]' : 'text-[var(--payment-text)]';
 
   return (
-    <div className="flex gap-[6px]">
+    <div className="flex w-full min-w-0 flex-wrap items-end gap-x-[6px] gap-y-[4px]">
       <p
         className={[
           TEXT_TRIM_FIT_CLASS_NAME,
-          'shrink-0 self-end font-sans text-[length:var(--payment-body-fs)] font-bold leading-[150%] text-[var(--payment-text)]',
+          'min-w-0 self-end font-sans text-[length:var(--payment-body-fs)] font-bold leading-[150%] text-[var(--payment-text)]',
         ].join(' ')}
       >
         {label}
       </p>
 
-      <div className="flex min-w-[24px] flex-1 items-end">
+      <div className="mb-[0.25em] flex min-w-[24px] flex-1 basis-[24px] items-end">
         <div className="w-full border-b border-dotted border-[var(--payment-dotted-border)]" />
       </div>
 
@@ -178,6 +174,8 @@ type PaymentScreenProps = {
   onEditPlan: () => void;
   onEditDelivery: () => void;
   onPay?: () => void;
+  appliedPromoCode?: string;
+  onAppliedPromoCodeChange?: (code: string) => void;
 };
 
 export function PaymentScreen({
@@ -192,9 +190,10 @@ export function PaymentScreen({
   onEditPlan,
   onEditDelivery,
   onPay,
+  appliedPromoCode = '',
+  onAppliedPromoCodeChange,
 }: PaymentScreenProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>('card');
-  const [promoCode, setPromoCode] = useState('');
   const [sessionSeconds, setSessionSeconds] = useState(SESSION_SECONDS);
 
   const pricing = useMemo(
@@ -204,6 +203,14 @@ export function PaymentScreen({
   const mealsCount = useMemo(
     () => getTotalMeals({ plan, days, duration, persons }),
     [plan, days, duration, persons],
+  );
+  const promoDiscount = useMemo(
+    () => (appliedPromoCode ? getPromoCodeDiscount(appliedPromoCode) : null),
+    [appliedPromoCode],
+  );
+  const finalPeriodPrice = useMemo(
+    () => getFinalPeriodPrice(pricing.periodPrice, promoDiscount),
+    [pricing.periodPrice, promoDiscount],
   );
   const planTariffChips = useMemo(
     () =>
@@ -342,35 +349,11 @@ export function PaymentScreen({
           <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
           <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap12}>
-            <FormLabel as="span">Have a promo code?</FormLabel>
-
-            <InputButtonRow
-              input={
-                <TextInput
-                  id="payment-promo-code"
-                  label=""
-                  aria-label="Promo code"
-                  value={promoCode}
-                  onChange={(event) => setPromoCode(event.target.value)}
-                  placeholder="Add promocode"
-                  leftIcon={
-                    <PromoCodeIcon
-                      size={FIELD_SIZE_CONFIG.large.iconSizePx as 20 | 24}
-                    />
-                  }
-                />
-              }
-              action={
-                <Button
-                  type="button"
-                  variant="neutral"
-                  size="medium"
-                  disabled={!promoCode.trim()}
-                  className="w-full sm:w-[140px]"
-                >
-                  Activate
-                </Button>
-              }
+            <CheckoutPromoCode
+              variant="payment"
+              inputId="payment-promo-code"
+              appliedCode={appliedPromoCode}
+              onAppliedCodeChange={onAppliedPromoCodeChange ?? (() => {})}
             />
           </div>
 
@@ -387,12 +370,19 @@ export function PaymentScreen({
                 value={mealsCount}
               />
 
-              <PriceRow label="Delivery and pause" value="Free" valueVariant="success" />
+              <PriceRow label="Delivery and pause" value="Free" />
+
+              {appliedPromoCode && promoDiscount !== null ? (
+                <PriceRow
+                  label={`Promo code ${appliedPromoCode}`}
+                  value={`-AED ${formatAed(promoDiscount)}`}
+                />
+              ) : null}
 
               <CheckoutTodayTotal
                 className="pt-[4px]"
                 oldPeriodPrice={pricing.oldPeriodPrice}
-                periodPrice={pricing.periodPrice}
+                periodPrice={finalPeriodPrice}
                 pricePerDay={pricing.pricePerDay}
               />
             </div>
@@ -401,7 +391,7 @@ export function PaymentScreen({
           <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardFooter}>
             <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionInner}>
               <Button type="button" variant="primary" size="medium" fullWidth onClick={onPay}>
-                Pay AED {formatAed(pricing.periodPrice)}
+                Pay AED {formatAed(finalPeriodPrice)}
               </Button>
 
               <p
@@ -410,8 +400,9 @@ export function PaymentScreen({
                   'w-full text-left font-sans text-[length:var(--payment-small-fs)] font-medium leading-[140%] text-[var(--payment-muted)]',
                 ].join(' ')}
               >
-                Your subscription renews automatically — we&apos;ll send the upcoming amount 5 days
-                before each charge. Change or cancel anytime.
+                {paymentMethod === 'tabby'
+                  ? 'This is a one-time order via Tabby — to continue your meals, place a new order at the end of this period'
+                  : "Your subscription renews automatically — we'll send the upcoming amount 5 days before each charge. Change or cancel anytime."}
               </p>
 
               <p

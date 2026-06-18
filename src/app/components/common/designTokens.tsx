@@ -51,7 +51,11 @@ export {
   type RadioSize,
 } from './checkboxSizeTokens';
 
-export { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
+export {
+  TEXT_TRIM_CLASS_NAME,
+  TEXT_TRIM_FIT_CLASS_NAME,
+  TEXT_TRIM_CSS,
+} from './textTrimTokens';
 
 export {
   TYPOGRAPHY_ROLES,
@@ -59,6 +63,13 @@ export {
   typographyRoleStyle,
   type TypographyRoleName,
 } from './typographyTokens';
+
+export {
+  PROSE_LIST_TOKENS,
+  PROSE_LIST_TOKEN_NAMES,
+  PROSE_LIST_SPACING,
+  type ProseListTokenName,
+} from './proseListTokens';
 
 export { NEUTRAL_USAGE_ROLES } from './neutralUsageTokens';
 

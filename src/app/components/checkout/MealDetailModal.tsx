@@ -3,12 +3,18 @@ import type { CSSProperties } from 'react';
 import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import {
+  CHECKOUT_FONT_CLAMP_28_32,
+  MEAL_DETAIL_CONTENT_PADDING_CLAMP,
+  MEAL_DETAIL_IMAGE_PADDING_CLAMP,
+  MEAL_DETAIL_MODAL_MAX_WIDTH_CLAMP,
+} from './checkoutSpacing';
 import { ModalShell } from '../common/ModalShell';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { XIcon } from '../common/icons';
-import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 
 type MealDetailModalCssVariables = CSSProperties & {
+  '--cream': string;
   '--meal-detail-page-bg': string;
   '--meal-detail-card-bg': string;
   '--meal-detail-border': string;
@@ -16,20 +22,29 @@ type MealDetailModalCssVariables = CSSProperties & {
   '--meal-detail-divider': string;
   '--meal-detail-close-bg': string;
   '--meal-detail-close-bg-hover': string;
+  '--meal-detail-close-icon': string;
   '--meal-detail-title-font-size': string;
   '--meal-detail-body-font-size': string;
+  '--meal-detail-modal-max-width': string;
+  '--meal-detail-content-p': string;
+  '--meal-detail-image-p': string;
 };
 
 const mealDetailModalStyle: MealDetailModalCssVariables = {
-  '--meal-detail-page-bg': COLOR_TOKENS.neutral[50],
+  '--cream': COLOR_TOKENS.cream[50],
+  '--meal-detail-page-bg': COLOR_TOKENS.cream[50],
   '--meal-detail-card-bg': COLOR_TOKENS.base.white,
   '--meal-detail-border': COLOR_TOKENS.neutral[100],
   '--meal-detail-text': COLOR_TOKENS.neutral[900],
   '--meal-detail-divider': COLOR_TOKENS.neutral[500],
-  '--meal-detail-close-bg': COLOR_TOKENS.neutral[50],
-  '--meal-detail-close-bg-hover': COLOR_TOKENS.neutral[75],
-  '--meal-detail-title-font-size': FONT_SIZE_TOKENS[32],
+  '--meal-detail-close-bg': COLOR_TOKENS.cream[75],
+  '--meal-detail-close-bg-hover': COLOR_TOKENS.cream[100],
+  '--meal-detail-close-icon': COLOR_TOKENS.cream[600],
+  '--meal-detail-title-font-size': CHECKOUT_FONT_CLAMP_28_32,
   '--meal-detail-body-font-size': FONT_SIZE_TOKENS[16],
+  '--meal-detail-modal-max-width': MEAL_DETAIL_MODAL_MAX_WIDTH_CLAMP,
+  '--meal-detail-content-p': MEAL_DETAIL_CONTENT_PADDING_CLAMP,
+  '--meal-detail-image-p': MEAL_DETAIL_IMAGE_PADDING_CLAMP,
 };
 
 function DottedRow({ label, value }: { label: string; value: string }) {
@@ -64,32 +79,25 @@ export function MealDetailModal({
     <ModalShell
       isOpen={Boolean(meal)}
       onClose={onClose}
-      variant="centered-scroll"
+      variant="fullscreen"
       zIndex={Z_INDEX_TOKENS.modal}
-      rootClassName="bg-[var(--meal-detail-page-bg)] md:bg-black/40 md:px-[24px] md:py-[24px]"
-      panelClassName="min-h-screen w-full bg-[var(--meal-detail-card-bg)] md:min-h-0 md:max-w-[480px] md:overflow-hidden md:rounded-[20px] md:shadow-2xl"
+      rootClassName="bg-[var(--meal-detail-card-bg)] pb-[env(safe-area-inset-bottom)] sm:bg-black/40 sm:p-[24px]"
+      panelClassName="w-full bg-[var(--meal-detail-card-bg)] sm:max-w-[clamp(480px,calc(480px+(100vw-48rem)*80/448),560px)] sm:overflow-hidden sm:rounded-[20px] sm:shadow-2xl"
     >
       {(requestClose) => (
-        <div style={mealDetailModalStyle}>
-          <div className="sticky top-0 z-10 flex h-[56px] shrink-0 items-center justify-end border-b border-[var(--meal-detail-border)] bg-[var(--meal-detail-card-bg)] md:static md:z-auto">
+        <div style={mealDetailModalStyle} className="flex min-h-full flex-col bg-[var(--meal-detail-card-bg)] sm:min-h-0 sm:overflow-hidden sm:rounded-[20px]">
+          <div className="relative flex shrink-0 items-center justify-center bg-[var(--cream)] p-[length:var(--meal-detail-image-p)] sm:rounded-t-[20px]">
             <button
               type="button"
               onClick={requestClose}
-              className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
+              className="group absolute top-0 right-0 z-10 flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
               aria-label="Close"
             >
-              <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--meal-detail-close-bg)] transition-colors duration-150 group-hover:bg-[var(--meal-detail-close-bg-hover)]">
-                <span
-                  className={iconColorClassName.emphasis}
-                  style={iconColorStyle.emphasis}
-                >
-                  <XIcon size={16} />
-                </span>
+              <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--meal-detail-close-bg)] text-[var(--meal-detail-close-icon)] transition-colors duration-150 group-hover:bg-[var(--meal-detail-close-bg-hover)]">
+                <XIcon size={16} />
               </span>
             </button>
-          </div>
 
-          <div className="flex shrink-0 items-center justify-center bg-[var(--meal-detail-page-bg)] py-[40px]">
             <div className="h-[223px] w-[310px] overflow-hidden">
               <img
                 src={meal.img}
@@ -99,13 +107,13 @@ export function MealDetailModal({
             </div>
           </div>
 
-          <div className="bg-[var(--meal-detail-card-bg)]">
-            <div className="flex flex-col gap-[32px] px-[24px] py-[28px] pb-[32px]">
+          <div className="flex flex-1 flex-col bg-[var(--meal-detail-card-bg)] sm:flex-none">
+            <div className="flex flex-col gap-[32px] p-[length:var(--meal-detail-content-p)]">
               <p className="w-full font-sans text-[length:var(--meal-detail-title-font-size)] font-bold leading-[130%] text-[var(--meal-detail-text)]">
                 {meal.name}
               </p>
 
-              <div className="flex w-full flex-col gap-[8px]">
+              <div className="flex w-full flex-col gap-[16px]">
                 <DottedRow label="Weight" value={`${meal.weight} g`} />
                 <DottedRow label="Calories" value={`${meal.kcal} kCal`} />
                 <DottedRow label="Proteins" value={`${meal.proteins} g`} />
@@ -113,7 +121,7 @@ export function MealDetailModal({
                 <DottedRow label="Carbohydrates" value={`${meal.carbs} g`} />
               </div>
 
-              <div className="flex w-full flex-col gap-[8px]">
+              <div className="flex w-full flex-col gap-[12px]">
                 <p className="font-sans text-[length:var(--meal-detail-body-font-size)] font-bold leading-[150%] text-[var(--meal-detail-text)]">
                   Ingredients
                 </p>
@@ -123,7 +131,7 @@ export function MealDetailModal({
                 </p>
               </div>
 
-              <div className="flex w-full flex-col gap-[8px]">
+              <div className="flex w-full flex-col gap-[12px]">
                 <p className="font-sans text-[length:var(--meal-detail-body-font-size)] font-bold leading-[150%] text-[var(--meal-detail-text)]">
                   Allergens
                 </p>

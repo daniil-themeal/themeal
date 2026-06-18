@@ -3,6 +3,8 @@ import type { CSSProperties } from 'react';
 import type { DayOption } from '../../data/checkoutPricing';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
+import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -19,14 +21,10 @@ const options: { id: DayOption; label: string }[] = [
 ];
 
 type DaysBlockCssVariables = CSSProperties & {
-  '--days-title-font-size': string;
-  '--days-title-font-size-md': string;
-  '--days-description-font-size': string;
-  '--days-description-font-size-md': string;
   '--days-card-title-font-size': string;
-  '--days-card-title-font-size-md': string;
   '--days-chip-font-size': string;
   '--days-text': string;
+  '--days-active': string;
   '--days-card-bg': string;
   '--days-card-selected-bg': string;
   '--days-card-selected-border': string;
@@ -42,14 +40,10 @@ type DaysBlockCssVariables = CSSProperties & {
 };
 
 const daysBlockStyle: DaysBlockCssVariables = {
-  '--days-title-font-size': FONT_SIZE_TOKENS[20],
-  '--days-title-font-size-md': FONT_SIZE_TOKENS[25],
-  '--days-description-font-size': FONT_SIZE_TOKENS[12],
-  '--days-description-font-size-md': FONT_SIZE_TOKENS[14],
-  '--days-card-title-font-size': FONT_SIZE_TOKENS[16],
-  '--days-card-title-font-size-md': FONT_SIZE_TOKENS[20],
+  '--days-card-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--days-chip-font-size': FONT_SIZE_TOKENS[12],
   '--days-text': COLOR_TOKENS.neutral[900],
+  '--days-active': COLOR_TOKENS.primary[500],
   '--days-card-bg': COLOR_TOKENS.base.white,
   '--days-card-selected-bg': COLOR_TOKENS.primary[50],
   '--days-card-selected-border': COLOR_TOKENS.primary[200],
@@ -113,15 +107,16 @@ function DayCard({
       onClick={onSelect}
       className={[
         'w-full cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
+        'hover:border-[var(--days-active)]',
         selected
           ? 'border-[var(--days-card-selected-border)] bg-[var(--days-card-selected-bg)]'
           : 'border-transparent bg-[var(--days-card-bg)]',
       ].join(' ')}
     >
-      <div className="flex flex-col items-start gap-[8px] p-[20px] md:px-[24px]">
+      <div className="flex flex-col items-start gap-[12px] p-[var(--checkout-selector-card-padding)]">
         <p
           className={[
-            'w-full font-sans text-[length:var(--days-card-title-font-size)] font-bold leading-[130%] md:text-[length:var(--days-card-title-font-size-md)]',
+            'w-full font-sans text-[length:var(--days-card-title-font-size)] font-bold leading-[130%]',
             selected ? 'text-[var(--days-card-selected-text)]' : 'text-[var(--days-text)]',
           ].join(' ')}
         >
@@ -152,18 +147,14 @@ export function DaysBlock({
 }) {
   return (
     <div
-      className="flex flex-col items-start gap-[16px]"
+      className="flex w-full min-w-0 flex-col items-start gap-[20px]"
       style={daysBlockStyle}
     >
-      <div className="flex w-full flex-col gap-[2px] px-[4px]">
-        <p className="font-sans text-[length:var(--days-title-font-size)] font-bold leading-[130%] text-[var(--days-text)] md:text-[length:var(--days-title-font-size-md)]">
-          Which days do you eat with us?
-        </p>
-
-        <p className="font-sans text-[length:var(--days-description-font-size)] font-medium leading-[130%] text-[var(--days-text)] md:text-[length:var(--days-description-font-size-md)]">
-          Pick the days you want meals ready. Custom days cost the same per day.
-        </p>
-      </div>
+      <CheckoutSectionHeader
+        title="Which days do you eat with us?"
+        subtitle="Pick the days you want meals ready. Custom days cost the same per day."
+        gap={12}
+      />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">
         {options.map((opt) => (

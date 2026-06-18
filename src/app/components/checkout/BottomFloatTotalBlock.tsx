@@ -21,9 +21,11 @@ import {
 } from '../../data/checkoutPricing';
 import { getMealsForPlan, testMenuDays, type LightMealOption } from '../../data/testMeals';
 import type { Meal as MealDetail } from '../../types/meal';
+import { AnimatedNumber } from '../common/AnimatedNumber';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_14_16 } from './checkoutSpacing';
 
 import { MealDetailModal } from './MealDetailModal';
 
@@ -48,7 +50,10 @@ type BottomFloatTotalBlockCssVariables = CSSProperties & {
   '--checkout-float-button-text': string;
   '--checkout-float-font-size-sm': string;
   '--checkout-float-font-size-md': string;
+  '--checkout-float-meal-title-font-size': string;
+  '--checkout-float-meal-meta-font-size': string;
   '--checkout-float-font-size-lg': string;
+  '--checkout-float-discount': string;
 };
 
 const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
@@ -65,7 +70,10 @@ const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
   '--checkout-float-button-text': COLOR_TOKENS.base.white,
   '--checkout-float-font-size-sm': FONT_SIZE_TOKENS[12],
   '--checkout-float-font-size-md': FONT_SIZE_TOKENS[16],
+  '--checkout-float-meal-title-font-size': CHECKOUT_FONT_CLAMP_14_16,
+  '--checkout-float-meal-meta-font-size': FONT_SIZE_TOKENS[12],
   '--checkout-float-font-size-lg': FONT_SIZE_TOKENS[20],
+  '--checkout-float-discount': COLOR_TOKENS.neutral[300],
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -91,6 +99,7 @@ export function BottomFloatTotalBlock({
   plan,
   days,
   duration,
+  persons = 1,
   lightMealOption,
   onScrollToSummary,
   hidden = false,
@@ -99,6 +108,7 @@ export function BottomFloatTotalBlock({
   plan: Plan;
   days: DayOption;
   duration: Duration;
+  persons?: number;
   lightMealOption: LightMealOption;
   onScrollToSummary: () => void;
   hidden?: boolean;
@@ -131,6 +141,7 @@ export function BottomFloatTotalBlock({
     plan,
     days,
     duration,
+    persons,
   });
 
   const menuDays = getMenuDays();
@@ -355,8 +366,8 @@ export function BottomFloatTotalBlock({
   return (
     <>
       <div
-        className={`fixed bottom-0 left-0 right-0 z-[150] flex flex-col items-end transition-transform duration-300 ease-in-out md:hidden ${
-          hidden ? 'translate-y-full' : 'translate-y-0'
+        className={`fixed bottom-0 left-0 right-0 z-[150] flex flex-col items-end bg-[var(--checkout-float-surface)] pb-[env(safe-area-inset-bottom)] transition-transform duration-300 ease-in-out md:hidden ${
+          hidden || selectedMeal ? 'translate-y-full' : 'translate-y-0'
         }`}
         style={bottomFloatTotalBlockStyle}
       >
@@ -390,8 +401,9 @@ export function BottomFloatTotalBlock({
           </button>
         </div>
 
-        <div className="w-full overflow-hidden bg-[var(--checkout-float-surface)] drop-shadow-[0px_-4px_12px_rgba(0,0,0,0.08)]">
-          <div className="relative">
+        <div className="w-full shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
+          <div className="overflow-hidden bg-[var(--checkout-float-surface)]">
+            <div className="relative">
             {menuVisible && (
               <div
                 className={`${menuClosing ? 'modal-exit-mobile-full' : 'modal-enter-mobile-full'} relative z-0 bg-[var(--checkout-float-surface)]`}
@@ -530,38 +542,62 @@ export function BottomFloatTotalBlock({
                     onTouchStart={handleMealsTouchStart}
                     onTouchMove={handleMealsTouchMove}
                     onTouchEnd={handleMealsTouchEnd}
-                    className="scrollbar-hide flex cursor-grab touch-pan-x select-none gap-[12px] overflow-x-auto px-[20px] py-[16px] active:cursor-grabbing"
+                    className={`scrollbar-hide flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible px-[20px] pt-[8px] pb-[16px] md:justify-center md:px-[24px] ${
+                      isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
+                    }`}
                   >
                     {selectedDayMeals.map((meal) => (
                       <button
                         key={meal.id}
                         type="button"
                         onClick={() => handleMealClick(meal)}
-                        className="group flex shrink-0 cursor-pointer flex-col gap-[8px] text-left"
+                        className="group relative z-0 flex shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10"
                       >
-                        <div className="relative h-[108px] w-[150px] overflow-hidden rounded-[8px]">
+                        <div className="flex h-[114px] w-[150px] items-center justify-center overflow-visible md:h-[122px] md:w-[160px]">
                           <img
                             src={meal.img}
                             alt={meal.name}
                             draggable={false}
-                            className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                            className="pointer-events-none h-[108px] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105 md:h-[116px] md:w-[160px]"
                           />
                         </div>
 
-                        <p
-                          className={[
-                            TEXT_TRIM_CLASS_NAME,
-                            'w-[150px] font-sans text-[length:var(--checkout-float-font-size-md)] font-semibold leading-[1.4] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)]',
-                          ].join(' ')}
-                        >
-                          {meal.name}
-                        </p>
+                        <div className="flex w-[150px] flex-col gap-[12px] md:w-[160px]">
+                          <p
+                            className={[
+                              TEXT_TRIM_CLASS_NAME,
+                              'flex w-[150px] flex-wrap items-center gap-x-[0.35em] font-sans text-[length:var(--checkout-float-meal-meta-font-size)] font-medium leading-[140%] text-[var(--checkout-float-muted)] md:w-[160px]',
+                            ].join(' ')}
+                          >
+                            <span>{meal.kcal} kcal • {meal.weight} g</span>
+                            <span>{meal.type}</span>
+                          </p>
+
+                          <p
+                            className={[
+                              TEXT_TRIM_CLASS_NAME,
+                              'w-[150px] font-sans text-[length:var(--checkout-float-meal-title-font-size)] font-semibold leading-[140%] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)] md:w-[160px]',
+                            ].join(' ')}
+                          >
+                            {meal.name}
+                          </p>
+                        </div>
                       </button>
                     ))}
                   </div>
 
-                  <div className="pointer-events-none absolute bottom-0 left-0 top-0 w-[20px] bg-gradient-to-l from-transparent to-[var(--checkout-float-surface)]" />
-                  <div className="pointer-events-none absolute bottom-0 right-0 top-0 w-[20px] bg-gradient-to-r from-transparent to-[var(--checkout-float-surface)]" />
+                  <div
+                    className="pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-[20px] md:w-[32px]"
+                    style={{
+                      background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})`,
+                    }}
+                  />
+                  <div
+                    className="pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-[20px] md:w-[32px]"
+                    style={{
+                      background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})`,
+                    }}
+                  />
                 </div>
               </div>
             )}
@@ -569,25 +605,33 @@ export function BottomFloatTotalBlock({
             <div className="relative z-10 w-full bg-[var(--checkout-float-surface)]">
               <div className="w-full">
                 <div className="flex items-center gap-[16px] px-[20px] py-[8px]">
-                  <div className="flex flex-1 flex-col items-center gap-[2px]">
-                    <div className="flex items-end gap-[4px]">
+                  <div className="flex flex-1 flex-col items-center justify-start gap-[8px]">
+                    <div className="flex items-end gap-[5px] tabular-nums">
                       {pricing.oldPeriodPrice ? (
-                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-muted)] line-through">
-                          {formatAed(pricing.oldPeriodPrice)}
+                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-[var(--checkout-float-muted)] line-through">
+                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} />
                         </p>
                       ) : null}
 
-                      <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
-                        AED
-                      </p>
+                      <div className="flex items-end gap-[4px]">
+                        <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
+                          AED
+                        </p>
 
-                      <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
-                        {formatAed(pricing.periodPrice)}
-                      </p>
+                        <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
+                          <AnimatedNumber value={pricing.periodPrice} format={formatAed} />
+                        </p>
+                      </div>
+
+                      {pricing.oldPeriodPrice ? (
+                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-transparent opacity-0">
+                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} />
+                        </p>
+                      ) : null}
                     </div>
 
-                    <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
-                      AED {formatPricePerDay(pricing.pricePerDay)}/day
+                    <p className="text-right font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
+                      AED <AnimatedNumber value={pricing.pricePerDay} format={formatPricePerDay} />/day
                     </p>
                   </div>
 
@@ -605,6 +649,7 @@ export function BottomFloatTotalBlock({
 
               <div className="h-px w-full bg-[var(--checkout-float-divider)]" />
             </div>
+          </div>
           </div>
         </div>
       </div>

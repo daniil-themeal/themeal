@@ -2,9 +2,11 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
 import { FONT_SIZE_TOKENS } from './fontSizeTokens';
+import { UaeFlag } from './UaeFlag';
 
 type PhoneInputCssVariables = CSSProperties & {
   '--phone-input-bg': string;
+  '--phone-input-border': string;
   '--phone-input-text': string;
   '--phone-input-placeholder': string;
   '--phone-input-error': string;
@@ -13,22 +15,12 @@ type PhoneInputCssVariables = CSSProperties & {
 
 const phoneInputStyle: PhoneInputCssVariables = {
   '--phone-input-bg': COLOR_TOKENS.neutral[50],
+  '--phone-input-border': COLOR_TOKENS.neutral[200],
   '--phone-input-text': COLOR_TOKENS.neutral[900],
   '--phone-input-placeholder': COLOR_TOKENS.neutral[300],
   '--phone-input-error': COLOR_TOKENS.danger[400],
   '--phone-input-font-size': FONT_SIZE_TOKENS[20],
 };
-
-function UaeFlag() {
-  return (
-    <svg className="h-[12px] w-[20px]" fill="none" viewBox="0 0 20 12" aria-hidden="true">
-      <rect width="20" height="12" fill="#00732F" />
-      <rect y="4" width="20" height="8" fill="white" />
-      <rect y="8" width="20" height="4" fill="black" />
-      <rect width="6" height="12" fill="#FF0000" />
-    </svg>
-  );
-}
 
 type PhoneInputProps = {
   id?: string;
@@ -53,7 +45,7 @@ export function PhoneInput({
   return (
     <div className={['flex flex-col gap-[8px]', className].filter(Boolean).join(' ')} style={phoneInputStyle}>
       <div className="flex items-center gap-[12px]">
-        <div className="flex h-[48px] shrink-0 items-center overflow-hidden rounded-[8px] bg-[var(--phone-input-bg)]">
+        <div className="flex h-[48px] shrink-0 items-center overflow-hidden rounded-[8px] border border-[var(--phone-input-border)] bg-[var(--phone-input-bg)]">
           <div className="flex size-[48px] items-center justify-center">
             <UaeFlag />
           </div>
@@ -64,8 +56,8 @@ export function PhoneInput({
 
         <div
           className={[
-            'flex h-[48px] flex-1 items-center rounded-[8px] bg-[var(--phone-input-bg)] px-[16px]',
-            hasError ? 'ring-1 ring-[var(--phone-input-error)]' : '',
+            'flex h-[48px] flex-1 items-center rounded-[8px] border bg-[var(--phone-input-bg)] px-[16px]',
+            hasError ? 'border-[var(--phone-input-error)]' : 'border-[var(--phone-input-border)]',
           ]
             .filter(Boolean)
             .join(' ')}

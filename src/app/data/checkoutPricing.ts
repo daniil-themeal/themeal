@@ -312,6 +312,7 @@ export function getCheckoutPrice({
 
   return {
     ...item,
+    pricePerDay: Number((item.pricePerDay * persons).toFixed(1)),
     periodPrice: item.periodPrice * persons,
     oldPeriodPrice: item.oldPeriodPrice ? item.oldPeriodPrice * persons : null,
     pricePerMonth: item.pricePerMonth ? item.pricePerMonth * persons : null,
@@ -333,6 +334,12 @@ export function getTotalMeals({
   pricingTable?: CheckoutPricingTable;
 }) {
   return pricingTable[duration][days][plan].paidDays * PLAN_MEALS_COUNT[plan] * persons;
+}
+
+export function getFinalPeriodPrice(periodPrice: number, promoDiscount: number | null) {
+  if (promoDiscount === null) return periodPrice;
+
+  return Math.max(0, periodPrice - promoDiscount);
 }
 
 export function formatAed(value: number) {

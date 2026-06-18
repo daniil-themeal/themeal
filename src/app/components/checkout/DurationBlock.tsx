@@ -15,12 +15,11 @@ import { Badge } from '../common/Badge';
 import type { BadgeVariant } from '../common/Badge';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
+import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 type DurationBlockCssVariables = CSSProperties & {
-  '--duration-title-font-size': string;
-  '--duration-title-font-size-md': string;
   '--duration-card-title-font-size': string;
-  '--duration-card-title-font-size-md': string;
   '--duration-meta-font-size': string;
   '--duration-meta-font-size-md': string;
   '--duration-card-bg': string;
@@ -38,10 +37,7 @@ type DurationBlockCssVariables = CSSProperties & {
 };
 
 const durationBlockStyle: DurationBlockCssVariables = {
-  '--duration-title-font-size': FONT_SIZE_TOKENS[20],
-  '--duration-title-font-size-md': FONT_SIZE_TOKENS[25],
-  '--duration-card-title-font-size': FONT_SIZE_TOKENS[16],
-  '--duration-card-title-font-size-md': FONT_SIZE_TOKENS[20],
+  '--duration-card-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--duration-meta-font-size': FONT_SIZE_TOKENS[12],
   '--duration-meta-font-size-md': FONT_SIZE_TOKENS[14],
   '--duration-badge-font-size': FONT_SIZE_TOKENS[12],
@@ -88,6 +84,7 @@ function DurationCard({
   duration,
   plan,
   days,
+  persons,
   selected,
   onSelect,
   pricingTable,
@@ -95,6 +92,7 @@ function DurationCard({
   duration: Duration;
   plan: Plan;
   days: DayOption;
+  persons: number;
   selected: boolean;
   onSelect: () => void;
   pricingTable: CheckoutPricingTable;
@@ -106,6 +104,7 @@ function DurationCard({
     plan,
     days,
     duration,
+    persons,
   });
 
   const discountPct = formatDiscountPercent(price.discountPercent);
@@ -119,19 +118,20 @@ function DurationCard({
       onClick={onSelect}
       className={[
         'relative w-full cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
+        'hover:border-[var(--duration-active)]',
         selected
           ? 'border-[var(--duration-card-selected-border)] bg-[var(--duration-card-selected-bg)]'
           : 'border-transparent bg-[var(--duration-card-bg)]',
       ].join(' ')}
     >
       {meta.badge ? (
-        <Badge variant={meta.badge} className="absolute right-[18px] top-[-4px] z-[1]" />
+        <Badge variant={meta.badge} className="absolute right-[var(--checkout-selector-card-padding)] top-[-4px] z-[1]" />
       ) : null}
 
-      <div className="flex flex-col items-end gap-[12px] p-[20px] md:px-[24px]">
+      <div className="flex flex-col items-end gap-[12px] p-[var(--checkout-selector-card-padding)]">
         <div className="flex w-full items-center gap-[12px]">
-          <div className="flex flex-[1_0_0] flex-col items-start gap-[4px]">
-            <p className="font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)] md:text-[length:var(--duration-card-title-font-size-md)]">
+          <div className="flex flex-[1_0_0] flex-col items-start gap-[12px]">
+            <p className="font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)]">
               {meta.label}
             </p>
 
@@ -140,8 +140,8 @@ function DurationCard({
             ) : null}
           </div>
 
-          <div className="flex flex-col items-end gap-[4px]">
-            <p className="whitespace-nowrap text-right font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-active)] md:text-[length:var(--duration-card-title-font-size-md)]">
+          <div className="flex flex-col items-end gap-[12px]">
+            <p className="whitespace-nowrap text-right font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-active)]">
               AED {formatPricePerDay(price.pricePerDay)}/day
             </p>
 
@@ -163,22 +163,22 @@ export function DurationBlock({
   onSelect,
   plan,
   days,
+  persons = 1,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
 }: {
   selected: Duration;
   onSelect: (d: Duration) => void;
   plan: Plan;
   days: DayOption;
+  persons?: number;
   pricingTable?: CheckoutPricingTable;
 }) {
   return (
     <div
-      className="flex w-full flex-col items-start gap-[16px]"
+      className="flex w-full min-w-0 flex-col items-start gap-[20px]"
       style={durationBlockStyle}
     >
-      <p className="w-full px-[4px] font-sans text-[length:var(--duration-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)] md:text-[length:var(--duration-title-font-size-md)]">
-        Subscription duration
-      </p>
+      <CheckoutSectionHeader title="Subscription duration" />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">
         {durations.map((duration) => (
@@ -187,6 +187,7 @@ export function DurationBlock({
             duration={duration}
             plan={plan}
             days={days}
+            persons={persons}
             pricingTable={pricingTable}
             selected={selected === duration}
             onSelect={() => onSelect(duration)}

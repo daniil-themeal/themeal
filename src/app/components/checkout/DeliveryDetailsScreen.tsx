@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import type { DayOption, Duration } from '../../data/checkoutPricing';
 import type { TestAddress } from '../../data/testAddresses';
@@ -18,10 +18,23 @@ import {
   CHECKOUT_STEP_PAGE_VARS,
 } from './checkoutStepPageLayoutTokens';
 import type { DeliveryDetailsData } from './deliveryDetailsTypes';
+import {
+  validateDeliveryDetails,
+  type DeliveryDetailsFieldErrors,
+} from './deliveryValidation';
 import { MealCalendar } from './MealCalendar';
 import { getUpcomingDeliveryDates } from './mealCalendarUtils';
 
-const TIME_SLOTS = ['07:00 – 11:00', '12:00 – 16:00', '18:00 – 22:00'];
+const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
+
+function getFirstDeliveryFieldErrorId(errors: DeliveryDetailsFieldErrors) {
+  if (errors.apartment) return 'delivery-apartment';
+  if (errors.fullName) return 'delivery-full-name';
+  if (errors.email) return 'delivery-email';
+  if (errors.selectedTimeSlot) return 'delivery-time-slot';
+
+  return null;
+}
 
 function InfoBox() {
   return (
@@ -62,10 +75,46 @@ export function DeliveryDetailsScreen({
   duration,
   onContinue,
 }: DeliveryDetailsScreenProps) {
+  const [fieldErrors, setFieldErrors] = useState<DeliveryDetailsFieldErrors>({});
   const deliveryDates = useMemo(() => getUpcomingDeliveryDates(60), []);
 
   const addressTitle = selectedAddress?.title ?? 'Delivery address';
   const addressSub = selectedAddress?.subtitle ?? 'Select your delivery address';
+
+  const clearFieldError = (field: keyof DeliveryDetailsFieldErrors) => {
+    setFieldErrors((current) => {
+      if (!current[field]) return current;
+
+      const next = { ...current };
+      delete next[field];
+      return next;
+    });
+  };
+
+  const handleContinue = () => {
+    const validation = validateDeliveryDetails(deliveryDetails);
+
+    if (!validation.isValid) {
+      setFieldErrors(validation.errors);
+
+      const firstErrorId = getFirstDeliveryFieldErrorId(validation.errors);
+
+      if (firstErrorId) {
+        requestAnimationFrame(() => {
+          document.getElementById(firstErrorId)?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+          document.getElementById(firstErrorId)?.focus();
+        });
+      }
+
+      return;
+    }
+
+    setFieldErrors({});
+    onContinue?.();
+  };
 
   return (
     <div className={CHECKOUT_STEP_PAGE_LAYOUT.page} style={CHECKOUT_STEP_PAGE_VARS}>
@@ -86,7 +135,11 @@ export function DeliveryDetailsScreen({
               id="delivery-apartment"
               label="Apartment / villa number *"
               value={deliveryDetails.apartment}
-              onChange={(e) => onDeliveryDetailsChange({ apartment: e.target.value })}
+              onChange={(e) => {
+                onDeliveryDetailsChange({ apartment: e.target.value });
+                clearFieldError('apartment');
+              }}
+              error={fieldErrors.apartment}
               placeholder="67"
             />
 
@@ -103,7 +156,11 @@ export function DeliveryDetailsScreen({
               id="delivery-full-name"
               label="Full name *"
               value={deliveryDetails.fullName}
-              onChange={(e) => onDeliveryDetailsChange({ fullName: e.target.value })}
+              onChange={(e) => {
+                onDeliveryDetailsChange({ fullName: e.target.value });
+                clearFieldError('fullName');
+              }}
+              error={fieldErrors.fullName}
               placeholder="Ahmed"
             />
 
@@ -112,7 +169,11 @@ export function DeliveryDetailsScreen({
               label="E-mail *"
               type="email"
               value={deliveryDetails.email}
-              onChange={(e) => onDeliveryDetailsChange({ email: e.target.value })}
+              onChange={(e) => {
+                onDeliveryDetailsChange({ email: e.target.value });
+                clearFieldError('email');
+              }}
+              error={fieldErrors.email}
               placeholder="email@themeal.menu"
             />
           </div>
@@ -133,20 +194,24 @@ export function DeliveryDetailsScreen({
 
           <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionBottom}>
             <div
-              className="flex flex-col gap-[24px] md:flex-row md:gap-[16px]"
+              className="flex flex-col gap-[24px] sm:flex-row sm:gap-[16px]"
               style={getFieldSizeStyle('large')}
             >
               <Dropdown
                 id="delivery-time-slot"
-                label="Delivery time"
+                label="Delivery time *"
                 options={TIME_SLOTS.map((slot) => ({ value: slot, label: slot }))}
                 value={deliveryDetails.selectedTimeSlot}
-                onChange={(selectedTimeSlot) => onDeliveryDetailsChange({ selectedTimeSlot })}
+                onChange={(selectedTimeSlot) => {
+                  onDeliveryDetailsChange({ selectedTimeSlot });
+                  clearFieldError('selectedTimeSlot');
+                }}
+                error={fieldErrors.selectedTimeSlot}
                 placeholder="Select timeslot"
                 containerClassName="min-w-0 flex-1"
               />
 
-              <div className="flex shrink-0 items-center md:mt-[22px] md:h-[length:var(--field-height)]">
+              <div className="flex shrink-0 items-center sm:mt-[22px] sm:h-[length:var(--field-height)]">
                 <Checkbox
                   id="leave-at-door"
                   checked={deliveryDetails.leaveAtDoor}
@@ -156,9 +221,9 @@ export function DeliveryDetailsScreen({
               </div>
             </div>
 
-            <InfoBox />
+            {deliveryDetails.leaveAtDoor ? <InfoBox /> : null}
 
-            <Button type="button" variant="primary" size="medium" fullWidth onClick={onContinue}>
+            <Button type="button" variant="primary" size="medium" fullWidth onClick={handleContinue}>
               Continue
             </Button>
           </div>

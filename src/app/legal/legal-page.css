@@ -1,0 +1,199 @@
+.legal-page {
+  background: var(--legal-page-bg);
+  color: var(--typography-text);
+
+  /* Mobile-first spacing rhythm */
+  --legal-content-max: min(760px, 100%);
+  --legal-gap-xs: 8px;
+  --legal-gap-sm: 12px;
+  --legal-gap-md: 12px;
+  --legal-gap-lg: 20px;
+  --legal-gap-xl: 24px;
+  --legal-gap-2xl: 28px;
+  --legal-gap-3xl: 36px;
+}
+
+.legal-header-shell {
+  position: fixed;
+  inset-inline: 0;
+  top: 0;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.legal-header-shell__hit {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 8px;
+  pointer-events: auto;
+}
+
+.legal-header-bar {
+  pointer-events: auto;
+  transition:
+    transform 0.32s var(--ease),
+    background 0.3s,
+    box-shadow 0.3s;
+  background: rgba(46, 15, 74, 0.82);
+  backdrop-filter: saturate(1.4) blur(14px);
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.legal-main {
+  padding-top: calc(var(--hdr-h) + var(--legal-gap-lg));
+  padding-bottom: var(--legal-gap-2xl);
+}
+
+.legal-main__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--legal-gap-md);
+  width: 100%;
+  max-width: var(--legal-content-max);
+  margin-inline: auto;
+  min-width: 0;
+}
+
+.legal-breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--legal-gap-xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.legal-breadcrumbs__item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--legal-gap-xs);
+  min-width: 0;
+}
+
+.legal-breadcrumbs__item:not(:last-child)::after {
+  content: '/';
+  color: var(--typography-muted);
+  font-weight: 500;
+}
+
+.legal-article {
+  display: flex;
+  flex-direction: column;
+  gap: var(--legal-gap-xl);
+  min-width: 0;
+}
+
+.legal-article__head {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+}
+
+.legal-article__title {
+  margin: 0;
+  text-wrap: balance;
+}
+
+.legal-article__updated {
+  margin: 0;
+}
+
+.legal-article__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--legal-gap-md);
+  margin: 0;
+}
+
+.legal-paragraph {
+  margin: 0;
+}
+
+.legal-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--legal-gap-md);
+  margin: 0;
+  min-width: 0;
+}
+
+.legal-section__title {
+  margin: 0;
+  text-wrap: balance;
+}
+
+.legal-section__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--legal-gap-md);
+  margin: 0;
+  min-width: 0;
+}
+
+.legal-article,
+.legal-article__intro,
+.legal-section__body,
+.legal-paragraph,
+.prose-list__content {
+  overflow-wrap: anywhere;
+}
+
+/*
+ * A list is a denser group (16px between rows), so it needs more breathing room
+ * from the surrounding paragraphs. The margin adds to the section body's flex
+ * gap (16px + 8px = 24px outside the list vs 16px between its items).
+ */
+.legal-section__body > .prose-list {
+  margin-block: var(--legal-gap-xs);
+}
+
+.legal-related {
+  margin: var(--legal-gap-md) 0 0;
+  padding-top: var(--legal-gap-lg);
+  border-top: 1px solid var(--legal-divider);
+}
+
+@media (min-width: 640px) {
+  .legal-page {
+    --legal-gap-md: 14px;
+    --legal-gap-lg: 22px;
+    --legal-gap-xl: 28px;
+    --legal-gap-2xl: 36px;
+    --legal-gap-3xl: 44px;
+  }
+}
+
+@media (min-width: 768px) {
+  .legal-page {
+    --legal-gap-md: 16px;
+    --legal-gap-lg: 24px;
+    --legal-gap-xl: 32px;
+    --legal-gap-2xl: 40px;
+    --legal-gap-3xl: 48px;
+  }
+
+  .legal-main {
+    padding-top: calc(var(--hdr-h) + var(--legal-gap-2xl));
+    padding-bottom: clamp(64px, 6vw, 80px);
+  }
+
+  .legal-main__inner {
+    gap: var(--legal-gap-xl);
+  }
+
+  .legal-article {
+    gap: var(--legal-gap-3xl);
+  }
+
+  .legal-section {
+    gap: var(--legal-gap-xl);
+  }
+
+  .legal-related {
+    margin-top: var(--legal-gap-lg);
+    padding-top: var(--legal-gap-xl);
+  }
+}

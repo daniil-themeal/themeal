@@ -5,6 +5,7 @@ import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { XIcon } from '../common/icons';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
+import { PaymentResultTabs, type PaymentResultTab } from './PaymentResultTabs';
 
 const steps = ['Plan', 'Delivery', 'Payment'] as const;
 
@@ -19,6 +20,8 @@ type CheckoutHeaderProps = {
   onBack: () => void;
   onClose: () => void;
   onStepSelect?: (step: CheckoutHeaderStep) => void;
+  onLogoClick?: () => void;
+  onResultSelect?: (tab: PaymentResultTab) => void;
 };
 
 type CheckoutHeaderCssVariables = CSSProperties & {
@@ -54,7 +57,7 @@ const checkoutHeaderStyle: CheckoutHeaderCssVariables = {
   '--checkout-header-step-idle-text': COLOR_TOKENS.neutral[500],
   '--checkout-header-close-bg': COLOR_TOKENS.neutral[50],
   '--checkout-header-close-bg-hover': COLOR_TOKENS.neutral[75],
-  '--checkout-header-logo': COLOR_TOKENS.primary[500],
+  '--checkout-header-logo': COLOR_TOKENS.neutral[900],
   '--checkout-header-back-icon': COLOR_TOKENS.neutral[500],
   '--checkout-header-step-font-size': FONT_SIZE_TOKENS[12],
   '--checkout-header-label-font-size': FONT_SIZE_TOKENS[12],
@@ -83,7 +86,7 @@ function Stepper({
   onStepSelect?: (step: CheckoutHeaderStep) => void;
 }) {
   return (
-    <div className="flex items-center justify-center gap-0 px-[0px] py-[16px] sm:px-[8px] md:px-[16px]">
+    <div className="flex h-full items-center justify-center gap-0 px-[0px] sm:px-[8px] md:px-[16px]">
       {steps.map((step, index) => {
         const status = getStepStatus(index, current);
         const isActive = status === 'active';
@@ -93,7 +96,7 @@ function Stepper({
         const stepLabel = (
           <div className="flex items-center gap-[4px] sm:gap-[8px]">
             <div
-              className="hidden size-[20px] items-center justify-center rounded-full font-sans text-[length:var(--checkout-header-step-font-size)] font-bold xs:flex sm:size-[24px]"
+              className="hidden size-[20px] items-center justify-center rounded-full font-sans text-[length:var(--checkout-header-step-font-size)] font-bold sm:flex sm:size-[24px]"
               style={{
                 backgroundColor: isActive
                   ? 'var(--checkout-header-step-active-bg)'
@@ -136,12 +139,12 @@ function Stepper({
         );
 
         return (
-          <div key={step} className="flex items-center">
+          <div key={step} className="flex h-full items-center">
             {onStepSelect ? (
               <button
                 type="button"
                 onClick={() => onStepSelect(headerStep)}
-                className="flex cursor-pointer items-center rounded-[6px] transition-opacity hover:opacity-80"
+                className="flex h-full cursor-pointer items-center rounded-[6px] px-[4px] transition-opacity hover:opacity-80 sm:px-[8px]"
                 aria-label={`Switch to ${step} step`}
               >
                 {stepLabel}
@@ -209,6 +212,8 @@ export function CheckoutHeader({
   onBack,
   onClose,
   onStepSelect,
+  onLogoClick,
+  onResultSelect,
 }: CheckoutHeaderProps) {
   const currentStepperIndex = step === 'plan' ? 0 : step === 'delivery' ? 1 : 2;
   const showBackButton = !title && step !== 'plan';
@@ -236,23 +241,40 @@ export function CheckoutHeader({
             >
               <ChevronLeftIcon />
             </button>
+          ) : onLogoClick ? (
+            <button
+              type="button"
+              onClick={onLogoClick}
+              className="flex h-full w-full cursor-pointer items-center justify-center"
+              aria-label="Scroll to top"
+            >
+              <CheckoutLogo />
+            </button>
           ) : (
             <CheckoutLogo />
           )}
         </div>
 
-        <div className="flex flex-1 items-center justify-center px-[8px]">
+        <div className="flex h-full flex-1 items-stretch justify-center px-[8px]">
           {title ? (
             <p
               className={[
                 TEXT_TRIM_CLASS_NAME,
-                'min-w-0 font-sans text-[length:var(--checkout-header-label-font-size-sm)] font-bold leading-[130%] text-[var(--checkout-header-text-active)]',
+                'min-w-0 self-center font-sans text-[length:var(--checkout-header-label-font-size-sm)] font-bold leading-[130%] text-[var(--checkout-header-text-active)]',
               ].join(' ')}
             >
               {title}
             </p>
           ) : (
-            <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
+            <div className="flex h-full items-center justify-center">
+              <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
+              {import.meta.env.DEV && onResultSelect ? (
+                <div className="hidden items-center md:flex">
+                  <div className="mx-[8px] h-px w-[12px] bg-[var(--checkout-header-border)]" />
+                  <PaymentResultTabs onTabChange={onResultSelect} />
+                </div>
+              ) : null}
+            </div>
           )}
         </div>
 

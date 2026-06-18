@@ -1,8 +1,12 @@
 import { useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
+import { useEscapeLayer } from './common/escapeStack';
+import { Z_INDEX_TOKENS } from './common/zIndexTokens';
+
 import { Badge, BADGE_VARIANTS } from './common/Badge';
 import { Button, BUTTON_SIZE_LABELS, BUTTON_SIZES, BUTTON_VARIANTS } from './common/Button';
+import { IconButton } from './common/IconButton';
 import { Checkbox } from './common/Checkbox';
 import { CHECKBOX_SIZE_LABELS, CHECKBOX_SIZES, RADIO_SIZE_LABELS, RADIO_SIZES } from './common/checkboxSizeTokens';
 import { Radio, RadioGroup } from './common/Radio';
@@ -26,6 +30,7 @@ import {
   RadioCheckIcon,
   SuccessIcon,
   TruckIcon,
+  XIcon,
 } from './common/icons';
 import type { IconSize } from './common/icons/iconSize';
 import { FEATHER_ICON_CATALOG_ENTRIES } from './common/icons/feather/iconCatalog';
@@ -33,13 +38,14 @@ import { iconColorClassName, iconColorStyle } from './common/iconColorTokens';
 import { NEUTRAL_USAGE_ROLES } from './common/neutralUsageTokens';
 import { PhoneInput } from './common/PhoneInput';
 import { SPACING_TOKENS } from './common/spacingTokens';
+import { ProseList } from './common/ProseList';
+import { PROSE_LIST_TOKEN_NAMES, PROSE_LIST_SPACING, PROSE_LIST_TOKENS } from './common/proseListTokens';
 import {
   TYPOGRAPHY_ROLE_NAMES,
   TYPOGRAPHY_ROLES,
   typographyRoleStyle,
 } from './common/typographyTokens';
 import { TextLink, TEXT_LINK_SIZES } from './common/TextLink';
-import { Z_INDEX_TOKENS } from './common/zIndexTokens';
 import { formatUaePhoneInput } from './checkout/phoneValidation';
 import {
   FONT_FAMILY_CLASS_NAMES,
@@ -95,6 +101,7 @@ type DemoAnchorId =
   | 'payment-method-icon-tokens'
   | 'icon-catalog'
   | 'typography-roles'
+  | 'prose-list'
   | 'neutral-usage'
   | 'form-label'
   | 'phone-input'
@@ -118,6 +125,9 @@ type DemoAnchorId =
   | 'button-variants'
   | 'button-sizes'
   | 'button-icons'
+  | 'icon-button-variants'
+  | 'icon-button-soft'
+  | 'icon-button-sizes'
   | 'badge-variants';
 
 type DemoNavigationItem = {
@@ -163,6 +173,7 @@ const demoNavigationItems: DemoNavigationItem[] = [
       { id: 'payment-method-icon-tokens', label: 'Payment method icons' },
       { id: 'icon-catalog', label: 'Icon catalog' },
       { id: 'typography-roles', label: 'Typography roles' },
+      { id: 'prose-list', label: 'Prose list' },
       { id: 'neutral-usage', label: 'Neutral usage' },
     ],
   },
@@ -198,6 +209,9 @@ const demoNavigationItems: DemoNavigationItem[] = [
       { id: 'button-variants', label: 'Button variants' },
       { id: 'button-sizes', label: 'Button sizes' },
       { id: 'button-icons', label: 'Button icons' },
+      { id: 'icon-button-variants', label: 'IconButton variants' },
+      { id: 'icon-button-soft', label: 'IconButton soft' },
+      { id: 'icon-button-sizes', label: 'IconButton sizes' },
     ],
   },
   {
@@ -722,6 +736,8 @@ function IconCatalogRow({
 }
 
 export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
+  useEscapeLayer(true, Z_INDEX_TOKENS.checkout, onClose);
+
   const [email, setEmail] = useState('email@themeal.menu');
   const [name, setName] = useState('');
   const [checkboxChecked, setCheckboxChecked] = useState(false);
@@ -1018,6 +1034,65 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           </DemoCard>
 
           <DemoCard
+            id="prose-list"
+            title="Prose list"
+            description="Bulleted lists with bold labels for legal and policy content."
+            className="lg:col-span-2"
+          >
+            <div
+              className="flex flex-col gap-[16px]"
+              style={{
+                ...typographyRoleStyle,
+                '--legal-gap-md': PROSE_LIST_SPACING.itemGap,
+                '--legal-gap-xs': PROSE_LIST_SPACING.nestedGap,
+              }}
+            >
+              <ProseList
+                items={[
+                  {
+                    label: 'Personal Identification Information',
+                    description:
+                      'This is information that can identify you as an individual. For example: your name, address, email address, phone number, date of birth.',
+                  },
+                  {
+                    label: 'Contact Data',
+                    description:
+                      'Such as your phone number and email, which we use to communicate with you (e.g., order updates, support).',
+                  },
+                  {
+                    label: 'Usage Data',
+                    description:
+                      'We automatically collect certain information when you interact with our website:',
+                    children: [
+                      {
+                        label: 'Log and Device Data',
+                        description:
+                          'IP address, browser type, device type, operating system, referring URLs, pages viewed, and the dates/times of access.',
+                      },
+                    ],
+                  },
+                ]}
+              />
+
+              <div className="flex flex-col gap-[8px] border-t border-[var(--demo-card-border)] pt-[12px]">
+                {PROSE_LIST_TOKEN_NAMES.map((tokenName) => {
+                  const token = PROSE_LIST_TOKENS[tokenName];
+
+                  return (
+                    <p
+                      key={tokenName}
+                      className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-description)]"
+                    >
+                      <CodeLabel>{tokenName}</CodeLabel>
+                      {` · ${token.usage}`}
+                    </p>
+                  );
+                })}
+              </div>
+            </div>
+          </DemoCard>
+
+          <DemoCard
             id="neutral-usage"
             title="Neutral usage"
             description="Guideline for neutral palette roles in text, icons, borders, and surfaces."
@@ -1238,7 +1313,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 />
               }
               action={
-                <Button type="button" variant="neutral" size="medium" className="w-full sm:w-[140px]">
+                <Button type="button" variant="neutral" size="medium" className="w-full @[280px]:w-[140px]">
                   Action
                 </Button>
               }
@@ -1827,6 +1902,10 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                     {capitalizeWord(variant)} Disabled
                   </Button>
 
+                  <Button variant={variant} fullWidth loading>
+                    {capitalizeWord(variant)} Loading
+                  </Button>
+
                   <Button variant={variant} outline fullWidth>
                     {capitalizeWord(variant)} Outline
                   </Button>
@@ -1842,7 +1921,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           <DemoCard
             id="button-sizes"
             title="Button sizes"
-            description="Agreed size tokens: X-small 32 / Small 40 / Medium 48 / Large 64 / X-large 80. Border radius: X-small & Small 4 / Medium & Large 8 / X-large 12."
+            description="Agreed size tokens: X-small 32 / Small 40 / Medium 48 / Large 64 / X-large 72. Border radius: X-small & Small 4 / Medium & Large 8 / X-large 12."
           >
             <div className="flex flex-col gap-[16px]">
               {BUTTON_SIZES.map((size) => (
@@ -1921,6 +2000,94 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
               >
                 Outline + left icon
               </Button>
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="icon-button-variants"
+            title="IconButton variants"
+            description="Round icon-only buttons with the same color variants as Button. Width equals height for each size token."
+          >
+            <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
+              {BUTTON_VARIANTS.map((variant) => (
+                <div key={variant} className="flex flex-col gap-[8px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`variant="${variant}"`}</CodeLabel>
+                  </DemoSubheading>
+
+                  <div className="flex flex-wrap items-center gap-[8px]">
+                    <IconButton
+                      variant={variant}
+                      aria-label={`${capitalizeWord(variant)} action`}
+                      icon={<XIcon />}
+                    />
+
+                    <IconButton
+                      variant={variant}
+                      aria-label={`${capitalizeWord(variant)} action disabled`}
+                      icon={<XIcon />}
+                      disabled
+                    />
+
+                    <IconButton
+                      variant={variant}
+                      aria-label={`${capitalizeWord(variant)} action loading`}
+                      icon={<XIcon />}
+                      loading
+                    />
+
+                    <IconButton
+                      variant={variant}
+                      outline
+                      aria-label={`${capitalizeWord(variant)} outline action`}
+                      icon={<XIcon />}
+                    />
+
+                    <IconButton
+                      variant={variant}
+                      outline
+                      aria-label={`${capitalizeWord(variant)} outline action disabled`}
+                      icon={<XIcon />}
+                      disabled
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="icon-button-soft"
+            title="IconButton soft"
+            description="Round soft icon controls for light surfaces: neutral[50] background, neutral[75] on hover, no border. Used for checkout close controls, counters, and inline hints."
+          >
+            <div className="flex flex-wrap items-center gap-[8px]">
+              <IconButton soft aria-label="Soft action" icon={<XIcon />} />
+              <IconButton soft aria-label="Soft action disabled" icon={<XIcon />} disabled />
+              <IconButton soft aria-label="Soft action loading" icon={<XIcon />} loading />
+              <IconButton soft size="small" aria-label="Soft small action" icon={<XIcon size={16} />} />
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="icon-button-sizes"
+            title="IconButton sizes"
+            description="Round buttons with square dimensions matching Button height tokens: 32 / 40 / 48 / 64 / 72 px. Icon size scales with button size."
+          >
+            <div className="flex flex-wrap items-end gap-[16px]">
+              {BUTTON_SIZES.map((size) => (
+                <div key={size} className="flex flex-col items-center gap-[8px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`size="${size}"`}</CodeLabel>
+                  </DemoSubheading>
+
+                  <IconButton
+                    size={size}
+                    aria-label={`${BUTTON_SIZE_LABELS[size]} icon action`}
+                    icon={<XIcon />}
+                  />
+                </div>
+              ))}
             </div>
           </DemoCard>
         </PageSection>

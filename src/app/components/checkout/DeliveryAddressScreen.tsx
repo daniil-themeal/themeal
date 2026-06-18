@@ -13,6 +13,10 @@ import { COLOR_TOKENS } from '../common/colorTokens';
 import { MapPinIcon } from '../common/icons';
 import { FONT_FAMILY_TOKENS } from '../common/fontFamilyTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import {
+  CHECKOUT_FONT_CLAMP_12_14,
+  CHECKOUT_FONT_CLAMP_16_20,
+} from './checkoutSpacing';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import {
   searchTestUaeAddresses,
@@ -75,7 +79,7 @@ type DeliveryAddressScreenCssVariables = CSSProperties & {
 };
 
 const deliveryAddressScreenStyle: DeliveryAddressScreenCssVariables = {
-  '--delivery-address-page-bg': COLOR_TOKENS.neutral[50],
+  '--delivery-address-page-bg': COLOR_TOKENS.base.cream,
   '--delivery-address-card-bg': COLOR_TOKENS.base.white,
   '--delivery-address-search-bg': COLOR_TOKENS.neutral[50],
   '--delivery-address-search-border': COLOR_TOKENS.neutral[200],
@@ -91,8 +95,8 @@ const deliveryAddressScreenStyle: DeliveryAddressScreenCssVariables = {
   '--delivery-address-button-disabled-bg': COLOR_TOKENS.neutral[75],
   '--delivery-address-button-disabled-text': COLOR_TOKENS.neutral[300],
   '--delivery-address-input-font-size': FONT_SIZE_TOKENS[16],
-  '--delivery-address-title-font-size': FONT_SIZE_TOKENS[16],
-  '--delivery-address-subtitle-font-size': FONT_SIZE_TOKENS[12],
+  '--delivery-address-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
+  '--delivery-address-subtitle-font-size': CHECKOUT_FONT_CLAMP_12_14,
   '--delivery-address-empty-font-size': FONT_SIZE_TOKENS[14],
 };
 
@@ -835,11 +839,14 @@ export function DeliveryAddressScreen({
     }
 
     if (event.key === 'Escape') {
-      setActiveSuggestionIndex(0);
-
       if (mobileSearchOpen) {
+        event.stopPropagation();
+        setActiveSuggestionIndex(0);
         setMobileSearchOpen(false);
+        return;
       }
+
+      setActiveSuggestionIndex(0);
     }
   };
 
@@ -937,7 +944,7 @@ export function DeliveryAddressScreen({
 
   return (
     <div
-      className="relative h-full min-h-full overflow-hidden bg-white lg:bg-[var(--delivery-address-page-bg)]"
+      className="relative h-full min-h-full overflow-hidden bg-white md:bg-[var(--delivery-address-page-bg)]"
       style={deliveryAddressScreenStyle}
     >
       <style>

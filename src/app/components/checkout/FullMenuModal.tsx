@@ -6,12 +6,29 @@ import type { Plan } from '../../data/checkoutPricing';
 import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import {
+  CHECKOUT_FONT_CLAMP_14_16,
+  CHECKOUT_FONT_CLAMP_20_25,
+} from './checkoutSpacing';
 import { ModalShell } from '../common/ModalShell';
+import { SPACING_CONTENT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
+import { FullMenuPlanToggle } from './FullMenuPlanToggle';
 import { MealDetailModal } from './MealDetailModal';
 import { XIcon } from '../common/icons';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
+
+const PLAN_ORDER: Record<Plan, number> = {
+  light: 0,
+  base: 1,
+  plus: 2,
+};
+
+const LIGHT_OPTION_ORDER: Record<LightMealOption, number> = {
+  'breakfast-main': 0,
+  'lunch-dinner': 1,
+};
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -23,22 +40,16 @@ type SlideDirection = 'left' | 'right';
 type FullMenuDayPillCssVariables = CSSProperties & {
   '--full-menu-day-bg': string;
   '--full-menu-day-bg-hover': string;
-  '--full-menu-day-border': string;
-  '--full-menu-day-border-hover': string;
 };
 
 const FULL_MENU_DAY_PILL_SELECTED_STYLE: FullMenuDayPillCssVariables = {
   '--full-menu-day-bg': COLOR_TOKENS.primary[50],
   '--full-menu-day-bg-hover': COLOR_TOKENS.primary[75],
-  '--full-menu-day-border': COLOR_TOKENS.primary[500],
-  '--full-menu-day-border-hover': COLOR_TOKENS.primary[600],
 };
 
 const FULL_MENU_DAY_PILL_DEFAULT_STYLE: FullMenuDayPillCssVariables = {
   '--full-menu-day-bg': COLOR_TOKENS.base.white,
   '--full-menu-day-bg-hover': COLOR_TOKENS.neutral[50],
-  '--full-menu-day-border': COLOR_TOKENS.neutral[100],
-  '--full-menu-day-border-hover': COLOR_TOKENS.neutral[300],
 };
 
 type FullMenuModalCssVariables = CSSProperties & {
@@ -52,7 +63,6 @@ type FullMenuModalCssVariables = CSSProperties & {
   '--full-menu-close-bg': string;
   '--full-menu-close-bg-hover': string;
   '--full-menu-heading-font-size': string;
-  '--full-menu-heading-font-size-md': string;
   '--full-menu-day-date-font-size': string;
   '--full-menu-day-meta-font-size': string;
   '--full-menu-meal-meta-font-size': string;
@@ -69,12 +79,11 @@ const fullMenuModalStyle: FullMenuModalCssVariables = {
   '--full-menu-active-muted': COLOR_TOKENS.primary[400],
   '--full-menu-close-bg': COLOR_TOKENS.neutral[50],
   '--full-menu-close-bg-hover': COLOR_TOKENS.neutral[75],
-  '--full-menu-heading-font-size': FONT_SIZE_TOKENS[20],
-  '--full-menu-heading-font-size-md': FONT_SIZE_TOKENS[25],
+  '--full-menu-heading-font-size': CHECKOUT_FONT_CLAMP_20_25,
   '--full-menu-day-date-font-size': FONT_SIZE_TOKENS[16],
   '--full-menu-day-meta-font-size': FONT_SIZE_TOKENS[12],
   '--full-menu-meal-meta-font-size': FONT_SIZE_TOKENS[12],
-  '--full-menu-meal-title-font-size': FONT_SIZE_TOKENS[16],
+  '--full-menu-meal-title-font-size': CHECKOUT_FONT_CLAMP_14_16,
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -101,11 +110,15 @@ export function FullMenuModal({
   onClose,
   plan,
   lightMealOption,
+  onPlanChange,
+  onLightMealOptionChange,
 }: {
   isOpen: boolean;
   onClose: () => void;
   plan: Plan;
   lightMealOption: LightMealOption;
+  onPlanChange: (plan: Plan) => void;
+  onLightMealOptionChange: (option: LightMealOption) => void;
 }) {
   const [selectedDayIndex, setSelectedDayIndex] = useState(0);
   const [slideDirection, setSlideDirection] = useState<SlideDirection>('left');
@@ -261,6 +274,22 @@ export function FullMenuModal({
     setSelectedMeal(meal);
   };
 
+  const handlePlanChange = (nextPlan: Plan) => {
+    if (nextPlan === plan) return;
+
+    setSlideDirection(PLAN_ORDER[nextPlan] > PLAN_ORDER[plan] ? 'left' : 'right');
+    onPlanChange(nextPlan);
+  };
+
+  const handleLightMealOptionChange = (option: LightMealOption) => {
+    if (option === lightMealOption) return;
+
+    setSlideDirection(
+      LIGHT_OPTION_ORDER[option] > LIGHT_OPTION_ORDER[lightMealOption] ? 'left' : 'right',
+    );
+    onLightMealOptionChange(option);
+  };
+
   useEffect(() => {
     if (!isOpen) return;
 
@@ -335,29 +364,38 @@ export function FullMenuModal({
               `}
             </style>
 
-            <div className="flex h-[56px] shrink-0 items-center justify-between border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
-          <p className="pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px] md:text-[length:var(--full-menu-heading-font-size-md)]">
-            Full menu
-          </p>
+            <div className="flex h-[56px] shrink-0 items-center gap-[8px] border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
+              <p className="shrink-0 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px]">
+                Full menu
+              </p>
 
-          <button
-            type="button"
-            onClick={requestClose}
-            className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
-            aria-label="Close"
-          >
-            <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--full-menu-close-bg)] transition-colors duration-150 group-hover:bg-[var(--full-menu-close-bg-hover)]">
-              <span
-                className={iconColorClassName.emphasis}
-                style={iconColorStyle.emphasis}
+              <FullMenuPlanToggle
+                plan={plan}
+                lightMealOption={lightMealOption}
+                onPlanChange={handlePlanChange}
+                onLightMealOptionChange={handleLightMealOptionChange}
+                pillDefaultStyle={FULL_MENU_DAY_PILL_DEFAULT_STYLE}
+                pillSelectedStyle={FULL_MENU_DAY_PILL_SELECTED_STYLE}
+              />
+
+              <button
+                type="button"
+                onClick={requestClose}
+                className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
+                aria-label="Close"
               >
-                <XIcon size={16} />
-              </span>
-            </span>
-          </button>
-        </div>
+                <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--full-menu-close-bg)] transition-colors duration-150 group-hover:bg-[var(--full-menu-close-bg-hover)]">
+                  <span
+                    className={iconColorClassName.emphasis}
+                    style={iconColorStyle.emphasis}
+                  >
+                    <XIcon size={16} />
+                  </span>
+                </span>
+              </button>
+            </div>
 
-        <div className="shrink-0 border-b border-[var(--full-menu-border)] px-[8px] py-[12px]">
+        <div className="shrink-0 px-[8px] py-[12px]">
           <div className="flex w-full items-stretch" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
             <button
               type="button"
@@ -402,9 +440,9 @@ export function FullMenuModal({
                       onClick={() => handleDayClick(d.absoluteDayIndex)}
                       className={[
                         'relative flex flex-[0_0_calc((100%-104px)/14)] cursor-pointer flex-col items-center justify-center gap-[6px]',
-                        'rounded-[8px] border border-[length:1px] border-[var(--full-menu-day-border)] bg-[var(--full-menu-day-bg)] py-[8px]',
+                        'rounded-[8px] bg-[var(--full-menu-day-bg)] py-[8px]',
                         'transition-colors',
-                        'hover:enabled:border-[var(--full-menu-day-border-hover)] hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
+                        'hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
                       ].join(' ')}
                       style={active ? FULL_MENU_DAY_PILL_SELECTED_STYLE : FULL_MENU_DAY_PILL_DEFAULT_STYLE}
                     >
@@ -452,8 +490,8 @@ export function FullMenuModal({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto">
-          <div className="relative overflow-hidden">
+        <div className="flex-1 overflow-y-auto" {...{ [SPACING_CONTENT_ATTR]: '' }}>
+          <div className="relative overflow-visible">
             <div
               key={`${testMenuDays[selectedDayIndex]?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}
               ref={mealsScrollRef}
@@ -461,7 +499,7 @@ export function FullMenuModal({
               onMouseMove={handleMealsMouseMove}
               onMouseUp={stopMealsMouseDrag}
               onMouseLeave={stopMealsMouseDrag}
-              className={`flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto px-[20px] py-[20px] scrollbar-hide md:justify-center md:px-[24px] ${
+              className={`flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible px-[20px] pt-0 pb-[20px] scrollbar-hide md:justify-center md:px-[24px] ${
                 isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
               }`}
               style={{
@@ -476,14 +514,14 @@ export function FullMenuModal({
                   key={meal.id}
                   type="button"
                   onClick={() => handleMealClick(meal)}
-                  className="group flex shrink-0 cursor-pointer flex-col gap-[12px] text-left"
+                  className="group relative z-0 flex shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10"
                 >
-                  <div className="relative h-[108px] w-[150px] overflow-hidden rounded-[8px] md:h-[116px] md:w-[160px]">
+                  <div className="flex h-[114px] w-[150px] items-center justify-center overflow-visible md:h-[122px] md:w-[160px]">
                     <img
                       src={meal.img}
                       alt={meal.name}
                       draggable={false}
-                      className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-transform duration-200 group-hover:scale-105"
+                      className="pointer-events-none h-[108px] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105 md:h-[116px] md:w-[160px]"
                     />
                   </div>
 
@@ -491,10 +529,11 @@ export function FullMenuModal({
                     <p
                       className={[
                         TEXT_TRIM_CLASS_NAME,
-                        'w-[150px] font-sans text-[length:var(--full-menu-meal-meta-font-size)] font-medium leading-[140%] text-[var(--full-menu-muted)] md:w-[160px]',
+                        'flex w-[150px] flex-wrap items-center gap-x-[0.35em] font-sans text-[length:var(--full-menu-meal-meta-font-size)] font-medium leading-[140%] text-[var(--full-menu-muted)] md:w-[160px]',
                       ].join(' ')}
                     >
-                      {meal.kcal} kcal • {meal.weight}g • {meal.type}
+                      <span>{meal.kcal} kcal • {meal.weight} g</span>
+                      <span>{meal.type}</span>
                     </p>
 
                     <p
@@ -511,13 +550,13 @@ export function FullMenuModal({
             </div>
 
             <div
-              className="pointer-events-none absolute bottom-0 left-0 top-0 w-[20px] md:w-[32px]"
+              className="pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-[20px] md:w-[32px]"
               style={{
                 background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})`,
               }}
             />
             <div
-              className="pointer-events-none absolute bottom-0 right-0 top-0 w-[20px] md:w-[32px]"
+              className="pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-[20px] md:w-[32px]"
               style={{
                 background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})`,
               }}

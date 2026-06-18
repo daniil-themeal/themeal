@@ -1,0 +1,16 @@
+[Unit]
+Description=theMeal Telegram Cursor Bot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=bot
+WorkingDirectory=/opt/themeal-bot/telegram-cursor-bot
+EnvironmentFile=/opt/themeal-bot/telegram-cursor-bot/.env
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

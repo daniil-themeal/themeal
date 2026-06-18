@@ -1,0 +1,54 @@
+/*
+ * Bulleted list with disc markers. We use margins (not flexbox) for vertical
+ * rhythm on purpose: turning the <ul>/<li> into flex items blockifies the list
+ * items and removes their markers. Margins keep `display: list-item` intact, so
+ * the bullets render. The text block is cap-trimmed (.prose-list__content +
+ * text-box-trim) so the line-height leading does not inflate these gaps.
+ */
+.prose-list {
+  margin: 0;
+  padding-inline-start: 1.5rem;
+  list-style: disc outside;
+}
+
+.prose-list li::marker {
+  color: var(--typography-text);
+}
+
+.prose-list > li {
+  margin: 0;
+  padding-inline-start: 0.2rem;
+}
+
+.prose-list > li + li {
+  margin-top: var(--legal-gap-md, 16px);
+}
+
+.prose-list__content {
+  display: block;
+}
+
+.prose-list--nested {
+  margin: var(--legal-gap-xs, 8px) 0 0;
+  padding-inline-start: 1.25rem;
+  list-style: circle outside;
+}
+
+.prose-list--nested > li {
+  margin: 0;
+  padding-inline-start: 0.2rem;
+}
+
+.prose-list--nested > li + li {
+  margin-top: var(--legal-gap-xs, 8px);
+}
+
+@media (max-width: 479px) {
+  .prose-list {
+    padding-inline-start: 1.25rem;
+  }
+
+  .prose-list--nested {
+    padding-inline-start: 1rem;
+  }
+}

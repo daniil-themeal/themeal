@@ -7,6 +7,7 @@ import { iconSizeClassName } from './iconSize';
 type PromoCodeIconProps = {
   size?: IconSize;
   className?: string;
+  color?: string;
 };
 
 const maskStyle: CSSProperties = {
@@ -20,7 +21,7 @@ const maskStyle: CSSProperties = {
   maskPosition: 'center',
 };
 
-export function PromoCodeIcon({ size = 24, className = '' }: PromoCodeIconProps) {
+export function PromoCodeIcon({ size = 24, className = '', color }: PromoCodeIconProps) {
   return (
     <span
       aria-hidden="true"
@@ -31,7 +32,10 @@ export function PromoCodeIcon({ size = 24, className = '' }: PromoCodeIconProps)
       ]
         .filter(Boolean)
         .join(' ')}
-      style={maskStyle}
+      style={{
+        ...maskStyle,
+        ...(color ? { color } : undefined),
+      }}
     />
   );
 }

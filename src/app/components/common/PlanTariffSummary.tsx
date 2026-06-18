@@ -3,18 +3,16 @@ import type { CSSProperties, ReactNode } from 'react';
 import { Button } from './Button';
 import { Chip } from './Chip';
 import { COLOR_TOKENS } from './colorTokens';
-import { FONT_SIZE_TOKENS } from './fontSizeTokens';
+import { FONT_SIZE_CLAMP_16_20 } from './fontSizeClampTokens';
 import { TEXT_TRIM_FIT_CLASS_NAME } from './textTrimTokens';
 
 type PlanTariffSummaryCssVariables = CSSProperties & {
   '--plan-tariff-title-fs': string;
-  '--plan-tariff-title-fs-md': string;
   '--plan-tariff-title-color': string;
 };
 
 const planTariffSummaryStyle: PlanTariffSummaryCssVariables = {
-  '--plan-tariff-title-fs': FONT_SIZE_TOKENS[16],
-  '--plan-tariff-title-fs-md': FONT_SIZE_TOKENS[20],
+  '--plan-tariff-title-fs': FONT_SIZE_CLAMP_16_20,
   '--plan-tariff-title-color': COLOR_TOKENS.neutral[900],
 };
 
@@ -36,11 +34,11 @@ export function PlanTariffSummary({
   const hasAction = Boolean(actionLabel && onAction);
 
   const content = (
-    <div className="flex min-w-0 flex-1 flex-col gap-[12px]">
+    <div className="flex min-w-0 flex-1 flex-col gap-[16px]">
       <p
         className={[
           TEXT_TRIM_FIT_CLASS_NAME,
-          'w-full font-sans text-[length:var(--plan-tariff-title-fs)] font-bold leading-[130%] text-[var(--plan-tariff-title-color)] md:text-[length:var(--plan-tariff-title-fs-md)]',
+          'w-full font-sans text-[length:var(--plan-tariff-title-fs)] font-bold leading-[130%] text-[var(--plan-tariff-title-color)]',
         ].join(' ')}
       >
         {title}

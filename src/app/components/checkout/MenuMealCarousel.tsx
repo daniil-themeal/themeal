@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
+import { COLOR_TOKENS } from '../common/colorTokens';
+
 const CODE_LENGTH = 4;
 
 export function SmsCodeScreen({
@@ -77,7 +79,7 @@ export function SmsCodeScreen({
   };
 
   return (
-    <div className="min-h-full bg-[#f3f4f7]">
+    <div className="min-h-full" style={{ backgroundColor: COLOR_TOKENS.base.cream }}>
       <div className="mx-auto flex w-full max-w-[1200px] flex-col px-[20px] pt-[56px] pb-[120px] md:px-[24px] lg:px-[32px]">
         <div className="mx-auto flex w-full max-w-[420px] flex-col items-center">
           <div className="w-full rounded-[16px] bg-white px-[20px] py-[32px] md:px-[24px] md:py-[40px]">

@@ -1,20 +1,18 @@
-import { useEffect, useRef, useState } from 'react';
-import Header from './components/Header';
-import HeroSection from './components/HeroSection';
-import CompareSection from './components/CompareSection';
-import HowDoesTheMealWorkSection from './components/HowDoesTheMealWorkSection';
-import WhatYouEatEveryDaySection from './components/WhatYouEatEveryDaySection';
-import { WhatsAppMenuSection } from './components/WhatsAppMenuSection';
-import CustomersSection from './components/CustomersSection';
-import FreshSection from './components/FreshSection';
-import GallerySection from './components/GallerySection';
-import CompareBenefitsSection from './components/CompareBenefitsSection';
-import DeliverySection from './components/DeliverySection';
-import QaSection from './components/QaSection';
-import TotalOfferBlock from './components/TotalOfferBlock';
-import Footer from './components/Footer';
+import { useCallback, useState } from 'react';
+import { Route, Routes } from 'react-router';
+import LandingStasPage from './landing-stas/LandingStasPage';
 import { CheckoutPage } from './components/checkout/CheckoutPage';
 import DesignSystemDemo from './components/DesignSystemDemo';
+import PrivacyPolicyPage from './legal/PrivacyPolicyPage';
+import TermsAndConditionsPage from './legal/TermsAndConditionsPage';
+import { LEGAL_ROUTES } from './legal/routes';
+import {
+  clearPhoneSession,
+  loadPhoneSession,
+  mergePhoneSession,
+  savePhoneSession,
+  type PhoneSession,
+} from './phoneSession';
 
 type InitialCheckoutStep =
   | 'plan'
@@ -25,76 +23,114 @@ type InitialCheckoutStep =
   | 'failed';
 type InitialDeliveryStep = 'address' | 'details';
 
-export default function App() {
-  const [isHovered, setIsHovered] = useState(false);
-  const [headerShown, setHeaderShown] = useState(true);
+function resumeCheckoutStep(session: PhoneSession): InitialCheckoutStep {
+  const step = session.checkoutStep;
+  if (!step || step === 'verification') {
+    return session.isVerified ? 'delivery' : 'plan';
+  }
+  return step;
+}
+
+function HomePage() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [designSystemOpen, setDesignSystemOpen] = useState(false);
+  const [phoneSession, setPhoneSession] = useState<PhoneSession | null>(() => loadPhoneSession());
   const [initialCheckoutStep, setInitialCheckoutStep] =
     useState<InitialCheckoutStep>('plan');
   const [initialDeliveryStep, setInitialDeliveryStep] =
     useState<InitialDeliveryStep>('address');
   const [checkoutInitialPhone, setCheckoutInitialPhone] = useState<string | undefined>();
+  const [initialIsVerified, setInitialIsVerified] = useState(false);
 
-  const lastScrollY = useRef(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const currentY = window.scrollY;
-
-      if (currentY === 0) {
-        setHeaderShown(true);
-      } else {
-        setHeaderShown(currentY < lastScrollY.current);
-      }
-
-      lastScrollY.current = currentY;
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-
-    return () => window.removeEventListener('scroll', handleScroll);
+  const handleSessionUpdate = useCallback((session: PhoneSession) => {
+    setPhoneSession(session);
+    savePhoneSession(session);
+    if (session.isVerified) {
+      setInitialIsVerified(true);
+    }
   }, []);
 
-  const openCheckout = () => {
+  const openCheckoutAt = useCallback(
+    (
+      step: InitialCheckoutStep,
+      deliveryStep: InitialDeliveryStep,
+      phone?: string,
+      isVerified = false,
+    ) => {
+      setCheckoutInitialPhone(phone);
+      setInitialCheckoutStep(step);
+      setInitialDeliveryStep(deliveryStep);
+      setInitialIsVerified(isVerified);
+      setCheckoutOpen(true);
+    },
+    [],
+  );
+
+  const openCheckoutResume = useCallback(() => {
+    const session = phoneSession ?? loadPhoneSession();
+    if (session?.isVerified) {
+      openCheckoutAt(
+        resumeCheckoutStep(session),
+        session.deliveryStep ?? 'address',
+        session.phone,
+        true,
+      );
+      return;
+    }
+
+    openCheckoutAt('plan', 'address');
+  }, [openCheckoutAt, phoneSession]);
+
+  const openCheckout = useCallback(() => {
+    const session = phoneSession ?? loadPhoneSession();
+    if (session?.isVerified) {
+      openCheckoutResume();
+      return;
+    }
+
+    openCheckoutAt('plan', 'address');
+  }, [openCheckoutAt, openCheckoutResume, phoneSession]);
+
+  const handleLeadPhoneSubmit = useCallback(
+    (phone: string) => {
+      const next = mergePhoneSession(phoneSession, {
+        phone,
+        isVerified: false,
+        checkoutStep: 'plan',
+        deliveryStep: 'address',
+      });
+      handleSessionUpdate(next);
+    },
+    [handleSessionUpdate, phoneSession],
+  );
+
+  const handleLeadSmsVerified = useCallback(
+    (phone: string) => {
+      const next = mergePhoneSession(phoneSession, {
+        phone,
+        isVerified: true,
+        checkoutStep: 'plan',
+        deliveryStep: 'address',
+      });
+      handleSessionUpdate(next);
+    },
+    [handleSessionUpdate, phoneSession],
+  );
+
+  const pendingPhone =
+    phoneSession && !phoneSession.isVerified ? phoneSession.phone : undefined;
+
+  const resetPhoneSession = useCallback((options?: { closeCheckout?: boolean }) => {
+    clearPhoneSession();
+    setPhoneSession(null);
+    if (options?.closeCheckout ?? true) {
+      setCheckoutOpen(false);
+    }
+    setInitialIsVerified(false);
     setCheckoutInitialPhone(undefined);
     setInitialCheckoutStep('plan');
     setInitialDeliveryStep('address');
-    setCheckoutOpen(true);
-  };
-
-  const openCheckoutFromWhatsApp = (phone: string) => {
-    setCheckoutInitialPhone(phone);
-    setInitialCheckoutStep('verification');
-    setInitialDeliveryStep('address');
-    setCheckoutOpen(true);
-  };
-
-  const openDeliveryDetails = () => {
-    setInitialCheckoutStep('delivery');
-    setInitialDeliveryStep('details');
-    setCheckoutOpen(true);
-  };
-
-  const openPayment = () => {
-    setInitialCheckoutStep('payment');
-    setInitialDeliveryStep('details');
-    setCheckoutOpen(true);
-  };
-
-  const openSuccess = () => {
-    setCheckoutInitialPhone(undefined);
-    setInitialCheckoutStep('success');
-    setInitialDeliveryStep('details');
-    setCheckoutOpen(true);
-  };
-
-  const openFailed = () => {
-    setCheckoutInitialPhone(undefined);
-    setInitialCheckoutStep('failed');
-    setInitialDeliveryStep('details');
-    setCheckoutOpen(true);
-  };
+  }, []);
 
   const closeCheckout = () => {
     setCheckoutOpen(false);
@@ -108,57 +144,46 @@ export default function App() {
     setDesignSystemOpen(false);
   };
 
-  // Если открыта демо-страница, показываем только её
   if (designSystemOpen) {
     return <DesignSystemDemo onClose={closeDesignSystem} />;
   }
 
   return (
-    <div className="min-h-screen flex flex-col w-full">
-      <div className="fixed top-0 left-0 right-0 z-50">
-        <div
-          className="absolute top-0 left-0 right-0 h-2"
-          onMouseEnter={() => setIsHovered(true)}
-        />
+    <>
+      <LandingStasPage
+        onOrderClick={openCheckout}
+        onPhoneSubmit={handleLeadPhoneSubmit}
+        onSmsVerified={handleLeadSmsVerified}
+        onContinueClick={openCheckoutResume}
+        onResetPhone={resetPhoneSession}
+        onDesignSystemClick={openDesignSystem}
+        checkoutOpen={checkoutOpen}
+        isPhoneVerified={phoneSession?.isVerified ?? false}
+        pendingPhone={pendingPhone}
+      />
 
-        <div
-          className={`transition-transform duration-300 ease-in-out ${
-            headerShown || isHovered ? 'translate-y-0' : '-translate-y-full'
-          }`}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-        >
-          <Header
-            onDeliveryDetailsClick={openDeliveryDetails}
-            onPaymentClick={openPayment}
-            onSuccessClick={openSuccess}
-            onFailedClick={openFailed}
-            onDesignSystemClick={openDesignSystem}
-          />
-        </div>
-      </div>
-
-      <HeroSection onOrderClick={openCheckout} />
-      <CompareSection />
-      <HowDoesTheMealWorkSection />
-      <WhatYouEatEveryDaySection onOrderClick={openCheckout} />
-      <WhatsAppMenuSection onGetMenuClick={openCheckoutFromWhatsApp} />
-      <CustomersSection />
-      <FreshSection />
-      <GallerySection />
-      <CompareBenefitsSection />
-      <DeliverySection onOrderClick={openCheckout} />
-      <QaSection />
-      <TotalOfferBlock onOrderClick={openCheckout} />
-      <Footer />
-
+      {/* BACKLOG: full-page checkout вместо overlay — docs/backlog/checkout-fullpage.md */}
       <CheckoutPage
         isOpen={checkoutOpen}
         onClose={closeCheckout}
         initialCheckoutStep={initialCheckoutStep}
         initialDeliveryStep={initialDeliveryStep}
         initialPhone={checkoutInitialPhone}
+        initialIsVerified={initialIsVerified}
+        sessionIsVerified={phoneSession?.isVerified ?? false}
+        onSessionUpdate={handleSessionUpdate}
+        onResetPhone={() => resetPhoneSession({ closeCheckout: false })}
       />
-    </div>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path={LEGAL_ROUTES.privacy} element={<PrivacyPolicyPage />} />
+      <Route path={LEGAL_ROUTES.terms} element={<TermsAndConditionsPage />} />
+    </Routes>
   );
 }

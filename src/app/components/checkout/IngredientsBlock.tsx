@@ -4,6 +4,8 @@ import imgMeat from '../../../imports/CheckoutContainer-3/8e481e06f103e33b1c5333
 import imgShrimp from '../../../imports/CheckoutContainer-3/6264db5ca4b4084cd123428e1c871e85b6e699eb.png';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
+import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
 const SVG_BAN =
   'M22.1174 0.251038C22.4521 -0.0836881 22.9947 -0.0836707 23.3294 0.251038C23.6642 0.585773 23.6642 1.12836 23.3294 1.46309L1.46309 23.3294C1.12836 23.6642 0.585773 23.6642 0.251038 23.3294C-0.0836707 22.9947 -0.0836881 22.4521 0.251038 22.1174L22.1174 0.251038Z';
@@ -31,12 +33,7 @@ type IngredientsBlockProps = {
 };
 
 type IngredientsBlockCssVariables = CSSProperties & {
-  '--ingredients-title-font-size': string;
-  '--ingredients-title-font-size-md': string;
-  '--ingredients-subtitle-font-size': string;
-  '--ingredients-subtitle-font-size-md': string;
   '--ingredients-item-title-font-size': string;
-  '--ingredients-item-title-font-size-md': string;
   '--ingredients-item-description-font-size': string;
   '--ingredients-text': string;
   '--ingredients-muted': string;
@@ -50,12 +47,7 @@ type IngredientsBlockCssVariables = CSSProperties & {
 };
 
 const ingredientsBlockStyle: IngredientsBlockCssVariables = {
-  '--ingredients-title-font-size': FONT_SIZE_TOKENS[20],
-  '--ingredients-title-font-size-md': FONT_SIZE_TOKENS[25],
-  '--ingredients-subtitle-font-size': FONT_SIZE_TOKENS[12],
-  '--ingredients-subtitle-font-size-md': FONT_SIZE_TOKENS[14],
-  '--ingredients-item-title-font-size': FONT_SIZE_TOKENS[16],
-  '--ingredients-item-title-font-size-md': FONT_SIZE_TOKENS[20],
+  '--ingredients-item-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--ingredients-item-description-font-size': FONT_SIZE_TOKENS[14],
   '--ingredients-text': COLOR_TOKENS.neutral[900],
   '--ingredients-muted': COLOR_TOKENS.neutral[500],
@@ -107,18 +99,14 @@ function Checkmark() {
 export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) {
   return (
     <div
-      className="flex w-full flex-col items-start gap-[16px]"
+      className="flex w-full min-w-0 flex-col items-start gap-[20px]"
       style={ingredientsBlockStyle}
     >
-      <div className="flex w-full flex-col gap-[2px] px-[4px]">
-        <p className="font-sans text-[length:var(--ingredients-title-font-size)] font-bold leading-[130%] text-[var(--ingredients-text)] md:text-[length:var(--ingredients-title-font-size-md)]">
-          Exclude ingredients
-        </p>
-
-        <p className="font-sans text-[length:var(--ingredients-subtitle-font-size)] font-medium leading-[130%] text-[var(--ingredients-text)] md:text-[length:var(--ingredients-subtitle-font-size-md)]">
-          Optional. Select all that apply
-        </p>
-      </div>
+      <CheckoutSectionHeader
+        title="Exclude ingredients"
+        subtitle="Optional. Select all that apply"
+        gap={12}
+      />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">
         {ingredients.map((item) => {
@@ -130,29 +118,23 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
               type="button"
               onClick={() => onToggle(item.key)}
               className={[
-                'relative w-full cursor-pointer rounded-[12px] text-left transition-colors duration-150',
+                'relative w-full cursor-pointer rounded-[12px] border border-solid text-left transition-colors duration-150',
+                'hover:border-[var(--ingredients-active)]',
                 checked
-                  ? 'bg-[var(--ingredients-active-bg)]'
-                  : 'bg-[var(--ingredients-card-bg)]',
+                  ? 'border-[var(--ingredients-active-border)] bg-[var(--ingredients-active-bg)]'
+                  : 'border-transparent bg-[var(--ingredients-card-bg)]',
               ].join(' ')}
             >
-              {checked ? (
-                <div
-                  aria-hidden="true"
-                  className="pointer-events-none absolute inset-0 rounded-[12px] border border-[var(--ingredients-active-border)]"
-                />
-              ) : null}
-
-              <div className="flex cursor-pointer items-center gap-[12px] px-[20px] md:px-[24px]">
+              <div className="flex cursor-pointer items-center gap-[12px] p-[var(--checkout-selector-card-padding)]">
                 <div
                   className={[
-                    'flex flex-[1_0_0] flex-col gap-[4px] py-[20px]',
+                    'flex flex-[1_0_0] flex-col gap-[12px]',
                     checked
                       ? 'text-[var(--ingredients-active)]'
                       : 'text-[var(--ingredients-text)]',
                   ].join(' ')}
                 >
-                  <p className="font-sans text-[length:var(--ingredients-item-title-font-size)] font-bold leading-[130%] md:text-[length:var(--ingredients-item-title-font-size-md)]">
+                  <p className="font-sans text-[length:var(--ingredients-item-title-font-size)] font-bold leading-[130%]">
                     {item.label}
                   </p>
 
@@ -180,7 +162,7 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
                     </div>
                   </div>
 
-                  <div className="flex items-center py-[16px]">
+                  <div className="flex items-center">
                     <div
                       className={[
                         'relative size-[20px] rounded-full transition-colors duration-150',
