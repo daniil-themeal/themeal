@@ -25,6 +25,7 @@ type DurationBlockCssVariables = CSSProperties & {
   '--duration-card-bg': string;
   '--duration-card-selected-bg': string;
   '--duration-card-selected-border': string;
+  '--duration-card-hover-border': string;
   '--duration-text': string;
   '--duration-card-selected-text': string;
   '--duration-muted': string;
@@ -45,6 +46,7 @@ const durationBlockStyle: DurationBlockCssVariables = {
   '--duration-card-bg': COLOR_TOKENS.base.white,
   '--duration-card-selected-bg': COLOR_TOKENS.primary[50],
   '--duration-card-selected-border': COLOR_TOKENS.primary[200],
+  '--duration-card-hover-border': COLOR_TOKENS.primary[200],
   '--duration-text': COLOR_TOKENS.neutral[900],
   '--duration-card-selected-text': COLOR_TOKENS.primary[500],
   '--duration-muted': COLOR_TOKENS.neutral[600],
@@ -120,7 +122,7 @@ function DurationCard({
       onClick={onSelect}
       className={[
         'relative w-full cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
-        !selected && 'hover:border-[var(--duration-active)]',
+        !selected && 'hover:border-[var(--duration-card-hover-border)]',
         selected
           ? 'border-[var(--duration-card-selected-border)] bg-[var(--duration-card-selected-bg)]'
           : 'border-transparent bg-[var(--duration-card-bg)]',

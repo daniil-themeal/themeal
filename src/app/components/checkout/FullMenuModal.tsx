@@ -75,6 +75,7 @@ type FullMenuModalCssVariables = CSSProperties & {
   '--full-menu-day-meta-font-size': string;
   '--full-menu-meal-meta-font-size': string;
   '--full-menu-meal-title-font-size': string;
+  '--full-menu-day-border-selected': string;
 };
 
 const fullMenuModalStyle: FullMenuModalCssVariables = {
@@ -90,10 +91,11 @@ const fullMenuModalStyle: FullMenuModalCssVariables = {
   '--full-menu-close-bg': COLOR_TOKENS.neutral[50],
   '--full-menu-close-bg-hover': COLOR_TOKENS.neutral[75],
   '--full-menu-heading-font-size': CHECKOUT_FONT_CLAMP_20_25,
-  '--full-menu-day-date-font-size': FONT_SIZE_TOKENS[16],
+  '--full-menu-day-date-font-size': CHECKOUT_FONT_CLAMP_14_16,
   '--full-menu-day-meta-font-size': FONT_SIZE_TOKENS[12],
   '--full-menu-meal-meta-font-size': FONT_SIZE_TOKENS[12],
   '--full-menu-meal-title-font-size': CHECKOUT_FONT_CLAMP_14_16,
+  '--full-menu-day-border-selected': COLOR_TOKENS.primary[200],
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -452,25 +454,36 @@ export function FullMenuModal({
                       onClick={() => handleDayClick(d.absoluteDayIndex)}
                       className={[
                         'relative flex flex-[0_0_calc((100%-104px)/14)] cursor-pointer flex-col items-center justify-center gap-[6px]',
-                        'rounded-[8px] bg-[var(--full-menu-day-bg)] py-[8px]',
-                        'transition-colors',
+                        'rounded-[8px] border border-solid bg-[var(--full-menu-day-bg)] py-[8px]',
+                        'transition-colors duration-150',
                         'hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
+                        active
+                          ? 'border-[var(--full-menu-day-border-selected)]'
+                          : 'border-transparent',
                       ].join(' ')}
                       style={active ? FULL_MENU_DAY_PILL_SELECTED_STYLE : FULL_MENU_DAY_PILL_DEFAULT_STYLE}
                     >
                       <div className="flex w-full flex-col items-center gap-[4px]">
-                        <p className="font-sans text-[length:var(--full-menu-day-date-font-size)] font-bold leading-none tracking-[-0.16px] text-[var(--full-menu-title)]">
+                        <p
+                          className={`font-sans text-[length:var(--full-menu-day-date-font-size)] font-bold leading-none tracking-[-0.16px] ${
+                            active ? 'text-[var(--full-menu-active)]' : 'text-[var(--full-menu-title)]'
+                          }`}
+                        >
                           {d.date}
                         </p>
 
-                        <p className="font-sans text-[length:var(--full-menu-day-meta-font-size)] font-bold leading-none tracking-[-0.12px] text-[var(--full-menu-title)]">
+                        <p
+                          className={`font-sans text-[length:var(--full-menu-day-meta-font-size)] font-bold leading-none tracking-[-0.12px] ${
+                            active ? 'text-[var(--full-menu-active)]' : 'text-[var(--full-menu-title)]'
+                          }`}
+                        >
                           {d.month}
                         </p>
                       </div>
 
                       <p
                         className={`font-sans text-[length:var(--full-menu-day-meta-font-size)] font-medium leading-none tracking-[-0.12px] ${
-                          active ? 'text-[var(--full-menu-title)]' : 'text-[var(--full-menu-muted)]'
+                          active ? 'text-[var(--full-menu-active)]' : 'text-[var(--full-menu-muted)]'
                         }`}
                       >
                         {d.day}

@@ -79,6 +79,7 @@ type PlanSelectorBlockCssVariables = CSSProperties & {
   '--plan-selector-card-bg': string;
   '--plan-selector-card-selected-bg': string;
   '--plan-selector-card-selected-border': string;
+  '--plan-selector-card-hover-border': string;
   '--plan-selector-radio-bg': string;
   '--plan-selector-radio-selected-bg': string;
   '--plan-selector-radio-hover-bg': string;
@@ -98,6 +99,7 @@ const planSelectorBlockStyle: PlanSelectorBlockCssVariables = {
   '--plan-selector-card-bg': COLOR_TOKENS.base.white,
   '--plan-selector-card-selected-bg': COLOR_TOKENS.primary[50],
   '--plan-selector-card-selected-border': COLOR_TOKENS.primary[200],
+  '--plan-selector-card-hover-border': COLOR_TOKENS.primary[200],
   '--plan-selector-radio-bg': COLOR_TOKENS.neutral[50],
   '--plan-selector-radio-selected-bg': COLOR_TOKENS.primary[100],
   '--plan-selector-radio-hover-bg': COLOR_TOKENS.primary[75],
@@ -127,7 +129,7 @@ function PlanCard({
       onClick={onSelect}
       className={[
         'relative w-full shrink-0 cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
-        !selected && 'hover:border-[var(--plan-selector-active)]',
+        !selected && 'hover:border-[var(--plan-selector-card-hover-border)]',
         selected
           ? 'border-[var(--plan-selector-card-selected-border)] bg-[var(--plan-selector-card-selected-bg)]'
           : 'border-transparent bg-[var(--plan-selector-card-bg)]',

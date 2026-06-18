@@ -41,6 +41,7 @@ type IngredientsBlockCssVariables = CSSProperties & {
   '--ingredients-active': string;
   '--ingredients-active-bg': string;
   '--ingredients-active-border': string;
+  '--ingredients-card-hover-border': string;
   '--ingredients-card-bg': string;
   '--ingredients-idle-check-bg': string;
   '--ingredients-danger': string;
@@ -55,6 +56,7 @@ const ingredientsBlockStyle: IngredientsBlockCssVariables = {
   '--ingredients-active': COLOR_TOKENS.primary[500],
   '--ingredients-active-bg': COLOR_TOKENS.primary[50],
   '--ingredients-active-border': COLOR_TOKENS.primary[200],
+  '--ingredients-card-hover-border': COLOR_TOKENS.primary[200],
   '--ingredients-card-bg': COLOR_TOKENS.base.white,
   '--ingredients-idle-check-bg': COLOR_TOKENS.neutral[75],
   '--ingredients-danger': COLOR_TOKENS.danger[500],
@@ -120,7 +122,7 @@ export const IngredientsBlock = memo(function IngredientsBlock({ selected, onTog
               onClick={() => onToggle(item.key)}
               className={[
                 'relative w-full cursor-pointer rounded-[12px] border border-solid text-left transition-colors duration-150',
-                !checked && 'hover:border-[var(--ingredients-active)]',
+                !checked && 'hover:border-[var(--ingredients-card-hover-border)]',
                 checked
                   ? 'border-[var(--ingredients-active-border)] bg-[var(--ingredients-active-bg)]'
                   : 'border-transparent bg-[var(--ingredients-card-bg)]',

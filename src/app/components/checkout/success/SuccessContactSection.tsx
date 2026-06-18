@@ -5,6 +5,7 @@ import { COLOR_TOKENS } from '../../common/colorTokens';
 import { FacebookIcon, InstagramIcon, YoutubeIcon } from '../../common/icons/feather';
 import { TEXT_TRIM_CLASS_NAME } from '../../common/textTrimTokens';
 
+import { CHECKOUT_STEP_SECTION_PX } from '../checkoutStepPageLayoutTokens';
 import svgPaths from './successPageSvgPaths';
 
 function WhatsAppIcon() {
@@ -144,7 +145,7 @@ type SuccessContactSectionProps = {
 export function SuccessContactSection({ showFollowUs = true }: SuccessContactSectionProps) {
   return (
     <>
-      <section className="flex w-full flex-col items-center gap-[20px] px-[32px]">
+      <section className={`flex w-full flex-col items-center gap-[20px] ${CHECKOUT_STEP_SECTION_PX}`}>
         <p
           className={[
             TEXT_TRIM_CLASS_NAME,
@@ -182,7 +183,7 @@ export function SuccessContactSection({ showFollowUs = true }: SuccessContactSec
             Follow us
           </p>
 
-          <div className="flex w-full items-center justify-center gap-[16px] px-[24px]">
+          <div className={`flex w-full items-center justify-center gap-[16px] ${CHECKOUT_STEP_SECTION_PX}`}>
             <SocialIconButton label="Facebook" href={socialLinks.facebook}>
               <FacebookIcon size={40} className="text-[var(--success-social-icon)]" />
             </SocialIconButton>

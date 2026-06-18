@@ -29,6 +29,7 @@ type DaysBlockCssVariables = CSSProperties & {
   '--days-card-bg': string;
   '--days-card-selected-bg': string;
   '--days-card-selected-border': string;
+  '--days-card-hover-border': string;
   '--days-card-selected-text': string;
   '--days-delivery-chip-bg': string;
   '--days-delivery-chip-text': string;
@@ -48,6 +49,7 @@ const daysBlockStyle: DaysBlockCssVariables = {
   '--days-card-bg': COLOR_TOKENS.base.white,
   '--days-card-selected-bg': COLOR_TOKENS.primary[50],
   '--days-card-selected-border': COLOR_TOKENS.primary[200],
+  '--days-card-hover-border': COLOR_TOKENS.primary[200],
   '--days-card-selected-text': COLOR_TOKENS.primary[500],
   '--days-delivery-chip-bg': COLOR_TOKENS.primary[50],
   '--days-delivery-chip-text': COLOR_TOKENS.primary[500],
@@ -108,7 +110,7 @@ function DayCard({
       onClick={onSelect}
       className={[
         'w-full cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
-        !selected && 'hover:border-[var(--days-active)]',
+        !selected && 'hover:border-[var(--days-card-hover-border)]',
         selected
           ? 'border-[var(--days-card-selected-border)] bg-[var(--days-card-selected-bg)]'
           : 'border-transparent bg-[var(--days-card-bg)]',

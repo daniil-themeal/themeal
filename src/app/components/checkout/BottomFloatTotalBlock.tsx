@@ -69,7 +69,7 @@ const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
   '--checkout-float-text': COLOR_TOKENS.neutral[900],
   '--checkout-float-active': COLOR_TOKENS.primary[500],
   '--checkout-float-active-soft': COLOR_TOKENS.primary[50],
-  '--checkout-float-active-hover': COLOR_TOKENS.primary[50],
+  '--checkout-float-active-hover': COLOR_TOKENS.neutral[100],
   '--checkout-float-active-muted': COLOR_TOKENS.primary[300],
   '--checkout-float-divider': COLOR_TOKENS.neutral[100],
   '--checkout-float-font-size-sm': FONT_SIZE_TOKENS[12],
@@ -570,8 +570,7 @@ export function BottomFloatTotalBlock({
 
                           <p
                             className={[
-                              TEXT_TRIM_CLASS_NAME,
-                              'w-[150px] font-sans text-[length:var(--checkout-float-meal-title-font-size)] font-semibold leading-[140%] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)] md:w-[160px]',
+                              'w-[150px] line-clamp-3 [text-box-trim:none] [text-box-edge:auto] font-sans text-[length:var(--checkout-float-meal-title-font-size)] font-semibold leading-[140%] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)] md:w-[160px]',
                             ].join(' ')}
                           >
                             {meal.name}

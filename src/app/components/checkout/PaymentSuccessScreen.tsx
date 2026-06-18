@@ -7,6 +7,7 @@ import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import {
   CHECKOUT_STEP_PAGE_LAYOUT,
   CHECKOUT_STEP_PAGE_VARS,
+  CHECKOUT_STEP_SECTION_PX,
 } from './checkoutStepPageLayoutTokens';
 import { CHECKOUT_FONT_CLAMP_25_31 } from './checkoutSpacing';
 import type { PaymentResultTab } from './PaymentResultHeader';
@@ -173,7 +174,7 @@ export function PaymentSuccessScreen({
         </div>
 
         <div className={CHECKOUT_STEP_PAGE_LAYOUT.card}>
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSection}>
+          <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSection} ${CHECKOUT_STEP_SECTION_PX}`}>
             <MealCalendarPreview
               startDate={startDate}
               duration={duration}
@@ -187,7 +188,7 @@ export function PaymentSuccessScreen({
             className={CHECKOUT_STEP_PAGE_LAYOUT.divider}
           />
 
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionBottom}>
+          <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionBottom} ${CHECKOUT_STEP_SECTION_PX}`}>
             <h2
               className={[
                 TEXT_TRIM_CLASS_NAME,

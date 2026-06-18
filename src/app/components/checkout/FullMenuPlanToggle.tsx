@@ -19,11 +19,17 @@ type FullMenuDayPillCssVariables = CSSProperties & {
   '--full-menu-day-bg-hover': string;
 };
 
-const PILL_CLASS_NAME = [
+const PILL_BASE_CLASS_NAME = [
   'flex shrink-0 cursor-pointer flex-col items-center justify-center gap-[4px]',
-  'rounded-[8px] bg-[var(--full-menu-day-bg)] px-[12px] py-[8px]',
-  'transition-colors hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
+  'rounded-[8px] border border-solid bg-[var(--full-menu-day-bg)] px-[12px] py-[8px]',
+  'transition-colors duration-150 hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
 ].join(' ');
+
+function getPillBorderClassName(selected: boolean) {
+  return selected
+    ? 'border-[var(--full-menu-day-border-selected)]'
+    : 'border-transparent';
+}
 
 function PlanPill({
   selected,
@@ -53,12 +59,12 @@ function PlanPill({
       aria-selected={selected}
       aria-label={ariaLabel}
       onClick={onClick}
-      className={PILL_CLASS_NAME}
+      className={[PILL_BASE_CLASS_NAME, getPillBorderClassName(selected)].join(' ')}
       style={selected ? pillSelectedStyle : pillDefaultStyle}
     >
       <p
         className={`${textClassName} ${
-          selected ? 'text-[var(--full-menu-title)]' : 'text-[var(--full-menu-muted)]'
+          selected ? 'text-[var(--full-menu-active)]' : 'text-[var(--full-menu-muted)]'
         }`}
       >
         {label}

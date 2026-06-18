@@ -38,7 +38,7 @@ import {
 import { getPromoCodeDiscount } from '../../config/promoCodes';
 import { MealDetailModal } from './MealDetailModal';
 import { CheckoutPromoCode } from './CheckoutPromoCode';
-import { MinusIcon, PlusIcon } from '../common/icons';
+import { ChevronDownIcon, MinusIcon, PlusIcon } from '../common/icons';
 import { TabbyPromoWidget } from './TabbyPromoWidget';
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
 import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
@@ -169,6 +169,7 @@ export function OrderSummary({
   onMealDetailOpenChange?: (open: boolean) => void;
 }) {
   const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
+  const [isMealsExpanded, setIsMealsExpanded] = useState(true);
   const [visibleMeals, setVisibleMeals] = useState<MealDetail[]>(() =>
     getMealsForPlan(testMenuDays[0], plan, lightMealOption),
   );
@@ -292,15 +293,30 @@ export function OrderSummary({
 
             <OrderSummaryDivider color="var(--order-summary-divider)" />
 
-            <div className="flex flex-col gap-[16px]">
+            <div className={`flex flex-col ${isMealsExpanded ? 'gap-[16px]' : ''}`}>
               <div className={['flex items-center justify-between gap-[16px]', orderSummarySectionPx].join(' ')}>
-                <p className="font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">What you'll eat</p>
+                <button
+                  type="button"
+                  onClick={() => setIsMealsExpanded((expanded) => !expanded)}
+                  aria-expanded={isMealsExpanded}
+                  aria-controls="order-summary-meals-carousel"
+                  className="group flex min-w-0 flex-1 cursor-pointer items-center gap-[8px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--order-summary-primary)] focus-visible:ring-offset-2"
+                >
+                  <span className="font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">
+                    What you'll eat
+                  </span>
+                  <ChevronDownIcon
+                    size={20}
+                    className={`shrink-0 text-[var(--order-summary-subtle)] transition-transform duration-200 group-hover:text-[var(--order-summary-muted)] ${isMealsExpanded ? 'rotate-180' : ''}`}
+                  />
+                </button>
                 <TextLink size="14" onClick={onOpenMenu}>
                   View full menu
                 </TextLink>
               </div>
 
-              <div className="relative">
+              {isMealsExpanded ? (
+              <div className="relative" id="order-summary-meals-carousel">
                 <div
                   ref={mealsScrollRef}
                   className="flex cursor-grab select-none overflow-x-auto overflow-y-visible py-0 scrollbar-hide active:cursor-grabbing"
@@ -373,6 +389,7 @@ export function OrderSummary({
                   endPositionClassName="right-0"
                 />
               </div>
+              ) : null}
             </div>
 
             <OrderSummaryDivider color="var(--order-summary-divider)" />
@@ -386,7 +403,7 @@ export function OrderSummary({
             >
               <p className="min-w-0 font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">
                 Total meals{' '}
-                <sup className="font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[130%]">
+                <sup className="font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[130%] text-[var(--order-summary-muted)]">
                   (over <AnimatedNumber value={pricing.paidDays} /> days)
                 </sup>
               </p>
