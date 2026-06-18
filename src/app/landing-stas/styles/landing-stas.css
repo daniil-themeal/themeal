@@ -323,11 +323,23 @@ body {
 }
 .landing-stas .lead-sms-code {
   width: 100%;
+  gap: 10px;
 }
 .landing-stas .lead-sms-digit {
+  flex: 1 1 0;
+  min-width: 0;
   border: 1px solid #C7CED9;
   border-radius: var(--r-md);
   font-weight: 600;
+  background: #F3F4F7;
+  transition: flex-grow 0.15s var(--ease, ease), border-color 0.15s var(--ease, ease), box-shadow 0.15s var(--ease, ease);
+}
+.landing-stas .lead-sms-digit--active {
+  flex: 1.75 1 0;
+  min-width: 0;
+  background: #ECEEF2;
+  border-color: var(--brand);
+  box-shadow: 0 0 0 2px rgba(154, 56, 239, 0.22);
 }
 .landing-stas .lead-sms-digit:focus {
   border-color: var(--brand);

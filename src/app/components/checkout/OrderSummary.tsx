@@ -239,7 +239,7 @@ export function OrderSummary({
 
   return (
     <>
-      <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none md:pt-[56px]" style={orderSummaryStyle}>
+      <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none" style={orderSummaryStyle}>
         <div className="rounded-[16px] bg-[var(--order-summary-bg)] py-[28px] max-md:px-[length:var(--checkout-card-padding)]">
           <div className="flex flex-col">
             <div className={orderSummarySectionPx}>
@@ -254,26 +254,22 @@ export function OrderSummary({
               <div className="flex items-center gap-[16px]">
                 <IconButton
                   type="button"
-                  variant="neutral"
+                  soft
                   size="small"
                   aria-label="Decrease people count"
                   icon={<MinusIcon size={16} />}
                   onClick={() => onPersonsChange(Math.max(1, persons - 1))}
-                  className="!rounded-full"
-                  style={{ '--button-border-radius': '9999px' }}
                 />
                 <p className="w-[16px] text-center font-sans text-[length:var(--order-summary-title-font-size)] font-semibold text-[var(--order-summary-text)]">
                   <AnimatedNumber value={persons} />
                 </p>
                 <IconButton
                   type="button"
-                  variant="neutral"
+                  soft
                   size="small"
                   aria-label="Increase people count"
                   icon={<PlusIcon size={16} />}
                   onClick={() => onPersonsChange(persons + 1)}
-                  className="!rounded-full"
-                  style={{ '--button-border-radius': '9999px' }}
                 />
               </div>
             </div>

@@ -303,9 +303,9 @@ const BUTTON_CONTENT_CLASS_NAMES: Record<ButtonSize, string> = {
   'x-large': 'inline-flex items-center justify-center gap-[12px]',
 };
 
-export const BUTTON_VISUAL_CLASS_NAME = [
+const BUTTON_VISUAL_BASE_CLASS_NAMES = [
   'relative inline-flex items-center justify-center',
-  'rounded-[length:var(--button-border-radius)] corner-shape-squircle',
+  'rounded-[length:var(--button-border-radius)]',
   'border border-[length:1px] border-[var(--button-border)]',
   'bg-[var(--button-bg)] text-[var(--button-text)]',
   '[box-shadow:var(--button-shadow)]',
@@ -314,7 +314,13 @@ export const BUTTON_VISUAL_CLASS_NAME = [
   'disabled:cursor-not-allowed',
   'disabled:bg-[var(--button-bg-disabled)] disabled:text-[var(--button-text-disabled)] disabled:border-[var(--button-border-disabled)] disabled:[box-shadow:none]',
   'focus-visible:outline-none',
-].join(' ');
+] as const;
+
+export const BUTTON_VISUAL_CLASS_NAME = [...BUTTON_VISUAL_BASE_CLASS_NAMES, 'corner-shape-squircle'].join(' ');
+
+export const ICON_BUTTON_BORDER_RADIUS = BORDER_RADIUS_TOKENS.full;
+
+export const ICON_BUTTON_VISUAL_CLASS_NAME = BUTTON_VISUAL_BASE_CLASS_NAMES.join(' ');
 
 const baseClassName = [
   BUTTON_VISUAL_CLASS_NAME,

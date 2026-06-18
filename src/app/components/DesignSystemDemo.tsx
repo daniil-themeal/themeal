@@ -123,6 +123,7 @@ type DemoAnchorId =
   | 'button-sizes'
   | 'button-icons'
   | 'icon-button-variants'
+  | 'icon-button-soft'
   | 'icon-button-sizes'
   | 'badge-variants';
 
@@ -205,6 +206,7 @@ const demoNavigationItems: DemoNavigationItem[] = [
       { id: 'button-sizes', label: 'Button sizes' },
       { id: 'button-icons', label: 'Button icons' },
       { id: 'icon-button-variants', label: 'IconButton variants' },
+      { id: 'icon-button-soft', label: 'IconButton soft' },
       { id: 'icon-button-sizes', label: 'IconButton sizes' },
     ],
   },
@@ -1248,7 +1250,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 />
               }
               action={
-                <Button type="button" variant="neutral" size="medium" className="w-full min-[400px]:w-[140px]">
+                <Button type="button" variant="neutral" size="medium" className="w-full @[280px]:w-[140px]">
                   Action
                 </Button>
               }
@@ -1941,7 +1943,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           <DemoCard
             id="icon-button-variants"
             title="IconButton variants"
-            description="Square icon-only buttons with the same color variants as Button. Width equals height for each size token."
+            description="Round icon-only buttons with the same color variants as Button. Width equals height for each size token."
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {BUTTON_VARIANTS.map((variant) => (
@@ -1992,9 +1994,22 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           </DemoCard>
 
           <DemoCard
+            id="icon-button-soft"
+            title="IconButton soft"
+            description="Round soft icon controls for light surfaces: neutral[50] background, neutral[75] on hover, no border. Used for checkout close controls, counters, and inline hints."
+          >
+            <div className="flex flex-wrap items-center gap-[8px]">
+              <IconButton soft aria-label="Soft action" icon={<XIcon />} />
+              <IconButton soft aria-label="Soft action disabled" icon={<XIcon />} disabled />
+              <IconButton soft aria-label="Soft action loading" icon={<XIcon />} loading />
+              <IconButton soft size="small" aria-label="Soft small action" icon={<XIcon size={16} />} />
+            </div>
+          </DemoCard>
+
+          <DemoCard
             id="icon-button-sizes"
             title="IconButton sizes"
-            description="Square dimensions match Button height tokens: 32 / 40 / 48 / 64 / 72 px. Icon size scales with button size."
+            description="Round buttons with square dimensions matching Button height tokens: 32 / 40 / 48 / 64 / 72 px. Icon size scales with button size."
           >
             <div className="flex flex-wrap items-end gap-[16px]">
               {BUTTON_SIZES.map((size) => (

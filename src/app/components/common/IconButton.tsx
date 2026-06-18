@@ -1,11 +1,11 @@
 import { forwardRef, type ButtonHTMLAttributes, type CSSProperties, type ReactNode } from 'react';
 
 import {
-  BUTTON_BORDER_RADIUS,
-  BUTTON_VISUAL_CLASS_NAME,
   getButtonStyles,
   getIconSlotClassName,
+  ICON_BUTTON_BORDER_RADIUS,
   ICON_BUTTON_SIZE_CLASS_NAMES,
+  ICON_BUTTON_VISUAL_CLASS_NAME,
   LOADER_ICON_SIZE,
   type ButtonSize,
   type ButtonVariant,
@@ -39,12 +39,42 @@ const GHOST_BUTTON_STYLES: Omit<IconButtonCssVariables, '--button-border-radius'
   '--button-shadow-hover': 'none',
 };
 
+const SOFT_BUTTON_STYLES: Omit<IconButtonCssVariables, '--button-border-radius'> = {
+  '--button-bg': COLOR_TOKENS.neutral[50],
+  '--button-bg-hover': COLOR_TOKENS.neutral[75],
+  '--button-text': COLOR_TOKENS.neutral[900],
+  '--button-bg-disabled': COLOR_TOKENS.neutral[50],
+  '--button-text-disabled': COLOR_TOKENS.neutral[300],
+  '--button-border': 'transparent',
+  '--button-border-hover': 'transparent',
+  '--button-border-disabled': 'transparent',
+  '--button-shadow': 'none',
+  '--button-shadow-hover': 'none',
+};
+
+function getIconButtonSurfaceStyles({
+  ghost,
+  soft,
+  variant,
+  outline,
+}: {
+  ghost: boolean;
+  soft: boolean;
+  variant: ButtonVariant;
+  outline: boolean;
+}): Omit<IconButtonCssVariables, '--button-border-radius'> {
+  if (ghost) return GHOST_BUTTON_STYLES;
+  if (soft) return SOFT_BUTTON_STYLES;
+  return getButtonStyles(variant, outline);
+}
+
 type IconButtonProps = {
   icon: ReactNode;
   'aria-label': string;
   variant?: ButtonVariant;
   outline?: boolean;
   ghost?: boolean;
+  soft?: boolean;
   size?: ButtonSize;
   loading?: boolean;
   className?: string;
@@ -57,6 +87,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
     variant = 'primary',
     outline = false,
     ghost = false,
+    soft = false,
     size = 'medium',
     loading = false,
     className = '',
@@ -78,12 +109,12 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
       aria-label={ariaLabel}
       aria-busy={loading || undefined}
       style={{
-        ...(ghost ? GHOST_BUTTON_STYLES : getButtonStyles(variant, outline)),
-        '--button-border-radius': BUTTON_BORDER_RADIUS[size],
+        ...getIconButtonSurfaceStyles({ ghost, soft, variant, outline }),
+        '--button-border-radius': ICON_BUTTON_BORDER_RADIUS,
         ...style,
       }}
       className={[
-        BUTTON_VISUAL_CLASS_NAME,
+        ICON_BUTTON_VISUAL_CLASS_NAME,
         'shrink-0',
         ICON_BUTTON_SIZE_CLASS_NAMES[size],
         className,

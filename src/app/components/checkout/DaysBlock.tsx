@@ -113,7 +113,7 @@ function DayCard({
           : 'border-transparent bg-[var(--days-card-bg)]',
       ].join(' ')}
     >
-      <div className="flex flex-col items-start gap-[12px] p-[var(--checkout-card-padding)]">
+      <div className="flex flex-col items-start gap-[12px] p-[var(--checkout-selector-card-padding)]">
         <p
           className={[
             'w-full font-sans text-[length:var(--days-card-title-font-size)] font-bold leading-[130%]',

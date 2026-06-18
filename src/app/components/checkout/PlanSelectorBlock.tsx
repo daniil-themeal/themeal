@@ -133,10 +133,10 @@ function PlanCard({
       ].join(' ')}
     >
       {plan.badge ? (
-        <Badge variant={plan.badge} className="absolute right-[var(--checkout-card-padding)] top-[-4px] z-[1]" />
+        <Badge variant={plan.badge} className="absolute right-[var(--checkout-selector-card-padding)] top-[-4px] z-[1]" />
       ) : null}
 
-      <div className="flex flex-col items-start gap-[12px] p-[var(--checkout-card-padding)]">
+      <div className="flex flex-col items-start gap-[12px] p-[var(--checkout-selector-card-padding)]">
         <div className="flex w-full min-w-0 flex-wrap items-baseline justify-between gap-x-[16px] gap-y-[8px]">
           <div className="flex min-w-0 items-center gap-[4px]">
             <p

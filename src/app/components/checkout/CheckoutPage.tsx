@@ -25,13 +25,14 @@ import type { TestAddress } from '../../data/testAddresses';
 import type { PhoneSession } from '../../phoneSession';
 import { mergePhoneSession } from '../../phoneSession';
 import { COLOR_TOKENS } from '../common/colorTokens';
-import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
+import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_SELECTOR_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
 import { useEscapeLayer } from '../common/escapeStack';
 import { useModalShell } from '../common/ModalShell';
 import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { formatUaePhoneInput, normalizeUaePhone, validateUaePhone } from './phoneValidation';
 import { isValidTestSmsCode, SMS_CODE_ERROR } from './smsCodeValidation';
+import { usePlanStepScrollChaining } from './usePlanStepScrollChaining';
 
 type CheckoutFlowStep = 'plan' | 'verification' | 'delivery' | 'payment';
 type CheckoutStep = CheckoutFlowStep | 'success' | 'failed';
@@ -78,17 +79,19 @@ const checkoutLeftColumnStyle: CheckoutLeftColumnCssVariables = {
 
 type CheckoutPlanGridCssVariables = CSSProperties & {
   '--checkout-card-padding': string;
+  '--checkout-selector-card-padding': string;
 };
 
 const checkoutPlanGridStyle: CheckoutPlanGridCssVariables = {
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
+  '--checkout-selector-card-padding': CHECKOUT_SELECTOR_CARD_PADDING_CLAMP,
 };
 
 const checkoutStepScrollClassName =
   'flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide';
 
 const checkoutFormStepScrollClassName =
-  'flex-1 overflow-y-auto bg-white md:bg-[var(--checkout-page-bg)] scrollbar-hide';
+  'flex-1 overflow-x-hidden overflow-y-auto bg-white md:bg-[var(--checkout-page-bg)] scrollbar-hide';
 
 const BOTTOM_FLOAT_HEIGHT = 72;
 const SUMMARY_ANCHOR_THRESHOLD = 0.1;
@@ -269,6 +272,12 @@ export function CheckoutPage({
 
     return () => observer.disconnect();
   }, [isOpen, checkoutStep]);
+
+  usePlanStepScrollChaining({
+    enabled: isOpen && checkoutStep === 'plan',
+    bodyRef,
+    rightRef,
+  });
 
   const toggleIngredient = (key: string) => {
     setIngredients((prev) =>
@@ -571,7 +580,7 @@ export function CheckoutPage({
             {...{ [SPACING_CONTENT_ATTR]: '' }}
           >
             <div
-              className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-[20px] md:grid md:grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:items-start md:gap-[24px] md:px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]"
+              className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-[20px] pt-0 md:grid md:grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:items-start md:gap-[24px] md:px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]"
               style={checkoutPlanGridStyle}
             >
               <div
@@ -601,7 +610,8 @@ export function CheckoutPage({
 
               <div
                 ref={rightRef}
-                className="w-full min-w-0 max-md:max-w-none md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] lg:max-w-[460px] md:sticky md:top-[24px] md:self-start md:pb-[120px]"
+                style={checkoutLeftColumnStyle}
+                className="w-full min-w-0 max-md:max-w-none pt-[length:var(--checkout-step-header-pt)] md:max-h-[calc(100svh-80px)] md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:min-h-0 md:overflow-x-hidden md:overflow-y-hidden lg:max-w-[460px] md:sticky md:top-[24px] md:self-start md:pt-[56px] md:pb-[24px]"
               >
                 <OrderSummary
                   plan={plan}

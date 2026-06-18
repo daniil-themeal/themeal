@@ -13,7 +13,6 @@ import { RadioCheckIcon } from '../common/icons/RadioCheckIcon';
 import { PromoCodeIcon } from '../common/icons/PromoCodeIcon';
 import { XIcon } from '../common/icons/feather/XIcon';
 import { TextInput } from '../common/TextInput';
-import { CHECKOUT_PROMO_ACTIVATE_BUTTON_WIDTH_CLAMP } from './checkoutSpacing';
 
 type PromoCodeView = 'collapsed' | 'input' | 'applied';
 type CheckoutPromoCodeVariant = 'summary' | 'payment';
@@ -23,23 +22,16 @@ type CheckoutPromoCodeCssVariables = CSSProperties & {
   '--promo-code-muted': string;
   '--promo-code-primary': string;
   '--promo-code-title-fs': string;
-  '--promo-activate-btn-width': string;
-};
-
-const promoCodeSharedStyle: Pick<CheckoutPromoCodeCssVariables, '--promo-activate-btn-width'> = {
-  '--promo-activate-btn-width': CHECKOUT_PROMO_ACTIVATE_BUTTON_WIDTH_CLAMP,
 };
 
 const VARIANT_STYLE: Record<CheckoutPromoCodeVariant, CheckoutPromoCodeCssVariables> = {
   summary: {
-    ...promoCodeSharedStyle,
     '--promo-code-text': 'var(--order-summary-text)',
     '--promo-code-muted': 'var(--order-summary-muted)',
     '--promo-code-primary': 'var(--order-summary-primary)',
     '--promo-code-title-fs': 'var(--order-summary-title-font-size)',
   },
   payment: {
-    ...promoCodeSharedStyle,
     '--promo-code-text': 'var(--payment-text)',
     '--promo-code-muted': 'var(--payment-muted)',
     '--promo-code-primary': 'var(--payment-primary)',
@@ -145,7 +137,7 @@ export function CheckoutPromoCode({
     return (
       <div className="flex flex-col gap-[8px]" style={variantStyle}>
         <PromoCodeDevHint />
-        <div className="flex w-full items-center gap-[8px]">
+        <div className="flex w-full items-center gap-[4px]">
           <div className="inline-flex min-w-0 max-w-full items-center gap-[4px]">
             <div
               className="inline-flex min-w-0 w-fit max-w-full items-center gap-[8px] rounded-full px-[16px]"
@@ -155,7 +147,7 @@ export function CheckoutPromoCode({
               }}
             >
               <span className="shrink-0" style={{ color: COLOR_TOKENS.warning[500] }}>
-                <RadioCheckIcon size={16} checkColor={COLOR_TOKENS.warning[800]} />
+                <RadioCheckIcon size={20} checkColor={COLOR_TOKENS.warning[800]} />
               </span>
               <span
                 className="truncate font-sans font-semibold leading-normal text-[var(--promo-code-text)]"
@@ -175,9 +167,9 @@ export function CheckoutPromoCode({
             <IconButton
               type="button"
               ghost
-              variant="neutral"
               size="small"
               aria-label="Remove promo code"
+              style={{ '--button-text': COLOR_TOKENS.neutral[500] }}
               icon={<XIcon size={20} />}
               onClick={handleRemove}
             />
@@ -189,7 +181,7 @@ export function CheckoutPromoCode({
   }
 
   const activateButtonClassName =
-    'w-full min-w-0 min-[400px]:w-[length:var(--promo-activate-btn-width)] min-[400px]:shrink-0 min-[400px]:px-[12px]';
+    'w-full min-w-0 @[280px]:w-auto @[280px]:shrink-0 @[280px]:px-[12px]';
 
   const activateAction = (
     <Button
@@ -207,6 +199,7 @@ export function CheckoutPromoCode({
 
   const inputRow = (
     <InputButtonRow
+      align="center"
       error={error}
       input={
         <TextInput
@@ -230,7 +223,7 @@ export function CheckoutPromoCode({
       }
       action={
         showEstimateHint ? (
-          <div className="flex w-full min-w-0 items-center justify-end gap-[8px] min-[400px]:w-auto min-[400px]:shrink">
+          <div className="flex w-full min-w-0 items-center justify-center gap-[8px] @[280px]:w-auto @[280px]:shrink-0">
             {activateAction}
             <span className="shrink-0">
               <PromoCodeEstimateHint />

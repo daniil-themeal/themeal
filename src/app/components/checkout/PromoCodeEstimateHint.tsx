@@ -11,7 +11,6 @@ export function PromoCodeEstimateHint() {
       <IconButton
         type="button"
         ghost
-        variant="neutral"
         size="small"
         aria-label="About promo code estimate"
         icon={<InfoIcon size={20} />}

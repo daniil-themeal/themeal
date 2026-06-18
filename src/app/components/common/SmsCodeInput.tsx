@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
-import { CHECKOUT_FONT_CLAMP_32_40 } from '../checkout/checkoutSpacing';
+import { FONT_SIZE_CLAMP_32_40 } from './fontSizeClampTokens';
 import { SMS_CODE_LENGTH } from '../checkout/smsCodeValidation';
 
 type RingColorStyle = CSSProperties & {
@@ -333,7 +333,10 @@ export function SmsCodeInput({
               'outline-none ring-1 transition-colors disabled:cursor-not-allowed disabled:opacity-60',
               'focus:ring-2',
               isCompact
-                ? 'lead-sms-digit h-[56px] min-w-0 flex-1 text-[length:var(--fs-16)]'
+                ? [
+                    'lead-sms-digit h-[56px] min-w-0 flex-1 text-[length:var(--fs-16)]',
+                    isActive || isVisuallySelected ? 'lead-sms-digit--active' : '',
+                  ].join(' ')
                 : [
                     'h-[72px] w-[56px] text-[length:var(--sms-code-digit-font-size)] md:h-[88px] md:w-[72px]',
                     isActive || isVisuallySelected
@@ -345,11 +348,6 @@ export function SmsCodeInput({
                 : !isCompact
                   ? 'bg-[var(--sms-code-digit-bg)]'
                   : '',
-              isCompact
-                ? isActive || isVisuallySelected
-                  ? 'bg-[#ECEEF2] ring-2'
-                  : 'bg-[#F3F4F7]'
-                : '',
               !isCompact ? 'text-[var(--sms-code-text)]' : 'text-[var(--ink)]',
             ].join(' ')}
             style={
@@ -357,7 +355,7 @@ export function SmsCodeInput({
                 '--tw-ring-color': ringColor,
                 ...(isCompact
                   ? {}
-                  : { '--sms-code-digit-font-size': CHECKOUT_FONT_CLAMP_32_40 }),
+                  : { '--sms-code-digit-font-size': FONT_SIZE_CLAMP_32_40 }),
                 ...(isCompact ? {} : {}),
               } as RingColorStyle & CSSProperties
             }
