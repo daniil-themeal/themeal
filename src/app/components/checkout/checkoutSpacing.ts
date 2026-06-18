@@ -29,6 +29,26 @@ export const CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP =
 export const CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP =
   'clamp(72px, calc(72px + (100vw - 48rem) * 48 / 448), 120px)';
 
+export const FULL_MENU_MEAL_CARD_WIDTH_CLAMP =
+  'clamp(150px, calc(150px + (100vw - 20rem) * 45 / 448), 195px)';
+
+export const FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP =
+  'clamp(160px, calc(160px + (100vw - 48rem) * 48 / 448), 208px)';
+
+export const FULL_MENU_MEAL_GAP_CLAMP =
+  'clamp(20px, calc(20px + (100vw - 48rem) * 6 / 448), 26px)';
+
+/** Modal width on md+ — exactly fits N meal cards, gaps, and horizontal padding. */
+export function getFullMenuModalWidthForMealCount(mealCount: number): string {
+  const count = Math.max(1, mealCount);
+
+  if (count === 1) {
+    return 'calc(var(--full-menu-meal-card-width-md) + 2 * var(--checkout-card-padding))';
+  }
+
+  return `calc(${count} * var(--full-menu-meal-card-width-md) + ${count - 1} * var(--full-menu-meal-gap) + 2 * var(--checkout-card-padding))`;
+}
+
 export const MEAL_DETAIL_MODAL_MAX_WIDTH_CLAMP =
   'clamp(480px, calc(480px + (100vw - 48rem) * 80 / 448), 560px)';
 

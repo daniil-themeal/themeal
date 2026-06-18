@@ -11,6 +11,10 @@ import {
   CHECKOUT_FONT_CLAMP_14_16,
   CHECKOUT_FONT_CLAMP_20_25,
   CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
+  FULL_MENU_MEAL_CARD_WIDTH_CLAMP,
+  FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP,
+  FULL_MENU_MEAL_GAP_CLAMP,
+  getFullMenuModalWidthForMealCount,
 } from './checkoutSpacing';
 import { CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING } from './checkoutStepPageLayoutTokens';
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
@@ -76,6 +80,10 @@ type FullMenuModalCssVariables = CSSProperties & {
   '--full-menu-meal-meta-font-size': string;
   '--full-menu-meal-title-font-size': string;
   '--full-menu-day-border-selected': string;
+  '--full-menu-meal-card-width': string;
+  '--full-menu-meal-card-width-md': string;
+  '--full-menu-meal-gap': string;
+  '--full-menu-modal-width': string;
 };
 
 const fullMenuModalStyle: FullMenuModalCssVariables = {
@@ -96,6 +104,9 @@ const fullMenuModalStyle: FullMenuModalCssVariables = {
   '--full-menu-meal-meta-font-size': FONT_SIZE_TOKENS[12],
   '--full-menu-meal-title-font-size': CHECKOUT_FONT_CLAMP_14_16,
   '--full-menu-day-border-selected': COLOR_TOKENS.primary[200],
+  '--full-menu-meal-card-width': FULL_MENU_MEAL_CARD_WIDTH_CLAMP,
+  '--full-menu-meal-card-width-md': FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP,
+  '--full-menu-meal-gap': FULL_MENU_MEAL_GAP_CLAMP,
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -161,6 +172,11 @@ export function FullMenuModal({
   );
   const { showStartFade: showMealsStartFade, showEndFade: showMealsEndFade } =
     useHorizontalScrollEdgeFades(mealsScrollRef, mealsForSelectedDay.length);
+
+  const fullMenuPanelStyle: FullMenuModalCssVariables = {
+    ...fullMenuModalStyle,
+    '--full-menu-modal-width': getFullMenuModalWidthForMealCount(mealsForSelectedDay.length),
+  };
 
   const scrollSelectedDayIntoView = (dayIndex: number) => {
     const selectedButton = dayRefs.current[dayIndex];
@@ -331,12 +347,13 @@ export function FullMenuModal({
         onClose={onClose}
         variant="bottom-sheet"
         zIndex={Z_INDEX_TOKENS.overlay}
+        panelStyle={fullMenuPanelStyle}
         overlayClassName={
           selectedMeal ? 'pointer-events-none opacity-0 transition-opacity duration-150' : 'transition-opacity duration-150'
         }
         panelClassName={[
           'relative flex max-h-[88svh] w-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-2xl transition-opacity duration-150',
-          'md:mx-[24px] md:max-h-[85vh] md:max-w-[780px] md:rounded-[20px]',
+          'md:mx-[24px] md:w-[length:var(--full-menu-modal-width)] md:max-w-[calc(100vw-48px)] md:max-h-[85vh] md:rounded-[20px]',
           selectedMeal ? 'invisible opacity-0' : '',
         ]
           .filter(Boolean)
@@ -524,7 +541,7 @@ export function FullMenuModal({
               onMouseMove={handleMealsMouseMove}
               onMouseUp={stopMealsMouseDrag}
               onMouseLeave={stopMealsMouseDrag}
-              className={`flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible pt-0 pb-[20px] scrollbar-hide md:justify-center ${
+              className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible pt-0 pb-[20px] scrollbar-hide ${
                 isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
               }`}
               style={{
@@ -540,22 +557,22 @@ export function FullMenuModal({
                   key={meal.id}
                   type="button"
                   onClick={() => handleMealClick(meal)}
-                  className="group relative z-0 flex shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10"
+                  className="group relative z-0 flex w-[length:var(--full-menu-meal-card-width)] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10 md:w-[length:var(--full-menu-meal-card-width-md)]"
                 >
-                  <div className="flex h-[114px] w-[150px] items-center justify-center overflow-visible md:h-[122px] md:w-[160px]">
+                  <div className="flex aspect-[25/19] w-full items-center justify-center overflow-visible">
                     <img
                       src={meal.img}
                       alt={meal.name}
                       draggable={false}
-                      className="pointer-events-none h-[108px] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105 md:h-[116px] md:w-[160px]"
+                      className="pointer-events-none h-full w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105"
                     />
                   </div>
 
-                  <div className="flex w-[150px] flex-col gap-[12px] md:w-[160px]">
+                  <div className="flex w-full flex-col gap-[12px]">
                     <p
                       className={[
                         TEXT_TRIM_CLASS_NAME,
-                        'flex w-[150px] flex-wrap items-center gap-x-[0.35em] font-sans text-[length:var(--full-menu-meal-meta-font-size)] font-medium leading-[140%] text-[var(--full-menu-muted)] md:w-[160px]',
+                        'flex w-full flex-wrap items-center gap-x-[0.35em] font-sans text-[length:var(--full-menu-meal-meta-font-size)] font-medium leading-[140%] text-[var(--full-menu-muted)]',
                       ].join(' ')}
                     >
                       <span>{meal.kcal} kcal • {meal.weight} g</span>
@@ -565,7 +582,7 @@ export function FullMenuModal({
                     <p
                       className={[
                         TEXT_TRIM_CLASS_NAME,
-                        'w-[150px] font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)] md:w-[160px]',
+                        'w-full font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)]',
                       ].join(' ')}
                     >
                       {meal.name}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 
 import { useEscapeLayer } from './escapeStack';
 import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
@@ -18,6 +18,7 @@ type ModalShellProps = {
   rootClassName?: string;
   overlayClassName?: string;
   panelClassName?: string;
+  panelStyle?: CSSProperties;
   /** Bottom sheet only: keep panel on the bottom edge at all breakpoints. */
   sheetVerticalAlign?: 'bottom' | 'center-on-md';
   disableOverlayClick?: boolean;
@@ -89,6 +90,7 @@ export function ModalShell({
   rootClassName = '',
   overlayClassName = '',
   panelClassName = '',
+  panelStyle,
   sheetVerticalAlign = 'center-on-md',
   disableOverlayClick = false,
   pointerEventsNoneWhenClosing = true,
@@ -146,6 +148,7 @@ export function ModalShell({
             className={['min-h-0 flex-1 overflow-y-auto scrollbar-hide sm:flex-none', panelClasses]
               .filter(Boolean)
               .join(' ')}
+            style={panelStyle}
             onClick={(event) => event.stopPropagation()}
             onAnimationEnd={handlePanelAnimationEnd}
             {...{ [SPACING_CONTENT_ATTR]: '' }}
@@ -170,6 +173,7 @@ export function ModalShell({
         <div className="min-h-full sm:flex sm:items-center sm:justify-center">
           <div
             className={panelClasses}
+            style={panelStyle}
             onClick={(event) => event.stopPropagation()}
             onAnimationEnd={handlePanelAnimationEnd}
             {...{ [SPACING_CONTENT_ATTR]: '' }}
@@ -201,6 +205,7 @@ export function ModalShell({
 
       <div
         className={panelClasses}
+        style={panelStyle}
         onClick={(event) => event.stopPropagation()}
         onAnimationEnd={handlePanelAnimationEnd}
         {...{ [SPACING_CONTENT_ATTR]: '' }}
