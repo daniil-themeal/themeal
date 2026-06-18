@@ -6,6 +6,7 @@ import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { XIcon } from '../common/icons';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 import { PaymentResultTabs, type PaymentResultTab } from './PaymentResultTabs';
+import { CheckoutAuthDevTabs, type CheckoutAuthDevMode } from './CheckoutAuthDevTabs';
 
 const steps = ['Plan', 'Delivery', 'Payment'] as const;
 
@@ -22,6 +23,8 @@ type CheckoutHeaderProps = {
   onStepSelect?: (step: CheckoutHeaderStep) => void;
   onLogoClick?: () => void;
   onResultSelect?: (tab: PaymentResultTab) => void;
+  authDevMode?: CheckoutAuthDevMode;
+  onAuthDevModeChange?: (mode: CheckoutAuthDevMode) => void;
 };
 
 type CheckoutHeaderCssVariables = CSSProperties & {
@@ -214,6 +217,8 @@ export function CheckoutHeader({
   onStepSelect,
   onLogoClick,
   onResultSelect,
+  authDevMode,
+  onAuthDevModeChange,
 }: CheckoutHeaderProps) {
   const currentStepperIndex = step === 'plan' ? 0 : step === 'delivery' ? 1 : 2;
   const showBackButton = !title && step !== 'plan';
@@ -268,6 +273,15 @@ export function CheckoutHeader({
           ) : (
             <div className="flex h-full items-center justify-center">
               <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
+              {import.meta.env.DEV && onAuthDevModeChange ? (
+                <div className="hidden items-center md:flex">
+                  <div className="mx-[8px] h-px w-[12px] bg-[var(--checkout-header-border)]" />
+                  <CheckoutAuthDevTabs
+                    activeMode={authDevMode}
+                    onModeChange={onAuthDevModeChange}
+                  />
+                </div>
+              ) : null}
               {import.meta.env.DEV && onResultSelect ? (
                 <div className="hidden items-center md:flex">
                   <div className="mx-[8px] h-px w-[12px] bg-[var(--checkout-header-border)]" />

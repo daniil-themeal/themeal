@@ -27,6 +27,7 @@ type PhoneInputProps = {
   value: string;
   onChange: (value: string) => void;
   error?: ReactNode;
+  invalid?: boolean;
   placeholder?: string;
   className?: string;
 };
@@ -36,10 +37,11 @@ export function PhoneInput({
   value,
   onChange,
   error,
+  invalid = false,
   placeholder = 'Type your phone',
   className = '',
 }: PhoneInputProps) {
-  const hasError = Boolean(error);
+  const hasError = Boolean(error) || invalid;
   const descriptionId = id && error ? `${id}-error` : undefined;
 
   return (

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
@@ -14,18 +14,23 @@ type SmsCodeInputProps = {
   onChange: (code: string) => void;
   onComplete?: (code: string) => void;
   error?: boolean;
+  success?: boolean;
   disabled?: boolean;
   size?: 'default' | 'compact';
   autoFocus?: boolean;
+  /** Delay before focusing the first digit (e.g. modal enter animation). */
+  autoFocusDelay?: number;
   className?: string;
 };
 
 function getDigitInputRingColor({
   hasError,
+  isSuccess,
   isActive,
   isVisuallySelected,
 }: {
   hasError: boolean;
+  isSuccess: boolean;
   isActive: boolean;
   isVisuallySelected: boolean;
 }) {
@@ -33,7 +38,7 @@ function getDigitInputRingColor({
     return COLOR_TOKENS.danger[500];
   }
 
-  if (isActive || isVisuallySelected) {
+  if (isSuccess || isActive || isVisuallySelected) {
     return COLOR_TOKENS.primary[500];
   }
 
@@ -56,34 +61,94 @@ export function SmsCodeInput({
   onChange,
   onComplete,
   error = false,
+  success = false,
   disabled = false,
   size = 'default',
   autoFocus = false,
+  autoFocusDelay = 0,
   className = '',
 }: SmsCodeInputProps) {
   const code = useMemo(() => valueToDigits(value), [value]);
   const [focusedIndex, setFocusedIndex] = useState(0);
   const [isAllSelected, setIsAllSelected] = useState(false);
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
+  const lastCompletedCodeRef = useRef<string | null>(null);
 
   const joinedCode = useMemo(() => code.join(''), [code]);
-  const isCodeComplete =
-    joinedCode.length === SMS_CODE_LENGTH && !joinedCode.includes('');
+
+  const focusFirstDigit = useCallback(() => {
+    const input = inputRefs.current[0];
+
+    if (!input || disabled) {
+      return false;
+    }
+
+    input.focus({ preventScroll: true });
+    setFocusedIndex(0);
+    return true;
+  }, [disabled]);
 
   useEffect(() => {
-    if (autoFocus) {
-      inputRefs.current[0]?.focus();
+    if (!autoFocus || disabled) {
+      return;
     }
-  }, [autoFocus]);
+
+    let timeoutId: ReturnType<typeof setTimeout> | undefined;
+    let rafId: number | undefined;
+
+    const attemptFocus = (retriesLeft = 4) => {
+      rafId = requestAnimationFrame(() => {
+        if (focusFirstDigit() || retriesLeft <= 0) {
+          return;
+        }
+
+        timeoutId = window.setTimeout(() => {
+          attemptFocus(retriesLeft - 1);
+        }, 16);
+      });
+    };
+
+    timeoutId = window.setTimeout(() => {
+      attemptFocus();
+    }, autoFocusDelay);
+
+    return () => {
+      if (timeoutId !== undefined) {
+        window.clearTimeout(timeoutId);
+      }
+
+      if (rafId !== undefined) {
+        cancelAnimationFrame(rafId);
+      }
+    };
+  }, [autoFocus, autoFocusDelay, disabled, focusFirstDigit]);
 
   useEffect(() => {
-    if (isCodeComplete) {
-      onComplete?.(joinedCode);
+    if (error) {
+      lastCompletedCodeRef.current = null;
     }
-  }, [joinedCode, isCodeComplete, onComplete]);
+  }, [error]);
+
+  const tryComplete = (nextCode: string[]) => {
+    const nextJoined = nextCode.join('');
+    const isComplete =
+      nextJoined.length === SMS_CODE_LENGTH && !nextCode.includes('');
+
+    if (!isComplete) {
+      lastCompletedCodeRef.current = null;
+      return;
+    }
+
+    if (lastCompletedCodeRef.current === nextJoined) return;
+
+    lastCompletedCodeRef.current = nextJoined;
+    onComplete?.(nextJoined);
+  };
 
   const setCode = (nextCode: string[]) => {
-    onChange(nextCode.join(''));
+    const nextJoined = nextCode.join('');
+    onChange(nextJoined);
+    tryComplete(nextCode);
   };
 
   const focusInput = (index: number) => {
@@ -287,6 +352,7 @@ export function SmsCodeInput({
   };
 
   const isCompact = size === 'compact';
+  const isSuccess = success && !error;
 
   return (
     <div
@@ -301,6 +367,7 @@ export function SmsCodeInput({
         const isVisuallySelected = isAllSelected && joinedCode.length > 0;
         const ringColor = getDigitInputRingColor({
           hasError: error,
+          isSuccess,
           isActive,
           isVisuallySelected,
         });
@@ -316,6 +383,7 @@ export function SmsCodeInput({
             autoComplete={index === 0 ? 'one-time-code' : 'off'}
             value={digit}
             disabled={disabled}
+            autoFocus={autoFocus && index === 0 && autoFocusDelay === 0}
             onChange={(event) => handleChange(index, event.target.value)}
             onPaste={(event) => handlePaste(index, event)}
             onKeyDown={(event) => handleKeyDown(index, event)}
@@ -330,25 +398,31 @@ export function SmsCodeInput({
             aria-invalid={error}
             className={[
               'rounded-[12px] text-center font-sans font-bold leading-none',
-              'outline-none ring-1 transition-colors disabled:cursor-not-allowed disabled:opacity-60',
+              'outline-none ring-1 transition-colors disabled:cursor-not-allowed',
+              isSuccess ? 'disabled:opacity-100' : 'disabled:opacity-60',
               'focus:ring-2',
               isCompact
                 ? [
                     'lead-sms-digit h-[56px] min-w-0 flex-1 text-[length:var(--fs-16)]',
-                    isActive || isVisuallySelected ? 'lead-sms-digit--active' : '',
+                    isSuccess
+                      ? 'lead-sms-digit--success'
+                      : isActive || isVisuallySelected
+                        ? 'lead-sms-digit--active'
+                        : '',
                   ].join(' ')
                 : [
                     'h-[72px] w-[56px] text-[length:var(--sms-code-digit-font-size)] md:h-[88px] md:w-[72px]',
-                    isActive || isVisuallySelected
-                      ? 'bg-[var(--sms-code-digit-active-bg)] ring-2'
-                      : 'bg-[var(--sms-code-digit-bg)]',
+                    isSuccess
+                      ? 'bg-[var(--sms-code-digit-success-bg)] ring-2'
+                      : isActive || isVisuallySelected
+                        ? 'bg-[var(--sms-code-digit-active-bg)] ring-2'
+                        : 'bg-[var(--sms-code-digit-bg)]',
                   ].join(' '),
-              !isCompact && (isActive || isVisuallySelected)
-                ? 'bg-[var(--sms-code-digit-active-bg)] ring-2'
+              isSuccess
+                ? 'text-[var(--sms-code-digit-success-text)]'
                 : !isCompact
-                  ? 'bg-[var(--sms-code-digit-bg)]'
-                  : '',
-              !isCompact ? 'text-[var(--sms-code-text)]' : 'text-[var(--ink)]',
+                  ? 'text-[var(--sms-code-text)]'
+                  : 'text-[var(--ink)]',
             ].join(' ')}
             style={
               {

@@ -5,6 +5,7 @@ import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getS
 import { Z_INDEX_TOKENS } from './zIndexTokens';
 
 export const MODAL_SHELL_EXIT_FALLBACK_MS = 260;
+export const MODAL_SHELL_ENTER_ANIMATION_MS = 420;
 
 export type ModalShellVariant = 'bottom-sheet' | 'centered-scroll' | 'fullscreen';
 
@@ -17,6 +18,8 @@ type ModalShellProps = {
   rootClassName?: string;
   overlayClassName?: string;
   panelClassName?: string;
+  /** Bottom sheet only: keep panel on the bottom edge at all breakpoints. */
+  sheetVerticalAlign?: 'bottom' | 'center-on-md';
   disableOverlayClick?: boolean;
   pointerEventsNoneWhenClosing?: boolean;
   onEscape?: () => boolean;
@@ -86,6 +89,7 @@ export function ModalShell({
   rootClassName = '',
   overlayClassName = '',
   panelClassName = '',
+  sheetVerticalAlign = 'center-on-md',
   disableOverlayClick = false,
   pointerEventsNoneWhenClosing = true,
   onEscape,
@@ -180,7 +184,8 @@ export function ModalShell({
   return (
     <div
       className={[
-        'fixed inset-0 flex items-end justify-center md:items-center',
+        'fixed inset-0 flex justify-center',
+        sheetVerticalAlign === 'bottom' ? 'items-end' : 'items-end md:items-center',
         isClosing && pointerEventsNoneWhenClosing ? 'pointer-events-none' : '',
         rootClassName,
       ]

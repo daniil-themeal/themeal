@@ -7,7 +7,6 @@ import { AnimatedNumber } from '../common/AnimatedNumber';
 import { Button } from '../common/Button';
 import { IconButton } from '../common/IconButton';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
-import { PhoneInput } from '../common/PhoneInput';
 import { TempPhoneResetButton } from '../common/TempPhoneResetButton';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { Divider } from '../common/Divider';
@@ -143,8 +142,6 @@ export function OrderSummary({
   onOpenMenu,
   onOrder,
   phone,
-  onPhoneChange,
-  phoneError,
   isPhoneVerified = false,
   onResetPhone,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
@@ -163,8 +160,6 @@ export function OrderSummary({
   onOpenMenu?: () => void;
   onOrder?: () => void;
   phone: string;
-  onPhoneChange: (value: string) => void;
-  phoneError?: ReactNode;
   isPhoneVerified?: boolean;
   onResetPhone?: () => void;
   pricingTable?: CheckoutPricingTable;
@@ -427,14 +422,7 @@ export function OrderSummary({
             </div>
 
             <div className={['mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[12px]', orderSummarySectionPx].join(' ')}>
-              {!isPhoneVerified ? (
-                <PhoneInput
-                  id="order-summary-phone"
-                  value={phone}
-                  onChange={onPhoneChange}
-                  error={phoneError}
-                />
-              ) : phone ? (
+              {isPhoneVerified && phone ? (
                 <div className="flex items-center justify-center gap-[4px]">
                   <p className="text-center font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[140%] text-[var(--order-summary-muted)]">
                     +971 {phone}
@@ -443,18 +431,22 @@ export function OrderSummary({
                 </div>
               ) : null}
 
-              <Button type="button" variant="primary" size="medium" fullWidth onClick={onOrder}>Continue to Delivery</Button>
+              <Button type="button" variant="primary" size="medium" fullWidth onClick={onOrder}>
+                {isPhoneVerified ? 'Continue to Delivery' : 'Continue'}
+              </Button>
 
               <p className="text-center font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[140%] text-[var(--order-summary-muted)]">By continuing, you accept our <Link to={LEGAL_ROUTES.terms} className="underline">Terms</Link> and <Link to={LEGAL_ROUTES.privacy} className="underline">Privacy Policy</Link></p>
             </div>
+
+            <div className={['mt-[length:var(--order-summary-section-gap)] scroll-mb-[72px]', orderSummarySectionPx].join(' ')}>
+              <TabbyPromoWidget
+                price={finalPeriodPrice}
+                pricePerMonth={pricing.pricePerMonth}
+                source="cart"
+              />
+            </div>
           </div>
         </div>
-
-        <TabbyPromoWidget
-          price={finalPeriodPrice}
-          pricePerMonth={pricing.pricePerMonth}
-          source="cart"
-        />
       </div>
 
       {selectedMeal

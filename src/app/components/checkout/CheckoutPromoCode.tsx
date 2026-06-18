@@ -47,10 +47,28 @@ function getInitialView(variant: CheckoutPromoCodeVariant, appliedCode: string):
   return variant === 'payment' ? 'input' : 'collapsed';
 }
 
-function PromoCodeDevHint() {
+function PromoCodeDevHint({ onSelect }: { onSelect: (code: string) => void }) {
   return (
     <p className="font-sans text-[10px] font-medium leading-[140%] text-[var(--promo-code-muted)]">
-      {VALID_PROMO_CODES.join(', ')}
+      {VALID_PROMO_CODES.map((code, index) => (
+        <span key={code}>
+          {index > 0 ? ', ' : null}
+          <span
+            role="button"
+            tabIndex={0}
+            className="cursor-pointer"
+            onClick={() => onSelect(code)}
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                onSelect(code);
+              }
+            }}
+          >
+            {code}
+          </span>
+        </span>
+      ))}
     </p>
   );
 }
@@ -113,13 +131,26 @@ export function CheckoutPromoCode({
     setView('input');
   };
 
+  const handleHintSelect = (code: string) => {
+    if (view === 'applied') {
+      onAppliedCodeChange('');
+    }
+
+    if (view === 'collapsed' || view === 'applied') {
+      setView('input');
+    }
+
+    setDraftCode(code);
+    setError(null);
+  };
+
   const variantStyle = VARIANT_STYLE[variant];
   const showEstimateHint = variant === 'summary';
 
   if (view === 'collapsed') {
     return (
       <div className="flex flex-col gap-[8px]" style={variantStyle}>
-        <PromoCodeDevHint />
+        <PromoCodeDevHint onSelect={handleHintSelect} />
         <button
           type="button"
           className={titleButtonClassName}
@@ -136,41 +167,43 @@ export function CheckoutPromoCode({
 
     return (
       <div className="flex flex-col gap-[8px]" style={variantStyle}>
-        <PromoCodeDevHint />
+        <PromoCodeDevHint onSelect={handleHintSelect} />
         <div className="flex w-full items-center gap-[4px]">
-          <div className="inline-flex min-w-0 max-w-full items-center gap-[4px]">
-            <div
-              className="inline-flex min-w-0 w-fit max-w-full items-center gap-[8px] rounded-full px-[16px]"
-              style={{
-                height: FIELD_SIZE_CONFIG.large.heightPx,
-                backgroundColor: COLOR_TOKENS.warning[100],
-              }}
+          <div
+            className="inline-flex min-w-0 w-fit max-w-full items-center gap-[8px] rounded-full pl-[16px] pr-[8px]"
+            style={{
+              height: FIELD_SIZE_CONFIG.large.heightPx,
+              backgroundColor: COLOR_TOKENS.warning[100],
+            }}
+          >
+            <span className="shrink-0" style={{ color: COLOR_TOKENS.warning[500] }}>
+              <RadioCheckIcon size={20} checkColor={COLOR_TOKENS.warning[800]} />
+            </span>
+            <span
+              className="truncate font-sans font-semibold leading-normal text-[var(--promo-code-text)]"
+              style={{ fontSize: FIELD_SIZE_CONFIG.large.fontSize }}
             >
-              <span className="shrink-0" style={{ color: COLOR_TOKENS.warning[500] }}>
-                <RadioCheckIcon size={20} checkColor={COLOR_TOKENS.warning[800]} />
-              </span>
+              {appliedCode}
+            </span>
+            {discount !== null ? (
               <span
-                className="truncate font-sans font-semibold leading-normal text-[var(--promo-code-text)]"
+                className="shrink-0 pl-[12px] font-sans font-bold leading-normal text-[var(--promo-code-text)]"
                 style={{ fontSize: FIELD_SIZE_CONFIG.large.fontSize }}
               >
-                {appliedCode}
+                -AED {formatAed(discount)}
               </span>
-              {discount !== null ? (
-                <span
-                  className="shrink-0 pl-[12px] font-sans font-bold leading-normal text-[var(--promo-code-text)]"
-                  style={{ fontSize: FIELD_SIZE_CONFIG.large.fontSize }}
-                >
-                  -AED {formatAed(discount)}
-                </span>
-              ) : null}
-            </div>
+            ) : null}
             <IconButton
               type="button"
               ghost
-              size="small"
+              size="x-small"
               aria-label="Remove promo code"
-              style={{ '--button-text': COLOR_TOKENS.neutral[500] }}
-              icon={<XIcon size={20} />}
+              className="shrink-0"
+              style={{
+                '--button-text': COLOR_TOKENS.warning[800],
+                '--button-bg-hover': COLOR_TOKENS.warning[300],
+              }}
+              icon={<XIcon size={16} />}
               onClick={handleRemove}
             />
           </div>
@@ -238,7 +271,7 @@ export function CheckoutPromoCode({
   if (variant === 'payment') {
     return (
       <div className="flex flex-col gap-[12px]" style={variantStyle}>
-        <PromoCodeDevHint />
+        <PromoCodeDevHint onSelect={handleHintSelect} />
         <FormLabel as="span">Have a promo code?</FormLabel>
         {inputRow}
       </div>
@@ -247,7 +280,7 @@ export function CheckoutPromoCode({
 
   return (
     <div className="flex flex-col gap-[8px]" style={variantStyle}>
-      <PromoCodeDevHint />
+      <PromoCodeDevHint onSelect={handleHintSelect} />
       {inputRow}
     </div>
   );

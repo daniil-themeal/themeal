@@ -10,7 +10,8 @@ import { DurationBlock } from './DurationBlock';
 import { OrderSummary } from './OrderSummary';
 import { BottomFloatTotalBlock } from './BottomFloatTotalBlock';
 import { FullMenuModal } from './FullMenuModal';
-import { SmsCodeScreen } from './SmsCodeScreen';
+import { CheckoutAuthModal } from './CheckoutAuthModal';
+import type { CheckoutAuthDevMode } from './CheckoutAuthDevTabs';
 import { DeliveryAddressScreen } from './DeliveryAddressScreen';
 import { DeliveryDetailsScreen } from './DeliveryDetailsScreen';
 import { createInitialDeliveryDetails } from './deliveryDetailsTypes';
@@ -23,30 +24,35 @@ import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
 import type { TestAddress } from '../../data/testAddresses';
 import type { PhoneSession } from '../../phoneSession';
-import { mergePhoneSession } from '../../phoneSession';
+import { loadPhoneSession, mergePhoneSession } from '../../phoneSession';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_SELECTOR_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
 import { useEscapeLayer } from '../common/escapeStack';
 import { useModalShell } from '../common/ModalShell';
 import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
-import { formatUaePhoneInput, normalizeUaePhone, validateUaePhone } from './phoneValidation';
-import { isValidTestSmsCode, SMS_CODE_ERROR } from './smsCodeValidation';
+import { formatUaePhoneInput, normalizeUaePhone } from './phoneValidation';
+import { isValidTestSmsCode, SMS_CODE_ERROR, SMS_CODE_SUCCESS_HOLD_MS } from './smsCodeValidation';
 import { usePlanStepScrollChaining } from './usePlanStepScrollChaining';
 
-type CheckoutFlowStep = 'plan' | 'verification' | 'delivery' | 'payment';
-type CheckoutStep = CheckoutFlowStep | 'success' | 'failed';
+type CheckoutUiStep = 'plan' | 'delivery' | 'payment';
+type CheckoutStep = CheckoutUiStep | 'verification' | 'success' | 'failed';
 type DeliveryStep = 'address' | 'details';
 
 function resolveInitialCheckoutState(step: CheckoutStep): {
-  flowStep: CheckoutFlowStep;
+  flowStep: CheckoutUiStep;
   resultOverlay: PaymentResultTab | null;
+  shouldOpenAuthModal: boolean;
 } {
   if (step === 'success' || step === 'failed') {
-    return { flowStep: 'payment', resultOverlay: step };
+    return { flowStep: 'payment', resultOverlay: step, shouldOpenAuthModal: false };
   }
 
-  return { flowStep: step, resultOverlay: null };
+  if (step === 'verification') {
+    return { flowStep: 'plan', resultOverlay: null, shouldOpenAuthModal: true };
+  }
+
+  return { flowStep: step, resultOverlay: null, shouldOpenAuthModal: false };
 }
 
 type CheckoutPageProps = {
@@ -88,9 +94,6 @@ const checkoutPlanGridStyle: CheckoutPlanGridCssVariables = {
   '--checkout-selector-card-padding': CHECKOUT_SELECTOR_CARD_PADDING_CLAMP,
   '--checkout-plan-column-pb': CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
 };
-
-const checkoutStepScrollClassName =
-  'flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide';
 
 const checkoutFormStepScrollClassName =
   'flex-1 overflow-x-hidden overflow-y-auto bg-white md:bg-[var(--checkout-page-bg)] scrollbar-hide';
@@ -147,16 +150,20 @@ export function CheckoutPage({
 
   const initialState = resolveInitialCheckoutState(initialCheckoutStep);
 
-  const [checkoutStep, setCheckoutStep] = useState<CheckoutFlowStep>(initialState.flowStep);
+  const [checkoutStep, setCheckoutStep] = useState<CheckoutUiStep>(initialState.flowStep);
   const [resultOverlay, setResultOverlay] = useState<PaymentResultTab | null>(
     initialState.resultOverlay,
   );
+  const [authModalOpen, setAuthModalOpen] = useState(initialState.shouldOpenAuthModal);
   const [deliveryStep, setDeliveryStep] = useState<DeliveryStep>(initialDeliveryStep);
   const [isPhoneVerified, setIsPhoneVerified] = useState(
     initialIsVerified || sessionIsVerified,
   );
+  const [devSkipAuth, setDevSkipAuth] = useState(false);
 
-  const isAuthComplete = isPhoneVerified || sessionIsVerified;
+  const isAuthComplete =
+    isPhoneVerified || sessionIsVerified || (import.meta.env.DEV && devSkipAuth);
+  const isSessionVerified = isPhoneVerified || sessionIsVerified;
 
   const [plan, setPlan] = useState<Plan>('base');
   const [lightMealOption, setLightMealOption] = useState<LightMealOption>('lunch-dinner');
@@ -172,9 +179,18 @@ export function CheckoutPage({
     createInitialDeliveryDetails(),
   );
   const [phone, setPhone] = useState('');
-  const [phoneError, setPhoneError] = useState<string | undefined>();
   const [smsError, setSmsError] = useState<string | undefined>();
+  const [isSmsVerifying, setIsSmsVerifying] = useState(false);
   const [appliedPromoCode, setAppliedPromoCode] = useState('');
+
+  const smsVerifyTimerRef = useRef<number | null>(null);
+
+  const clearSmsVerifyTimer = useCallback(() => {
+    if (smsVerifyTimerRef.current !== null) {
+      window.clearTimeout(smsVerifyTimerRef.current);
+      smsVerifyTimerRef.current = null;
+    }
+  }, []);
 
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
@@ -200,7 +216,7 @@ export function CheckoutPage({
       if (!onSessionUpdate) return;
 
       const normalized = normalizeUaePhone(phone) ?? patch.phone ?? '';
-      const isVerified = verifiedOverride ?? patch.isVerified ?? isAuthComplete;
+      const isVerified = verifiedOverride ?? patch.isVerified ?? isSessionVerified;
 
       onSessionUpdate(
         mergePhoneSession(null, {
@@ -211,7 +227,7 @@ export function CheckoutPage({
         }),
       );
     },
-    [checkoutStep, deliveryStep, isAuthComplete, onSessionUpdate, phone],
+    [checkoutStep, deliveryStep, isSessionVerified, onSessionUpdate, phone],
   );
 
   useEffect(() => {
@@ -223,9 +239,15 @@ export function CheckoutPage({
       setResultOverlay(nextState.resultOverlay);
       setDeliveryStep(initialDeliveryStep);
       setIsPhoneVerified(initialIsVerified || sessionIsVerified);
+      setDevSkipAuth(false);
       setMenuOpen(false);
       setSummaryVisible(nextState.flowStep !== 'plan');
-      setPhoneError(undefined);
+      setAuthModalOpen(
+        !initialIsVerified &&
+          !sessionIsVerified &&
+          (nextState.shouldOpenAuthModal ||
+            loadPhoneSession()?.checkoutStep === 'verification'),
+      );
 
       const digits = phoneDigitsFromInitial(initialPhone);
       if (digits) {
@@ -244,19 +266,14 @@ export function CheckoutPage({
     setDeliveryStep(initialDeliveryStep);
     setMenuOpen(false);
     setSummaryVisible(false);
+    setAuthModalOpen(false);
+    setIsSmsVerifying(false);
+    clearSmsVerifyTimer();
 
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified, sessionIsVerified, resetCloseState]);
-
-  useEffect(() => {
-    if (!isOpen || !isAuthComplete || checkoutStep !== 'verification') return;
-
-    setCheckoutStep('delivery');
-    setDeliveryStep('address');
-    persistSession({ checkoutStep: 'delivery', deliveryStep: 'address' });
-  }, [isOpen, isAuthComplete, checkoutStep, persistSession]);
+  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified, sessionIsVerified, resetCloseState, clearSmsVerifyTimer]);
 
   useEffect(() => {
     if (!isOpen || checkoutStep !== 'plan') return;
@@ -306,19 +323,54 @@ export function CheckoutPage({
 
   const handlePhoneChange = (value: string) => {
     setPhone(formatUaePhoneInput(value));
-    setPhoneError(undefined);
   };
 
   const handleResetPhone = useCallback(() => {
     onResetPhone?.();
     setIsPhoneVerified(false);
+    setDevSkipAuth(false);
     setPhone('');
-    setPhoneError(undefined);
+    setAuthModalOpen(false);
     setCheckoutStep('plan');
     setDeliveryStep('address');
     setMenuOpen(false);
     setSummaryVisible(false);
   }, [onResetPhone]);
+
+  const openAuthModal = useCallback(() => {
+    setAuthModalOpen(true);
+    persistSession({ checkoutStep: 'verification' });
+  }, [persistSession]);
+
+  const closeAuthModal = useCallback(() => {
+    clearSmsVerifyTimer();
+    setIsSmsVerifying(false);
+    setAuthModalOpen(false);
+    setSmsError(undefined);
+    persistSession({ checkoutStep: 'plan' });
+  }, [clearSmsVerifyTimer, persistSession]);
+
+  const handleDevAuthModeChange = useCallback((mode: CheckoutAuthDevMode) => {
+    const skip = mode === 'skip';
+    setDevSkipAuth(skip);
+
+    if (skip) {
+      clearSmsVerifyTimer();
+      setIsSmsVerifying(false);
+      setAuthModalOpen(false);
+      setSmsError(undefined);
+
+      if (!phone) {
+        setPhone(formatUaePhoneInput('501234567'));
+      }
+
+      return;
+    }
+
+    if (!isPhoneVerified && !sessionIsVerified) {
+      setAuthModalOpen(false);
+    }
+  }, [clearSmsVerifyTimer, isPhoneVerified, phone, sessionIsVerified]);
 
   const handleScrollToSummary = () => {
     setMenuOpen(false);
@@ -350,28 +402,24 @@ export function CheckoutPage({
       return;
     }
 
-    const validation = validateUaePhone(phone);
-    if (!validation.isValid) {
-      setPhoneError(validation.error);
-      handleScrollToSummary();
-      return;
-    }
-
-    if (validation.formatted) {
-      setPhone(validation.formatted);
-    }
-
-    setPhoneError(undefined);
-    const normalized = normalizeUaePhone(phone);
-    if (normalized) {
-      persistSession({ phone: normalized, checkoutStep: 'verification', isVerified: false });
-    }
-
-    setCheckoutStep('verification');
-    scrollBodyToTop();
+    openAuthModal();
   };
 
-  const handleSmsContinue = () => {
+  const handlePhoneSubmitFromVerification = useCallback(
+    (normalizedPhone: string) => {
+      const digits = normalizedPhone.replace(/\D/g, '').slice(-9);
+      setPhone(formatUaePhoneInput(digits));
+      persistSession({
+        phone: normalizedPhone,
+        checkoutStep: 'verification',
+        isVerified: false,
+      });
+    },
+    [persistSession],
+  );
+
+  const handleSmsContinue = useCallback(() => {
+    setAuthModalOpen(false);
     setIsPhoneVerified(true);
     setCheckoutStep('delivery');
     setDeliveryStep('address');
@@ -386,17 +434,26 @@ export function CheckoutPage({
       true,
     );
     scrollBodyToTop();
-  };
+  }, [persistSession, phone, scrollBodyToTop]);
 
-  const handleSmsCodeComplete = (code: string) => {
+  const handleSmsCodeComplete = useCallback((code: string) => {
+    if (isSmsVerifying) return;
+
     if (!isValidTestSmsCode(code)) {
       setSmsError(SMS_CODE_ERROR);
       return;
     }
 
     setSmsError(undefined);
-    handleSmsContinue();
-  };
+    setIsSmsVerifying(true);
+    clearSmsVerifyTimer();
+
+    smsVerifyTimerRef.current = window.setTimeout(() => {
+      smsVerifyTimerRef.current = null;
+      setIsSmsVerifying(false);
+      handleSmsContinue();
+    }, SMS_CODE_SUCCESS_HOLD_MS);
+  }, [clearSmsVerifyTimer, handleSmsContinue, isSmsVerifying]);
 
   const handleSmsCodeChange = (_code: string) => {
     if (smsError) {
@@ -476,6 +533,11 @@ export function CheckoutPage({
       return;
     }
 
+    if ((step === 'delivery' || step === 'payment') && !isAuthComplete) {
+      openAuthModal();
+      return;
+    }
+
     if (step === 'delivery') {
       setCheckoutStep('delivery');
       setDeliveryStep('details');
@@ -490,6 +552,11 @@ export function CheckoutPage({
   };
 
   const handleBack = () => {
+    if (authModalOpen) {
+      closeAuthModal();
+      return;
+    }
+
     if (checkoutStep === 'payment') {
       setCheckoutStep('delivery');
       setDeliveryStep('details');
@@ -516,20 +583,11 @@ export function CheckoutPage({
         return;
       }
 
-      setCheckoutStep('verification');
-      persistSession({ checkoutStep: 'verification' });
-      scrollBodyToTop();
-      return;
-    }
-
-    if (checkoutStep === 'verification') {
       setCheckoutStep('plan');
       setMenuOpen(false);
-      setSummaryVisible(isAuthComplete);
-      persistSession({
-        checkoutStep: 'plan',
-        ...(isAuthComplete ? { deliveryStep: 'address' } : {}),
-      });
+      setSummaryVisible(true);
+      setDeliveryStep('address');
+      openAuthModal();
       scrollBodyToTop();
       return;
     }
@@ -540,6 +598,10 @@ export function CheckoutPage({
 
   const handleEscapeRef = useRef<() => void>(() => {});
   handleEscapeRef.current = () => {
+    if (authModalOpen) {
+      return;
+    }
+
     if (resultOverlay) {
       handleDismissResultOverlay();
       return;
@@ -576,6 +638,8 @@ export function CheckoutPage({
         onStepSelect={handleStepSelect}
         onLogoClick={() => scrollBodyToTop('smooth')}
         onResultSelect={handleResultTabChange}
+        authDevMode={devSkipAuth ? 'skip' : 'required'}
+        onAuthDevModeChange={handleDevAuthModeChange}
       />
 
       {checkoutStep === 'plan' ? (
@@ -630,8 +694,6 @@ export function CheckoutPage({
                   onOpenMenu={() => setMenuOpen(true)}
                   onOrder={handleContinueFromPlan}
                   phone={phone}
-                  onPhoneChange={handlePhoneChange}
-                  phoneError={phoneError}
                   isPhoneVerified={isAuthComplete}
                   onResetPhone={handleResetPhone}
                   totalMealsAnchorRef={totalMealsRef}
@@ -662,23 +724,6 @@ export function CheckoutPage({
             hidden={summaryVisible || isMealDetailOpen}
           />
         </>
-      ) : checkoutStep === 'verification' ? (
-        <div ref={bodyRef} className={checkoutStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
-          <SmsCodeScreen
-            phone={phone}
-            onPhoneChange={handlePhoneChange}
-            error={smsError}
-            onChangeNumber={() => {
-              setCheckoutStep('plan');
-              setMenuOpen(false);
-              setSummaryVisible(false);
-              setSmsError(undefined);
-              persistSession({ checkoutStep: 'plan' });
-            }}
-            onCodeChange={handleSmsCodeChange}
-            onCodeComplete={handleSmsCodeComplete}
-          />
-        </div>
       ) : checkoutStep === 'delivery' && deliveryStep === 'address' ? (
         <div ref={bodyRef} className={checkoutFormStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <DeliveryAddressScreen
@@ -718,6 +763,18 @@ export function CheckoutPage({
           />
         </div>
       ) : null}
+
+      <CheckoutAuthModal
+        isOpen={authModalOpen}
+        onClose={closeAuthModal}
+        phone={phone}
+        onPhoneChange={handlePhoneChange}
+        onPhoneContinue={handlePhoneSubmitFromVerification}
+        error={smsError}
+        isVerifying={isSmsVerifying}
+        onCodeChange={handleSmsCodeChange}
+        onCodeComplete={handleSmsCodeComplete}
+      />
 
       {resultOverlay ? (
         <div className="absolute inset-0 z-10 flex flex-col">

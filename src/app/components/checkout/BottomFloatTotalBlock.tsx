@@ -372,7 +372,7 @@ export function BottomFloatTotalBlock({
   return (
     <>
       <div
-        className={`fixed bottom-0 left-0 right-0 z-[150] flex flex-col items-end bg-[var(--checkout-float-surface)] pb-[env(safe-area-inset-bottom)] transition-transform duration-300 ease-in-out md:hidden ${
+        className={`fixed bottom-0 left-0 right-0 z-[150] flex flex-col items-end pb-[env(safe-area-inset-bottom)] transition-transform duration-300 ease-in-out md:hidden ${
           hidden || selectedMeal ? 'translate-y-full' : 'translate-y-0'
         }`}
         style={bottomFloatTotalBlockStyle}
@@ -598,7 +598,7 @@ export function BottomFloatTotalBlock({
                     <div className="flex items-end gap-[5px] tabular-nums">
                       {pricing.oldPeriodPrice ? (
                         <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-[var(--checkout-float-muted)] line-through">
-                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} animate={false} />
+                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} animate />
                         </p>
                       ) : null}
 
@@ -608,7 +608,7 @@ export function BottomFloatTotalBlock({
                         </p>
 
                         <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
-                          <AnimatedNumber value={pricing.periodPrice} format={formatAed} animate={false} />
+                          <AnimatedNumber value={pricing.periodPrice} format={formatAed} animate />
                         </p>
                       </div>
 
@@ -620,7 +620,7 @@ export function BottomFloatTotalBlock({
                     </div>
 
                     <p className="text-right font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
-                      AED <AnimatedNumber value={pricing.pricePerDay} format={formatPricePerDay} animate={false} />/day
+                      AED <AnimatedNumber value={pricing.pricePerDay} format={formatPricePerDay} animate />/day
                     </p>
                   </div>
 

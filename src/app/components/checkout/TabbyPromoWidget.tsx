@@ -153,11 +153,17 @@ function TabbyPromoShell({
         'block w-full text-left',
         isOutline ? 'px-[12px] py-[12px]' : 'px-0 py-0',
         clickable ? '' : 'pointer-events-none',
-        !isOutline
+        clickable && isOutline
+          ? [
+              'hover:bg-[var(--button-bg-hover)] hover:border-[var(--button-border-hover)] hover:[box-shadow:var(--button-shadow-hover)]',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--order-summary-primary)] focus-visible:ring-offset-2',
+            ].join(' ')
+          : '',
+        clickable && !isOutline
           ? [
               'cursor-pointer',
               TABBY_SHELL_RADIUS_CLASS,
-              'transition-colors hover:bg-[var(--order-summary-bg)]',
+              'transition-colors hover:bg-[var(--order-summary-divider)]',
               'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--order-summary-primary)] focus-visible:ring-offset-2',
             ].join(' ')
           : '',

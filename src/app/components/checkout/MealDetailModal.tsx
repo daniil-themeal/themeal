@@ -4,6 +4,11 @@ import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import {
+  CHECKOUT_MODAL_SHELL_INNER_CLASSNAME,
+  CHECKOUT_MODAL_SHELL_PANEL_CLASSNAME,
+  CHECKOUT_MODAL_SHELL_ROOT_CLASSNAME,
+} from './checkoutModalShellTokens';
+import {
   CHECKOUT_FONT_CLAMP_28_32,
   MEAL_DETAIL_CONTENT_PADDING_CLAMP,
   MEAL_DETAIL_IMAGE_PADDING_CLAMP,
@@ -81,11 +86,11 @@ export function MealDetailModal({
       onClose={onClose}
       variant="fullscreen"
       zIndex={Z_INDEX_TOKENS.modal}
-      rootClassName="bg-[var(--meal-detail-card-bg)] pb-[env(safe-area-inset-bottom)] sm:bg-black/40 sm:p-[24px]"
-      panelClassName="w-full bg-[var(--meal-detail-card-bg)] sm:max-w-[clamp(480px,calc(480px+(100vw-48rem)*80/448),560px)] sm:overflow-hidden sm:rounded-[20px] sm:shadow-2xl"
+      rootClassName={CHECKOUT_MODAL_SHELL_ROOT_CLASSNAME}
+      panelClassName={CHECKOUT_MODAL_SHELL_PANEL_CLASSNAME}
     >
       {(requestClose) => (
-        <div style={mealDetailModalStyle} className="flex min-h-full flex-col bg-[var(--meal-detail-card-bg)] sm:min-h-0 sm:overflow-hidden sm:rounded-[20px]">
+        <div style={mealDetailModalStyle} className={CHECKOUT_MODAL_SHELL_INNER_CLASSNAME}>
           <div className="relative flex shrink-0 items-center justify-center bg-[var(--cream)] p-[length:var(--meal-detail-image-p)] sm:rounded-t-[20px]">
             <button
               type="button"

@@ -642,13 +642,13 @@ function SelectedAddressBlock({
   const isAvailable = availability === 'available';
 
   return (
-    <div className={`flex gap-[12px] ${className}`}>
-      <div className="mt-[2px] shrink-0 text-[var(--delivery-address-muted)]">
+    <div className={`flex items-start justify-center gap-[12px] ${className}`}>
+      <div className="mt-[2px] h-fit shrink-0 text-[var(--delivery-address-muted)]">
         <MapPinIcon size={16} />
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="font-sans text-[length:var(--delivery-address-title-font-size)] font-semibold leading-[135%] text-[var(--delivery-address-muted)]">
+        <p className="font-sans text-[length:var(--delivery-address-input-font-size)] font-semibold leading-[135%] text-[var(--delivery-address-muted)]">
           {address.title}, {address.subtitle}
         </p>
       </div>

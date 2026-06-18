@@ -4,11 +4,43 @@ import { COLOR_TOKENS } from './colorTokens';
 import { FONT_SIZE_TOKENS } from './fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
+type RowBreakpoint = 280 | 400;
+
+const ROW_LAYOUT_CLASSES: Record<
+  RowBreakpoint,
+  {
+    flexRow: string;
+    itemsCenter: string;
+    itemsEnd: string;
+    selfCenter: string;
+    actionWidth: string;
+    actionCenter: string;
+  }
+> = {
+  280: {
+    flexRow: '@[280px]:flex-row',
+    itemsCenter: '@[280px]:items-center',
+    itemsEnd: '@[280px]:items-end',
+    selfCenter: '@[280px]:self-center',
+    actionWidth: 'w-full @[280px]:w-auto @[280px]:shrink-0',
+    actionCenter: 'flex items-center @[280px]:h-[48px] @[280px]:self-center',
+  },
+  400: {
+    flexRow: '@[400px]:flex-row',
+    itemsCenter: '@[400px]:items-center',
+    itemsEnd: '@[400px]:items-end',
+    selfCenter: '@[400px]:self-center',
+    actionWidth: 'w-full @[400px]:w-auto @[400px]:shrink-0',
+    actionCenter: 'flex items-center @[400px]:h-[48px] @[400px]:self-center',
+  },
+};
+
 type InputButtonRowProps = {
   input: ReactNode;
   action: ReactNode;
   error?: ReactNode;
   align?: 'end' | 'center';
+  rowBreakpoint?: RowBreakpoint;
   className?: string;
   actionClassName?: string;
 };
@@ -18,19 +50,21 @@ export function InputButtonRow({
   action,
   error,
   align = 'end',
+  rowBreakpoint = 280,
   className = '',
   actionClassName = '',
 }: InputButtonRowProps) {
-  const rowAlignClassName = align === 'center' ? '@[280px]:items-center' : '@[280px]:items-end';
+  const rowLayout = ROW_LAYOUT_CLASSES[rowBreakpoint];
+  const rowAlignClassName = align === 'center' ? rowLayout.itemsCenter : rowLayout.itemsEnd;
   const inputWrapperClassName = [
     'min-w-0 flex-1',
-    align === 'center' ? '@[280px]:self-center' : '',
+    align === 'center' ? rowLayout.selfCenter : '',
   ]
     .filter(Boolean)
     .join(' ');
   const actionWrapperClassName = [
-    'w-full @[280px]:w-auto @[280px]:shrink-0',
-    align === 'center' ? 'flex items-center @[280px]:h-[48px] @[280px]:self-center' : '',
+    rowLayout.actionWidth,
+    align === 'center' ? rowLayout.actionCenter : '',
     actionClassName,
   ]
     .filter(Boolean)
@@ -48,7 +82,8 @@ export function InputButtonRow({
     >
       <div
         className={[
-          'flex w-full flex-col gap-[12px] @[280px]:flex-row',
+          'flex w-full flex-col gap-[12px]',
+          rowLayout.flexRow,
           rowAlignClassName,
         ].join(' ')}
       >

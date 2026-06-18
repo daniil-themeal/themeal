@@ -342,6 +342,12 @@ body {
   border-color: var(--brand);
   box-shadow: 0 0 0 2px rgba(154, 56, 239, 0.22);
 }
+.landing-stas .lead-sms-digit--success {
+  background: var(--brand);
+  border-color: var(--brand);
+  color: #fff;
+  box-shadow: 0 0 0 2px rgba(154, 56, 239, 0.22);
+}
 .landing-stas .lead-sms-digit:focus {
   border-color: var(--brand);
 }
