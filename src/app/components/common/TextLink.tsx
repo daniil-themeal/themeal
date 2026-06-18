@@ -43,7 +43,7 @@ export function TextLink({
     <button
       type={type}
       className={[
-        'group inline-flex shrink-0 cursor-pointer items-center gap-[6px]',
+        'group inline-flex shrink-0 cursor-pointer items-center gap-[4px]',
         'text-[var(--text-link-color)] transition-colors hover:text-[var(--text-link-color-hover)]',
         className,
       ]

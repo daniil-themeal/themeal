@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { createElement, Fragment, useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router';
 import { useHorizontalScroll } from '../../useHorizontalScroll';
 import { landingFooterSocials } from '../../../config/socialLinks';
 import { Icon, Logo, Stars, Social } from '../icons';
@@ -150,19 +151,32 @@ function FinalOffer({ t, onOrder }) {
 
 /* ---------------- Footer ---------------- */
 function Footer({ t, lang, setLang }) {
-  const links = [[t.nav.menu,'#menu'], [t.nav.delivery,'#delivery'], [t.nav.qa,'#qa'], [t.footer.privacy,'#'], [t.footer.terms,'#']];
+  const links = [[t.nav.menu,'/#menu'], [t.nav.delivery,'/#delivery'], [t.nav.qa,'/#qa'], [t.footer.privacy,'/privacy-policy'], [t.footer.terms,'/terms-and-conditions']];
   const socials = landingFooterSocials;
   return (
     createElement('footer', { style:{ position:'relative', zIndex:10, background:'var(--plum-950)', color:'rgba(255,255,255,.7)', paddingBlock:'var(--space-64) var(--space-40)' } },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'footer-grid' },
           createElement('div', { className:'stack footer-brand' },
-            createElement(Logo, { height:28 }),
+            createElement('a', { href:'#top', className:'footer-logo logo-top-link', 'aria-label':'Back to top' },
+              createElement(Logo, { height:28 })),
             createElement('p', { style:{ margin:0, fontSize:'var(--fs-16)', lineHeight:1.5 } }, t.footer.tagline)),
           createElement('div', { className:'stack', style:{ gap:'var(--space-20)', width:'100%', alignItems:'flex-start' } },
             createElement('nav', { style:{ display:'flex', flexWrap:'wrap', gap:'12px 28px', fontWeight:600, fontSize:'var(--fs-16)', width:'100%' } },
-              links.map(([l,href],i)=>createElement('a', { key:i, href, style:{ color:'rgba(255,255,255,.75)', transition:'color .15s' },
-                onMouseEnter:e=>e.target.style.color='#fff', onMouseLeave:e=>e.target.style.color='rgba(255,255,255,.75)' }, l))),
+              links.map(([l,href],i)=>{
+                const linkStyle = { color:'rgba(255,255,255,.75)', transition:'color .15s' };
+                const hover = {
+                  onMouseEnter:e=>e.target.style.color='#fff',
+                  onMouseLeave:e=>e.target.style.color='rgba(255,255,255,.75)',
+                };
+                if (href.startsWith('/')) {
+                  const to = href.includes('#')
+                    ? { pathname: href.split('#')[0] || '/', hash: `#${href.split('#')[1]}` }
+                    : href;
+                  return createElement(Link, { key:i, to, style:linkStyle, ...hover }, l);
+                }
+                return createElement('a', { key:i, href, style:linkStyle, ...hover }, l);
+              })),
             createElement('div', { className:'row', style:{ gap:10, flexWrap:'wrap' } },
               socials.map(([k,href])=>createElement('a', { key:k, href, target:'_blank', rel:'noopener noreferrer', 'aria-label':k, title:k,
                 style:{ width:42, height:42, borderRadius:'50%', display:'grid', placeItems:'center', color:'rgba(255,255,255,.8)', background:'rgba(255,255,255,.08)', transition:'all .15s var(--ease)' },

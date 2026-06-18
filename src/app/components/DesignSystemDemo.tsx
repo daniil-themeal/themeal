@@ -38,6 +38,8 @@ import { iconColorClassName, iconColorStyle } from './common/iconColorTokens';
 import { NEUTRAL_USAGE_ROLES } from './common/neutralUsageTokens';
 import { PhoneInput } from './common/PhoneInput';
 import { SPACING_TOKENS } from './common/spacingTokens';
+import { ProseList } from './common/ProseList';
+import { PROSE_LIST_TOKEN_NAMES, PROSE_LIST_SPACING, PROSE_LIST_TOKENS } from './common/proseListTokens';
 import {
   TYPOGRAPHY_ROLE_NAMES,
   TYPOGRAPHY_ROLES,
@@ -99,6 +101,7 @@ type DemoAnchorId =
   | 'payment-method-icon-tokens'
   | 'icon-catalog'
   | 'typography-roles'
+  | 'prose-list'
   | 'neutral-usage'
   | 'form-label'
   | 'phone-input'
@@ -170,6 +173,7 @@ const demoNavigationItems: DemoNavigationItem[] = [
       { id: 'payment-method-icon-tokens', label: 'Payment method icons' },
       { id: 'icon-catalog', label: 'Icon catalog' },
       { id: 'typography-roles', label: 'Typography roles' },
+      { id: 'prose-list', label: 'Prose list' },
       { id: 'neutral-usage', label: 'Neutral usage' },
     ],
   },
@@ -1026,6 +1030,65 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                   </div>
                 );
               })}
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="prose-list"
+            title="Prose list"
+            description="Bulleted lists with bold labels for legal and policy content."
+            className="lg:col-span-2"
+          >
+            <div
+              className="flex flex-col gap-[16px]"
+              style={{
+                ...typographyRoleStyle,
+                '--legal-gap-md': PROSE_LIST_SPACING.itemGap,
+                '--legal-gap-xs': PROSE_LIST_SPACING.nestedGap,
+              }}
+            >
+              <ProseList
+                items={[
+                  {
+                    label: 'Personal Identification Information',
+                    description:
+                      'This is information that can identify you as an individual. For example: your name, address, email address, phone number, date of birth.',
+                  },
+                  {
+                    label: 'Contact Data',
+                    description:
+                      'Such as your phone number and email, which we use to communicate with you (e.g., order updates, support).',
+                  },
+                  {
+                    label: 'Usage Data',
+                    description:
+                      'We automatically collect certain information when you interact with our website:',
+                    children: [
+                      {
+                        label: 'Log and Device Data',
+                        description:
+                          'IP address, browser type, device type, operating system, referring URLs, pages viewed, and the dates/times of access.',
+                      },
+                    ],
+                  },
+                ]}
+              />
+
+              <div className="flex flex-col gap-[8px] border-t border-[var(--demo-card-border)] pt-[12px]">
+                {PROSE_LIST_TOKEN_NAMES.map((tokenName) => {
+                  const token = PROSE_LIST_TOKENS[tokenName];
+
+                  return (
+                    <p
+                      key={tokenName}
+                      className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-description)]"
+                    >
+                      <CodeLabel>{tokenName}</CodeLabel>
+                      {` · ${token.usage}`}
+                    </p>
+                  );
+                })}
+              </div>
             </div>
           </DemoCard>
 

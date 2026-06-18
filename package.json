@@ -8,7 +8,9 @@
     "dev": "vite",
     "icons:import": "node scripts/import-feather-icons.mjs",
     "icons:generate": "node scripts/generate-feather-icon-components.mjs",
-    "favicon:generate": "node scripts/generate-favicon.mjs"
+    "favicon:generate": "node scripts/generate-favicon.mjs",
+    "reviews:import": "node scripts/import-testimonials.mjs",
+    "prebuild": "node scripts/import-testimonials.mjs"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",

@@ -25,7 +25,7 @@ import type { TestAddress } from '../../data/testAddresses';
 import type { PhoneSession } from '../../phoneSession';
 import { mergePhoneSession } from '../../phoneSession';
 import { COLOR_TOKENS } from '../common/colorTokens';
-import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_SELECTOR_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
+import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_SELECTOR_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
 import { useEscapeLayer } from '../common/escapeStack';
 import { useModalShell } from '../common/ModalShell';
 import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
@@ -80,11 +80,13 @@ const checkoutLeftColumnStyle: CheckoutLeftColumnCssVariables = {
 type CheckoutPlanGridCssVariables = CSSProperties & {
   '--checkout-card-padding': string;
   '--checkout-selector-card-padding': string;
+  '--checkout-plan-column-pb': string;
 };
 
 const checkoutPlanGridStyle: CheckoutPlanGridCssVariables = {
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
   '--checkout-selector-card-padding': CHECKOUT_SELECTOR_CARD_PADDING_CLAMP,
+  '--checkout-plan-column-pb': CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
 };
 
 const checkoutStepScrollClassName =
@@ -163,6 +165,7 @@ export function CheckoutPage({
   const [ingredients, setIngredients] = useState<string[]>([]);
   const [persons, setPersons] = useState(1);
   const [summaryVisible, setSummaryVisible] = useState(false);
+  const [isMealDetailOpen, setIsMealDetailOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<TestAddress | null>(null);
   const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetailsData>(() =>
@@ -586,7 +589,7 @@ export function CheckoutPage({
               <div
                 ref={leftRef}
                 style={checkoutLeftColumnStyle}
-                className="flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pt-[56px] md:pb-[120px]"
+                className="flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
               >
                 <PlanSelectorBlock
                   selected={plan}
@@ -611,7 +614,7 @@ export function CheckoutPage({
               <div
                 ref={rightRef}
                 style={checkoutLeftColumnStyle}
-                className="w-full min-w-0 max-md:max-w-none pt-[length:var(--checkout-step-header-pt)] md:max-h-[calc(100svh-80px)] md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:min-h-0 md:overflow-x-hidden md:overflow-y-hidden lg:max-w-[460px] md:sticky md:top-[24px] md:self-start md:pt-[56px] md:pb-[24px]"
+                className="w-full min-w-0 max-md:max-w-none pt-[length:var(--checkout-step-header-pt)] md:max-h-[calc(100svh-56px)] md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:min-h-0 md:overflow-x-hidden md:overflow-y-hidden lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
               >
                 <OrderSummary
                   plan={plan}
@@ -631,6 +634,7 @@ export function CheckoutPage({
                   totalMealsAnchorRef={totalMealsRef}
                   appliedPromoCode={appliedPromoCode}
                   onAppliedPromoCodeChange={setAppliedPromoCode}
+                  onMealDetailOpenChange={setIsMealDetailOpen}
                 />
               </div>
             </div>
@@ -652,7 +656,7 @@ export function CheckoutPage({
             persons={persons}
             lightMealOption={lightMealOption}
             onScrollToSummary={handleScrollToSummary}
-            hidden={summaryVisible}
+            hidden={summaryVisible || isMealDetailOpen}
           />
         </>
       ) : checkoutStep === 'verification' ? (

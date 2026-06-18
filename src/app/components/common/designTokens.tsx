@@ -64,6 +64,13 @@ export {
   type TypographyRoleName,
 } from './typographyTokens';
 
+export {
+  PROSE_LIST_TOKENS,
+  PROSE_LIST_TOKEN_NAMES,
+  PROSE_LIST_SPACING,
+  type ProseListTokenName,
+} from './proseListTokens';
+
 export { NEUTRAL_USAGE_ROLES } from './neutralUsageTokens';
 
 export {

@@ -6,7 +6,7 @@ import { Z_INDEX_TOKENS } from './zIndexTokens';
 
 export const MODAL_SHELL_EXIT_FALLBACK_MS = 260;
 
-export type ModalShellVariant = 'bottom-sheet' | 'centered-scroll';
+export type ModalShellVariant = 'bottom-sheet' | 'centered-scroll' | 'fullscreen';
 
 type ModalShellProps = {
   isOpen: boolean;
@@ -122,6 +122,36 @@ export function ModalShell({
   const panelClasses = [animationClassName, panelClassName].filter(Boolean).join(' ');
   const panelChildren =
     typeof children === 'function' ? children(requestClose) : children;
+
+  if (variant === 'fullscreen') {
+    return (
+      <div
+        className={[
+          'fixed inset-0 flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden scrollbar-hide',
+          'sm:h-auto sm:max-h-none sm:block sm:overflow-y-auto',
+          rootClassName,
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        style={{ zIndex }}
+        {...{ [SPACING_ROOT_ATTR]: '' }}
+        onClick={disableOverlayClick ? undefined : requestClose}
+      >
+        <div className="flex min-h-0 flex-1 flex-col sm:min-h-full sm:flex sm:items-center sm:justify-center">
+          <div
+            className={['min-h-0 flex-1 overflow-y-auto scrollbar-hide sm:flex-none', panelClasses]
+              .filter(Boolean)
+              .join(' ')}
+            onClick={(event) => event.stopPropagation()}
+            onAnimationEnd={handlePanelAnimationEnd}
+            {...{ [SPACING_CONTENT_ATTR]: '' }}
+          >
+            {panelChildren}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (variant === 'centered-scroll') {
     return (

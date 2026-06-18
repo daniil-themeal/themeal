@@ -1,7 +1,11 @@
 import { useCallback, useState } from 'react';
+import { Route, Routes } from 'react-router';
 import LandingStasPage from './landing-stas/LandingStasPage';
 import { CheckoutPage } from './components/checkout/CheckoutPage';
 import DesignSystemDemo from './components/DesignSystemDemo';
+import PrivacyPolicyPage from './legal/PrivacyPolicyPage';
+import TermsAndConditionsPage from './legal/TermsAndConditionsPage';
+import { LEGAL_ROUTES } from './legal/routes';
 import {
   clearPhoneSession,
   loadPhoneSession,
@@ -27,7 +31,7 @@ function resumeCheckoutStep(session: PhoneSession): InitialCheckoutStep {
   return step;
 }
 
-export default function App() {
+function HomePage() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [designSystemOpen, setDesignSystemOpen] = useState(false);
   const [phoneSession, setPhoneSession] = useState<PhoneSession | null>(() => loadPhoneSession());
@@ -171,5 +175,15 @@ export default function App() {
         onResetPhone={() => resetPhoneSession({ closeCheckout: false })}
       />
     </>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<HomePage />} />
+      <Route path={LEGAL_ROUTES.privacy} element={<PrivacyPolicyPage />} />
+      <Route path={LEGAL_ROUTES.terms} element={<TermsAndConditionsPage />} />
+    </Routes>
   );
 }

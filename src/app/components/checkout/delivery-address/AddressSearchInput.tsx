@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import type { CSSProperties, KeyboardEvent } from 'react';
 
 import { COLOR_TOKENS } from '../../common/colorTokens';
@@ -43,6 +44,8 @@ export function AddressSearchInput({
   autoFocus = false,
   placeholder = 'Type your address',
 }: AddressSearchInputProps) {
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
     <div
       className="flex h-[48px] items-center rounded-[8px] bg-[var(--address-search-bg)] px-[16px] ring-1 ring-[var(--address-search-ring)] focus-within:ring-2 focus-within:ring-[var(--address-search-focus-ring)]"
@@ -52,7 +55,11 @@ export function AddressSearchInput({
         type="text"
         value={value}
         autoFocus={autoFocus}
-        onFocus={onFocus}
+        onFocus={() => {
+          setIsFocused(true);
+          onFocus?.();
+        }}
+        onBlur={() => setIsFocused(false)}
         onKeyDown={onKeyDown}
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
@@ -62,10 +69,11 @@ export function AddressSearchInput({
         ].join(' ')}
       />
 
-      {value ? (
+      {value && isFocused ? (
         <button
           type="button"
           onClick={onClear}
+          onMouseDown={(event) => event.preventDefault()}
           className="ml-[12px] flex size-[24px] shrink-0 cursor-pointer items-center justify-center"
           aria-label="Clear address"
         >

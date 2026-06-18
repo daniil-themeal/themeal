@@ -22,9 +22,15 @@ export function InputButtonRow({
   actionClassName = '',
 }: InputButtonRowProps) {
   const rowAlignClassName = align === 'center' ? '@[280px]:items-center' : '@[280px]:items-end';
+  const inputWrapperClassName = [
+    'min-w-0 flex-1',
+    align === 'center' ? '@[280px]:self-center' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
   const actionWrapperClassName = [
-    'w-full @[280px]:w-auto',
-    align === 'center' ? 'flex items-center @[280px]:h-[48px] @[280px]:self-center' : '',
+    'w-full @[280px]:w-auto @[280px]:shrink-0',
+    align === 'center' ? '@[280px]:flex @[280px]:items-center @[280px]:self-center' : '',
     actionClassName,
   ]
     .filter(Boolean)
@@ -46,7 +52,7 @@ export function InputButtonRow({
           rowAlignClassName,
         ].join(' ')}
       >
-        <div className="min-w-0 flex-1">{input}</div>
+        <div className={inputWrapperClassName}>{input}</div>
         <div className={actionWrapperClassName}>
           {action}
         </div>

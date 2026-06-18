@@ -1,13 +1,23 @@
 import { COLOR_TOKENS } from './colorTokens';
+import { FONT_SIZE_CLAMP_20_25, FONT_SIZE_CLAMP_25_40 } from './fontSizeClampTokens';
 import { TEXT_TRIM_CLASS_NAME, TEXT_TRIM_FIT_CLASS_NAME } from './textTrimTokens';
 
 export const TYPOGRAPHY_ROLES = {
+  pageTitle: {
+    label: 'Page title',
+    usage: 'Internal page headings (legal, policy)',
+    className: [
+      TEXT_TRIM_FIT_CLASS_NAME,
+      'font-sans text-[length:var(--typography-page-title-fs)] font-black leading-[130%] text-[var(--typography-text)]',
+    ].join(' '),
+    color: COLOR_TOKENS.neutral[900],
+  },
   sectionTitle: {
     label: 'Section title',
     usage: 'Checkout step headings, modal titles',
     className: [
       TEXT_TRIM_FIT_CLASS_NAME,
-      'font-sans text-[20px] font-bold leading-[130%] text-[var(--typography-text)] md:text-[25px]',
+      'font-sans text-[length:var(--typography-section-title-fs)] font-bold leading-[130%] text-[var(--typography-text)]',
     ].join(' '),
     color: COLOR_TOKENS.neutral[900],
   },
@@ -47,4 +57,6 @@ export const TYPOGRAPHY_ROLE_NAMES = Object.keys(TYPOGRAPHY_ROLES) as Typography
 export const typographyRoleStyle = {
   '--typography-text': COLOR_TOKENS.neutral[900],
   '--typography-muted': COLOR_TOKENS.neutral[500],
+  '--typography-page-title-fs': FONT_SIZE_CLAMP_25_40,
+  '--typography-section-title-fs': FONT_SIZE_CLAMP_20_25,
 } as const;

@@ -1,8 +1,10 @@
-import type { ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
+import { useState } from 'react';
+import type { ChangeEvent, ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
 import { getFieldSizeStyle, type FieldSize } from './fieldSizeTokens';
 import { FormLabel } from './FormLabel';
+import { InputClearButton } from './InputClearButton';
 import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
 export const TEXT_INPUT_STATES = ['default', 'focus', 'success', 'error'] as const;
@@ -16,6 +18,7 @@ type TextInputBaseProps = {
   hint?: ReactNode;
   counter?: ReactNode;
   state?: TextInputState;
+  clearable?: boolean;
   containerClassName?: string;
   labelClassName?: string;
   fieldClassName?: string;
@@ -94,6 +97,10 @@ function getInputPaddingClassName({
   leftIcon?: ReactNode;
   rightIcon?: ReactNode;
 }) {
+  if (leftIcon && rightIcon) {
+    return '';
+  }
+
   if (leftIcon) {
     return 'pr-[length:var(--field-horizontal-padding)]';
   }
@@ -145,6 +152,7 @@ export function TextInput({
   counter,
   leftIcon,
   rightIcon,
+  clearable = true,
   state: explicitState,
   containerClassName = '',
   labelClassName = '',
@@ -153,12 +161,38 @@ export function TextInput({
   id,
   disabled,
   style,
+  value,
+  onChange,
+  type,
+  onFocus,
+  onBlur,
   ...inputProps
 }: TextInputProps) {
+  const [isFocused, setIsFocused] = useState(false);
   const hasError = Boolean(error);
   const fieldState = getFieldState({ explicitState, hasError });
   const descriptionId = id && (error || hint) ? `${id}-description` : undefined;
   const showLabelRow = Boolean(label) || Boolean(counter);
+  const stringValue = value == null ? '' : String(value);
+  const hasValue = stringValue.length > 0;
+  const isClearableType = type !== 'tel' && type !== 'password';
+  const showClearButton =
+    clearable && hasValue && !disabled && isClearableType && isFocused;
+
+  const handleClear = () => {
+    if (!onChange) return;
+
+    onChange({
+      target: { value: '' },
+      currentTarget: { value: '' },
+    } as ChangeEvent<HTMLInputElement>);
+  };
+
+  const trailingSlot = showClearButton ? (
+    <InputClearButton onClick={handleClear} />
+  ) : (
+    rightIcon
+  );
 
   return (
     <div
@@ -210,11 +244,22 @@ export function TextInput({
         <input
           id={id}
           disabled={disabled}
+          type={type}
+          value={value}
+          onChange={onChange}
+          onFocus={(event) => {
+            setIsFocused(true);
+            onFocus?.(event);
+          }}
+          onBlur={(event) => {
+            setIsFocused(false);
+            onBlur?.(event);
+          }}
           aria-invalid={hasError || undefined}
           aria-describedby={descriptionId}
           className={[
             inputBaseClassName,
-            getInputPaddingClassName({ leftIcon, rightIcon }),
+            getInputPaddingClassName({ leftIcon, rightIcon: trailingSlot }),
             className,
           ]
             .filter(Boolean)
@@ -223,7 +268,9 @@ export function TextInput({
           {...inputProps}
         />
 
-        {rightIcon ? (
+        {showClearButton ? (
+          <InputClearButton onClick={handleClear} />
+        ) : rightIcon ? (
           <span
             className={iconSlotClassName}
             style={{ color: COLOR_TOKENS.neutral[500] }}

@@ -57,7 +57,7 @@ const checkoutHeaderStyle: CheckoutHeaderCssVariables = {
   '--checkout-header-step-idle-text': COLOR_TOKENS.neutral[500],
   '--checkout-header-close-bg': COLOR_TOKENS.neutral[50],
   '--checkout-header-close-bg-hover': COLOR_TOKENS.neutral[75],
-  '--checkout-header-logo': COLOR_TOKENS.primary[500],
+  '--checkout-header-logo': COLOR_TOKENS.neutral[900],
   '--checkout-header-back-icon': COLOR_TOKENS.neutral[500],
   '--checkout-header-step-font-size': FONT_SIZE_TOKENS[12],
   '--checkout-header-label-font-size': FONT_SIZE_TOKENS[12],

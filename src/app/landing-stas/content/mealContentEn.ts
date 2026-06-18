@@ -1,3 +1,5 @@
+import { customersReviews } from './customersReviews';
+
 export const mealContentEn = {
   "dir": "ltr",
   "label": "EN",
@@ -168,32 +170,19 @@ export const mealContentEn = {
   "customers": {
     "eyebrow": "Loved across the UAE",
     "title": "What our customers say",
-    "items": [
-      {
-        "q": "Genuinely changed my weeknights. I open the fridge and dinner is just… there.",
-        "n": "Layla A.",
-        "c": "Dubai Marina",
-        "r": 5
-      },
-      {
-        "q": "Portion sizes are spot on and the menu never gets boring. Worth every dirham.",
-        "n": "Omar K.",
-        "c": "Abu Dhabi",
-        "r": 5
-      },
-      {
-        "q": "Free delivery twice a week, always on time. I’ve cancelled three other apps.",
-        "n": "Sara M.",
-        "c": "Sharjah",
-        "r": 5
-      },
-      {
-        "q": "Tastes home-cooked, not like meal-prep. The kofta is unreal.",
-        "n": "Daniel R.",
-        "c": "Al Ain",
-        "r": 5
-      }
-    ]
+    "items": customersReviews.map((review) => ({
+      id: review.id,
+      kind: review.kind,
+      q: review.text,
+      n: review.name,
+      c: review.subtitle ?? "",
+      r: review.rating ?? 5,
+      platform: review.platform,
+      imageUrl: review.imageUrl,
+      videoUrl: review.videoUrl,
+      avatarUrl: review.avatarUrl,
+      socialLink: review.socialLink,
+    })),
   },
   "fresh": {
     "eyebrow": "Always fresh",

@@ -366,8 +366,8 @@ export function BottomFloatTotalBlock({
   return (
     <>
       <div
-        className={`fixed bottom-0 left-0 right-0 z-[150] flex flex-col items-end pb-[env(safe-area-inset-bottom)] transition-transform duration-300 ease-in-out md:hidden ${
-          hidden ? 'translate-y-full' : 'translate-y-0'
+        className={`fixed bottom-0 left-0 right-0 z-[150] flex flex-col items-end bg-[var(--checkout-float-surface)] pb-[env(safe-area-inset-bottom)] transition-transform duration-300 ease-in-out md:hidden ${
+          hidden || selectedMeal ? 'translate-y-full' : 'translate-y-0'
         }`}
         style={bottomFloatTotalBlockStyle}
       >

@@ -4,6 +4,17 @@ export const COLOR_TOKENS = {
     cream: '#FBF8F3',
   },
 
+  /** Warm cream scale — landing `--cream`, `--cream-2`, `--ash`, `--ink`, etc. */
+  cream: {
+    50: '#FBF8F3',
+    75: '#F4EEE5',
+    100: '#ECE6DF',
+    200: '#E0D8CE',
+    500: '#8A8694',
+    600: '#4C4756',
+    900: '#2A2230',
+  },
+
   brand: {
     logoYellow: '#FCDE02',
   },

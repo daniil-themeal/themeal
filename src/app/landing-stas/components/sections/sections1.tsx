@@ -8,12 +8,14 @@ import { HeroPrice } from '../HeroPrice';
 function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
   const [shown, setShown] = useState(true);
   const [solid, setSolid] = useState(false);
+  const [canGoTop, setCanGoTop] = useState(false);
   const [hovered, setHovered] = useState(false);
   const last = useRef(0);
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
       setSolid(y > 40);
+      setCanGoTop(y > 0);
       if (y === 0) setShown(true);
       else setShown(y < last.current);
       last.current = y;
@@ -47,7 +49,7 @@ function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
         }
       },
       createElement('div', { className:'wrap row hdr-row', style:{ height:64, justifyContent:'space-between' } },
-        createElement('a', { href:'#top', className:'row hdr-logo' },
+        createElement('a', { href:'#top', className:`row hdr-logo${canGoTop ? ' logo-top-link' : ''}` },
           createElement(Logo, { tone: 'yellow' })
         ),
         createElement('nav', { className:'row hdr-nav', style:{ fontWeight:600, color:txt } },

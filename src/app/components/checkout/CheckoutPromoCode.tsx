@@ -201,6 +201,7 @@ export function CheckoutPromoCode({
     <InputButtonRow
       align="center"
       error={error}
+      actionClassName={showEstimateHint ? '@[280px]:gap-[8px]' : undefined}
       input={
         <TextInput
           id={inputId}
@@ -223,12 +224,12 @@ export function CheckoutPromoCode({
       }
       action={
         showEstimateHint ? (
-          <div className="flex w-full min-w-0 items-center justify-center gap-[8px] @[280px]:w-auto @[280px]:shrink-0">
+          <>
             {activateAction}
             <span className="shrink-0">
               <PromoCodeEstimateHint />
             </span>
-          </div>
+          </>
         ) : (
           activateAction
         )
