@@ -10,8 +10,9 @@ import {
 } from './checkoutModalShellTokens';
 import {
   CHECKOUT_FONT_CLAMP_28_32,
-  MEAL_DETAIL_CONTENT_PADDING_CLAMP,
-  MEAL_DETAIL_IMAGE_PADDING_CLAMP,
+  MEAL_DETAIL_IMAGE_PADDING_BOTTOM_CLAMP,
+  MEAL_DETAIL_IMAGE_PADDING_TOP_CLAMP,
+  MEAL_DETAIL_MODAL_BODY_PADDING_CLAMP,
   MEAL_DETAIL_MODAL_MAX_WIDTH_CLAMP,
 } from './checkoutSpacing';
 import { ModalShell } from '../common/ModalShell';
@@ -31,8 +32,9 @@ type MealDetailModalCssVariables = CSSProperties & {
   '--meal-detail-title-font-size': string;
   '--meal-detail-body-font-size': string;
   '--meal-detail-modal-max-width': string;
-  '--meal-detail-content-p': string;
-  '--meal-detail-image-p': string;
+  '--meal-detail-modal-body-p': string;
+  '--meal-detail-image-pt': string;
+  '--meal-detail-image-pb': string;
 };
 
 const mealDetailModalStyle: MealDetailModalCssVariables = {
@@ -48,8 +50,9 @@ const mealDetailModalStyle: MealDetailModalCssVariables = {
   '--meal-detail-title-font-size': CHECKOUT_FONT_CLAMP_28_32,
   '--meal-detail-body-font-size': FONT_SIZE_TOKENS[16],
   '--meal-detail-modal-max-width': MEAL_DETAIL_MODAL_MAX_WIDTH_CLAMP,
-  '--meal-detail-content-p': MEAL_DETAIL_CONTENT_PADDING_CLAMP,
-  '--meal-detail-image-p': MEAL_DETAIL_IMAGE_PADDING_CLAMP,
+  '--meal-detail-modal-body-p': MEAL_DETAIL_MODAL_BODY_PADDING_CLAMP,
+  '--meal-detail-image-pt': MEAL_DETAIL_IMAGE_PADDING_TOP_CLAMP,
+  '--meal-detail-image-pb': MEAL_DETAIL_IMAGE_PADDING_BOTTOM_CLAMP,
 };
 
 function DottedRow({ label, value }: { label: string; value: string }) {
@@ -91,7 +94,7 @@ export function MealDetailModal({
     >
       {(requestClose) => (
         <div style={mealDetailModalStyle} className={CHECKOUT_MODAL_SHELL_INNER_CLASSNAME}>
-          <div className="relative flex shrink-0 items-center justify-center bg-[var(--cream)] p-[length:var(--meal-detail-image-p)] sm:rounded-t-[20px]">
+          <div className="relative flex shrink-0 items-center justify-center bg-[var(--cream)] pt-[length:var(--meal-detail-image-pt)] pb-[length:var(--meal-detail-image-pb)] sm:rounded-t-[20px]">
             <button
               type="button"
               onClick={requestClose}
@@ -113,7 +116,7 @@ export function MealDetailModal({
           </div>
 
           <div className="flex flex-1 flex-col bg-[var(--meal-detail-card-bg)] sm:flex-none">
-            <div className="flex flex-col gap-[32px] p-[length:var(--meal-detail-content-p)]">
+            <div className="flex flex-col gap-[32px] p-[length:var(--meal-detail-modal-body-p)]">
               <p className="w-full font-sans text-[length:var(--meal-detail-title-font-size)] font-bold leading-[130%] text-[var(--meal-detail-text)]">
                 {meal.name}
               </p>

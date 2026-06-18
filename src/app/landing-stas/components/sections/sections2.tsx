@@ -114,19 +114,20 @@ function Menu({ t, onOrder }) {
                   : 'menuMealsSlideFromLeft 260ms ease-out both',
               },
             },
-            meals.map((m,i)=>createElement('div', { key:i, className:'menucard-shell' },
-              createElement('article', {
-                className:'menucard',
-                role:'button',
-                tabIndex:0,
-                onClick: menuGridScroll.guardClick(() => openMeal(m, i)),
-                onKeyDown: (e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    openMeal(m, i);
-                  }
-                },
+            meals.map((m,i)=>createElement('div', {
+              key:i,
+              className:'menucard-shell',
+              role:'button',
+              tabIndex:0,
+              onClick: menuGridScroll.guardClick(() => openMeal(m, i)),
+              onKeyDown: (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  openMeal(m, i);
+                }
               },
+            },
+              createElement('article', { className:'menucard' },
                 createElement('img', { className:'menucard-img', src:imgs[i%imgs.length], alt:'', loading:'lazy', draggable:false }),
                 createElement('div', { className:'menucard-body' },
                   createElement('p', { className:'menucard-meta' },
