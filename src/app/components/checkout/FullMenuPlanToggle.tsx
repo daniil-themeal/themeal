@@ -3,10 +3,10 @@ import type { CSSProperties } from 'react';
 import type { Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
 
-const PLANS: { id: Plan; label: string }[] = [
-  { id: 'light', label: 'Light' },
-  { id: 'base', label: 'Base' },
-  { id: 'plus', label: 'Plus' },
+const PLANS: { id: Plan; label: string; mobileLabel: string }[] = [
+  { id: 'light', label: 'Light', mobileLabel: 'L' },
+  { id: 'base', label: 'Base', mobileLabel: 'B' },
+  { id: 'plus', label: 'Plus', mobileLabel: 'P' },
 ];
 
 const LIGHT_OPTIONS: { id: LightMealOption; label: string }[] = [
@@ -37,6 +37,7 @@ function PlanPill({
   pillDefaultStyle,
   pillSelectedStyle,
   label,
+  mobileLabel,
   ariaLabel,
   compact = false,
 }: {
@@ -45,6 +46,7 @@ function PlanPill({
   pillDefaultStyle: FullMenuDayPillCssVariables;
   pillSelectedStyle: FullMenuDayPillCssVariables;
   label: string;
+  mobileLabel?: string;
   ariaLabel: string;
   compact?: boolean;
 }) {
@@ -67,7 +69,14 @@ function PlanPill({
           selected ? 'text-[var(--full-menu-active)]' : 'text-[var(--full-menu-muted)]'
         }`}
       >
-        {label}
+        {mobileLabel ? (
+          <>
+            <span className="md:hidden">{mobileLabel}</span>
+            <span className="hidden md:inline">{label}</span>
+          </>
+        ) : (
+          label
+        )}
       </p>
     </button>
   );
@@ -102,6 +111,7 @@ export function FullMenuPlanToggle({
           pillDefaultStyle={pillDefaultStyle}
           pillSelectedStyle={pillSelectedStyle}
           label={item.label}
+          mobileLabel={item.mobileLabel}
           ariaLabel={item.label}
         />
       ))}

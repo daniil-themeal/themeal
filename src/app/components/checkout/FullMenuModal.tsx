@@ -14,9 +14,10 @@ import {
   FULL_MENU_MEAL_CARD_WIDTH_CLAMP,
   FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP,
   FULL_MENU_MEAL_GAP_CLAMP,
+  FULL_MENU_MAX_MEAL_COUNT,
   getFullMenuModalWidthForMealCount,
 } from './checkoutSpacing';
-import { CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING } from './checkoutStepPageLayoutTokens';
+import { CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING, CHECKOUT_SCROLL_EDGE_GUTTER_CLASS_NAME } from './checkoutStepPageLayoutTokens';
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
 import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
 import { ModalShell } from '../common/ModalShell';
@@ -175,7 +176,7 @@ export function FullMenuModal({
 
   const fullMenuPanelStyle: FullMenuModalCssVariables = {
     ...fullMenuModalStyle,
-    '--full-menu-modal-width': getFullMenuModalWidthForMealCount(mealsForSelectedDay.length),
+    '--full-menu-modal-width': getFullMenuModalWidthForMealCount(FULL_MENU_MAX_MEAL_COUNT),
   };
 
   const scrollSelectedDayIntoView = (dayIndex: number) => {
@@ -541,7 +542,7 @@ export function FullMenuModal({
               onMouseMove={handleMealsMouseMove}
               onMouseUp={stopMealsMouseDrag}
               onMouseLeave={stopMealsMouseDrag}
-              className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible pt-0 pb-[20px] scrollbar-hide ${
+              className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible px-0 pb-[20px] pt-[6px] scrollbar-hide md:cursor-default md:justify-center md:overflow-x-hidden ${
                 isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
               }`}
               style={{
@@ -551,7 +552,9 @@ export function FullMenuModal({
                     : 'mealsSlideFromLeft 260ms ease-out both',
               }}
             >
-              <CheckoutScrollEdgeGutter />
+              <CheckoutScrollEdgeGutter
+                className={[CHECKOUT_SCROLL_EDGE_GUTTER_CLASS_NAME, 'md:hidden'].join(' ')}
+              />
               {mealsForSelectedDay.map((meal) => (
                 <button
                   key={meal.id}
@@ -564,7 +567,7 @@ export function FullMenuModal({
                       src={meal.img}
                       alt={meal.name}
                       draggable={false}
-                      className="pointer-events-none h-full w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105"
+                      className="pointer-events-none h-[94.74%] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105"
                     />
                   </div>
 
@@ -590,10 +593,15 @@ export function FullMenuModal({
                   </div>
                 </button>
               ))}
-              <CheckoutScrollEdgeGutter />
+              <CheckoutScrollEdgeGutter
+                className={[CHECKOUT_SCROLL_EDGE_GUTTER_CLASS_NAME, 'md:hidden'].join(' ')}
+              />
             </div>
 
             <CheckoutScrollEdgeFades
+              className="bottom-0 md:hidden"
+              startPositionClassName="left-0"
+              endPositionClassName="right-0"
               showStart={showMealsStartFade}
               showEnd={showMealsEndFade}
             />

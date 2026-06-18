@@ -38,6 +38,9 @@ export const FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP =
 export const FULL_MENU_MEAL_GAP_CLAMP =
   'clamp(20px, calc(20px + (100vw - 48rem) * 6 / 448), 26px)';
 
+/** Plus plan — widest meal row in Full Menu. */
+export const FULL_MENU_MAX_MEAL_COUNT = 4;
+
 /** Modal width on md+ — exactly fits N meal cards, gaps, and horizontal padding. */
 export function getFullMenuModalWidthForMealCount(mealCount: number): string {
   const count = Math.max(1, mealCount);
