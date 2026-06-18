@@ -1,10 +1,12 @@
-import { useMemo, type CSSProperties } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
 
 import { ModalShell } from '../common/ModalShell';
+import { useEscapeLayer } from '../common/escapeStack';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { XIcon } from '../common/icons';
+import { LoaderIcon } from '../common/icons/feather/LoaderIcon';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 import { getTabbyInstallmentsPopupUrl } from '../../config/tabbyConfig';
 
@@ -19,15 +21,80 @@ const tabbyModalStyle = {
   '--tabby-modal-close-bg-hover': COLOR_TOKENS.neutral[75],
 } as CSSProperties;
 
+/** Tabby installments popup width at desktop modal size. */
+const TABBY_IFRAME_WIDTH_PX = 560;
 /** Tabby installments popup height at modal width (~560px). */
 const TABBY_IFRAME_HEIGHT_PX = 1370;
+const TABBY_PRELOAD_TIMEOUT_MS = 12_000;
 
 export function TabbyPromoModal({ isOpen, onClose, price }: TabbyPromoModalProps) {
   const popupUrl = useMemo(() => getTabbyInstallmentsPopupUrl(price), [price]);
+  const [isIframeLoaded, setIsIframeLoaded] = useState(false);
+  const isPreloading = isOpen && !isIframeLoaded;
+
+  useEffect(() => {
+    setIsIframeLoaded(false);
+  }, [isOpen, popupUrl]);
+
+  useEffect(() => {
+    if (!isPreloading) return;
+
+    const previousBodyOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = previousBodyOverflow;
+    };
+  }, [isPreloading]);
+
+  useEffect(() => {
+    if (!isPreloading) return;
+
+    const timer = window.setTimeout(() => {
+      setIsIframeLoaded(true);
+    }, TABBY_PRELOAD_TIMEOUT_MS);
+
+    return () => {
+      window.clearTimeout(timer);
+    };
+  }, [isPreloading, popupUrl]);
+
+  useEscapeLayer(isPreloading, Z_INDEX_TOKENS.modal, onClose);
+
+  if (!isOpen) return null;
+
+  if (isPreloading) {
+    return createPortal(
+      <div
+        className="fixed inset-0 flex items-center justify-center bg-black/40"
+        style={{ zIndex: Z_INDEX_TOKENS.modal }}
+        onClick={onClose}
+      >
+        <div className="flex items-center justify-center" role="status" aria-label="Loading Tabby payment options">
+          <LoaderIcon size={24} className="animate-spin text-white" />
+        </div>
+        <iframe
+          src={popupUrl}
+          title="Tabby payment options"
+          tabIndex={-1}
+          aria-hidden
+          onLoad={() => setIsIframeLoaded(true)}
+          className="pointer-events-none fixed border-0 opacity-0"
+          style={{
+            left: '-9999px',
+            top: 0,
+            width: TABBY_IFRAME_WIDTH_PX,
+            height: TABBY_IFRAME_HEIGHT_PX,
+          }}
+        />
+      </div>,
+      document.body,
+    );
+  }
 
   return createPortal(
     <ModalShell
-      isOpen={isOpen}
+      isOpen
       onClose={onClose}
       variant="fullscreen"
       zIndex={Z_INDEX_TOKENS.modal}
@@ -59,6 +126,7 @@ export function TabbyPromoModal({ isOpen, onClose, price }: TabbyPromoModalProps
 
           <div className="overflow-hidden">
             <iframe
+              key={popupUrl}
               src={popupUrl}
               title="Tabby payment options"
               className="block w-full border-0"
