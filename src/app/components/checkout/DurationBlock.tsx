@@ -26,6 +26,7 @@ type DurationBlockCssVariables = CSSProperties & {
   '--duration-card-selected-bg': string;
   '--duration-card-selected-border': string;
   '--duration-text': string;
+  '--duration-card-selected-text': string;
   '--duration-muted': string;
   '--duration-active': string;
   '--duration-discount-bg': string;
@@ -45,6 +46,7 @@ const durationBlockStyle: DurationBlockCssVariables = {
   '--duration-card-selected-bg': COLOR_TOKENS.primary[50],
   '--duration-card-selected-border': COLOR_TOKENS.primary[200],
   '--duration-text': COLOR_TOKENS.neutral[900],
+  '--duration-card-selected-text': COLOR_TOKENS.primary[500],
   '--duration-muted': COLOR_TOKENS.neutral[600],
   '--duration-active': COLOR_TOKENS.primary[500],
   '--duration-discount-bg': COLOR_TOKENS.secondary[500],
@@ -131,7 +133,12 @@ function DurationCard({
       <div className="flex flex-col items-end gap-[12px] p-[var(--checkout-selector-card-padding)]">
         <div className="flex w-full items-center gap-[12px]">
           <div className="flex flex-[1_0_0] flex-col items-start gap-[12px]">
-            <p className="font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%] text-[var(--duration-text)]">
+            <p
+              className={[
+                'font-sans text-[length:var(--duration-card-title-font-size)] font-bold leading-[130%]',
+                selected ? 'text-[var(--duration-card-selected-text)]' : 'text-[var(--duration-text)]',
+              ].join(' ')}
+            >
               {meta.label}
             </p>
 

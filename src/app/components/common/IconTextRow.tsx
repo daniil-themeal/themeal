@@ -1,7 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
-import { ICON_COLOR_TOKENS } from './iconColorTokens';
 import { ICON_TEXT_ROW_LAYOUT } from './iconTextRowLayoutTokens';
 
 type IconTextRowCssVariables = CSSProperties & {
@@ -13,7 +12,7 @@ type IconTextRowCssVariables = CSSProperties & {
 const iconTextRowStyle: IconTextRowCssVariables = {
   '--icon-text-row-text': COLOR_TOKENS.neutral[900],
   '--icon-text-row-muted': COLOR_TOKENS.neutral[500],
-  '--icon-text-row-icon': ICON_COLOR_TOKENS.inline,
+  '--icon-text-row-icon': COLOR_TOKENS.neutral[200],
 };
 
 type IconTextRowProps = {

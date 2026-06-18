@@ -282,7 +282,7 @@ export function OrderSummary({
                   onClick={() => onPersonsChange(Math.max(1, persons - 1))}
                 />
                 <p className="w-[16px] text-center font-sans text-[length:var(--order-summary-title-font-size)] font-semibold text-[var(--order-summary-text)]">
-                  <AnimatedNumber value={persons} />
+                  <AnimatedNumber value={persons} animate={false} />
                 </p>
                 <IconButton
                   type="button"
@@ -396,7 +396,7 @@ export function OrderSummary({
                 </sup>
               </p>
               <p className="shrink-0 text-right font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[150%] text-[var(--order-summary-text)]">
-                <AnimatedNumber value={mealsCount} />
+                <AnimatedNumber value={mealsCount} animate={false} />
               </p>
             </div>
 
@@ -418,6 +418,7 @@ export function OrderSummary({
                 oldPeriodPrice={pricing.oldPeriodPrice}
                 periodPrice={finalPeriodPrice}
                 pricePerDay={pricing.pricePerDay}
+                animate={false}
                 style={{
                   '--today-total-title-fs': 'var(--order-summary-title-font-size)',
                   '--today-total-title-fs-md': 'var(--order-summary-title-font-size)',

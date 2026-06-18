@@ -314,3 +314,25 @@
   overflow: hidden !important;
   border: 0 !important;
 }
+
+[id^='tabby-promo-'] {
+  font-size: var(--order-summary-small-font-size, 12px);
+  line-height: 1.5;
+  border-radius: var(--tabby-shell-border-radius, 8px);
+  corner-shape: squircle;
+  overflow: hidden;
+}
+
+[id^='tabby-promo-'] > * {
+  padding: 0 !important;
+  margin: 0;
+  border-radius: inherit;
+}
+
+[id^='tabby-promo-'] p,
+[id^='tabby-promo-'] span,
+[id^='tabby-promo-'] a,
+[id^='tabby-promo-'] strong {
+  font-size: inherit;
+  line-height: inherit;
+}

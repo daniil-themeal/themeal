@@ -32,6 +32,7 @@ import type { DeliveryDetailsData } from './deliveryDetailsTypes';
 import {
   CHECKOUT_STEP_PAGE_LAYOUT,
   CHECKOUT_STEP_PAGE_VARS,
+  CHECKOUT_STEP_SECTION_PX,
 } from './checkoutStepPageLayoutTokens';
 import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
 import { IconTextRow } from '../common/IconTextRow';
@@ -240,12 +241,12 @@ export function PaymentScreen({
     }> = [
       {
         id: 'recipient',
-        icon: <SmileIcon size={20} />,
+        icon: <SmileIcon size={16} />,
         title: deliveryDetails.fullName || 'Rana Naanish',
       },
       {
         id: 'address',
-        icon: <MapPinIcon size={20} />,
+        icon: <MapPinIcon size={16} />,
         title: addressLines || 'Select your delivery address',
         subtitle:
           deliveryDetails.instructions ||
@@ -255,13 +256,13 @@ export function PaymentScreen({
 
     items.push({
       id: 'leave-at-door',
-      icon: <PackageIcon size={20} />,
+      icon: <PackageIcon size={16} />,
       title: 'Leave the box at the door',
     });
 
     items.push({
       id: 'delivery-date',
-      icon: <TruckIcon size={20} />,
+      icon: <TruckIcon size={16} />,
       title: deliveryDetails.selectedTimeSlot.trim()
         ? formatDeliveryDateTime(
             deliveryDetails.selectedDate,
@@ -314,7 +315,7 @@ export function PaymentScreen({
 
           <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap16}>
+          <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap16} ${CHECKOUT_STEP_SECTION_PX}`}>
             <SectionHeader title="Delivery information" actionLabel="Edit" onAction={onEditDelivery} />
 
             <div className={ICON_TEXT_ROW_LAYOUT.list}>
@@ -331,7 +332,7 @@ export function PaymentScreen({
 
           <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap12}>
+          <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap12} ${CHECKOUT_STEP_SECTION_PX}`}>
             <SectionHeader title="Payment method" />
 
             <div className="flex flex-col gap-[8px]">
@@ -348,7 +349,7 @@ export function PaymentScreen({
 
           <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap12}>
+          <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap12} ${CHECKOUT_STEP_SECTION_PX}`}>
             <CheckoutPromoCode
               variant="payment"
               inputId="payment-promo-code"
@@ -359,7 +360,7 @@ export function PaymentScreen({
 
           <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap16}>
+          <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap16} ${CHECKOUT_STEP_SECTION_PX}`}>
             <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionInner}>
               <PriceRow
                 label={
@@ -384,11 +385,12 @@ export function PaymentScreen({
                 oldPeriodPrice={pricing.oldPeriodPrice}
                 periodPrice={finalPeriodPrice}
                 pricePerDay={pricing.pricePerDay}
+                animate
               />
             </div>
           </div>
 
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardFooter}>
+          <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardFooter} ${CHECKOUT_STEP_SECTION_PX}`}>
             <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionInner}>
               <Button type="button" variant="primary" size="medium" fullWidth onClick={onPay}>
                 Pay AED {formatAed(finalPeriodPrice)}

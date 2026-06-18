@@ -22,7 +22,9 @@ import {
 import { getMealsForPlan, testMenuDays, type LightMealOption } from '../../data/testMeals';
 import type { Meal as MealDetail } from '../../types/meal';
 import { AnimatedNumber } from '../common/AnimatedNumber';
+import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
+import { ChevronRightIcon } from '../common/icons';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { CHECKOUT_FONT_CLAMP_14_16, CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP } from './checkoutSpacing';
@@ -44,7 +46,6 @@ type BottomFloatTotalBlockCssVariables = CSSProperties & {
   '--checkout-card-padding': string;
   '--checkout-scroll-edge-fade-width': string;
   '--checkout-float-surface': string;
-  '--checkout-float-menu-toggle-bg': string;
   '--checkout-float-muted': string;
   '--checkout-float-text': string;
   '--checkout-float-active': string;
@@ -52,8 +53,6 @@ type BottomFloatTotalBlockCssVariables = CSSProperties & {
   '--checkout-float-active-hover': string;
   '--checkout-float-active-muted': string;
   '--checkout-float-divider': string;
-  '--checkout-float-button-bg': string;
-  '--checkout-float-button-text': string;
   '--checkout-float-font-size-sm': string;
   '--checkout-float-font-size-md': string;
   '--checkout-float-meal-title-font-size': string;
@@ -66,7 +65,6 @@ const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
   '--checkout-scroll-edge-fade-width': CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
   '--checkout-float-surface': COLOR_TOKENS.base.white,
-  '--checkout-float-menu-toggle-bg': COLOR_TOKENS.neutral[75],
   '--checkout-float-muted': COLOR_TOKENS.neutral[500],
   '--checkout-float-text': COLOR_TOKENS.neutral[900],
   '--checkout-float-active': COLOR_TOKENS.primary[500],
@@ -74,8 +72,6 @@ const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
   '--checkout-float-active-hover': COLOR_TOKENS.primary[50],
   '--checkout-float-active-muted': COLOR_TOKENS.primary[300],
   '--checkout-float-divider': COLOR_TOKENS.neutral[100],
-  '--checkout-float-button-bg': COLOR_TOKENS.primary[500],
-  '--checkout-float-button-text': COLOR_TOKENS.base.white,
   '--checkout-float-font-size-sm': FONT_SIZE_TOKENS[12],
   '--checkout-float-font-size-md': FONT_SIZE_TOKENS[16],
   '--checkout-float-meal-title-font-size': CHECKOUT_FONT_CLAMP_14_16,
@@ -382,33 +378,21 @@ export function BottomFloatTotalBlock({
         style={bottomFloatTotalBlockStyle}
       >
         <div className="relative z-20 px-[length:var(--checkout-card-padding)]">
-          <button
+          <Button
             type="button"
+            variant="neutral"
+            size="x-small"
             onClick={toggleMenu}
-            className="flex h-[32px] cursor-pointer items-center justify-center gap-[4px] rounded-tl-[4px] rounded-tr-[4px] bg-[var(--checkout-float-menu-toggle-bg)] px-[16px]"
-          >
-            <p className="text-center font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-[18px] text-[var(--checkout-float-muted)]">
-              {menuOpen ? 'Hide menu' : 'Show menu'}
-            </p>
-
-            <svg
-              className={`transition-transform duration-200 ${menuOpen ? 'rotate-90' : ''}`}
-              fill="none"
-              viewBox="0 0 5.6 9.6"
-              width="6"
-              height="10"
-              aria-hidden="true"
-              focusable="false"
-            >
-              <path
-                d="M0.8 8.8L4.8 4.8L0.8 0.8"
-                stroke="var(--checkout-float-text)"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="1.6"
+            className="!rounded-tl-[4px] !rounded-tr-[4px] !rounded-bl-none !rounded-br-none [corner-shape:round]"
+            rightIcon={
+              <ChevronRightIcon
+                size={16}
+                className={`transition-transform duration-200 ${menuOpen ? 'rotate-90' : ''}`}
               />
-            </svg>
-          </button>
+            }
+          >
+            {menuOpen ? 'Hide menu' : 'Show menu'}
+          </Button>
         </div>
 
         <div className="w-full shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
@@ -614,7 +598,7 @@ export function BottomFloatTotalBlock({
                     <div className="flex items-end gap-[5px] tabular-nums">
                       {pricing.oldPeriodPrice ? (
                         <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-[var(--checkout-float-muted)] line-through">
-                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} />
+                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} animate={false} />
                         </p>
                       ) : null}
 
@@ -624,31 +608,32 @@ export function BottomFloatTotalBlock({
                         </p>
 
                         <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
-                          <AnimatedNumber value={pricing.periodPrice} format={formatAed} />
+                          <AnimatedNumber value={pricing.periodPrice} format={formatAed} animate={false} />
                         </p>
                       </div>
 
                       {pricing.oldPeriodPrice ? (
                         <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-transparent opacity-0">
-                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} />
+                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} animate={false} />
                         </p>
                       ) : null}
                     </div>
 
                     <p className="text-right font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
-                      AED <AnimatedNumber value={pricing.pricePerDay} format={formatPricePerDay} />/day
+                      AED <AnimatedNumber value={pricing.pricePerDay} format={formatPricePerDay} animate={false} />/day
                     </p>
                   </div>
 
-                  <button
+                  <Button
                     type="button"
+                    variant="primary"
+                    size="small"
+                    fullWidth
+                    className="min-w-0 flex-1 rounded-[4px]"
                     onClick={handleScrollToSummary}
-                    className="flex h-[40px] flex-1 cursor-pointer items-center justify-center rounded-[4px] bg-[var(--checkout-float-button-bg)]"
                   >
-                    <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-[18px] text-[var(--checkout-float-button-text)]">
-                      Order
-                    </p>
-                  </button>
+                    Order
+                  </Button>
                 </div>
               </div>
 

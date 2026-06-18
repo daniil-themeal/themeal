@@ -159,6 +159,8 @@ const DEMO_DESCRIPTION_LABEL_CLASS_NAME =
 const DEMO_DESCRIPTION_META_CLASS_NAME =
   'font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-description)]';
 
+const DEMO_HEADING_BOTTOM_GAP_CLASS = 'mb-[12px]';
+
 const demoNavigationItems: DemoNavigationItem[] = [
   {
     id: 'foundations',
@@ -257,16 +259,21 @@ function PageSection({
 }) {
   return (
     <section id={id} className="scroll-mt-[96px]">
-      <div className="mb-[20px]">
-        <p className={['mb-[6px]', DEMO_DESCRIPTION_LABEL_CLASS_NAME].join(' ')}>
+      <div className="mb-[24px]">
+        <p className={['mb-[8px]', DEMO_DESCRIPTION_LABEL_CLASS_NAME].join(' ')}>
           Section
         </p>
 
-        <h2 className="font-sans text-[32px] font-bold leading-[130%] tracking-[-0.64px] text-[var(--demo-title)]">
+        <h2
+          className={[
+            'font-sans text-[32px] font-bold leading-[130%] tracking-[-0.64px] text-[var(--demo-title)]',
+            DEMO_HEADING_BOTTOM_GAP_CLASS,
+          ].join(' ')}
+        >
           {title}
         </h2>
 
-        <p className={['mt-[6px] max-w-[640px]', DEMO_DESCRIPTION_CLASS_NAME].join(' ')}>
+        <p className={['max-w-[640px]', DEMO_DESCRIPTION_CLASS_NAME].join(' ')}>
           {description}
         </p>
       </div>
@@ -299,15 +306,20 @@ function DemoCard({
         .filter(Boolean)
         .join(' ')}
     >
-      <div className="mb-[20px]">
-        <h3 className="font-sans text-[20px] font-bold leading-[130%] text-[var(--demo-title)]">
+      <div className="mb-[24px]">
+        <h3
+          className={[
+            'font-sans text-[20px] font-bold leading-[130%] text-[var(--demo-title)]',
+            description ? DEMO_HEADING_BOTTOM_GAP_CLASS : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
           {title}
         </h3>
 
         {description ? (
-          <p className={['mt-[4px]', DEMO_DESCRIPTION_CLASS_NAME].join(' ')}>
-            {description}
-          </p>
+          <p className={DEMO_DESCRIPTION_CLASS_NAME}>{description}</p>
         ) : null}
       </div>
 
@@ -316,13 +328,30 @@ function DemoCard({
   );
 }
 
-function DemoSubheading({ children }: { children: ReactNode }) {
-  return <p className={DEMO_DESCRIPTION_CLASS_NAME}>{children}</p>;
+function DemoSubheading({
+  children,
+  inline = false,
+}: {
+  children: ReactNode;
+  inline?: boolean;
+}) {
+  return (
+    <p
+      className={[
+        DEMO_DESCRIPTION_CLASS_NAME,
+        inline ? '' : DEMO_HEADING_BOTTOM_GAP_CLASS,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
+      {children}
+    </p>
+  );
 }
 
 function CodeLabel({ children }: { children: ReactNode }) {
   return (
-    <code className="font-mono text-[12px] font-semibold text-[var(--demo-body)]">
+    <code className="font-mono text-[12px] font-semibold text-[var(--neutral-300)]">
       {children}
     </code>
   );
@@ -427,7 +456,7 @@ function ColorPalette({
   colors: Record<string, string>;
 }) {
   return (
-    <div className="flex min-w-0 flex-col gap-[12px]">
+    <div className="flex min-w-0 flex-col">
       <DemoSubheading>{title}</DemoSubheading>
 
       <div className="flex flex-col gap-[10px]">
@@ -452,7 +481,7 @@ function FontFamilyTokenRow({
   return (
     <div className="flex flex-col gap-[8px]">
       <div className="flex items-baseline justify-between gap-[12px]">
-        <DemoSubheading>
+        <DemoSubheading inline>
           <CodeLabel>{`FONT_FAMILY_TOKENS.${token}`}</CodeLabel>
         </DemoSubheading>
 
@@ -486,7 +515,7 @@ function FontSizeTokenRow({
   return (
     <div className="flex flex-col gap-[8px]">
       <div className="flex items-baseline justify-between gap-[12px]">
-        <DemoSubheading>
+        <DemoSubheading inline>
           <CodeLabel>{`FONT_SIZE_TOKENS[${token}]`}</CodeLabel>
         </DemoSubheading>
 
@@ -521,7 +550,7 @@ function BorderRadiusTokenRow({
   return (
     <div className="flex flex-col gap-[8px]">
       <div className="flex items-baseline justify-between gap-[12px]">
-        <DemoSubheading>
+        <DemoSubheading inline>
           <CodeLabel>{getBorderRadiusTokenLabel(token)}</CodeLabel>
         </DemoSubheading>
 
@@ -548,7 +577,7 @@ function SpacingTokenRow({
   return (
     <div className="flex flex-col gap-[8px]">
       <div className="flex items-baseline justify-between gap-[12px]">
-        <DemoSubheading>
+        <DemoSubheading inline>
           <CodeLabel>{`SPACING_TOKENS[${token}]`}</CodeLabel>
         </DemoSubheading>
 
@@ -577,7 +606,7 @@ function ZIndexTokenRow({
 }) {
   return (
     <div className="flex items-baseline justify-between gap-[12px] rounded-[12px] border border-[var(--demo-card-border)] px-[16px] py-[12px]">
-      <DemoSubheading>
+      <DemoSubheading inline>
         <CodeLabel>{`Z_INDEX_TOKENS.${token}`}</CodeLabel>
       </DemoSubheading>
 
@@ -607,22 +636,25 @@ function PaymentMethodCardIconTokenRow({
         <PaymentMethodCardIcon variant={variant} />
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-[4px]">
+      <div className="flex min-w-0 flex-1 flex-col">
         <DemoSubheading>
           <CodeLabel>{`PAYMENT_METHOD_CARD_ICON_VARIANTS · "${variant}"`}</CodeLabel>
         </DemoSubheading>
 
-        <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+        <div className="flex flex-col gap-[4px]">
+
+        <p className="mb-[4px] font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
           {PAYMENT_METHOD_ICON_LABELS.card}
         </p>
 
-        <p className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-description)]">
+        <p className="mb-[4px] font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-description)]">
           {PAYMENT_METHOD_CARD_ICON_FILE_NAMES[variant]}
         </p>
 
         <p className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-description)]">
           {`fill ${shades.fill} · stripe ${shades.stripe}`}
         </p>
+        </div>
       </div>
     </div>
   );
@@ -656,18 +688,20 @@ function PaymentMethodIconTokenRow({
         )}
       </div>
 
-      <div className="flex min-w-0 flex-1 flex-col gap-[4px]">
+      <div className="flex min-w-0 flex-1 flex-col">
         <DemoSubheading>
           <CodeLabel>{tokenLabel}</CodeLabel>
         </DemoSubheading>
 
-        <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+        <div className="flex flex-col gap-[4px]">
+        <p className="mb-[4px] font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
           {PAYMENT_METHOD_ICON_LABELS[id]}
         </p>
 
         <p className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-description)]">
           {PAYMENT_METHOD_ICON_FILE_NAMES[id]}
         </p>
+        </div>
       </div>
     </div>
   );
@@ -709,7 +743,7 @@ function IconCatalogRow({
       }}
     >
       <div>
-        <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+        <p className={[DEMO_HEADING_BOTTOM_GAP_CLASS, 'font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]'].join(' ')}>
           {name}
         </p>
         <p className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-description)]">
@@ -795,9 +829,14 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
       <DemoNavigation />
 
       <main className="mx-auto flex max-w-[1200px] flex-col gap-[56px] px-[20px] py-[48px] xl:mr-[260px]">
-        <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-description)]">
-          Foundations, form controls, and actions
-        </p>
+        <div className="-mb-[32px]">
+          <p className={['mb-[8px]', DEMO_DESCRIPTION_LABEL_CLASS_NAME].join(' ')}>
+            Design system
+          </p>
+          <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-description)]">
+            Foundations, form controls, and actions
+          </p>
+        </div>
         <PageSection
           id="foundations"
           title="Foundations"
@@ -1020,7 +1059,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                     key={role}
                     className="flex flex-col gap-[4px] border-b border-[var(--demo-card-border)] pb-[12px] last:border-b-0"
                   >
-                    <p className={token.className}>
+                    <p className={`${token.className} mb-[8px]`}>
                       {role === 'price' ? '1,299 AED' : 'The quick brown fox'}
                     </p>
                     <p className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-description)]">
@@ -1180,7 +1219,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 }}
               />
 
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col">
                 <DemoSubheading>
                   <CodeLabel>error</CodeLabel>
                 </DemoSubheading>
@@ -1213,7 +1252,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {FIELD_SIZES.map((size) => (
-                <div key={size} className="flex flex-col gap-[8px]">
+                <div key={size} className="flex flex-col">
                   <DemoSubheading>
                     <CodeLabel>{`size="${size}"`}</CodeLabel>
                     <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-description)]">
@@ -1327,7 +1366,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
             className="lg:col-span-2"
           >
             <div className="flex flex-col gap-[16px]">
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col">
                 <DemoSubheading>
                   <CodeLabel>default</CodeLabel>
                 </DemoSubheading>
@@ -1342,7 +1381,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 ))}
               </div>
 
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col">
                 <DemoSubheading>
                   <CodeLabel>disabled</CodeLabel>
                 </DemoSubheading>
@@ -1371,7 +1410,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {FIELD_SIZES.map((size) => (
-                <div key={size} className="flex flex-col gap-[8px]">
+                <div key={size} className="flex flex-col">
                   <DemoSubheading>
                     <CodeLabel>{`size="${size}"`}</CodeLabel>
                     <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-description)]">
@@ -1435,7 +1474,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {FIELD_SIZES.map((size) => (
-                <div key={size} className="flex flex-col gap-[8px]">
+                <div key={size} className="flex flex-col">
                   <DemoSubheading>
                     <CodeLabel>{`size="${size}"`}</CodeLabel>
                     <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-description)]">
@@ -1539,7 +1578,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {CHECKBOX_SIZES.map((size) => (
-                <div key={size} className="flex flex-col gap-[8px]">
+                <div key={size} className="flex flex-col">
                   <DemoSubheading>
                     <CodeLabel>{`size="${size}"`}</CodeLabel>
                     <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-description)]">
@@ -1557,27 +1596,27 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
               ))}
             </div>
 
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col">
               <DemoSubheading><CodeLabel>unchecked</CodeLabel></DemoSubheading>
               <Checkbox checked={false} onChange={() => undefined} label="Leave the bag at the door" />
             </div>
 
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col">
               <DemoSubheading><CodeLabel>checked</CodeLabel></DemoSubheading>
               <Checkbox checked={true} onChange={() => undefined} label="Leave the bag at the door" />
             </div>
 
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col">
               <DemoSubheading><CodeLabel>disabled unchecked</CodeLabel></DemoSubheading>
               <Checkbox checked={false} onChange={() => undefined} label="Leave the bag at the door" disabled />
             </div>
 
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col">
               <DemoSubheading><CodeLabel>disabled checked</CodeLabel></DemoSubheading>
               <Checkbox checked={true} onChange={() => undefined} label="Leave the bag at the door" disabled />
             </div>
 
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col">
               <DemoSubheading><CodeLabel>interactive</CodeLabel></DemoSubheading>
               <Checkbox
                 id="demo-checkbox-interactive"
@@ -1595,7 +1634,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {RADIO_SIZES.map((size) => (
-                <div key={size} className="flex flex-col gap-[8px]">
+                <div key={size} className="flex flex-col">
                   <DemoSubheading>
                     <CodeLabel>{`size="${size}"`}</CodeLabel>
                     <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-description)]">
@@ -1617,27 +1656,27 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
               ))}
             </div>
 
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col">
               <DemoSubheading><CodeLabel>unchecked</CodeLabel></DemoSubheading>
               <Radio checked={false} onChange={() => undefined} label="Lunch + Dinner" name="demo-radio-unchecked" value="lunch-dinner" />
             </div>
 
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col">
               <DemoSubheading><CodeLabel>checked</CodeLabel></DemoSubheading>
               <Radio checked={true} onChange={() => undefined} label="Lunch + Dinner" name="demo-radio-checked" value="lunch-dinner" />
             </div>
 
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col">
               <DemoSubheading><CodeLabel>disabled unchecked</CodeLabel></DemoSubheading>
               <Radio checked={false} onChange={() => undefined} label="Lunch + Dinner" name="demo-radio-disabled-unchecked" value="lunch-dinner" disabled />
             </div>
 
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col">
               <DemoSubheading><CodeLabel>disabled checked</CodeLabel></DemoSubheading>
               <Radio checked={true} onChange={() => undefined} label="Lunch + Dinner" name="demo-radio-disabled-checked" value="lunch-dinner" disabled />
             </div>
 
-            <div className="flex flex-col gap-[8px]">
+            <div className="flex flex-col">
               <DemoSubheading><CodeLabel>interactive group</CodeLabel></DemoSubheading>
               <RadioGroup
                 name="demo-radio-interactive"
@@ -1657,7 +1696,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
             description="Horizontal 1px separator with no built-in margin or padding. Default color is neutral[100]. Spacing is controlled by the parent."
           >
             <div className="flex flex-col gap-[20px]">
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col">
                 <DemoSubheading>
                   <CodeLabel>default</CodeLabel>
                 </DemoSubheading>
@@ -1673,7 +1712,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col">
                 <DemoSubheading>
                   <CodeLabel>parent gap-[16px]</CodeLabel>
                 </DemoSubheading>
@@ -1689,7 +1728,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col">
                 <DemoSubheading>
                   <CodeLabel>{`color={COLOR_TOKENS.neutral[200]}`}</CodeLabel>
                 </DemoSubheading>
@@ -1730,7 +1769,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 })}
               />
 
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col">
                 <DemoSubheading>
                   <CodeLabel>with Edit action</CodeLabel>
                 </DemoSubheading>
@@ -1852,7 +1891,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
             description="Checkout row for changing the delivery address. Shows map pin icon, title, subtitle, and a Change action."
           >
             <div className="flex flex-col gap-[16px]">
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col">
                 <DemoSubheading>
                   <CodeLabel>selected address</CodeLabel>
                 </DemoSubheading>
@@ -1864,7 +1903,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 />
               </div>
 
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col">
                 <DemoSubheading>
                   <CodeLabel>empty state</CodeLabel>
                 </DemoSubheading>
@@ -1872,7 +1911,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 <DeliveryAddressCard onClick={() => undefined} />
               </div>
 
-              <div className="flex flex-col gap-[8px]">
+              <div className="flex flex-col">
                 <DemoSubheading>
                   <CodeLabel>disabled</CodeLabel>
                 </DemoSubheading>
@@ -1889,7 +1928,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {BUTTON_VARIANTS.map((variant) => (
-                <div key={variant} className="flex flex-col gap-[8px]">
+                <div key={variant} className="flex flex-col">
                   <DemoSubheading>
                     <CodeLabel>{`variant="${variant}"`}</CodeLabel>
                   </DemoSubheading>
@@ -1925,7 +1964,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="flex flex-col gap-[16px]">
               {BUTTON_SIZES.map((size) => (
-                <div key={size} className="flex flex-col gap-[8px]">
+                <div key={size} className="flex flex-col">
                   <DemoSubheading>
                     <CodeLabel>{`size="${size}"`}</CodeLabel>
                     <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-description)]">
@@ -2010,7 +2049,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {BUTTON_VARIANTS.map((variant) => (
-                <div key={variant} className="flex flex-col gap-[8px]">
+                <div key={variant} className="flex flex-col">
                   <DemoSubheading>
                     <CodeLabel>{`variant="${variant}"`}</CodeLabel>
                   </DemoSubheading>
@@ -2076,7 +2115,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="flex flex-wrap items-end gap-[16px]">
               {BUTTON_SIZES.map((size) => (
-                <div key={size} className="flex flex-col items-center gap-[8px]">
+                <div key={size} className="flex flex-col items-center">
                   <DemoSubheading>
                     <CodeLabel>{`size="${size}"`}</CodeLabel>
                   </DemoSubheading>
@@ -2104,7 +2143,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="flex flex-wrap items-end gap-[24px]">
               {BADGE_VARIANTS.map((variant) => (
-                <div key={variant} className="flex w-fit flex-col gap-[8px]">
+                <div key={variant} className="flex w-fit flex-col">
                   <DemoSubheading>
                     <CodeLabel>{`variant="${variant}"`}</CodeLabel>
                   </DemoSubheading>

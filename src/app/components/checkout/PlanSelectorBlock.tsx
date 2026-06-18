@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { CSSProperties } from 'react';
 
 import type { Plan } from '../../data/checkoutPricing';
@@ -275,7 +276,7 @@ function PlanCard({
   );
 }
 
-export function PlanSelectorBlock({
+export const PlanSelectorBlock = memo(function PlanSelectorBlock({
   selected,
   onSelect,
   lightMealOption = 'lunch-dinner',
@@ -307,4 +308,4 @@ export function PlanSelectorBlock({
       </div>
     </div>
   );
-}
+});

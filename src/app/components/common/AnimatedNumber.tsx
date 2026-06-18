@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 
 import { CHECKOUT_ANIMATION_DURATION_MS, easeInOutCubic } from './easing';
 
@@ -15,6 +15,7 @@ export type AnimatedNumberProps = {
   format?: (value: number) => string;
   duration?: number;
   className?: string;
+  animate?: boolean;
 };
 
 export function AnimatedNumber({
@@ -22,19 +23,33 @@ export function AnimatedNumber({
   format = defaultFormat,
   duration = CHECKOUT_ANIMATION_DURATION_MS,
   className,
+  animate = false,
 }: AnimatedNumberProps) {
-  const [displayValue, setDisplayValue] = useState(value);
-  const displayValueRef = useRef(value);
+  const spanRef = useRef<HTMLSpanElement>(null);
+  const animatedValueRef = useRef(value);
   const animationTokenRef = useRef(0);
+  const formatRef = useRef(format);
+
+  formatRef.current = format;
+
+  const writeDisplay = (nextValue: number) => {
+    if (spanRef.current) {
+      spanRef.current.textContent = formatRef.current(nextValue);
+    }
+  };
+
+  useLayoutEffect(() => {
+    writeDisplay(animatedValueRef.current);
+  }, []);
 
   useEffect(() => {
-    const startValue = displayValueRef.current;
+    const startValue = animatedValueRef.current;
 
     if (startValue === value) return;
 
-    if (prefersReducedMotion()) {
-      displayValueRef.current = value;
-      setDisplayValue(value);
+    if (!animate || prefersReducedMotion()) {
+      animatedValueRef.current = value;
+      writeDisplay(value);
       return;
     }
 
@@ -42,31 +57,31 @@ export function AnimatedNumber({
     animationTokenRef.current = token;
     const startTime = performance.now();
 
-    const animate = (currentTime: number) => {
+    const tick = (currentTime: number) => {
       if (animationTokenRef.current !== token) return;
 
       const elapsed = currentTime - startTime;
       const progress = Math.min(elapsed / duration, 1);
       const nextValue = startValue + (value - startValue) * easeInOutCubic(progress);
 
-      displayValueRef.current = nextValue;
-      setDisplayValue(nextValue);
+      animatedValueRef.current = nextValue;
+      writeDisplay(nextValue);
 
       if (progress < 1) {
-        window.requestAnimationFrame(animate);
+        window.requestAnimationFrame(tick);
         return;
       }
 
-      displayValueRef.current = value;
-      setDisplayValue(value);
+      animatedValueRef.current = value;
+      writeDisplay(value);
     };
 
-    window.requestAnimationFrame(animate);
+    window.requestAnimationFrame(tick);
 
     return () => {
       animationTokenRef.current += 1;
     };
-  }, [duration, value]);
+  }, [animate, duration, value]);
 
-  return <span className={className}>{format(displayValue)}</span>;
+  return <span ref={spanRef} className={className} />;
 }

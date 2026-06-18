@@ -1,17 +1,19 @@
 import { useEffect, type RefObject } from 'react';
 
-const SCROLL_EPSILON = 1;
+const SCROLL_SYNC_DRIFT_THRESHOLD = 24;
 const SCROLL_LERP = 0.18;
 const SCROLL_STOP_EPSILON = 0.5;
+const SCROLL_EPSILON = 1;
 const MD_BREAKPOINT = '(min-width: 768px)';
 
 type SmoothScroller = {
   targetScrollTop: number;
   rafId: number | null;
+  isAnimating: boolean;
 };
 
 function createSmoothScroller(): SmoothScroller {
-  return { targetScrollTop: 0, rafId: null };
+  return { targetScrollTop: 0, rafId: null, isAnimating: false };
 }
 
 function getScrollDelta(event: WheelEvent): number {
@@ -35,10 +37,15 @@ function canScrollVertically(element: HTMLElement): boolean {
 }
 
 function runSmoothScroll(element: HTMLElement, scroller: SmoothScroller) {
+  scroller.isAnimating = true;
+  clampScrollerTarget(element, scroller);
+
   const distance = scroller.targetScrollTop - element.scrollTop;
 
   if (Math.abs(distance) < SCROLL_STOP_EPSILON) {
     element.scrollTop = scroller.targetScrollTop;
+    scroller.targetScrollTop = element.scrollTop;
+    scroller.isAnimating = false;
     scroller.rafId = null;
     return;
   }
@@ -76,11 +83,39 @@ function applySmoothDelta(
   return delta - applied;
 }
 
-function stopSmoothScroller(scroller: SmoothScroller) {
-  if (scroller.rafId === null) return;
+function stopSmoothScroller(element: HTMLElement, scroller: SmoothScroller) {
+  if (scroller.rafId !== null) {
+    cancelAnimationFrame(scroller.rafId);
+    scroller.rafId = null;
+  }
 
-  cancelAnimationFrame(scroller.rafId);
-  scroller.rafId = null;
+  scroller.isAnimating = false;
+  scroller.targetScrollTop = element.scrollTop;
+}
+
+function syncScrollerTarget(element: HTMLElement, scroller: SmoothScroller) {
+  if (scroller.isAnimating) return;
+
+  const drift = Math.abs(element.scrollTop - scroller.targetScrollTop);
+
+  if (drift <= SCROLL_SYNC_DRIFT_THRESHOLD) {
+    scroller.targetScrollTop = element.scrollTop;
+    return;
+  }
+
+  if (scroller.rafId !== null) {
+    cancelAnimationFrame(scroller.rafId);
+    scroller.rafId = null;
+  }
+
+  scroller.targetScrollTop = element.scrollTop;
+}
+
+function clampScrollerTarget(element: HTMLElement, scroller: SmoothScroller) {
+  const maxScrollTop = getMaxScrollTop(element);
+  if (scroller.targetScrollTop > maxScrollTop) {
+    scroller.targetScrollTop = maxScrollTop;
+  }
 }
 
 type UsePlanStepScrollChainingOptions = {
@@ -108,6 +143,12 @@ export function usePlanStepScrollChaining({
 
     const isDesktop = () => mediaQuery.matches;
 
+    const applyBodyOverflowDelta = (delta: number): number => {
+      if (delta > 0 && !canScrollDown(body)) return delta;
+      if (delta < 0 && !canScrollUp(body)) return delta;
+      return applySmoothDelta(body, bodyScroller, delta);
+    };
+
     const handleRightWheel = (event: WheelEvent) => {
       if (!isDesktop()) return;
 
@@ -121,10 +162,15 @@ export function usePlanStepScrollChaining({
       }
 
       if (remaining !== 0) {
-        remaining = applySmoothDelta(body, bodyScroller, remaining);
+        remaining = applyBodyOverflowDelta(remaining);
       }
 
       if (remaining !== delta) {
+        event.preventDefault();
+      } else if (
+        (delta > 0 && !canScrollDown(body) && !canScrollDown(right)) ||
+        (delta < 0 && !canScrollUp(body) && !canScrollUp(right))
+      ) {
         event.preventDefault();
       }
     };
@@ -142,25 +188,48 @@ export function usePlanStepScrollChaining({
 
       if (delta > 0) {
         if (canScrollDown(body)) return;
-      } else if (canScrollUp(body)) {
-        return;
+        if (!canScrollDown(right)) {
+          event.preventDefault();
+          return;
+        }
+      } else {
+        if (canScrollUp(body)) return;
+        if (!canScrollUp(right)) {
+          event.preventDefault();
+          return;
+        }
       }
 
-      const remaining = applySmoothDelta(right, rightScroller, delta);
+      applySmoothDelta(right, rightScroller, delta);
 
-      if (remaining !== delta) {
-        event.preventDefault();
-      }
+      // Body hit its scroll boundary — always consume wheel here so the browser
+      // does not fall through to page scroll while right column animates.
+      event.preventDefault();
     };
+
+    const handleBodyScroll = () => syncScrollerTarget(body, bodyScroller);
+    const handleRightScroll = () => syncScrollerTarget(right, rightScroller);
+
+    const bodyResizeObserver = new ResizeObserver(() => clampScrollerTarget(body, bodyScroller));
+    const rightResizeObserver = new ResizeObserver(() => clampScrollerTarget(right, rightScroller));
+
+    bodyResizeObserver.observe(body);
+    rightResizeObserver.observe(right);
 
     right.addEventListener('wheel', handleRightWheel, { passive: false });
     body.addEventListener('wheel', handleBodyWheel, { passive: false });
+    body.addEventListener('scroll', handleBodyScroll, { passive: true });
+    right.addEventListener('scroll', handleRightScroll, { passive: true });
 
     return () => {
+      bodyResizeObserver.disconnect();
+      rightResizeObserver.disconnect();
       right.removeEventListener('wheel', handleRightWheel);
       body.removeEventListener('wheel', handleBodyWheel);
-      stopSmoothScroller(bodyScroller);
-      stopSmoothScroller(rightScroller);
+      body.removeEventListener('scroll', handleBodyScroll);
+      right.removeEventListener('scroll', handleRightScroll);
+      stopSmoothScroller(body, bodyScroller);
+      stopSmoothScroller(right, rightScroller);
     };
   }, [enabled, bodyRef, rightRef]);
 }

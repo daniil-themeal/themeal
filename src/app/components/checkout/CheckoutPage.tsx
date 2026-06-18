@@ -267,7 +267,10 @@ export function CheckoutPage({
     if (!anchor || !body) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => setSummaryVisible(entry.isIntersecting),
+      ([entry]) => {
+        const visible = entry.isIntersecting;
+        setSummaryVisible((prev) => (prev === visible ? prev : visible));
+      },
       { root: body, threshold: 0.1 },
     );
 

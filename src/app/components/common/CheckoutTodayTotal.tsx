@@ -32,6 +32,7 @@ export type CheckoutTodayTotalProps = {
   title?: ReactNode;
   className?: string;
   style?: CSSProperties;
+  animate?: boolean;
 };
 
 export function CheckoutTodayTotal({
@@ -41,6 +42,7 @@ export function CheckoutTodayTotal({
   title = 'Today',
   className = '',
   style,
+  animate = false,
 }: CheckoutTodayTotalProps) {
   return (
     <div
@@ -55,7 +57,7 @@ export function CheckoutTodayTotal({
         <div className="flex flex-wrap items-end justify-end gap-[5px]">
           {oldPeriodPrice ? (
             <p className="font-sans text-[length:var(--today-total-body-fs)] font-bold leading-[150%] text-[var(--today-total-subtle)] line-through">
-              <AnimatedNumber value={oldPeriodPrice} format={formatAed} />
+              <AnimatedNumber value={oldPeriodPrice} format={formatAed} animate={animate} />
             </p>
           ) : null}
 
@@ -64,13 +66,13 @@ export function CheckoutTodayTotal({
           </p>
 
           <p className="font-sans text-[length:var(--today-total-price-fs)] font-bold leading-[150%] text-[var(--today-total-primary)]">
-            <AnimatedNumber value={periodPrice} format={formatAed} />
+            <AnimatedNumber value={periodPrice} format={formatAed} animate={animate} />
           </p>
         </div>
       </div>
 
       <p className="text-right font-sans text-[length:var(--today-total-body-fs)] font-bold leading-[150%] text-[var(--today-total-text)]">
-        AED <AnimatedNumber value={pricePerDay} format={formatPricePerDay} />/day
+        AED <AnimatedNumber value={pricePerDay} format={formatPricePerDay} animate={animate} />/day
       </p>
     </div>
   );

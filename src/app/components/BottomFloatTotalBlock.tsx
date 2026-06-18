@@ -366,14 +366,14 @@ export function BottomFloatTotalBlock({
           <button
             type="button"
             onClick={toggleMenu}
-            className="flex h-[32px] cursor-pointer items-center justify-center gap-[4px] rounded-tl-[4px] rounded-tr-[4px] bg-[var(--bottom-total-tab-bg)] px-[16px]"
+            className="group flex h-[32px] cursor-pointer items-center justify-center gap-[4px] rounded-tl-[4px] rounded-tr-[4px] bg-[var(--bottom-total-tab-bg)] px-[16px] text-[var(--bottom-total-muted)] transition-colors duration-150 hover:text-[var(--bottom-total-text)]"
           >
-            <p className="text-center font-sans text-[length:var(--bottom-total-menu-toggle-font-size)] font-bold leading-[18px] text-[var(--bottom-total-muted)]">
+            <p className="text-center font-sans text-[length:var(--bottom-total-menu-toggle-font-size)] font-bold leading-[18px]">
               {menuOpen ? "Hide menu" : "Show menu"}
             </p>
 
             <svg
-              className={`transition-transform duration-200 ${menuOpen ? "rotate-90" : ""}`}
+              className={`transition-[transform,color] duration-200 ${menuOpen ? "rotate-90" : ""}`}
               fill="none"
               viewBox="0 0 5.6 9.6"
               width="6"
@@ -383,7 +383,7 @@ export function BottomFloatTotalBlock({
             >
               <path
                 d="M0.8 8.8L4.8 4.8L0.8 0.8"
-                stroke="var(--bottom-total-text)"
+                stroke="currentColor"
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth="1.6"

@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { CSSProperties } from 'react';
 
 import type { DayOption } from '../../data/checkoutPricing';
@@ -138,7 +139,7 @@ function DayCard({
   );
 }
 
-export function DaysBlock({
+export const DaysBlock = memo(function DaysBlock({
   selected,
   onSelect,
 }: {
@@ -168,4 +169,4 @@ export function DaysBlock({
       </div>
     </div>
   );
-}
+});

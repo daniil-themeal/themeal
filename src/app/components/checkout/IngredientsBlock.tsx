@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import type { CSSProperties } from 'react';
 
 import imgMeat from '../../../imports/CheckoutContainer-3/8e481e06f103e33b1c53332e73b7654c749ab79c.png';
@@ -96,7 +97,7 @@ function Checkmark() {
   );
 }
 
-export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) {
+export const IngredientsBlock = memo(function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) {
   return (
     <div
       className="flex w-full min-w-0 flex-col items-start gap-[20px]"
@@ -188,4 +189,4 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
       </div>
     </div>
   );
-}
+});
