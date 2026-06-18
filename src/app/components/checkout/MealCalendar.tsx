@@ -26,14 +26,32 @@ import {
   WEEKDAY_SHORT,
   type MealDayRadiusPosition,
 } from './mealCalendarUtils';
+import {
+  CHECKOUT_CARD_PADDING_CLAMP,
+  CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
+  CHECKOUT_STEP_SECTION_PADDING_CLAMP,
+} from './checkoutSpacing';
+import {
+  CHECKOUT_STEP_SECTION_NAMES,
+  CHECKOUT_STEP_SECTION_PX,
+  checkoutStepSectionProps,
+} from './checkoutStepPageLayoutTokens';
+import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
+import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
 
 type MealCalendarCssVariables = CSSProperties & {
+  '--checkout-card-padding': string;
+  '--checkout-step-section-padding': string;
+  '--checkout-scroll-edge-fade-width': string;
   '--calendar-date-fs': string;
   '--calendar-month-fs': string;
   '--calendar-weekday-fs': string;
 };
 
 const mealCalendarStyle: MealCalendarCssVariables = {
+  '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
+  '--checkout-step-section-padding': CHECKOUT_STEP_SECTION_PADDING_CLAMP,
+  '--checkout-scroll-edge-fade-width': CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
   '--calendar-date-fs': FONT_SIZE_TOKENS[16],
   '--calendar-month-fs': FONT_SIZE_TOKENS[12],
   '--calendar-weekday-fs': FONT_SIZE_TOKENS[14],
@@ -71,10 +89,10 @@ function CalendarCell({
     >
       {deliveryDay ? (
         <span
-          className="absolute right-[clamp(2px,8%,8px)] top-[4px] h-fit"
+          className="absolute right-[clamp(2px,8%,8px)] top-[4px] h-fit max-md:right-0 max-md:top-[2px]"
           style={{ color: COLOR_TOKENS.neutral[900] }}
         >
-          <DeliveryIcon size={16} />
+          <DeliveryIcon size={16} className="!size-[12px] xs:!size-[16px]" />
         </span>
       ) : null}
 
@@ -276,6 +294,8 @@ export function MealCalendar({
   );
 
   const datePillsScrollRef = useRef<HTMLDivElement>(null);
+  const { showStartFade: showDatePillsStartFade, showEndFade: showDatePillsEndFade } =
+    useHorizontalScrollEdgeFades(datePillsScrollRef, deliveryDates.length);
   const datePillRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const datePillsDragStartXRef = useRef(0);
   const datePillsDragMovedRef = useRef(false);
@@ -336,12 +356,30 @@ export function MealCalendar({
       className={['flex min-w-0 flex-col gap-[16px]', className].filter(Boolean).join(' ')}
       style={mealCalendarStyle}
     >
-      {title ? <FormSectionHeading title={title} subtitle={subtitle} /> : null}
-
-      <div className="relative -mx-[length:var(--checkout-card-padding)]">
+      {title ? (
         <div
-          ref={datePillsScrollRef}
-          className="flex w-full min-w-0 cursor-grab touch-pan-x select-none gap-[8px] overflow-x-auto px-[length:var(--checkout-card-padding)] pb-[4px] scrollbar-hide active:cursor-grabbing"
+          {...checkoutStepSectionProps(
+            CHECKOUT_STEP_SECTION_NAMES.mealCalendarHeading,
+            `flex w-full min-w-0 flex-col ${CHECKOUT_STEP_SECTION_PX}`,
+          )}
+        >
+          <FormSectionHeading title={title} subtitle={subtitle} />
+        </div>
+      ) : null}
+
+      <div
+        {...checkoutStepSectionProps(
+          CHECKOUT_STEP_SECTION_NAMES.mealCalendarDatePills,
+          'relative w-full min-w-0',
+        )}
+      >
+        <div className="relative w-full">
+          <div
+            ref={datePillsScrollRef}
+            className={[
+              'flex w-full min-w-0 cursor-grab touch-pan-x select-none gap-[8px] overflow-x-auto pb-[4px] scrollbar-hide active:cursor-grabbing',
+              CHECKOUT_STEP_SECTION_PX,
+            ].join(' ')}
             onMouseDown={(event) => {
               const scrollElement = event.currentTarget;
               const startX = event.pageX - scrollElement.offsetLeft;
@@ -410,23 +448,27 @@ export function MealCalendar({
             ))}
         </div>
 
-        <div
-          className="pointer-events-none absolute bottom-[4px] left-0 top-0 w-[20px] md:w-[32px]"
-          style={{
-            background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})`,
-          }}
-        />
-        <div
-          className="pointer-events-none absolute bottom-[4px] right-0 top-0 w-[20px] md:w-[32px]"
-          style={{
-            background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})`,
-          }}
+        <CheckoutScrollEdgeFades
+          showStart={showDatePillsStartFade}
+          showEnd={showDatePillsEndFade}
+          className="bottom-[4px]"
+          edgeColor={COLOR_TOKENS.base.white}
+          fadeWidthClassName="w-[length:var(--checkout-step-section-padding)]"
+          startPositionClassName="left-0"
+          endPositionClassName="right-0"
         />
       </div>
+      </div>
 
-      <MealCalendarLegend />
-
-      <MealCalendarGrid startDate={selectedDate} duration={duration} dayOption={dayOption} />
+      <div
+        {...checkoutStepSectionProps(
+          CHECKOUT_STEP_SECTION_NAMES.mealCalendarGrid,
+          `flex w-full min-w-0 flex-col gap-[16px] ${CHECKOUT_STEP_SECTION_PX}`,
+        )}
+      >
+        <MealCalendarLegend />
+        <MealCalendarGrid startDate={selectedDate} duration={duration} dayOption={dayOption} />
+      </div>
     </div>
   );
 }

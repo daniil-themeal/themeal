@@ -1,0 +1,247 @@
+/* KEEP_IN_SYNC(src/app/components/common/colorTokens.ts) — design system color CSS variables */
+
+:root {
+  --base-white: #ffffff;
+  --base-cream: #fbf8f3;
+
+  --cream-50: #fbf8f3;
+  --cream-75: #f4eee5;
+  --cream-100: #ece6df;
+  --cream-200: #e0d8ce;
+  --cream-500: #8a8694;
+  --cream-600: #4c4756;
+  --cream-900: #2a2230;
+
+  --brand-logo-yellow: #fcde02;
+
+  --primary-50: #f5ebfd;
+  --primary-75: #f0dfff;
+  --primary-100: #e0c1fa;
+  --primary-200: #d1a3f8;
+  --primary-300: #bb7af4;
+  --primary-400: #ae60f2;
+  --primary-500: #9a38ef;
+  --primary-600: #8c33d9;
+  --primary-700: #6d28aa;
+  --primary-800: #551f83;
+  --primary-900: #411864;
+
+  --secondary-50: #feeaf6;
+  --secondary-75: #fad8ee;
+  --secondary-100: #fabde4;
+  --secondary-200: #f89dd7;
+  --secondary-300: #f570c5;
+  --secondary-400: #f354b9;
+  --secondary-500: #f029a8;
+  --secondary-600: #da2599;
+  --secondary-700: #aa1d77;
+  --secondary-800: #84175c;
+  --secondary-900: #651147;
+
+  --neutral-50: #f3f4f7;
+  --neutral-75: #e8ebef;
+  --neutral-100: #d9dee5;
+  --neutral-200: #c7ced9;
+  --neutral-300: #adb7c7;
+  --neutral-400: #9da9bd;
+  --neutral-500: #8594ac;
+  --neutral-600: #79879d;
+  --neutral-700: #5e697a;
+  --neutral-800: #49515f;
+  --neutral-900: #383e48;
+
+  --success-50: #f2fbec;
+  --success-75: #eeffe1;
+  --success-100: #d8f0c4;
+  --success-200: #c4eaa9;
+  --success-300: #a9e182;
+  --success-400: #99db6b;
+  --success-500: #7fd24c;
+  --success-600: #74bf45;
+  --success-700: #5a9536;
+  --success-800: #467329;
+  --success-900: #36581f;
+
+  --warning-50: #fffbef;
+  --warning-75: #fff7e1;
+  --warning-100: #fef2cf;
+  --warning-200: #fdecb8;
+  --warning-300: #fce298;
+  --warning-400: #fcdd85;
+  --warning-500: #fbd569;
+  --warning-600: #e4c260;
+  --warning-700: #b2984b;
+  --warning-800: #8a753a;
+  --warning-900: #69592b;
+
+  --orange-50: #fef0eb;
+  --orange-75: #ffe9e0;
+  --orange-100: #facebe;
+  --orange-200: #f8b79f;
+  --orange-300: #f59575;
+  --orange-400: #f3815b;
+  --orange-500: #f06136;
+  --orange-600: #da5931;
+  --orange-700: #a84526;
+  --orange-800: #84361d;
+  --orange-900: #652916;
+
+  --danger-50: #fde9e9;
+  --danger-75: #ffd2d3;
+  --danger-100: #f9babb;
+  --danger-200: #f6989a;
+  --danger-300: #f2696c;
+  --danger-400: #ef4b51;
+  --danger-500: #eb1b2a;
+  --danger-600: #d61926;
+  --danger-700: #a8141e;
+  --danger-800: #821016;
+  --danger-900: #630c11;
+
+  --info-50: #e6eefd;
+  --info-75: #c7d9f8;
+  --info-100: #b0caf7;
+  --info-200: #89b1f4;
+  --info-300: #528eef;
+  --info-400: #2f78ed;
+  --info-500: #0058e9;
+  --info-600: #0050d4;
+  --info-700: #003ea5;
+  --info-800: #003080;
+  --info-900: #002562;
+
+  --blue-50: #eff9fe;
+  --blue-75: #dff5fe;
+  --blue-100: #ccedfa;
+  --blue-200: #b4e5f7;
+  --blue-300: #92d9f4;
+  --blue-400: #7dd2f2;
+  --blue-500: #5cc6ef;
+  --blue-600: #54b4d9;
+  --blue-700: #418daa;
+  --blue-800: #336d83;
+  --blue-900: #275465;
+}
+
+@theme inline {
+  --color-base-white: var(--base-white);
+  --color-base-cream: var(--base-cream);
+
+  --color-cream-50: var(--cream-50);
+  --color-cream-75: var(--cream-75);
+  --color-cream-100: var(--cream-100);
+  --color-cream-200: var(--cream-200);
+  --color-cream-500: var(--cream-500);
+  --color-cream-600: var(--cream-600);
+  --color-cream-900: var(--cream-900);
+
+  --color-brand-logo-yellow: var(--brand-logo-yellow);
+
+  --color-primary-50: var(--primary-50);
+  --color-primary-75: var(--primary-75);
+  --color-primary-100: var(--primary-100);
+  --color-primary-200: var(--primary-200);
+  --color-primary-300: var(--primary-300);
+  --color-primary-400: var(--primary-400);
+  --color-primary-500: var(--primary-500);
+  --color-primary-600: var(--primary-600);
+  --color-primary-700: var(--primary-700);
+  --color-primary-800: var(--primary-800);
+  --color-primary-900: var(--primary-900);
+
+  --color-secondary-50: var(--secondary-50);
+  --color-secondary-75: var(--secondary-75);
+  --color-secondary-100: var(--secondary-100);
+  --color-secondary-200: var(--secondary-200);
+  --color-secondary-300: var(--secondary-300);
+  --color-secondary-400: var(--secondary-400);
+  --color-secondary-500: var(--secondary-500);
+  --color-secondary-600: var(--secondary-600);
+  --color-secondary-700: var(--secondary-700);
+  --color-secondary-800: var(--secondary-800);
+  --color-secondary-900: var(--secondary-900);
+
+  --color-neutral-50: var(--neutral-50);
+  --color-neutral-75: var(--neutral-75);
+  --color-neutral-100: var(--neutral-100);
+  --color-neutral-200: var(--neutral-200);
+  --color-neutral-300: var(--neutral-300);
+  --color-neutral-400: var(--neutral-400);
+  --color-neutral-500: var(--neutral-500);
+  --color-neutral-600: var(--neutral-600);
+  --color-neutral-700: var(--neutral-700);
+  --color-neutral-800: var(--neutral-800);
+  --color-neutral-900: var(--neutral-900);
+
+  --color-success-50: var(--success-50);
+  --color-success-75: var(--success-75);
+  --color-success-100: var(--success-100);
+  --color-success-200: var(--success-200);
+  --color-success-300: var(--success-300);
+  --color-success-400: var(--success-400);
+  --color-success-500: var(--success-500);
+  --color-success-600: var(--success-600);
+  --color-success-700: var(--success-700);
+  --color-success-800: var(--success-800);
+  --color-success-900: var(--success-900);
+
+  --color-warning-50: var(--warning-50);
+  --color-warning-75: var(--warning-75);
+  --color-warning-100: var(--warning-100);
+  --color-warning-200: var(--warning-200);
+  --color-warning-300: var(--warning-300);
+  --color-warning-400: var(--warning-400);
+  --color-warning-500: var(--warning-500);
+  --color-warning-600: var(--warning-600);
+  --color-warning-700: var(--warning-700);
+  --color-warning-800: var(--warning-800);
+  --color-warning-900: var(--warning-900);
+
+  --color-orange-50: var(--orange-50);
+  --color-orange-75: var(--orange-75);
+  --color-orange-100: var(--orange-100);
+  --color-orange-200: var(--orange-200);
+  --color-orange-300: var(--orange-300);
+  --color-orange-400: var(--orange-400);
+  --color-orange-500: var(--orange-500);
+  --color-orange-600: var(--orange-600);
+  --color-orange-700: var(--orange-700);
+  --color-orange-800: var(--orange-800);
+  --color-orange-900: var(--orange-900);
+
+  --color-danger-50: var(--danger-50);
+  --color-danger-75: var(--danger-75);
+  --color-danger-100: var(--danger-100);
+  --color-danger-200: var(--danger-200);
+  --color-danger-300: var(--danger-300);
+  --color-danger-400: var(--danger-400);
+  --color-danger-500: var(--danger-500);
+  --color-danger-600: var(--danger-600);
+  --color-danger-700: var(--danger-700);
+  --color-danger-800: var(--danger-800);
+  --color-danger-900: var(--danger-900);
+
+  --color-info-50: var(--info-50);
+  --color-info-75: var(--info-75);
+  --color-info-100: var(--info-100);
+  --color-info-200: var(--info-200);
+  --color-info-300: var(--info-300);
+  --color-info-400: var(--info-400);
+  --color-info-500: var(--info-500);
+  --color-info-600: var(--info-600);
+  --color-info-700: var(--info-700);
+  --color-info-800: var(--info-800);
+  --color-info-900: var(--info-900);
+
+  --color-blue-50: var(--blue-50);
+  --color-blue-75: var(--blue-75);
+  --color-blue-100: var(--blue-100);
+  --color-blue-200: var(--blue-200);
+  --color-blue-300: var(--blue-300);
+  --color-blue-400: var(--blue-400);
+  --color-blue-500: var(--blue-500);
+  --color-blue-600: var(--blue-600);
+  --color-blue-700: var(--blue-700);
+  --color-blue-800: var(--blue-800);
+  --color-blue-900: var(--blue-900);
+}

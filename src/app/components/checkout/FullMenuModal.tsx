@@ -7,15 +7,21 @@ import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import {
+  CHECKOUT_CARD_PADDING_CLAMP,
   CHECKOUT_FONT_CLAMP_14_16,
   CHECKOUT_FONT_CLAMP_20_25,
+  CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
 } from './checkoutSpacing';
+import { CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING } from './checkoutStepPageLayoutTokens';
+import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
+import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
 import { ModalShell } from '../common/ModalShell';
 import { SPACING_CONTENT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { FullMenuPlanToggle } from './FullMenuPlanToggle';
 import { MealDetailModal } from './MealDetailModal';
+import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
 import { XIcon } from '../common/icons';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 
@@ -53,6 +59,8 @@ const FULL_MENU_DAY_PILL_DEFAULT_STYLE: FullMenuDayPillCssVariables = {
 };
 
 type FullMenuModalCssVariables = CSSProperties & {
+  '--checkout-card-padding': string;
+  '--checkout-scroll-edge-fade-width': string;
   '--full-menu-bg': string;
   '--full-menu-border': string;
   '--full-menu-title': string;
@@ -70,6 +78,8 @@ type FullMenuModalCssVariables = CSSProperties & {
 };
 
 const fullMenuModalStyle: FullMenuModalCssVariables = {
+  '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
+  '--checkout-scroll-edge-fade-width': CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
   '--full-menu-bg': COLOR_TOKENS.base.white,
   '--full-menu-border': COLOR_TOKENS.neutral[100],
   '--full-menu-title': COLOR_TOKENS.neutral[900],
@@ -147,6 +157,8 @@ export function FullMenuModal({
     plan,
     lightMealOption,
   );
+  const { showStartFade: showMealsStartFade, showEndFade: showMealsEndFade } =
+    useHorizontalScrollEdgeFades(mealsScrollRef, mealsForSelectedDay.length);
 
   const scrollSelectedDayIntoView = (dayIndex: number) => {
     const selectedButton = dayRefs.current[dayIndex];
@@ -490,8 +502,8 @@ export function FullMenuModal({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto" {...{ [SPACING_CONTENT_ATTR]: '' }}>
-          <div className="relative overflow-visible">
+        <div className="flex-1 overflow-y-auto px-[length:var(--checkout-card-padding)]" {...{ [SPACING_CONTENT_ATTR]: '' }}>
+          <div className={['relative overflow-visible', CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING].join(' ')}>
             <div
               key={`${testMenuDays[selectedDayIndex]?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}
               ref={mealsScrollRef}
@@ -499,7 +511,7 @@ export function FullMenuModal({
               onMouseMove={handleMealsMouseMove}
               onMouseUp={stopMealsMouseDrag}
               onMouseLeave={stopMealsMouseDrag}
-              className={`flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible px-[20px] pt-0 pb-[20px] scrollbar-hide md:justify-center md:px-[24px] ${
+              className={`flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible pt-0 pb-[20px] scrollbar-hide md:justify-center ${
                 isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
               }`}
               style={{
@@ -509,6 +521,7 @@ export function FullMenuModal({
                     : 'mealsSlideFromLeft 260ms ease-out both',
               }}
             >
+              <CheckoutScrollEdgeGutter />
               {mealsForSelectedDay.map((meal) => (
                 <button
                   key={meal.id}
@@ -547,19 +560,12 @@ export function FullMenuModal({
                   </div>
                 </button>
               ))}
+              <CheckoutScrollEdgeGutter />
             </div>
 
-            <div
-              className="pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-[20px] md:w-[32px]"
-              style={{
-                background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})`,
-              }}
-            />
-            <div
-              className="pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-[20px] md:w-[32px]"
-              style={{
-                background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})`,
-              }}
+            <CheckoutScrollEdgeFades
+              showStart={showMealsStartFade}
+              showEnd={showMealsEndFade}
             />
           </div>
             </div>

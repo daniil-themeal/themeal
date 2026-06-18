@@ -288,31 +288,67 @@ function reviewPlatformLabel(platform) {
   return labels[platform] ?? 'Social';
 }
 
-function ReviewPlatformBadge({ platform }) {
-  const IconComp =
-    platform === 'instagram' ? Social.instagram
-    : platform === 'facebook' ? Social.facebook
-    : null;
+const REVIEW_STAR_COLOR = 'var(--orange-500)';
 
-  return createElement('span', { className:'reviews-card__platform' },
-    IconComp ? createElement(IconComp, { size:14 }) : null,
-    reviewPlatformLabel(platform ?? 'other'));
+function isVideoReview(review) {
+  return review.kind === 'video'
+    || Boolean(review.videoUrl)
+    || review.imageUrl?.includes('/videoThumbnail')
+    || review.imageUrl?.includes('image.mux.com/');
 }
 
-function ReviewMedia({ review, compact }) {
-  const stopMediaClick = (e) => e.stopPropagation();
+function ReviewPlayIcon() {
+  return createElement('svg', {
+    xmlns:'http://www.w3.org/2000/svg',
+    viewBox:'0 0 75 75',
+    className:'reviews-card__play-icon',
+    'aria-hidden':true,
+  },
+    createElement('circle', { cx:37.5, cy:37.5, r:37.5, fill:'rgba(75,0,126,.6)' }),
+    createElement('path', {
+      fill:'#fff',
+      d:'M52.34 35.95L31.19 22.95c-.58-.35-1.34-.33-1.93.02-.61.34-.99.98-.99 1.67v25.87c0 .69.38 1.33.99 1.67.3.16.64.24.97.24.35 0 .69-.09 1-.27l21.15-12.89c.57-.34.92-.97.92-1.62 0-.67-.35-1.3-.92-1.64z',
+    }));
+}
 
-  if (review.videoUrl) {
+function ReviewMedia({ review, inModal = false }) {
+  const stopMediaClick = (e) => e.stopPropagation();
+  const isVideo = isVideoReview(review);
+  const poster = review.imageUrl;
+
+  if (isVideo && inModal && review.videoUrl) {
     return createElement('div', { className:'reviews-card__media' },
       createElement('video', {
-        className:`reviews-card__video${compact ? '' : ' reviews-card__video--modal'}`,
+        key:review.videoUrl,
+        className:'reviews-card__video reviews-card__video--modal',
         src:review.videoUrl,
-        poster:review.imageUrl,
+        poster,
         controls:true,
         playsInline:true,
         preload:'metadata',
         onClick:stopMediaClick,
         onKeyDown:stopMediaClick,
+      }));
+  }
+
+  if (isVideo && poster && !inModal) {
+    return createElement('div', { className:'reviews-card__media reviews-card__media--video' },
+      createElement('img', {
+        className:'reviews-card__image',
+        src:poster,
+        alt:'',
+        loading:'lazy',
+      }),
+      createElement('span', { className:'reviews-card__play' },
+        createElement(ReviewPlayIcon)));
+  }
+
+  if (isVideo && poster && inModal) {
+    return createElement('div', { className:'reviews-card__media' },
+      createElement('img', {
+        className:'reviews-card__image',
+        src:poster,
+        alt:'',
       }));
   }
 
@@ -329,14 +365,38 @@ function ReviewMedia({ review, compact }) {
   return null;
 }
 
+function ReviewPlatformBadge({ platform }) {
+  const IconComp =
+    platform === 'instagram' ? Social.instagram
+    : platform === 'facebook' ? Social.facebook
+    : null;
+
+  return createElement('span', { className:'reviews-card__platform' },
+    IconComp ? createElement(IconComp, { size:14 }) : null,
+    reviewPlatformLabel(platform ?? 'other'));
+}
+
 function ReviewCardBody({ review, compact, inModal = false }) {
   const initial = review.n?.trim()?.charAt(0)?.toUpperCase() ?? '?';
-  const isSocial = review.kind === 'social' || Boolean(review.imageUrl || review.videoUrl || review.platform);
+  const isVideo = isVideoReview(review);
+  const isSocial = !isVideo && (review.kind === 'social' || Boolean(review.imageUrl || review.platform));
   const textClass = compact && isSocial && !inModal
     ? 'reviews-card__text reviews-card__text--social'
     : inModal
       ? 'reviews-card__text reviews-card__text--modal'
       : 'reviews-card__text';
+
+  if (isVideo) {
+    return createElement(Fragment, null,
+      createElement(ReviewMedia, { review, inModal }),
+      createElement('footer', { className:'reviews-card__meta reviews-card__meta--video' },
+        createElement('strong', { className:'reviews-card__name' }, review.n),
+        review.c ? createElement('span', { className:'reviews-card__subtitle' }, review.c) : null,
+        review.r
+          ? createElement('div', { className:'reviews-card__stars' },
+            createElement(Stars, { n:review.r, size:16, color:REVIEW_STAR_COLOR }))
+          : null));
+  }
 
   if (isSocial) {
     return createElement(Fragment, null,
@@ -353,18 +413,18 @@ function ReviewCardBody({ review, compact, inModal = false }) {
           createElement('strong', { className:'reviews-card__name' }, review.n),
           review.c ? createElement('span', { className:'reviews-card__subtitle' }, review.c) : null,
           createElement(ReviewPlatformBadge, { platform: review.platform ?? 'other' }))),
-      createElement(ReviewMedia, { review, compact }),
+      createElement(ReviewMedia, { review, inModal }),
       createElement('blockquote', { className:textClass }, review.q),
       review.r
         ? createElement('div', { className:'reviews-card__stars' },
-          createElement(Stars, { n:review.r, size:16, color:'var(--plum-700)' }))
+          createElement(Stars, { n:review.r, size:16, color:REVIEW_STAR_COLOR }))
         : null);
   }
 
   return createElement(Fragment, null,
     createElement('div', { className:'reviews-card__avatar', 'aria-hidden':true }, initial),
     createElement('div', { className:'reviews-card__stars' },
-      createElement(Stars, { n:review.r, size:18, color:'var(--plum-700)' })),
+      createElement(Stars, { n:review.r, size:18, color:REVIEW_STAR_COLOR })),
     createElement('blockquote', { className:textClass }, review.q),
     createElement('footer', { className:'reviews-card__meta' },
       createElement('strong', { className:'reviews-card__name' }, review.n),
@@ -372,10 +432,11 @@ function ReviewCardBody({ review, compact, inModal = false }) {
 }
 
 function ReviewCard({ review, compact = true, onOpen }) {
-  const isSocial = review.kind === 'social' || Boolean(review.imageUrl || review.videoUrl || review.platform);
+  const isVideo = isVideoReview(review);
+  const isSocial = !isVideo && (review.kind === 'social' || Boolean(review.imageUrl || review.platform));
 
   return createElement('article', {
-    className:`reviews-card${isSocial ? ' reviews-card--social' : ''}${onOpen ? ' reviews-card--clickable' : ''}`,
+    className:`reviews-card${isVideo ? ' reviews-card--video' : ''}${isSocial ? ' reviews-card--social' : ''}${onOpen ? ' reviews-card--clickable' : ''}`,
     onClick: onOpen,
     onKeyDown: onOpen
       ? (e) => {
@@ -387,7 +448,9 @@ function ReviewCard({ review, compact = true, onOpen }) {
       : undefined,
     role: onOpen ? 'button' : undefined,
     tabIndex: onOpen ? 0 : undefined,
-    'aria-label': onOpen ? `Open review by ${review.n}` : undefined,
+    'aria-label': onOpen
+      ? (isVideo && review.videoUrl ? `Play video review by ${review.n}` : `Open review by ${review.n}`)
+      : undefined,
   },
     createElement(ReviewCardBody, { review, compact }));
 }
@@ -414,7 +477,13 @@ function ReviewDetailModal({ review, onClose }) {
       onClick: requestClose,
     }, createElement(Icon.x, { size:20 })),
     createElement('article', {
-      className:`reviews-card${review.kind === 'social' || review.imageUrl || review.platform ? ' reviews-card--social' : ''} reviews-card--modal`,
+      className:`reviews-card${
+        isVideoReview(review) ? ' reviews-card--video' : ''
+      }${
+        !isVideoReview(review) && (review.kind === 'social' || review.imageUrl || review.platform)
+          ? ' reviews-card--social'
+          : ''
+      } reviews-card--modal`,
     },
       createElement(ReviewCardBody, { review, compact:false, inModal:true }))));
 }

@@ -77,14 +77,14 @@ const FIELD_STATE_STYLES: Record<TextInputState, TextInputCssVariables> = {
 };
 
 const fieldBaseClassName = [
-  'flex w-full items-stretch rounded-[length:var(--field-border-radius)] border',
+  'box-border flex h-[length:var(--field-height)] w-full items-stretch rounded-[length:var(--field-border-radius)] border',
   'border-[var(--text-input-border)] bg-[var(--text-input-bg)]',
   'transition-colors',
   'focus-within:border-[var(--text-input-focus-border)]',
 ].join(' ');
 
 const inputBaseClassName = [
-  'h-[length:var(--field-height)] min-w-0 flex-1 bg-transparent font-sans',
+  'h-full min-h-0 min-w-0 flex-1 bg-transparent font-sans',
   'text-[length:var(--field-font-size)] font-semibold leading-normal text-[var(--text-input-text)]',
   'outline-none placeholder:text-[var(--text-input-placeholder)]',
   'disabled:cursor-not-allowed',

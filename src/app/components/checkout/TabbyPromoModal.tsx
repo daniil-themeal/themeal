@@ -1,7 +1,12 @@
+import { useMemo, type CSSProperties } from 'react';
+import { createPortal } from 'react-dom';
+
 import { ModalShell } from '../common/ModalShell';
+import { COLOR_TOKENS } from '../common/colorTokens';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { XIcon } from '../common/icons';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
+import { getTabbyInstallmentsPopupUrl } from '../../config/tabbyConfig';
 
 type TabbyPromoModalProps = {
   isOpen: boolean;
@@ -9,30 +14,59 @@ type TabbyPromoModalProps = {
   price: number;
 };
 
-export function TabbyPromoModal({ isOpen, onClose }: TabbyPromoModalProps) {
-  return (
+const tabbyModalStyle = {
+  '--tabby-modal-close-bg': COLOR_TOKENS.neutral[50],
+  '--tabby-modal-close-bg-hover': COLOR_TOKENS.neutral[75],
+} as CSSProperties;
+
+/** Measured Tabby popup at modal width (~1411px content). */
+const TABBY_IFRAME_HEIGHT_PX = 1440;
+
+export function TabbyPromoModal({ isOpen, onClose, price }: TabbyPromoModalProps) {
+  const popupUrl = useMemo(() => getTabbyInstallmentsPopupUrl(price), [price]);
+
+  return createPortal(
     <ModalShell
       isOpen={isOpen}
       onClose={onClose}
-      variant="centered-scroll"
+      variant="fullscreen"
       zIndex={Z_INDEX_TOKENS.modal}
-      rootClassName="bg-black/40 px-[16px] py-[24px] sm:px-[24px]"
-      panelClassName="flex w-full max-w-[400px] flex-col overflow-hidden rounded-[16px] bg-white shadow-2xl"
+      rootClassName="bg-white pb-[env(safe-area-inset-bottom)] sm:bg-black/40 sm:p-[24px]"
+      panelClassName="w-full bg-white sm:max-w-[clamp(480px,calc(480px+(100vw-48rem)*80/448),560px)] sm:overflow-hidden sm:rounded-[20px] sm:shadow-2xl"
     >
       {(requestClose) => (
-        <div className="flex min-h-[240px] flex-col">
-          <div className="flex shrink-0 items-center justify-end px-[12px] py-[8px]">
+        <div
+          style={tabbyModalStyle}
+          className="flex min-h-full flex-col bg-white sm:min-h-0 sm:overflow-hidden sm:rounded-[20px]"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Tabby payment options"
+        >
+          <div className="relative flex h-[56px] shrink-0 items-center justify-end bg-white sm:rounded-t-[20px]">
             <button
               type="button"
               onClick={requestClose}
-              className="flex size-[40px] shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#f9fafb] transition-colors hover:bg-[#f3f4f6]"
+              className="group absolute top-0 right-0 z-10 flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
               aria-label="Close"
             >
-              <XIcon size={20} className={iconColorClassName} style={iconColorStyle('neutral', 500)} />
+              <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--tabby-modal-close-bg)] transition-colors duration-150 group-hover:bg-[var(--tabby-modal-close-bg-hover)]">
+                <span className={iconColorClassName.emphasis} style={iconColorStyle.emphasis}>
+                  <XIcon size={16} />
+                </span>
+              </span>
             </button>
           </div>
+
+          <iframe
+            src={popupUrl}
+            title="Tabby payment options"
+            className="block w-full shrink-0 border-0"
+            style={{ height: TABBY_IFRAME_HEIGHT_PX }}
+            scrolling="no"
+          />
         </div>
       )}
-    </ModalShell>
+    </ModalShell>,
+    document.body,
   );
 }

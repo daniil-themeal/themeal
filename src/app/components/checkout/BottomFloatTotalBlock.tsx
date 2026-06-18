@@ -25,9 +25,13 @@ import { AnimatedNumber } from '../common/AnimatedNumber';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
-import { CHECKOUT_FONT_CLAMP_14_16 } from './checkoutSpacing';
+import { CHECKOUT_FONT_CLAMP_14_16, CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP } from './checkoutSpacing';
 
+import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
+import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
 import { MealDetailModal } from './MealDetailModal';
+import { CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING } from './checkoutStepPageLayoutTokens';
+import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -37,6 +41,8 @@ const MOUSE_DRAG_CLICK_THRESHOLD = 6;
 const MENU_EXIT_ANIMATION_FALLBACK_MS = 260;
 
 type BottomFloatTotalBlockCssVariables = CSSProperties & {
+  '--checkout-card-padding': string;
+  '--checkout-scroll-edge-fade-width': string;
   '--checkout-float-surface': string;
   '--checkout-float-menu-toggle-bg': string;
   '--checkout-float-muted': string;
@@ -57,6 +63,8 @@ type BottomFloatTotalBlockCssVariables = CSSProperties & {
 };
 
 const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
+  '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
+  '--checkout-scroll-edge-fade-width': CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
   '--checkout-float-surface': COLOR_TOKENS.base.white,
   '--checkout-float-menu-toggle-bg': COLOR_TOKENS.neutral[75],
   '--checkout-float-muted': COLOR_TOKENS.neutral[500],
@@ -154,6 +162,8 @@ export function BottomFloatTotalBlock({
     plan,
     lightMealOption,
   );
+  const { showStartFade: showMealsStartFade, showEndFade: showMealsEndFade } =
+    useHorizontalScrollEdgeFades(mealsScrollRef, selectedDayMeals.length);
 
   const clearMenuCloseTimer = useCallback(() => {
     if (menuCloseTimerRef.current !== null) {
@@ -371,7 +381,7 @@ export function BottomFloatTotalBlock({
         }`}
         style={bottomFloatTotalBlockStyle}
       >
-        <div className="relative z-20 px-[20px]">
+        <div className="relative z-20 px-[length:var(--checkout-card-padding)]">
           <button
             type="button"
             onClick={toggleMenu}
@@ -415,7 +425,7 @@ export function BottomFloatTotalBlock({
                   }
                 }}
               >
-                <div className="px-[20px] pt-[20px]">
+                <div className="px-[length:var(--checkout-card-padding)] pt-[20px]">
                   <div className="flex w-full items-stretch">
                     <button
                       type="button"
@@ -532,7 +542,7 @@ export function BottomFloatTotalBlock({
                   </div>
                 </div>
 
-                <div className="relative">
+                <div className={['relative', CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING].join(' ')}>
                   <div
                     ref={mealsScrollRef}
                     onMouseDown={handleMealsMouseDown}
@@ -542,10 +552,11 @@ export function BottomFloatTotalBlock({
                     onTouchStart={handleMealsTouchStart}
                     onTouchMove={handleMealsTouchMove}
                     onTouchEnd={handleMealsTouchEnd}
-                    className={`scrollbar-hide flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible px-[20px] pt-[8px] pb-[16px] md:justify-center md:px-[24px] ${
+                    className={`scrollbar-hide flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible pt-[8px] pb-[16px] md:justify-center ${
                       isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
                     }`}
                   >
+                    <CheckoutScrollEdgeGutter />
                     {selectedDayMeals.map((meal) => (
                       <button
                         key={meal.id}
@@ -584,19 +595,13 @@ export function BottomFloatTotalBlock({
                         </div>
                       </button>
                     ))}
+                    <CheckoutScrollEdgeGutter />
                   </div>
 
-                  <div
-                    className="pointer-events-none absolute bottom-0 left-0 top-0 z-20 w-[20px] md:w-[32px]"
-                    style={{
-                      background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})`,
-                    }}
-                  />
-                  <div
-                    className="pointer-events-none absolute bottom-0 right-0 top-0 z-20 w-[20px] md:w-[32px]"
-                    style={{
-                      background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})`,
-                    }}
+                  <CheckoutScrollEdgeFades
+                    showStart={showMealsStartFade}
+                    showEnd={showMealsEndFade}
+                    edgeColor={COLOR_TOKENS.base.white}
                   />
                 </div>
               </div>
@@ -604,7 +609,7 @@ export function BottomFloatTotalBlock({
 
             <div className="relative z-10 w-full bg-[var(--checkout-float-surface)]">
               <div className="w-full">
-                <div className="flex items-center gap-[16px] px-[20px] py-[8px]">
+                <div className="flex items-center gap-[16px] px-[length:var(--checkout-card-padding)] py-[8px]">
                   <div className="flex flex-1 flex-col items-center justify-start gap-[8px]">
                     <div className="flex items-end gap-[5px] tabular-nums">
                       {pricing.oldPeriodPrice ? (

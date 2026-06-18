@@ -41,8 +41,10 @@ import { MealDetailModal } from './MealDetailModal';
 import { CheckoutPromoCode } from './CheckoutPromoCode';
 import { MinusIcon, PlusIcon } from '../common/icons';
 import { TabbyPromoWidget } from './TabbyPromoWidget';
-import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_FONT_CLAMP_16_20, CHECKOUT_SECTION_GAP_CLAMP } from './checkoutSpacing';
+import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
+import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_FONT_CLAMP_16_20, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP, CHECKOUT_SECTION_GAP_CLAMP } from './checkoutSpacing';
 import { CHECKOUT_DIVIDER_BLEED } from './checkoutStepPageLayoutTokens';
+import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
 
 function getMaxScrollLeft(element: HTMLElement) {
   return Math.max(0, element.scrollWidth - element.clientWidth);
@@ -88,6 +90,8 @@ function waitForNextFrame(): Promise<void> {
 
 type OrderSummaryCssVariables = CSSProperties & {
   '--checkout-card-padding': string;
+  '--checkout-plan-column-pb': string;
+  '--checkout-scroll-edge-fade-width': string;
   '--order-summary-bg': string;
   '--order-summary-text': string;
   '--order-summary-muted': string;
@@ -104,6 +108,8 @@ type OrderSummaryCssVariables = CSSProperties & {
 
 const orderSummaryStyle: OrderSummaryCssVariables = {
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
+  '--checkout-plan-column-pb': CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
+  '--checkout-scroll-edge-fade-width': CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
   '--order-summary-bg': COLOR_TOKENS.base.white,
   '--order-summary-text': COLOR_TOKENS.neutral[900],
   '--order-summary-muted': COLOR_TOKENS.neutral[500],
@@ -182,6 +188,10 @@ export function OrderSummary({
     () => getMealsForPlan(testMenuDays[0], plan, lightMealOption),
     [plan, lightMealOption],
   );
+  const { showStartFade, showEndFade } = useHorizontalScrollEdgeFades(
+    mealsScrollRef,
+    visibleMeals.length,
+  );
 
   useEffect(() => {
     onMealDetailOpenChange?.(Boolean(selectedMeal));
@@ -247,7 +257,7 @@ export function OrderSummary({
 
   return (
     <>
-      <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none" style={orderSummaryStyle}>
+      <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none max-md:pb-[length:var(--checkout-plan-column-pb)]" style={orderSummaryStyle}>
         <div className="rounded-[16px] bg-[var(--order-summary-bg)] py-[28px] max-md:px-[length:var(--checkout-card-padding)]">
           <div className="flex flex-col">
             <div className={orderSummarySectionPx}>
@@ -347,8 +357,22 @@ export function OrderSummary({
                     </button>
                   ))}
                 </div>
-                <div className="pointer-events-none absolute bottom-[4px] left-0 top-0 z-20 w-[20px] md:w-[24px]" style={{ background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})` }} />
-                <div className="pointer-events-none absolute bottom-[4px] right-0 top-0 z-20 w-[20px] md:w-[24px]" style={{ background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})` }} />
+                <div
+                  className="pointer-events-none absolute bottom-[4px] left-0 top-0 z-20 hidden w-[length:var(--checkout-scroll-edge-fade-width)] md:block"
+                  style={{ background: `linear-gradient(to left, transparent, ${COLOR_TOKENS.base.white})` }}
+                />
+                <div
+                  className="pointer-events-none absolute bottom-[4px] right-0 top-0 z-20 hidden w-[length:var(--checkout-scroll-edge-fade-width)] md:block"
+                  style={{ background: `linear-gradient(to right, transparent, ${COLOR_TOKENS.base.white})` }}
+                />
+                <CheckoutScrollEdgeFades
+                  showStart={showStartFade}
+                  showEnd={showEndFade}
+                  edgeColor={COLOR_TOKENS.base.white}
+                  className="bottom-[4px] md:hidden"
+                  startPositionClassName="left-0"
+                  endPositionClassName="right-0"
+                />
               </div>
             </div>
 

@@ -30,7 +30,7 @@ export function InputButtonRow({
     .join(' ');
   const actionWrapperClassName = [
     'w-full @[280px]:w-auto @[280px]:shrink-0',
-    align === 'center' ? '@[280px]:flex @[280px]:items-center @[280px]:self-center' : '',
+    align === 'center' ? 'flex items-center @[280px]:h-[48px] @[280px]:self-center' : '',
     actionClassName,
   ]
     .filter(Boolean)

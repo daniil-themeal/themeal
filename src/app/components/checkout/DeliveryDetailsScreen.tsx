@@ -13,9 +13,13 @@ import { InfoIcon } from '../common/icons/feather';
 import { TextArea } from '../common/TextArea';
 import { TextInput } from '../common/TextInput';
 
+import { CHECKOUT_DELIVERY_SECTION_GAP_CLAMP } from './checkoutSpacing';
 import {
   CHECKOUT_STEP_PAGE_LAYOUT,
   CHECKOUT_STEP_PAGE_VARS,
+  CHECKOUT_STEP_SECTION_NAMES,
+  CHECKOUT_STEP_SECTION_PX,
+  checkoutStepSectionProps,
 } from './checkoutStepPageLayoutTokens';
 import type { DeliveryDetailsData } from './deliveryDetailsTypes';
 import {
@@ -26,6 +30,11 @@ import { MealCalendar } from './MealCalendar';
 import { getUpcomingDeliveryDates } from './mealCalendarUtils';
 
 const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
+
+const deliveryDetailsPageStyle = {
+  ...CHECKOUT_STEP_PAGE_VARS,
+  '--checkout-section-gap': CHECKOUT_DELIVERY_SECTION_GAP_CLAMP,
+};
 
 function getFirstDeliveryFieldErrorId(errors: DeliveryDetailsFieldErrors) {
   if (errors.apartment) return 'delivery-apartment';
@@ -117,14 +126,19 @@ export function DeliveryDetailsScreen({
   };
 
   return (
-    <div className={CHECKOUT_STEP_PAGE_LAYOUT.page} style={CHECKOUT_STEP_PAGE_VARS}>
+    <div className={CHECKOUT_STEP_PAGE_LAYOUT.page} style={deliveryDetailsPageStyle}>
       <div className={CHECKOUT_STEP_PAGE_LAYOUT.container}>
         <div className={CHECKOUT_STEP_PAGE_LAYOUT.header}>
           <h1 className={CHECKOUT_STEP_PAGE_LAYOUT.headerTitle}>Where do we deliver?</h1>
         </div>
 
         <div className={CHECKOUT_STEP_PAGE_LAYOUT.card}>
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionTop}>
+          <div
+            {...checkoutStepSectionProps(
+              CHECKOUT_STEP_SECTION_NAMES.cardSectionTop,
+              CHECKOUT_STEP_PAGE_LAYOUT.cardSectionTop,
+            )}
+          >
             <DeliveryAddressCard
               title={addressTitle}
               subtitle={addressSub}
@@ -180,19 +194,22 @@ export function DeliveryDetailsScreen({
 
           <Divider color={COLOR_TOKENS.neutral[75]} className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSection}>
-            <MealCalendar
-              duration={duration}
-              dayOption={days}
-              selectedDate={deliveryDetails.selectedDate}
-              onSelectedDateChange={(selectedDate) => onDeliveryDetailsChange({ selectedDate })}
-              availableDates={deliveryDates}
-            />
-          </div>
+          <MealCalendar
+            duration={duration}
+            dayOption={days}
+            selectedDate={deliveryDetails.selectedDate}
+            onSelectedDateChange={(selectedDate) => onDeliveryDetailsChange({ selectedDate })}
+            availableDates={deliveryDates}
+          />
 
           <Divider color={COLOR_TOKENS.neutral[75]} className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
-          <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionBottom}>
+          <div
+            {...checkoutStepSectionProps(
+              CHECKOUT_STEP_SECTION_NAMES.deliveryOptions,
+              `${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap16} ${CHECKOUT_STEP_SECTION_PX}`,
+            )}
+          >
             <div
               className="flex flex-col gap-[24px] sm:flex-row sm:gap-[16px]"
               style={getFieldSizeStyle('large')}
@@ -222,7 +239,14 @@ export function DeliveryDetailsScreen({
             </div>
 
             {deliveryDetails.leaveAtDoor ? <InfoBox /> : null}
+          </div>
 
+          <div
+            {...checkoutStepSectionProps(
+              CHECKOUT_STEP_SECTION_NAMES.checkoutCta,
+              `mt-[length:var(--checkout-section-gap)] ${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionBottom} ${CHECKOUT_STEP_SECTION_PX}`,
+            )}
+          >
             <Button type="button" variant="primary" size="medium" fullWidth onClick={handleContinue}>
               Continue
             </Button>

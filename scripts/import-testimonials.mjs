@@ -46,7 +46,15 @@ function isTextOnlyPromo(text, hasMedia) {
   return PROMO_PATTERNS.some((pattern) => pattern.test(text));
 }
 
-function inferKind({ imageUrl, socialLink, platform, text }) {
+function isVideoMedia(imageUrl, videoUrl) {
+  if (videoUrl) return true;
+  if (imageUrl?.includes('/videoThumbnail')) return true;
+  if (imageUrl?.includes('image.mux.com/')) return true;
+  return false;
+}
+
+function inferKind({ imageUrl, socialLink, platform, text, videoUrl }) {
+  if (isVideoMedia(imageUrl, videoUrl)) return 'video';
   if (imageUrl || socialLink) return 'social';
   if (platform && platform !== 'other') return 'social';
   if (/@themeal|@[\w.]{3,}/i.test(text ?? '')) return 'social';
@@ -138,7 +146,7 @@ function normalizeReview(raw) {
     typeof raw.rating === 'number' && raw.rating >= 1 && raw.rating <= 5
       ? raw.rating
       : 5;
-  const kind = raw.kind ?? inferKind({ imageUrl, socialLink, platform, text });
+  const kind = raw.kind ?? inferKind({ imageUrl, socialLink, platform, text, videoUrl });
 
   const review = {
     id: raw.id ?? `${slugify(name)}-${slugify(text.slice(0, 40))}`,
@@ -302,7 +310,6 @@ function parseNamedCards(html, videoUrlMap) {
       embedHtml: html,
       videoUrlMap,
     });
-    if (review && imageUrl) review.kind = 'social';
     if (review) reviews.push(review);
   }
 
@@ -348,7 +355,9 @@ function mergeReviews(reviews) {
     if (loser.platform && loser.platform !== 'other') winner.platform = loser.platform;
     if (loser.subtitle && !winner.subtitle) winner.subtitle = loser.subtitle;
 
-    if (winner.imageUrl || winner.socialLink || winner.platform === 'instagram') {
+    if (isVideoMedia(winner.imageUrl, winner.videoUrl)) {
+      winner.kind = 'video';
+    } else if (winner.imageUrl || winner.socialLink || winner.platform === 'instagram') {
       winner.kind = 'social';
     }
 
@@ -481,7 +490,7 @@ export type ReviewPlatform = 'instagram' | 'twitter' | 'linkedin' | 'facebook' |
 
 export type CustomerReview = {
   id: string;
-  kind: 'text' | 'social';
+  kind: 'text' | 'social' | 'video';
   text: string;
   name: string;
   subtitle?: string;

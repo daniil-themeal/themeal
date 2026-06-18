@@ -19,7 +19,7 @@ export function InputClearButton({
       onMouseDown={(event) => event.preventDefault()}
       aria-label={ariaLabel}
       className={[
-        'flex size-[length:var(--field-icon-slot-width)] shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0',
+        'flex h-full w-[length:var(--field-icon-slot-width)] shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0',
         className,
       ]
         .filter(Boolean)

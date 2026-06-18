@@ -146,6 +146,7 @@ export const COLOR_TOKENS = {
   },
 } as const;
 
+/** Mirror of src/styles/color-tokens.css — update both when palette values change. */
 export type ColorPaletteName = keyof typeof COLOR_TOKENS;
 
 export type ColorTokenName<TPalette extends ColorPaletteName> =

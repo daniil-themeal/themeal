@@ -1,11 +1,21 @@
 export const CHECKOUT_CARD_PADDING_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 12 / 448), 32px)';
 
+/** Step page named sections — same ramp as card padding (original delivery/payment layout). */
+export const CHECKOUT_STEP_SECTION_PADDING_CLAMP = CHECKOUT_CARD_PADDING_CLAMP;
+
+/** Horizontal scroll edge fade width — same ramp as card padding so fade covers only the gutter. */
+export const CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP = CHECKOUT_CARD_PADDING_CLAMP;
+
 export const CHECKOUT_SELECTOR_CARD_PADDING_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 4 / 448), 24px)';
 
 export const CHECKOUT_SECTION_GAP_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 4 / 448), 24px)';
+
+/** Vertical gap between major sections on delivery details card (variant B). */
+export const CHECKOUT_DELIVERY_SECTION_GAP_CLAMP =
+  'clamp(24px, calc(24px + (100vw - 20rem) * 8 / 448), 32px)';
 
 export const CHECKOUT_HEADER_TO_CARD_GAP_CLAMP =
   'clamp(24px, calc(24px + (100vw - 20rem) * 12 / 448), 36px)';

@@ -583,7 +583,7 @@ export function CheckoutPage({
             {...{ [SPACING_CONTENT_ATTR]: '' }}
           >
             <div
-              className="mx-auto flex w-full max-w-[1200px] flex-col gap-[40px] px-[20px] pt-0 md:grid md:grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:items-start md:gap-[24px] md:px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]"
+              className="mx-auto flex w-full max-w-[1200px] flex-col gap-[32px] px-[20px] pt-0 md:grid md:grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:items-start md:gap-[24px] md:px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]"
               style={checkoutPlanGridStyle}
             >
               <div
@@ -614,7 +614,7 @@ export function CheckoutPage({
               <div
                 ref={rightRef}
                 style={checkoutLeftColumnStyle}
-                className="w-full min-w-0 max-md:max-w-none pt-[length:var(--checkout-step-header-pt)] md:max-h-[calc(100svh-56px)] md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:min-h-0 md:overflow-x-hidden md:overflow-y-hidden lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
+                className="w-full min-w-0 max-md:max-w-none max-md:pt-0 md:max-h-[calc(100svh-56px)] md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:min-h-0 md:overflow-x-hidden md:overflow-y-hidden lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
               >
                 <OrderSummary
                   plan={plan}
