@@ -107,7 +107,7 @@ function DayCard({
       onClick={onSelect}
       className={[
         'w-full cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
-        'hover:border-[var(--days-active)]',
+        !selected && 'hover:border-[var(--days-active)]',
         selected
           ? 'border-[var(--days-card-selected-border)] bg-[var(--days-card-selected-bg)]'
           : 'border-transparent bg-[var(--days-card-bg)]',

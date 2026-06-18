@@ -119,7 +119,7 @@ export function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) 
               onClick={() => onToggle(item.key)}
               className={[
                 'relative w-full cursor-pointer rounded-[12px] border border-solid text-left transition-colors duration-150',
-                'hover:border-[var(--ingredients-active)]',
+                !checked && 'hover:border-[var(--ingredients-active)]',
                 checked
                   ? 'border-[var(--ingredients-active-border)] bg-[var(--ingredients-active-bg)]'
                   : 'border-transparent bg-[var(--ingredients-card-bg)]',

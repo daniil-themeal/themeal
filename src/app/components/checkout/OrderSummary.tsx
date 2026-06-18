@@ -42,8 +42,8 @@ import { CheckoutPromoCode } from './CheckoutPromoCode';
 import { MinusIcon, PlusIcon } from '../common/icons';
 import { TabbyPromoWidget } from './TabbyPromoWidget';
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
+import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
 import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_FONT_CLAMP_16_20, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP, CHECKOUT_SECTION_GAP_CLAMP } from './checkoutSpacing';
-import { CHECKOUT_DIVIDER_BLEED } from './checkoutStepPageLayoutTokens';
 import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
 
 function getMaxScrollLeft(element: HTMLElement) {
@@ -124,9 +124,13 @@ const orderSummaryStyle: OrderSummaryCssVariables = {
   '--order-summary-section-gap': CHECKOUT_SECTION_GAP_CLAMP,
 };
 
-const orderSummarySectionPx = 'md:px-[length:var(--checkout-card-padding)] max-md:px-0';
+const orderSummarySectionPx = 'px-[length:var(--checkout-card-padding)]';
 
-const orderSummaryDividerClassName = `my-[length:var(--order-summary-section-gap)] ${CHECKOUT_DIVIDER_BLEED}`;
+const orderSummaryDividerClassName = 'my-[length:var(--order-summary-section-gap)] w-full shrink-0';
+
+function OrderSummaryDivider({ color }: { color: string }) {
+  return <Divider color={color} className={orderSummaryDividerClassName} />;
+}
 
 export function OrderSummary({
   plan,
@@ -192,7 +196,6 @@ export function OrderSummary({
     mealsScrollRef,
     visibleMeals.length,
   );
-
   useEffect(() => {
     onMealDetailOpenChange?.(Boolean(selectedMeal));
   }, [selectedMeal, onMealDetailOpenChange]);
@@ -258,13 +261,13 @@ export function OrderSummary({
   return (
     <>
       <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none max-md:pb-[length:var(--checkout-plan-column-pb)]" style={orderSummaryStyle}>
-        <div className="rounded-[16px] bg-[var(--order-summary-bg)] py-[28px] max-md:px-[length:var(--checkout-card-padding)]">
+        <div className="rounded-[16px] bg-[var(--order-summary-bg)] py-[28px]">
           <div className="flex flex-col">
             <div className={orderSummarySectionPx}>
               <PlanTariffSummary title={getPlanTariffTitle(plan)} chips={planTariffChips} />
             </div>
 
-            <Divider color="var(--order-summary-divider)" className={orderSummaryDividerClassName} />
+            <OrderSummaryDivider color="var(--order-summary-divider)" />
 
             <div className={['flex items-center gap-[8px]', orderSummarySectionPx].join(' ')}>
               <p className="flex-[1_0_0] font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">How many people?</p>
@@ -292,7 +295,7 @@ export function OrderSummary({
               </div>
             </div>
 
-            <Divider color="var(--order-summary-divider)" className={orderSummaryDividerClassName} />
+            <OrderSummaryDivider color="var(--order-summary-divider)" />
 
             <div className="flex flex-col gap-[16px]">
               <div className={['flex items-center justify-between gap-[16px]', orderSummarySectionPx].join(' ')}>
@@ -305,10 +308,7 @@ export function OrderSummary({
               <div className="relative">
                 <div
                   ref={mealsScrollRef}
-                  className={[
-                    'flex cursor-grab select-none gap-[16px] overflow-x-auto overflow-y-visible py-0 scrollbar-hide active:cursor-grabbing',
-                    orderSummarySectionPx,
-                  ].join(' ')}
+                  className="flex cursor-grab select-none overflow-x-auto overflow-y-visible py-0 scrollbar-hide active:cursor-grabbing"
                   onMouseDown={(event) => {
                     const el = event.currentTarget;
                     const startX = event.pageX - el.offsetLeft;
@@ -346,6 +346,8 @@ export function OrderSummary({
                     document.addEventListener('touchend', onTouchEnd);
                   }}
                 >
+                  <CheckoutScrollEdgeGutter />
+                  <div className="flex shrink-0 gap-[16px]">
                   {visibleMeals.map((meal) => (
                     <button key={meal.id} type="button" onClick={() => { if (dragMovedRef.current) return; setSelectedMeal(meal); }} className="group relative z-0 flex w-[150px] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10">
                       <div className="flex h-[114px] w-full items-center justify-center overflow-visible">
@@ -356,6 +358,8 @@ export function OrderSummary({
                       </p>
                     </button>
                   ))}
+                  </div>
+                  <CheckoutScrollEdgeGutter />
                 </div>
                 <div
                   className="pointer-events-none absolute bottom-[4px] left-0 top-0 z-20 hidden w-[length:var(--checkout-scroll-edge-fade-width)] md:block"
@@ -376,23 +380,27 @@ export function OrderSummary({
               </div>
             </div>
 
-            <Divider color="var(--order-summary-divider)" className={orderSummaryDividerClassName} />
+            <OrderSummaryDivider color="var(--order-summary-divider)" />
 
             <div
               ref={totalMealsAnchorRef}
               className={[
-                'flex scroll-mt-4 scroll-mb-[72px] items-center gap-[16px]',
+                'flex min-w-0 scroll-mt-4 scroll-mb-[72px] flex-wrap items-end justify-between gap-x-[8px] gap-y-[4px]',
                 orderSummarySectionPx,
               ].join(' ')}
             >
-              <p className="flex-[1_0_0] whitespace-nowrap font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">Total meals <span className="font-medium">(over <AnimatedNumber value={pricing.paidDays} /> days)</span></p>
-              <div className="h-[4px] flex-[1_0_0]" />
-              <p className="text-center font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[150%] text-[var(--order-summary-text)]">
+              <p className="min-w-0 font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">
+                Total meals{' '}
+                <sup className="font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[130%]">
+                  (over <AnimatedNumber value={pricing.paidDays} /> days)
+                </sup>
+              </p>
+              <p className="shrink-0 text-right font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[150%] text-[var(--order-summary-text)]">
                 <AnimatedNumber value={mealsCount} />
               </p>
             </div>
 
-            <Divider color="var(--order-summary-divider)" className={orderSummaryDividerClassName} />
+            <OrderSummaryDivider color="var(--order-summary-divider)" />
 
             <div className={orderSummarySectionPx}>
               <CheckoutPromoCode
@@ -403,13 +411,17 @@ export function OrderSummary({
               />
             </div>
 
-            <Divider color="var(--order-summary-divider)" className={orderSummaryDividerClassName} />
+            <OrderSummaryDivider color="var(--order-summary-divider)" />
 
             <div className={['h-fit w-full', orderSummarySectionPx].join(' ')}>
               <CheckoutTodayTotal
                 oldPeriodPrice={pricing.oldPeriodPrice}
                 periodPrice={finalPeriodPrice}
                 pricePerDay={pricing.pricePerDay}
+                style={{
+                  '--today-total-title-fs': 'var(--order-summary-title-font-size)',
+                  '--today-total-title-fs-md': 'var(--order-summary-title-font-size)',
+                }}
               />
             </div>
 

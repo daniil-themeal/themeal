@@ -32,6 +32,48 @@ type TabbyPromoWidgetProps = {
 
 const TABBY_PROMO_INIT_TIMEOUT_MS = 2000;
 const TABBY_DIALOG_HIDE_STYLE_ID = 'tabby-dialog-hide-style';
+const TABBY_DIALOG_SELECTOR = '#TabbyDialogContainer';
+
+function hideTabbyNativeDialog() {
+  document.querySelectorAll(TABBY_DIALOG_SELECTOR).forEach((node) => {
+    if (!(node instanceof HTMLElement)) return;
+    node.style.setProperty('display', 'none', 'important');
+    node.style.setProperty('visibility', 'hidden', 'important');
+    node.style.setProperty('opacity', '0', 'important');
+    node.style.setProperty('pointer-events', 'none', 'important');
+  });
+}
+
+function ensureTabbyDialogHideStyle() {
+  if (document.getElementById(TABBY_DIALOG_HIDE_STYLE_ID)) return;
+
+  const style = document.createElement('style');
+  style.id = TABBY_DIALOG_HIDE_STYLE_ID;
+  style.textContent = `${TABBY_DIALOG_SELECTOR} { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; position: fixed !important; inset: auto !important; width: 0 !important; height: 0 !important; overflow: hidden !important; border: 0 !important; }`;
+  document.head.appendChild(style);
+}
+
+if (typeof document !== 'undefined') {
+  ensureTabbyDialogHideStyle();
+  hideTabbyNativeDialog();
+}
+
+function useTabbyDialogGuard() {
+  useEffect(() => {
+    ensureTabbyDialogHideStyle();
+    hideTabbyNativeDialog();
+
+    const observer = new MutationObserver(() => {
+      hideTabbyNativeDialog();
+    });
+
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+}
 
 declare global {
   interface Window {
@@ -46,17 +88,6 @@ declare global {
       merchantCode: string;
     }) => void;
   }
-}
-
-function useTabbyDialogGuard() {
-  useEffect(() => {
-    if (document.getElementById(TABBY_DIALOG_HIDE_STYLE_ID)) return;
-
-    const style = document.createElement('style');
-    style.id = TABBY_DIALOG_HIDE_STYLE_ID;
-    style.textContent = '#TabbyDialogContainer { display: none !important; }';
-    document.head.appendChild(style);
-  }, []);
 }
 
 function TabbyPromoShell({

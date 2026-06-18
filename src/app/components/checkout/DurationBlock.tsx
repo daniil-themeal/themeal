@@ -118,7 +118,7 @@ function DurationCard({
       onClick={onSelect}
       className={[
         'relative w-full cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
-        'hover:border-[var(--duration-active)]',
+        !selected && 'hover:border-[var(--duration-active)]',
         selected
           ? 'border-[var(--duration-card-selected-border)] bg-[var(--duration-card-selected-bg)]'
           : 'border-transparent bg-[var(--duration-card-bg)]',

@@ -126,7 +126,7 @@ function PlanCard({
       onClick={onSelect}
       className={[
         'relative w-full shrink-0 cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
-        'hover:border-[var(--plan-selector-active)]',
+        !selected && 'hover:border-[var(--plan-selector-active)]',
         selected
           ? 'border-[var(--plan-selector-card-selected-border)] bg-[var(--plan-selector-card-selected-bg)]'
           : 'border-transparent bg-[var(--plan-selector-card-bg)]',
@@ -192,7 +192,8 @@ function PlanCard({
                   className={[
                     'group flex cursor-pointer items-center gap-[6px] rounded-[8px] px-[8px] -mx-[8px] py-[4px]',
                     'transition-[color,transform] duration-150 will-change-transform',
-                    'hover:-translate-y-[2px] focus-visible:-translate-y-[2px]',
+                    !optionSelected && 'hover:-translate-y-[2px]',
+                    'focus-visible:-translate-y-[2px]',
                     'active:translate-y-0',
                     'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--plan-selector-active)] focus-visible:ring-offset-2',
                   ].join(' ')}
