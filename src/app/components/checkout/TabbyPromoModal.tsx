@@ -19,8 +19,8 @@ const tabbyModalStyle = {
   '--tabby-modal-close-bg-hover': COLOR_TOKENS.neutral[75],
 } as CSSProperties;
 
-/** Measured Tabby popup at modal width (~1411px content). */
-const TABBY_IFRAME_HEIGHT_PX = 1440;
+/** Tabby installments popup height at modal width (~560px). */
+const TABBY_IFRAME_HEIGHT_PX = 1370;
 
 export function TabbyPromoModal({ isOpen, onClose, price }: TabbyPromoModalProps) {
   const popupUrl = useMemo(() => getTabbyInstallmentsPopupUrl(price), [price]);
@@ -37,7 +37,7 @@ export function TabbyPromoModal({ isOpen, onClose, price }: TabbyPromoModalProps
       {(requestClose) => (
         <div
           style={tabbyModalStyle}
-          className="flex min-h-full flex-col bg-white sm:min-h-0 sm:overflow-hidden sm:rounded-[20px]"
+          className="flex flex-col bg-white sm:overflow-hidden sm:rounded-[20px]"
           role="dialog"
           aria-modal="true"
           aria-label="Tabby payment options"
@@ -57,13 +57,15 @@ export function TabbyPromoModal({ isOpen, onClose, price }: TabbyPromoModalProps
             </button>
           </div>
 
-          <iframe
-            src={popupUrl}
-            title="Tabby payment options"
-            className="block w-full shrink-0 border-0"
-            style={{ height: TABBY_IFRAME_HEIGHT_PX }}
-            scrolling="no"
-          />
+          <div className="overflow-hidden">
+            <iframe
+              src={popupUrl}
+              title="Tabby payment options"
+              className="block w-full border-0"
+              style={{ height: TABBY_IFRAME_HEIGHT_PX }}
+              scrolling="no"
+            />
+          </div>
         </div>
       )}
     </ModalShell>,
