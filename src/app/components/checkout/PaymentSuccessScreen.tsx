@@ -167,13 +167,13 @@ export function PaymentSuccessScreen({
           </div>
         </div>
 
-        <div className="mx-auto w-full max-w-[380px]">
+        <div className="relative z-[1] mx-auto w-full max-w-[380px]">
           <Button type="button" variant="primary" size="medium" fullWidth onClick={onGoToMain}>
             Go to main page
           </Button>
         </div>
 
-        <div className={CHECKOUT_STEP_PAGE_LAYOUT.card}>
+        <div className={`relative z-0 ${CHECKOUT_STEP_PAGE_LAYOUT.card}`}>
           <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSection} ${CHECKOUT_STEP_SECTION_PX}`}>
             <MealCalendarPreview
               startDate={startDate}

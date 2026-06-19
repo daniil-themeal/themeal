@@ -9,6 +9,7 @@ import {
 } from 'react';
 
 import { Button } from '../common/Button';
+import { CHECKOUT_LAYER_Z_INDEX } from '../common/zIndexTokens';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { MapPinIcon } from '../common/icons';
 import { FONT_FAMILY_TOKENS } from '../common/fontFamilyTokens';
@@ -194,11 +195,12 @@ function MapPin({ availability }: { availability: DeliveryAvailability }) {
   return (
     <div
       className={[
-        'pointer-events-none absolute left-1/2 top-1/2 z-30 flex size-[32px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full shadow-[0_8px_24px_rgba(47,56,70,0.28)]',
+        'pointer-events-none absolute left-1/2 top-1/2 flex size-[32px] -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full shadow-[0_8px_24px_rgba(47,56,70,0.28)]',
         isAvailable
           ? 'bg-[var(--delivery-address-primary)]'
           : 'bg-[var(--delivery-address-danger)]',
       ].join(' ')}
+      style={{ zIndex: CHECKOUT_LAYER_Z_INDEX.stepFloat }}
     >
       <div className="size-[12px] rounded-full bg-[var(--delivery-address-card-bg)]" />
     </div>
@@ -978,11 +980,13 @@ export function DeliveryAddressScreen({
       {shouldShowOutOfAreaContactForm ? (
         <OutOfAreaContactNotice
           onContactMe={() => setIsOutOfAreaContactFormOpen(true)}
-          className="hidden md:absolute md:bottom-[48px] md:left-1/2 md:flex md:w-[680px] md:-translate-x-1/2"
+          className="hidden md:absolute md:bottom-[48px] md:left-1/2 md:z-[20] md:flex md:w-[680px] md:-translate-x-1/2"
         />
       ) : null}
 
-      <div className="hidden md:absolute md:left-1/2 md:top-[42px] md:z-20 md:flex md:w-[680px] md:-translate-x-1/2 md:flex-col md:overflow-hidden md:rounded-[12px] md:bg-[var(--delivery-address-card-bg)] md:shadow-[0_12px_32px_rgba(47,56,70,0.16)]">
+      <div
+        className="hidden md:absolute md:left-1/2 md:top-[42px] md:z-[10] md:flex md:w-[680px] md:-translate-x-1/2 md:flex-col md:overflow-hidden md:rounded-[12px] md:bg-[var(--delivery-address-card-bg)] md:shadow-[0_12px_32px_rgba(47,56,70,0.16)]"
+      >
         <div className="flex gap-[20px] p-[32px]">
           <div className="flex-1">
             <AddressSearchInput
@@ -1057,7 +1061,7 @@ export function DeliveryAddressScreen({
               {shouldShowOutOfAreaContactForm ? (
                 <OutOfAreaContactNotice
                   onContactMe={() => setIsOutOfAreaContactFormOpen(true)}
-                  className="absolute bottom-[20px] left-[20px] right-[20px]"
+                  className="absolute bottom-[20px] left-[20px] right-[20px] z-[20]"
                 />
               ) : null}
             </div>

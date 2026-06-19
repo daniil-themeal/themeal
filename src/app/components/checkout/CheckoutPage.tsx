@@ -30,7 +30,7 @@ import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
 import { useEscapeLayer } from '../common/escapeStack';
 import { useModalShell } from '../common/ModalShell';
 import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
-import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
+import { CHECKOUT_LAYER_Z_INDEX, Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { formatUaePhoneInput, normalizeUaePhone } from './phoneValidation';
 import { isValidTestSmsCode, SMS_CODE_ERROR, SMS_CODE_SUCCESS_HOLD_MS } from './smsCodeValidation';
 import { usePlanStepScrollChaining } from './usePlanStepScrollChaining';
@@ -657,7 +657,7 @@ export function CheckoutPage({
         onAuthDevModeChange={handleDevAuthModeChange}
       />
 
-      {checkoutStep === 'plan' ? (
+      {!resultOverlay && checkoutStep === 'plan' ? (
         <>
           <div
             ref={bodyRef}
@@ -740,7 +740,7 @@ export function CheckoutPage({
             hidden={summaryVisible || isMealDetailOpen}
           />
         </>
-      ) : checkoutStep === 'delivery' && deliveryStep === 'address' ? (
+      ) : !resultOverlay && checkoutStep === 'delivery' && deliveryStep === 'address' ? (
         <div ref={bodyRef} className={checkoutFormStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <DeliveryAddressScreen
             selectedAddress={selectedAddress}
@@ -748,7 +748,7 @@ export function CheckoutPage({
             onContinue={handleAddressContinue}
           />
         </div>
-      ) : checkoutStep === 'delivery' && deliveryStep === 'details' ? (
+      ) : !resultOverlay && checkoutStep === 'delivery' && deliveryStep === 'details' ? (
         <div ref={bodyRef} className={checkoutFormStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <DeliveryDetailsScreen
             selectedAddress={selectedAddress}
@@ -760,7 +760,7 @@ export function CheckoutPage({
             onContinue={handleDeliveryDetailsContinue}
           />
         </div>
-      ) : checkoutStep === 'payment' ? (
+      ) : !resultOverlay && checkoutStep === 'payment' ? (
         <div ref={bodyRef} className={checkoutFormStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <PaymentScreen
             plan={plan}
@@ -793,7 +793,10 @@ export function CheckoutPage({
       />
 
       {resultOverlay ? (
-        <div className="absolute inset-0 z-10 flex flex-col">
+        <div
+          className="absolute inset-0 flex flex-col"
+          style={{ zIndex: CHECKOUT_LAYER_Z_INDEX.resultOverlay }}
+        >
           <button
             type="button"
             className="absolute inset-0 bg-black/40 modal-overlay-enter"

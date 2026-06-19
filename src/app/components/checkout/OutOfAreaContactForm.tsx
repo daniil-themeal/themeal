@@ -84,7 +84,7 @@ export function OutOfAreaContactNotice({
 
   return (
     <div
-      className={`z-40 rounded-[12px] bg-[var(--out-of-area-notice-bg)] p-[20px] shadow-[0_12px_32px_rgba(47,56,70,0.14)] transition-all duration-200 ease-out ${
+      className={`rounded-[12px] bg-[var(--out-of-area-notice-bg)] p-[20px] shadow-[0_12px_32px_rgba(47,56,70,0.14)] transition-all duration-200 ease-out ${
         isNoticeVisible ? 'translate-y-0 opacity-100' : 'translate-y-[16px] opacity-0'
       } ${className}`}
       style={outOfAreaContactStyle}

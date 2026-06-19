@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
 import { useEscapeLayer } from './common/escapeStack';
-import { Z_INDEX_TOKENS } from './common/zIndexTokens';
+import { CHECKOUT_LAYER_Z_INDEX, Z_INDEX_TOKENS } from './common/zIndexTokens';
 
 import { Badge, BADGE_VARIANTS } from './common/Badge';
 import { Button, BUTTON_SIZE_LABELS, BUTTON_SIZES, BUTTON_VARIANTS } from './common/Button';
@@ -607,7 +607,7 @@ function ZIndexTokenRow({
   return (
     <div className="flex items-baseline justify-between gap-[12px] rounded-[12px] border border-[var(--demo-card-border)] px-[16px] py-[12px]">
       <DemoSubheading inline>
-        <CodeLabel>{`Z_INDEX_TOKENS.${token}`}</CodeLabel>
+        <CodeLabel>{token}</CodeLabel>
       </DemoSubheading>
 
       <span className="font-sans text-[12px] font-semibold leading-[130%] text-[var(--demo-description)]">
@@ -927,7 +927,23 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                   [keyof typeof Z_INDEX_TOKENS, number]
                 >
               ).map(([token, value]) => (
-                <ZIndexTokenRow key={token} token={token} value={value} />
+                <ZIndexTokenRow key={token} token={`Z_INDEX_TOKENS.${token}`} value={value} />
+              ))}
+            </div>
+            <p className="mt-[16px] font-sans text-[14px] font-medium leading-[140%] text-[#6b7280]">
+              Checkout shell internal layers (relative to checkout root)
+            </p>
+            <div className="mt-[8px] grid grid-cols-1 gap-[12px] md:grid-cols-2">
+              {(
+                Object.entries(CHECKOUT_LAYER_Z_INDEX) as Array<
+                  [keyof typeof CHECKOUT_LAYER_Z_INDEX, number]
+                >
+              ).map(([token, value]) => (
+                <ZIndexTokenRow
+                  key={token}
+                  token={`CHECKOUT_LAYER_Z_INDEX.${token}`}
+                  value={value}
+                />
               ))}
             </div>
           </DemoCard>
