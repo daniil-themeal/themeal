@@ -145,7 +145,7 @@ export function OrderSummary({
   isPhoneVerified = false,
   onResetPhone,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
-  totalMealsAnchorRef,
+  todayTotalAnchorRef,
   appliedPromoCode = '',
   onAppliedPromoCodeChange,
   onMealDetailOpenChange,
@@ -163,7 +163,7 @@ export function OrderSummary({
   isPhoneVerified?: boolean;
   onResetPhone?: () => void;
   pricingTable?: CheckoutPricingTable;
-  totalMealsAnchorRef?: RefObject<HTMLDivElement | null>;
+  todayTotalAnchorRef?: RefObject<HTMLDivElement | null>;
   appliedPromoCode?: string;
   onAppliedPromoCodeChange?: (code: string) => void;
   onMealDetailOpenChange?: (open: boolean) => void;
@@ -401,9 +401,8 @@ export function OrderSummary({
             <OrderSummaryDivider color="var(--order-summary-divider)" />
 
             <div
-              ref={totalMealsAnchorRef}
               className={[
-                'flex min-w-0 scroll-mt-4 scroll-mb-[72px] flex-wrap items-end justify-between gap-x-[8px] gap-y-[4px]',
+                'flex min-w-0 flex-wrap items-end justify-between gap-x-[8px] gap-y-[4px]',
                 orderSummarySectionPx,
               ].join(' ')}
             >
@@ -431,7 +430,10 @@ export function OrderSummary({
 
             <OrderSummaryDivider color="var(--order-summary-divider)" />
 
-            <div className={['h-fit w-full', orderSummarySectionPx].join(' ')}>
+            <div
+              ref={todayTotalAnchorRef}
+              className={['h-fit w-full scroll-mt-4 scroll-mb-[72px]', orderSummarySectionPx].join(' ')}
+            >
               <CheckoutTodayTotal
                 oldPeriodPrice={pricing.oldPeriodPrice}
                 periodPrice={finalPeriodPrice}

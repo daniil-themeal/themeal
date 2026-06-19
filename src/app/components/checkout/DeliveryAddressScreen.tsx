@@ -1063,6 +1063,14 @@ export function DeliveryAddressScreen({
             </div>
 
             <div className="shrink-0 bg-[var(--delivery-address-card-bg)] px-[20px] pb-[36px] pt-[24px]">
+              {selectedAddress ? (
+                <SelectedAddressBlock
+                  address={selectedAddress}
+                  availability={selectedAddressAvailability}
+                  className="mb-[20px]"
+                />
+              ) : null}
+
               <div className="flex flex-col gap-[16px] sm:flex-row">
                 <div className="min-w-0 flex-1">
                   <AddressSearchInput
@@ -1085,14 +1093,6 @@ export function DeliveryAddressScreen({
                   Continue
                 </Button>
               </div>
-
-              {selectedAddress ? (
-                <SelectedAddressBlock
-                  address={selectedAddress}
-                  availability={selectedAddressAvailability}
-                  className="mt-[20px]"
-                />
-              ) : null}
             </div>
           </div>
         )}

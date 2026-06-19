@@ -10,27 +10,33 @@ const ROW_LAYOUT_CLASSES: Record<
   RowBreakpoint,
   {
     flexRow: string;
+    itemsStart: string;
     itemsCenter: string;
     itemsEnd: string;
     selfCenter: string;
     actionWidth: string;
+    actionStart: string;
     actionCenter: string;
   }
 > = {
   280: {
     flexRow: '@[280px]:flex-row',
+    itemsStart: '@[280px]:items-start',
     itemsCenter: '@[280px]:items-center',
     itemsEnd: '@[280px]:items-end',
     selfCenter: '@[280px]:self-center',
     actionWidth: 'w-full @[280px]:w-auto @[280px]:shrink-0',
+    actionStart: '@[280px]:self-start',
     actionCenter: 'flex items-center @[280px]:h-[48px] @[280px]:self-center',
   },
   400: {
     flexRow: '@[400px]:flex-row',
+    itemsStart: '@[400px]:items-start',
     itemsCenter: '@[400px]:items-center',
     itemsEnd: '@[400px]:items-end',
     selfCenter: '@[400px]:self-center',
     actionWidth: 'w-full @[400px]:w-auto @[400px]:shrink-0',
+    actionStart: '@[400px]:self-start',
     actionCenter: 'flex items-center @[400px]:h-[48px] @[400px]:self-center',
   },
 };
@@ -39,7 +45,7 @@ type InputButtonRowProps = {
   input: ReactNode;
   action: ReactNode;
   error?: ReactNode;
-  align?: 'end' | 'center';
+  align?: 'start' | 'end' | 'center';
   rowBreakpoint?: RowBreakpoint;
   className?: string;
   actionClassName?: string;
@@ -55,7 +61,12 @@ export function InputButtonRow({
   actionClassName = '',
 }: InputButtonRowProps) {
   const rowLayout = ROW_LAYOUT_CLASSES[rowBreakpoint];
-  const rowAlignClassName = align === 'center' ? rowLayout.itemsCenter : rowLayout.itemsEnd;
+  const rowAlignClassName =
+    align === 'start'
+      ? rowLayout.itemsStart
+      : align === 'center'
+        ? rowLayout.itemsCenter
+        : rowLayout.itemsEnd;
   const inputWrapperClassName = [
     'min-w-0 flex-1',
     align === 'center' ? rowLayout.selfCenter : '',
@@ -64,7 +75,11 @@ export function InputButtonRow({
     .join(' ');
   const actionWrapperClassName = [
     rowLayout.actionWidth,
-    align === 'center' ? rowLayout.actionCenter : '',
+    align === 'start'
+      ? rowLayout.actionStart
+      : align === 'center'
+        ? rowLayout.actionCenter
+        : '',
     actionClassName,
   ]
     .filter(Boolean)

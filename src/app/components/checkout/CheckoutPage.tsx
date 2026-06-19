@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { CSSProperties } from 'react';
+import type { AnimationEvent, CSSProperties } from 'react';
 
 import { CheckoutHeader } from './CheckoutHeader';
 import type { CheckoutHeaderStep } from './CheckoutHeader';
@@ -34,7 +34,6 @@ import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { formatUaePhoneInput, normalizeUaePhone } from './phoneValidation';
 import { isValidTestSmsCode, SMS_CODE_ERROR, SMS_CODE_SUCCESS_HOLD_MS } from './smsCodeValidation';
 import { usePlanStepScrollChaining } from './usePlanStepScrollChaining';
-import { useCheckoutPlanDesktopLayout } from './useCheckoutPlanDesktopLayout';
 
 type CheckoutUiStep = 'plan' | 'delivery' | 'payment';
 type CheckoutStep = CheckoutUiStep | 'verification' | 'success' | 'failed';
@@ -175,6 +174,7 @@ export function CheckoutPage({
   const [summaryVisible, setSummaryVisible] = useState(false);
   const [isMealDetailOpen, setIsMealDetailOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [enterAnimationDone, setEnterAnimationDone] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<TestAddress | null>(null);
   const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetailsData>(() =>
     createInitialDeliveryDetails(),
@@ -193,20 +193,10 @@ export function CheckoutPage({
     }
   }, []);
 
-  const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
-  const totalMealsRef = useRef<HTMLDivElement>(null);
+  const todayTotalRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const resultBodyRef = useRef<HTMLDivElement>(null);
-
-  const isPlanDesktopLayout = useCheckoutPlanDesktopLayout(
-    isOpen && checkoutStep === 'plan',
-    bodyRef,
-  );
-  const isPlanDesktopLayoutRef = useRef(isPlanDesktopLayout);
-  isPlanDesktopLayoutRef.current = isPlanDesktopLayout;
-
-  const getPlanDesktopLayout = useCallback(() => isPlanDesktopLayoutRef.current, []);
 
   const headerStep =
     checkoutStep === 'plan'
@@ -242,6 +232,7 @@ export function CheckoutPage({
 
   useEffect(() => {
     if (isOpen) {
+      setEnterAnimationDone(false);
       resetCloseState();
       document.body.style.overflow = 'hidden';
       const nextState = resolveInitialCheckoutState(initialCheckoutStep);
@@ -288,7 +279,7 @@ export function CheckoutPage({
   useEffect(() => {
     if (!isOpen || checkoutStep !== 'plan') return;
 
-    const anchor = totalMealsRef.current;
+    const anchor = todayTotalRef.current;
     const body = bodyRef.current;
 
     if (!anchor || !body) return;
@@ -310,7 +301,6 @@ export function CheckoutPage({
     enabled: isOpen && checkoutStep === 'plan',
     bodyRef,
     rightRef,
-    isDesktopLayout: getPlanDesktopLayout,
   });
 
   const toggleIngredient = (key: string) => {
@@ -387,7 +377,7 @@ export function CheckoutPage({
     setMenuOpen(false);
 
     const body = bodyRef.current;
-    const anchor = totalMealsRef.current ?? rightRef.current;
+    const anchor = todayTotalRef.current ?? rightRef.current;
 
     if (!body || !anchor) return;
 
@@ -626,6 +616,16 @@ export function CheckoutPage({
     requestClose();
   };
 
+  const handleCheckoutAnimationEnd = (event: AnimationEvent<HTMLDivElement>) => {
+    if (event.currentTarget !== event.target) return;
+
+    if (!isClosing) {
+      setEnterAnimationDone(true);
+    }
+
+    handlePanelAnimationEnd(event);
+  };
+
   useEscapeLayer(isOpen, Z_INDEX_TOKENS.checkout, () => {
     handleEscapeRef.current();
   });
@@ -636,11 +636,15 @@ export function CheckoutPage({
     <div
       className={[
         'fixed inset-0 z-[200] flex flex-col',
-        isClosing ? 'pointer-events-none modal-exit-responsive' : 'modal-enter-responsive',
+        isClosing
+          ? 'pointer-events-none modal-exit-responsive'
+          : enterAnimationDone
+            ? ''
+            : 'modal-enter-responsive',
       ].join(' ')}
       style={checkoutPageStyle}
       {...{ [SPACING_ROOT_ATTR]: '' }}
-      onAnimationEnd={handlePanelAnimationEnd}
+      onAnimationEnd={handleCheckoutAnimationEnd}
     >
       <CheckoutHeader
         step={headerStep}
@@ -657,27 +661,16 @@ export function CheckoutPage({
         <>
           <div
             ref={bodyRef}
-            className="flex-1 overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide"
+            className="flex-1 overflow-y-auto overflow-anchor-none bg-[var(--checkout-page-bg)] scrollbar-hide"
             {...{ [SPACING_CONTENT_ATTR]: '' }}
           >
             <div
-              className={[
-                'mx-auto flex w-full max-w-[1200px] flex-col gap-[32px] px-[20px] pt-0',
-                isPlanDesktopLayout
-                  ? 'grid grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] items-start gap-[24px] px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]'
-                  : '',
-              ].join(' ')}
+              className="mx-auto flex w-full max-w-[1200px] flex-col gap-[32px] px-[20px] pt-0 md:grid md:grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:items-start md:gap-[24px] md:px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]"
               style={checkoutPlanGridStyle}
             >
               <div
-                ref={leftRef}
                 style={checkoutLeftColumnStyle}
-                className={[
-                  'flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)]',
-                  isPlanDesktopLayout
-                    ? 'gap-[48px] pt-[56px] pb-[length:var(--checkout-plan-column-pb)]'
-                    : '',
-                ].join(' ')}
+                className="flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
               >
                 <PlanSelectorBlock
                   selected={plan}
@@ -702,12 +695,7 @@ export function CheckoutPage({
               <div
                 ref={rightRef}
                 style={checkoutLeftColumnStyle}
-                className={[
-                  'w-full min-w-0',
-                  isPlanDesktopLayout
-                    ? 'max-h-[calc(100svh-56px)] max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] min-h-0 overflow-x-hidden overflow-y-hidden lg:max-w-[460px] sticky top-0 self-start pt-[56px] pb-[length:var(--checkout-plan-column-pb)]'
-                    : 'max-w-none pt-0',
-                ].join(' ')}
+                className="w-full min-w-0 max-md:max-w-none max-md:pt-0 md:max-h-[calc(100svh-56px)] md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:min-h-0 md:overflow-x-hidden md:overflow-y-hidden lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
               >
                 <OrderSummary
                   plan={plan}
@@ -722,7 +710,7 @@ export function CheckoutPage({
                   phone={phone}
                   isPhoneVerified={isAuthComplete}
                   onResetPhone={handleResetPhone}
-                  totalMealsAnchorRef={totalMealsRef}
+                  todayTotalAnchorRef={todayTotalRef}
                   appliedPromoCode={appliedPromoCode}
                   onAppliedPromoCodeChange={setAppliedPromoCode}
                   onMealDetailOpenChange={setIsMealDetailOpen}
@@ -747,7 +735,7 @@ export function CheckoutPage({
             persons={persons}
             lightMealOption={lightMealOption}
             onScrollToSummary={handleScrollToSummary}
-            hidden={summaryVisible || isMealDetailOpen || isPlanDesktopLayout}
+            hidden={summaryVisible || isMealDetailOpen}
           />
         </>
       ) : checkoutStep === 'delivery' && deliveryStep === 'address' ? (

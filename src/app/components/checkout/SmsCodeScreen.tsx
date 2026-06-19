@@ -274,7 +274,7 @@ export function SmsCodeScreen({
           ) : isModal ? (
             <InputButtonRow
               rowBreakpoint={400}
-              align="center"
+              align="start"
               className={phoneSectionMt}
               input={
                 <PhoneInput

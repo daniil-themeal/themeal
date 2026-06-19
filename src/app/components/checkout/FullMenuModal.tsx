@@ -189,6 +189,12 @@ export function FullMenuModal({
     lightMealOption,
   );
   const activeMealCount = mealSlots.filter((slot) => slot.active).length;
+  const daysScrollFadeKey = `${isOpen}-${MENU_DAYS_COUNT}`;
+  const { showStartFade: showDaysStartFade, showEndFade: showDaysEndFade } =
+    useHorizontalScrollEdgeFades(daysScrollRef, daysScrollFadeKey, {
+      alwaysVisibleWhenScrollable: true,
+    });
+
   const mealsScrollFadeKey = `${isOpen}-${selectedDayIndex}-${plan}-${lightMealOption}-${activeMealCount}`;
   const { showStartFade: showMealsStartFade, showEndFade: showMealsEndFade } =
     useHorizontalScrollEdgeFades(mealsScrollRef, mealsScrollFadeKey, {
@@ -439,7 +445,7 @@ export function FullMenuModal({
               />
             </div>
 
-        <div className="shrink-0 px-[8px] py-[12px]">
+        <div className="shrink-0 px-[8px] pt-[12px] pb-0">
           <div className="flex w-full items-stretch" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
             <button
               type="button"
@@ -469,17 +475,18 @@ export function FullMenuModal({
               </svg>
             </button>
 
-            <div
-              ref={daysScrollRef}
-              onMouseDown={handleDaysMouseDown}
-              onMouseMove={handleDaysMouseMove}
-              onMouseUp={stopMouseDrag}
-              onMouseLeave={stopMouseDrag}
-              className={`min-w-0 flex-1 touch-pan-x select-none overflow-x-auto overflow-y-hidden scrollbar-hide ${
-                isDraggingDays ? 'cursor-grabbing' : 'cursor-default'
-              }`}
-            >
-              <div className="relative flex w-[200%] gap-[8px]">
+            <div className="relative min-w-0 flex-1">
+              <div
+                ref={daysScrollRef}
+                onMouseDown={handleDaysMouseDown}
+                onMouseMove={handleDaysMouseMove}
+                onMouseUp={stopMouseDrag}
+                onMouseLeave={stopMouseDrag}
+                className={`min-w-0 touch-pan-x select-none overflow-x-auto overflow-y-hidden scrollbar-hide ${
+                  isDraggingDays ? 'cursor-grabbing' : 'cursor-default'
+                }`}
+              >
+                <div className="relative flex w-[280%] gap-[8px] md:w-[200%]">
                 {menuDays.map((d) => {
                   const active = d.absoluteDayIndex === selectedDayIndex;
 
@@ -530,7 +537,17 @@ export function FullMenuModal({
                     </button>
                   );
                 })}
+                </div>
               </div>
+
+              <CheckoutScrollEdgeFades
+                showStart={showDaysStartFade}
+                showEnd={showDaysEndFade}
+                edgeColor={COLOR_TOKENS.base.white}
+                fadeWidthClassName="w-[length:var(--checkout-scroll-edge-fade-width)]"
+                startPositionClassName="left-0"
+                endPositionClassName="right-0"
+              />
             </div>
 
             <button
@@ -555,71 +572,73 @@ export function FullMenuModal({
         </div>
 
         <div className="flex-1 overflow-x-hidden overflow-y-auto" {...{ [SPACING_CONTENT_ATTR]: '' }}>
-          <div className={['relative overflow-visible', FULL_MENU_MEAL_CAROUSEL_BLEED].join(' ')}>
-            <div
-              key={`${testMenuDays[selectedDayIndex]?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}
-              ref={mealsScrollRef}
-              onMouseDown={handleMealsMouseDown}
-              onMouseMove={handleMealsMouseMove}
-              onMouseUp={stopMealsMouseDrag}
-              onMouseLeave={stopMealsMouseDrag}
-              className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain px-0 pb-[20px] pt-[6px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:cursor-default md:overflow-x-hidden ${
-                isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
-              }`}
-              style={{
-                animation:
-                  slideDirection === 'left'
-                    ? 'mealsSlideFromRight 260ms ease-out both'
-                    : 'mealsSlideFromLeft 260ms ease-out both',
-              }}
-            >
-              <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
-              {mealSlots.map(({ meal, active }) => (
-                <button
-                  key={meal.id}
-                  type="button"
-                  onClick={() => handleMealClick(meal)}
-                  className={[
-                    'group relative z-0 flex w-[length:var(--full-menu-meal-card-width)] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10 md:w-[length:var(--full-menu-meal-card-width-md)]',
-                    active ? '' : 'hidden md:flex md:opacity-50',
-                  ].join(' ')}
-                >
-                  <div className="flex aspect-[25/19] w-full items-center justify-center overflow-visible">
-                    <img
-                      src={meal.img}
-                      alt={meal.name}
-                      draggable={false}
-                      className={[
-                        'pointer-events-none h-[94.74%] w-full rounded-[8px] object-cover origin-center transition-transform duration-200',
-                        active ? 'group-hover:scale-105' : 'md:group-hover:scale-100',
-                      ].join(' ')}
-                    />
-                  </div>
+          <div className="relative w-full">
+            <div className={FULL_MENU_MEAL_CAROUSEL_BLEED}>
+              <div
+                key={`${testMenuDays[selectedDayIndex]?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}
+                ref={mealsScrollRef}
+                onMouseDown={handleMealsMouseDown}
+                onMouseMove={handleMealsMouseMove}
+                onMouseUp={stopMealsMouseDrag}
+                onMouseLeave={stopMealsMouseDrag}
+                className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain px-0 pb-[20px] pt-[6px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:cursor-default md:overflow-x-hidden ${
+                  isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
+                }`}
+                style={{
+                  animation:
+                    slideDirection === 'left'
+                      ? 'mealsSlideFromRight 260ms ease-out both'
+                      : 'mealsSlideFromLeft 260ms ease-out both',
+                }}
+              >
+                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                {mealSlots.map(({ meal, active }) => (
+                  <button
+                    key={meal.id}
+                    type="button"
+                    onClick={() => handleMealClick(meal)}
+                    className={[
+                      'group relative z-0 flex w-[length:var(--full-menu-meal-card-width)] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10 md:w-[length:var(--full-menu-meal-card-width-md)]',
+                      active ? '' : 'hidden md:flex md:opacity-50',
+                    ].join(' ')}
+                  >
+                    <div className="flex aspect-[25/19] w-full items-center justify-center overflow-visible">
+                      <img
+                        src={meal.img}
+                        alt={meal.name}
+                        draggable={false}
+                        className={[
+                          'pointer-events-none h-[94.74%] w-full rounded-[8px] object-cover origin-center transition-transform duration-200',
+                          active ? 'group-hover:scale-105' : 'md:group-hover:scale-100',
+                        ].join(' ')}
+                      />
+                    </div>
 
-                  <div className="flex w-full flex-col gap-[12px] px-[4px]">
-                    <p
-                      className={[
-                        TEXT_TRIM_CLASS_NAME,
-                        'flex w-full flex-wrap items-center gap-x-[0.35em] font-sans text-[length:var(--full-menu-meal-meta-font-size)] font-medium leading-[140%] text-[var(--full-menu-muted)]',
-                      ].join(' ')}
-                    >
-                      <span>{meal.kcal} kcal • {meal.weight} g</span>
-                      <span>{meal.type}</span>
-                    </p>
+                    <div className="flex w-full flex-col gap-[12px] px-[4px]">
+                      <p
+                        className={[
+                          TEXT_TRIM_CLASS_NAME,
+                          'flex w-full flex-wrap items-center gap-x-[0.35em] font-sans text-[length:var(--full-menu-meal-meta-font-size)] font-medium leading-[140%] text-[var(--full-menu-muted)]',
+                        ].join(' ')}
+                      >
+                        <span>{meal.kcal} kcal • {meal.weight} g</span>
+                        <span>{meal.type}</span>
+                      </p>
 
-                    <p
-                      className={[
-                        TEXT_TRIM_CLASS_NAME,
-                        'w-full font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors',
-                        active ? 'group-hover:text-[var(--full-menu-active)]' : '',
-                      ].join(' ')}
-                    >
-                      {meal.name}
-                    </p>
-                  </div>
-                </button>
-              ))}
-              <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                      <p
+                        className={[
+                          TEXT_TRIM_CLASS_NAME,
+                          'w-full font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors',
+                          active ? 'group-hover:text-[var(--full-menu-active)]' : '',
+                        ].join(' ')}
+                      >
+                        {meal.name}
+                      </p>
+                    </div>
+                  </button>
+                ))}
+                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+              </div>
             </div>
 
             <CheckoutScrollEdgeFades

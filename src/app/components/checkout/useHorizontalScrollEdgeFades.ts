@@ -46,17 +46,27 @@ export function useHorizontalScrollEdgeFades(
     const element = scrollRef.current;
     if (!element) return;
 
+    let cancelled = false;
+
     const updateFades = () => {
+      if (cancelled) return;
       setFades(readHorizontalScrollEdgeFades(element, alwaysVisibleWhenScrollable));
     };
 
     updateFades();
+
+    window.requestAnimationFrame(() => {
+      updateFades();
+      window.requestAnimationFrame(updateFades);
+    });
+
     element.addEventListener('scroll', updateFades, { passive: true });
 
     const resizeObserver = new ResizeObserver(updateFades);
     resizeObserver.observe(element);
 
     return () => {
+      cancelled = true;
       element.removeEventListener('scroll', updateFades);
       resizeObserver.disconnect();
     };
