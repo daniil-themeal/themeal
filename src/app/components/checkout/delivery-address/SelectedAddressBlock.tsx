@@ -19,8 +19,8 @@ export function SelectedAddressBlock({
   const isAvailable = availability === 'available';
 
   return (
-    <div className={`flex gap-[12px] ${className}`}>
-      <div className="mt-[2px] shrink-0 text-[#8594AC]">
+    <div className={`flex items-center gap-[12px] ${className}`}>
+      <div className="shrink-0 text-[#8594AC]">
         <MapPinIcon size={16} />
       </div>
 
@@ -30,7 +30,7 @@ export function SelectedAddressBlock({
         </p>
       </div>
 
-      <div className="mt-[2px] shrink-0">
+      <div className="shrink-0">
         {isAvailable ? <DeliveryAvailableIcon /> : <DeliveryUnavailableIcon />}
       </div>
     </div>

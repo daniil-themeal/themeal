@@ -642,8 +642,8 @@ function SelectedAddressBlock({
   const isAvailable = availability === 'available';
 
   return (
-    <div className={`flex items-start justify-center gap-[12px] ${className}`}>
-      <div className="mt-[2px] h-fit shrink-0 text-[var(--delivery-address-muted)]">
+    <div className={`flex items-center justify-center gap-[12px] ${className}`}>
+      <div className="shrink-0 text-[var(--delivery-address-muted)]">
         <MapPinIcon size={16} />
       </div>
 
@@ -653,7 +653,7 @@ function SelectedAddressBlock({
         </p>
       </div>
 
-      <div className="mt-[2px] shrink-0">
+      <div className="shrink-0">
         {isAvailable ? <DeliveryAvailableIcon /> : <DeliveryUnavailableIcon />}
       </div>
     </div>

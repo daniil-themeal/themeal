@@ -215,6 +215,7 @@ export function DeliveryDetailsScreen({
               style={getFieldSizeStyle('large')}
             >
               <Dropdown
+                nativeOnMobile
                 id="delivery-time-slot"
                 label="Delivery time *"
                 options={TIME_SLOTS.map((slot) => ({ value: slot, label: slot }))}
