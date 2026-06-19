@@ -1,5 +1,5 @@
 export const CHECKOUT_MODAL_SHELL_ROOT_CLASSNAME =
-  'bg-[var(--meal-detail-card-bg)] pb-[env(safe-area-inset-bottom)] sm:bg-black/40 sm:p-[24px]';
+  'bg-[var(--meal-detail-card-bg)] pb-[env(safe-area-inset-bottom)] sm:p-[24px]';
 
 export const CHECKOUT_MODAL_SHELL_PANEL_CLASSNAME =
   'w-full bg-[var(--meal-detail-card-bg)] sm:max-w-[clamp(480px,calc(480px+(100vw-48rem)*80/448),560px)] sm:overflow-hidden sm:rounded-[20px] sm:shadow-2xl';

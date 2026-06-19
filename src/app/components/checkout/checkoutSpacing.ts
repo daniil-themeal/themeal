@@ -1,3 +1,5 @@
+import { createFontSizeClamp } from '../common/fontSizeClampTokens';
+
 export const CHECKOUT_CARD_PADDING_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 12 / 448), 32px)';
 
@@ -38,18 +40,34 @@ export const FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP =
 export const FULL_MENU_MEAL_GAP_CLAMP =
   'clamp(20px, calc(20px + (100vw - 48rem) * 6 / 448), 26px)';
 
+export const FULL_MENU_LIGHT_CONTROLS_SPACING_CLAMP =
+  'clamp(4px, calc(4px + (100vw - 20rem) * 4 / 448), 8px)';
+
+export const FULL_MENU_LIGHT_OPTION_GAP_CLAMP = FULL_MENU_LIGHT_CONTROLS_SPACING_CLAMP;
+
+export const FULL_MENU_PLAN_LIGHT_DIVIDER_GAP_CLAMP = FULL_MENU_LIGHT_CONTROLS_SPACING_CLAMP;
+
+export const FULL_MENU_LIGHT_OPTION_PADDING_X_CLAMP = FULL_MENU_LIGHT_CONTROLS_SPACING_CLAMP;
+
+/** Light sub-tab label font size (10px → 14px), scales from md breakpoint. */
+export const FULL_MENU_LIGHT_OPTION_FONT_SIZE_CLAMP = createFontSizeClamp(10, 14, 448, '48rem');
+
+/** Gap between word segments inside a light sub-tab pill (2px → 4px). */
+export const FULL_MENU_LIGHT_OPTION_TEXT_GAP_CLAMP =
+  'clamp(2px, calc(2px + (100vw - 48rem) * 2 / 448), 4px)';
+
+/** Full Menu meal carousel side inset and fade width (20px → 24px). */
+export const FULL_MENU_MEAL_CAROUSEL_INSET_CLAMP =
+  'clamp(20px, calc(20px + (100vw - 20rem) * 4 / 448), 24px)';
+
 /** Plus plan — widest meal row in Full Menu. */
 export const FULL_MENU_MAX_MEAL_COUNT = 4;
 
-/** Modal width on md+ — exactly fits N meal cards, gaps, and horizontal padding. */
+/** Modal width on md+ — cards, all flex gaps (gutter–card–…–gutter), and insets. */
 export function getFullMenuModalWidthForMealCount(mealCount: number): string {
   const count = Math.max(1, mealCount);
 
-  if (count === 1) {
-    return 'calc(var(--full-menu-meal-card-width-md) + 2 * var(--checkout-card-padding))';
-  }
-
-  return `calc(${count} * var(--full-menu-meal-card-width-md) + ${count - 1} * var(--full-menu-meal-gap) + 2 * var(--checkout-card-padding))`;
+  return `calc(${count} * var(--full-menu-meal-card-width-md) + ${count + 1} * var(--full-menu-meal-gap) + 2 * var(--full-menu-meal-carousel-inset))`;
 }
 
 export const MEAL_DETAIL_MODAL_MAX_WIDTH_CLAMP =

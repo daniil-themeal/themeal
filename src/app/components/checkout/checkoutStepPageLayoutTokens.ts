@@ -67,6 +67,13 @@ export const CHECKOUT_CARD_SECTION_BLEED =
 export const CHECKOUT_SCROLL_EDGE_GUTTER_CLASS_NAME =
   'shrink-0 w-[length:var(--checkout-card-padding)]';
 
+/** Full Menu meal carousel — bleed/inset follows fade width, not card padding. */
+export const FULL_MENU_MEAL_CAROUSEL_BLEED =
+  'max-md:-mx-[length:var(--full-menu-meal-carousel-inset)] max-md:w-[calc(100%+2*var(--full-menu-meal-carousel-inset))] md:mx-0 md:w-full';
+
+export const FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME =
+  'shrink-0 w-[length:var(--full-menu-meal-carousel-inset)]';
+
 export const CHECKOUT_SCROLL_EDGE_FADE_START_POSITION_CLASS_NAME =
   'left-[length:var(--checkout-card-padding)]';
 

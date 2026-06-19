@@ -25,6 +25,14 @@ export const MEAL_TYPES_BY_LIGHT_OPTION: Record<LightMealOption, MealType[]> = {
   'lunch-dinner': ['Lunch', 'Dinner'],
 };
 
+/** Fixed slot order for Full Menu desktop carousel (Plus plan order). */
+export const FULL_MENU_SLOT_MEAL_TYPES: MealType[] = ['Breakfast', 'Lunch', 'Dinner', 'Soup'];
+
+export type FullMenuMealSlot = {
+  meal: Meal;
+  active: boolean;
+};
+
 const breakfasts = [
   'French omelette with grilled beans and grilled tomatoes',
   'Greek yogurt bowl with berries and granola',
@@ -208,6 +216,21 @@ export function getMealsForPlan(
   return mealTypes
     .map(type => menuDay.meals.find(meal => meal.type === type))
     .filter((meal): meal is Meal => Boolean(meal));
+}
+
+export function getFullMenuMealSlots(
+  menuDay: MenuDay | undefined,
+  plan: Plan,
+  lightMealOption: LightMealOption,
+): FullMenuMealSlot[] {
+  if (!menuDay) return [];
+
+  const activeTypes = new Set(getMealTypesForPlan(plan, lightMealOption));
+
+  return FULL_MENU_SLOT_MEAL_TYPES.flatMap((type) => {
+    const meal = menuDay.meals.find((item) => item.type === type);
+    return meal ? [{ meal, active: activeTypes.has(type) }] : [];
+  });
 }
 
 export const testMenuDays: MenuDay[] = Array.from({ length: MENU_DAYS_COUNT }, (_, dayIndex) => ({

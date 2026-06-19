@@ -66,7 +66,7 @@ export function TabbyPromoModal({ isOpen, onClose, price }: TabbyPromoModalProps
   if (isPreloading) {
     return createPortal(
       <div
-        className="fixed inset-0 flex items-center justify-center bg-black/40"
+        className="fixed inset-0 flex items-center justify-center bg-black/40 modal-overlay-enter"
         style={{ zIndex: Z_INDEX_TOKENS.modal }}
         onClick={onClose}
       >
@@ -98,7 +98,7 @@ export function TabbyPromoModal({ isOpen, onClose, price }: TabbyPromoModalProps
       onClose={onClose}
       variant="fullscreen"
       zIndex={Z_INDEX_TOKENS.modal}
-      rootClassName="bg-white pb-[env(safe-area-inset-bottom)] sm:bg-black/40 sm:p-[24px]"
+      rootClassName="bg-white pb-[env(safe-area-inset-bottom)] sm:p-[24px]"
       panelClassName="w-full bg-white sm:max-w-[clamp(480px,calc(480px+(100vw-48rem)*80/448),560px)] sm:overflow-hidden sm:rounded-[20px] sm:shadow-2xl"
     >
       {(requestClose) => (

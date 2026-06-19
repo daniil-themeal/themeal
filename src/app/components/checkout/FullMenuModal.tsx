@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
 
-import { getMealsForPlan, testMenuDays, type LightMealOption } from '../../data/testMeals';
+import { getFullMenuMealSlots, testMenuDays, type LightMealOption } from '../../data/testMeals';
 import type { Plan } from '../../data/checkoutPricing';
 import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
@@ -9,15 +9,22 @@ import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import {
   CHECKOUT_CARD_PADDING_CLAMP,
   CHECKOUT_FONT_CLAMP_14_16,
-  CHECKOUT_FONT_CLAMP_20_25,
-  CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
+  FULL_MENU_MEAL_CAROUSEL_INSET_CLAMP,
   FULL_MENU_MEAL_CARD_WIDTH_CLAMP,
   FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP,
   FULL_MENU_MEAL_GAP_CLAMP,
+  FULL_MENU_LIGHT_OPTION_GAP_CLAMP,
+  FULL_MENU_LIGHT_OPTION_FONT_SIZE_CLAMP,
+  FULL_MENU_LIGHT_OPTION_TEXT_GAP_CLAMP,
+  FULL_MENU_PLAN_LIGHT_DIVIDER_GAP_CLAMP,
+  FULL_MENU_LIGHT_OPTION_PADDING_X_CLAMP,
   FULL_MENU_MAX_MEAL_COUNT,
   getFullMenuModalWidthForMealCount,
 } from './checkoutSpacing';
-import { CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING, CHECKOUT_SCROLL_EDGE_GUTTER_CLASS_NAME } from './checkoutStepPageLayoutTokens';
+import {
+  FULL_MENU_MEAL_CAROUSEL_BLEED,
+  FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME,
+} from './checkoutStepPageLayoutTokens';
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
 import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
 import { ModalShell } from '../common/ModalShell';
@@ -75,21 +82,27 @@ type FullMenuModalCssVariables = CSSProperties & {
   '--full-menu-active-muted': string;
   '--full-menu-close-bg': string;
   '--full-menu-close-bg-hover': string;
-  '--full-menu-heading-font-size': string;
   '--full-menu-day-date-font-size': string;
   '--full-menu-day-meta-font-size': string;
+  '--full-menu-light-option-font-size': string;
+  '--full-menu-light-option-text-gap': string;
   '--full-menu-meal-meta-font-size': string;
   '--full-menu-meal-title-font-size': string;
   '--full-menu-day-border-selected': string;
   '--full-menu-meal-card-width': string;
   '--full-menu-meal-card-width-md': string;
   '--full-menu-meal-gap': string;
+  '--full-menu-meal-carousel-inset': string;
+  '--full-menu-light-option-gap': string;
+  '--full-menu-plan-light-divider-gap': string;
+  '--full-menu-light-option-padding-x': string;
   '--full-menu-modal-width': string;
 };
 
 const fullMenuModalStyle: FullMenuModalCssVariables = {
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
-  '--checkout-scroll-edge-fade-width': CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
+  '--checkout-scroll-edge-fade-width': FULL_MENU_MEAL_CAROUSEL_INSET_CLAMP,
+  '--full-menu-meal-carousel-inset': FULL_MENU_MEAL_CAROUSEL_INSET_CLAMP,
   '--full-menu-bg': COLOR_TOKENS.base.white,
   '--full-menu-border': COLOR_TOKENS.neutral[100],
   '--full-menu-title': COLOR_TOKENS.neutral[900],
@@ -99,15 +112,19 @@ const fullMenuModalStyle: FullMenuModalCssVariables = {
   '--full-menu-active-muted': COLOR_TOKENS.primary[400],
   '--full-menu-close-bg': COLOR_TOKENS.neutral[50],
   '--full-menu-close-bg-hover': COLOR_TOKENS.neutral[75],
-  '--full-menu-heading-font-size': CHECKOUT_FONT_CLAMP_20_25,
   '--full-menu-day-date-font-size': CHECKOUT_FONT_CLAMP_14_16,
   '--full-menu-day-meta-font-size': FONT_SIZE_TOKENS[12],
+  '--full-menu-light-option-font-size': FULL_MENU_LIGHT_OPTION_FONT_SIZE_CLAMP,
+  '--full-menu-light-option-text-gap': FULL_MENU_LIGHT_OPTION_TEXT_GAP_CLAMP,
   '--full-menu-meal-meta-font-size': FONT_SIZE_TOKENS[12],
   '--full-menu-meal-title-font-size': CHECKOUT_FONT_CLAMP_14_16,
   '--full-menu-day-border-selected': COLOR_TOKENS.primary[200],
   '--full-menu-meal-card-width': FULL_MENU_MEAL_CARD_WIDTH_CLAMP,
   '--full-menu-meal-card-width-md': FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP,
   '--full-menu-meal-gap': FULL_MENU_MEAL_GAP_CLAMP,
+  '--full-menu-light-option-gap': FULL_MENU_LIGHT_OPTION_GAP_CLAMP,
+  '--full-menu-plan-light-divider-gap': FULL_MENU_PLAN_LIGHT_DIVIDER_GAP_CLAMP,
+  '--full-menu-light-option-padding-x': FULL_MENU_LIGHT_OPTION_PADDING_X_CLAMP,
 };
 
 function clamp(value: number, min: number, max: number) {
@@ -166,13 +183,17 @@ export function FullMenuModal({
   const canGoNext = selectedDayIndex < MENU_DAYS_COUNT - 1;
 
   const menuDays = getMenuDays();
-  const mealsForSelectedDay = getMealsForPlan(
+  const mealSlots = getFullMenuMealSlots(
     testMenuDays[selectedDayIndex],
     plan,
     lightMealOption,
   );
+  const activeMealCount = mealSlots.filter((slot) => slot.active).length;
+  const mealsScrollFadeKey = `${isOpen}-${selectedDayIndex}-${plan}-${lightMealOption}-${activeMealCount}`;
   const { showStartFade: showMealsStartFade, showEndFade: showMealsEndFade } =
-    useHorizontalScrollEdgeFades(mealsScrollRef, mealsForSelectedDay.length);
+    useHorizontalScrollEdgeFades(mealsScrollRef, mealsScrollFadeKey, {
+      alwaysVisibleWhenScrollable: true,
+    });
 
   const fullMenuPanelStyle: FullMenuModalCssVariables = {
     ...fullMenuModalStyle,
@@ -349,9 +370,7 @@ export function FullMenuModal({
         variant="bottom-sheet"
         zIndex={Z_INDEX_TOKENS.overlay}
         panelStyle={fullMenuPanelStyle}
-        overlayClassName={
-          selectedMeal ? 'pointer-events-none opacity-0 transition-opacity duration-150' : 'transition-opacity duration-150'
-        }
+        overlayClassName={selectedMeal ? 'pointer-events-none opacity-0' : ''}
         panelClassName={[
           'relative flex max-h-[88svh] w-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-2xl transition-opacity duration-150',
           'md:mx-[24px] md:w-[length:var(--full-menu-modal-width)] md:max-w-[calc(100vw-48px)] md:max-h-[85vh] md:rounded-[20px]',
@@ -369,7 +388,7 @@ export function FullMenuModal({
         }}
       >
         {(requestClose) => (
-          <div style={fullMenuModalStyle} className="flex min-h-0 flex-1 flex-col overflow-hidden">
+          <div style={fullMenuModalStyle} className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
             <style>
               {`
                 @keyframes mealsSlideFromRight {
@@ -396,11 +415,20 @@ export function FullMenuModal({
               `}
             </style>
 
-            <div className="flex h-[56px] shrink-0 items-center gap-[8px] border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
-              <p className="shrink-0 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px]">
-                Full menu
-              </p>
+            <button
+              type="button"
+              onClick={requestClose}
+              className="group absolute top-0 right-0 z-10 flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
+              aria-label="Close"
+            >
+              <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--full-menu-close-bg)] transition-colors duration-150 group-hover:bg-[var(--full-menu-close-bg-hover)]">
+                <span className={iconColorClassName.emphasis} style={iconColorStyle.emphasis}>
+                  <XIcon size={16} />
+                </span>
+              </span>
+            </button>
 
+            <div className="flex w-full shrink-0 items-center border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)] py-[12px] pl-[16px] pr-[56px] md:pl-[20px]">
               <FullMenuPlanToggle
                 plan={plan}
                 lightMealOption={lightMealOption}
@@ -409,22 +437,6 @@ export function FullMenuModal({
                 pillDefaultStyle={FULL_MENU_DAY_PILL_DEFAULT_STYLE}
                 pillSelectedStyle={FULL_MENU_DAY_PILL_SELECTED_STYLE}
               />
-
-              <button
-                type="button"
-                onClick={requestClose}
-                className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
-                aria-label="Close"
-              >
-                <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--full-menu-close-bg)] transition-colors duration-150 group-hover:bg-[var(--full-menu-close-bg-hover)]">
-                  <span
-                    className={iconColorClassName.emphasis}
-                    style={iconColorStyle.emphasis}
-                  >
-                    <XIcon size={16} />
-                  </span>
-                </span>
-              </button>
             </div>
 
         <div className="shrink-0 px-[8px] py-[12px]">
@@ -432,12 +444,21 @@ export function FullMenuModal({
             <button
               type="button"
               onClick={handlePrevDay}
-              className={`flex w-[40px] shrink-0 items-center justify-center rounded-[8px] text-[var(--full-menu-muted)] transition-colors hover:bg-[var(--full-menu-day-bg-hover)] ${
-                !canGoPrev ? 'pointer-events-none opacity-0' : 'cursor-pointer'
-              }`}
+              disabled={!canGoPrev}
+              className={[
+                'flex w-[40px] shrink-0 items-center justify-center rounded-[8px] text-[var(--full-menu-muted)] transition-colors',
+                canGoPrev ? 'cursor-pointer hover:bg-[var(--full-menu-day-bg-hover)]' : 'cursor-default',
+              ].join(' ')}
               aria-label="Previous day"
             >
-              <svg fill="none" viewBox="0 0 7 12" width="7" height="12">
+              <svg
+                fill="none"
+                viewBox="0 0 7 12"
+                width="7"
+                height="12"
+                className={canGoPrev ? undefined : 'opacity-30'}
+                aria-hidden
+              >
                 <path
                   d="M6 11L1 6L6 1"
                   stroke="currentColor"
@@ -533,8 +554,8 @@ export function FullMenuModal({
           </div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-[length:var(--checkout-card-padding)]" {...{ [SPACING_CONTENT_ATTR]: '' }}>
-          <div className={['relative overflow-visible', CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING].join(' ')}>
+        <div className="flex-1 overflow-x-hidden overflow-y-auto" {...{ [SPACING_CONTENT_ATTR]: '' }}>
+          <div className={['relative overflow-visible', FULL_MENU_MEAL_CAROUSEL_BLEED].join(' ')}>
             <div
               key={`${testMenuDays[selectedDayIndex]?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}
               ref={mealsScrollRef}
@@ -542,7 +563,7 @@ export function FullMenuModal({
               onMouseMove={handleMealsMouseMove}
               onMouseUp={stopMealsMouseDrag}
               onMouseLeave={stopMealsMouseDrag}
-              className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible px-0 pb-[20px] pt-[6px] scrollbar-hide md:cursor-default md:justify-center md:overflow-x-hidden ${
+              className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain px-0 pb-[20px] pt-[6px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:cursor-default md:overflow-x-hidden ${
                 isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
               }`}
               style={{
@@ -552,26 +573,30 @@ export function FullMenuModal({
                     : 'mealsSlideFromLeft 260ms ease-out both',
               }}
             >
-              <CheckoutScrollEdgeGutter
-                className={[CHECKOUT_SCROLL_EDGE_GUTTER_CLASS_NAME, 'md:hidden'].join(' ')}
-              />
-              {mealsForSelectedDay.map((meal) => (
+              <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+              {mealSlots.map(({ meal, active }) => (
                 <button
                   key={meal.id}
                   type="button"
                   onClick={() => handleMealClick(meal)}
-                  className="group relative z-0 flex w-[length:var(--full-menu-meal-card-width)] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10 md:w-[length:var(--full-menu-meal-card-width-md)]"
+                  className={[
+                    'group relative z-0 flex w-[length:var(--full-menu-meal-card-width)] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10 md:w-[length:var(--full-menu-meal-card-width-md)]',
+                    active ? '' : 'hidden md:flex md:opacity-50',
+                  ].join(' ')}
                 >
                   <div className="flex aspect-[25/19] w-full items-center justify-center overflow-visible">
                     <img
                       src={meal.img}
                       alt={meal.name}
                       draggable={false}
-                      className="pointer-events-none h-[94.74%] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105"
+                      className={[
+                        'pointer-events-none h-[94.74%] w-full rounded-[8px] object-cover origin-center transition-transform duration-200',
+                        active ? 'group-hover:scale-105' : 'md:group-hover:scale-100',
+                      ].join(' ')}
                     />
                   </div>
 
-                  <div className="flex w-full flex-col gap-[12px]">
+                  <div className="flex w-full flex-col gap-[12px] px-[4px]">
                     <p
                       className={[
                         TEXT_TRIM_CLASS_NAME,
@@ -585,7 +610,8 @@ export function FullMenuModal({
                     <p
                       className={[
                         TEXT_TRIM_CLASS_NAME,
-                        'w-full font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)]',
+                        'w-full font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors',
+                        active ? 'group-hover:text-[var(--full-menu-active)]' : '',
                       ].join(' ')}
                     >
                       {meal.name}
@@ -593,17 +619,17 @@ export function FullMenuModal({
                   </div>
                 </button>
               ))}
-              <CheckoutScrollEdgeGutter
-                className={[CHECKOUT_SCROLL_EDGE_GUTTER_CLASS_NAME, 'md:hidden'].join(' ')}
-              />
+              <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
             </div>
 
             <CheckoutScrollEdgeFades
-              className="bottom-0 md:hidden"
-              startPositionClassName="left-0"
-              endPositionClassName="right-0"
               showStart={showMealsStartFade}
               showEnd={showMealsEndFade}
+              edgeColor={COLOR_TOKENS.base.white}
+              fadeWidthClassName="w-[length:var(--full-menu-meal-carousel-inset)]"
+              className="bottom-[4px] top-[6px] md:hidden"
+              startPositionClassName="left-0"
+              endPositionClassName="right-0"
             />
           </div>
             </div>

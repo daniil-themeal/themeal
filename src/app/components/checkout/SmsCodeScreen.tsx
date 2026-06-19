@@ -275,14 +275,13 @@ export function SmsCodeScreen({
             <InputButtonRow
               rowBreakpoint={400}
               align="center"
-              error={phoneError}
               className={phoneSectionMt}
               input={
                 <PhoneInput
                   id="sms-code-phone"
                   value={phone}
                   onChange={handlePhoneChange}
-                  invalid={Boolean(phoneError)}
+                  error={phoneError}
                   className="w-full"
                 />
               }

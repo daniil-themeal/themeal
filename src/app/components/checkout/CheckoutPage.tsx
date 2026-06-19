@@ -34,6 +34,7 @@ import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { formatUaePhoneInput, normalizeUaePhone } from './phoneValidation';
 import { isValidTestSmsCode, SMS_CODE_ERROR, SMS_CODE_SUCCESS_HOLD_MS } from './smsCodeValidation';
 import { usePlanStepScrollChaining } from './usePlanStepScrollChaining';
+import { useCheckoutPlanDesktopLayout } from './useCheckoutPlanDesktopLayout';
 
 type CheckoutUiStep = 'plan' | 'delivery' | 'payment';
 type CheckoutStep = CheckoutUiStep | 'verification' | 'success' | 'failed';
@@ -198,6 +199,15 @@ export function CheckoutPage({
   const bodyRef = useRef<HTMLDivElement>(null);
   const resultBodyRef = useRef<HTMLDivElement>(null);
 
+  const isPlanDesktopLayout = useCheckoutPlanDesktopLayout(
+    isOpen && checkoutStep === 'plan',
+    bodyRef,
+  );
+  const isPlanDesktopLayoutRef = useRef(isPlanDesktopLayout);
+  isPlanDesktopLayoutRef.current = isPlanDesktopLayout;
+
+  const getPlanDesktopLayout = useCallback(() => isPlanDesktopLayoutRef.current, []);
+
   const headerStep =
     checkoutStep === 'plan'
       ? 'plan'
@@ -300,6 +310,7 @@ export function CheckoutPage({
     enabled: isOpen && checkoutStep === 'plan',
     bodyRef,
     rightRef,
+    isDesktopLayout: getPlanDesktopLayout,
   });
 
   const toggleIngredient = (key: string) => {
@@ -650,13 +661,23 @@ export function CheckoutPage({
             {...{ [SPACING_CONTENT_ATTR]: '' }}
           >
             <div
-              className="mx-auto flex w-full max-w-[1200px] flex-col gap-[32px] px-[20px] pt-0 md:grid md:grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:items-start md:gap-[24px] md:px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]"
+              className={[
+                'mx-auto flex w-full max-w-[1200px] flex-col gap-[32px] px-[20px] pt-0',
+                isPlanDesktopLayout
+                  ? 'grid grid-cols-[minmax(0,1fr)_clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] items-start gap-[24px] px-[24px] lg:grid-cols-[minmax(0,1fr)_460px] lg:px-[32px] xl:gap-[40px]'
+                  : '',
+              ].join(' ')}
               style={checkoutPlanGridStyle}
             >
               <div
                 ref={leftRef}
                 style={checkoutLeftColumnStyle}
-                className="flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
+                className={[
+                  'flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)]',
+                  isPlanDesktopLayout
+                    ? 'gap-[48px] pt-[56px] pb-[length:var(--checkout-plan-column-pb)]'
+                    : '',
+                ].join(' ')}
               >
                 <PlanSelectorBlock
                   selected={plan}
@@ -681,7 +702,12 @@ export function CheckoutPage({
               <div
                 ref={rightRef}
                 style={checkoutLeftColumnStyle}
-                className="w-full min-w-0 max-md:max-w-none max-md:pt-0 md:max-h-[calc(100svh-56px)] md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:min-h-0 md:overflow-x-hidden md:overflow-y-hidden lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
+                className={[
+                  'w-full min-w-0',
+                  isPlanDesktopLayout
+                    ? 'max-h-[calc(100svh-56px)] max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] min-h-0 overflow-x-hidden overflow-y-hidden lg:max-w-[460px] sticky top-0 self-start pt-[56px] pb-[length:var(--checkout-plan-column-pb)]'
+                    : 'max-w-none pt-0',
+                ].join(' ')}
               >
                 <OrderSummary
                   plan={plan}
@@ -721,7 +747,7 @@ export function CheckoutPage({
             persons={persons}
             lightMealOption={lightMealOption}
             onScrollToSummary={handleScrollToSummary}
-            hidden={summaryVisible || isMealDetailOpen}
+            hidden={summaryVisible || isMealDetailOpen || isPlanDesktopLayout}
           />
         </>
       ) : checkoutStep === 'delivery' && deliveryStep === 'address' ? (
@@ -780,7 +806,7 @@ export function CheckoutPage({
         <div className="absolute inset-0 z-10 flex flex-col">
           <button
             type="button"
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-black/40 modal-overlay-enter"
             onClick={handleDismissResultOverlay}
             aria-label="Close payment result"
           />

@@ -125,7 +125,15 @@ export function ModalShell({
   if (!isOpen) return null;
 
   const animationClassName = isClosing ? 'modal-exit-responsive' : 'modal-enter-responsive';
+  const overlayAnimationClassName = isClosing ? 'modal-overlay-exit' : 'modal-overlay-enter';
   const panelClasses = [animationClassName, panelClassName].filter(Boolean).join(' ');
+  const overlayClasses = [
+    'absolute inset-0 bg-black/40',
+    overlayAnimationClassName,
+    overlayClassName,
+  ]
+    .filter(Boolean)
+    .join(' ');
   const panelChildren =
     typeof children === 'function' ? children(requestClose) : children;
 
@@ -134,7 +142,7 @@ export function ModalShell({
       <div
         className={[
           'fixed inset-0 flex h-[100dvh] max-h-[100dvh] flex-col overflow-hidden scrollbar-hide',
-          'sm:h-auto sm:max-h-none sm:block sm:overflow-y-auto',
+          'sm:h-auto sm:max-h-none sm:block sm:overflow-y-auto sm:pointer-events-none',
           rootClassName,
         ]
           .filter(Boolean)
@@ -143,7 +151,18 @@ export function ModalShell({
         {...{ [SPACING_ROOT_ATTR]: '' }}
         onClick={disableOverlayClick ? undefined : requestClose}
       >
-        <div className="flex min-h-0 flex-1 flex-col sm:min-h-full sm:flex sm:items-center sm:justify-center">
+        <div
+          className={[
+            'absolute inset-0 hidden bg-black/40 sm:block',
+            overlayAnimationClassName,
+            overlayClassName,
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          onClick={disableOverlayClick ? undefined : requestClose}
+        />
+
+        <div className="relative z-[1] flex min-h-0 flex-1 flex-col sm:pointer-events-auto sm:min-h-full sm:flex sm:items-center sm:justify-center">
           <div
             className={['min-h-0 flex-1 overflow-y-auto scrollbar-hide sm:flex-none', panelClasses]
               .filter(Boolean)
@@ -199,7 +218,7 @@ export function ModalShell({
       {...{ [SPACING_ROOT_ATTR]: '' }}
     >
       <div
-        className={['absolute inset-0 bg-black/40', overlayClassName].filter(Boolean).join(' ')}
+        className={overlayClasses}
         onClick={disableOverlayClick ? undefined : requestClose}
       />
 

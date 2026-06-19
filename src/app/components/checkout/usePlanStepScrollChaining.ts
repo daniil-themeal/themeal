@@ -5,6 +5,7 @@ const SCROLL_LERP = 0.18;
 const SCROLL_STOP_EPSILON = 0.5;
 const SCROLL_EPSILON = 1;
 const MD_BREAKPOINT = '(min-width: 768px)';
+const LAYOUT_SETTLE_MS = 150;
 
 type SmoothScroller = {
   targetScrollTop: number;
@@ -36,7 +37,17 @@ function canScrollVertically(element: HTMLElement): boolean {
   return element.scrollHeight > element.clientHeight + SCROLL_EPSILON;
 }
 
-function runSmoothScroll(element: HTMLElement, scroller: SmoothScroller) {
+function runSmoothScroll(
+  element: HTMLElement,
+  scroller: SmoothScroller,
+  label = 'unknown',
+  shouldAbort?: () => boolean,
+) {
+  if (shouldAbort?.()) {
+    stopSmoothScroller(element, scroller);
+    return;
+  }
+
   scroller.isAnimating = true;
   clampScrollerTarget(element, scroller);
 
@@ -51,15 +62,18 @@ function runSmoothScroll(element: HTMLElement, scroller: SmoothScroller) {
   }
 
   element.scrollTop += distance * SCROLL_LERP;
-  scroller.rafId = requestAnimationFrame(() => runSmoothScroll(element, scroller));
+  scroller.rafId = requestAnimationFrame(() => runSmoothScroll(element, scroller, label, shouldAbort));
 }
 
 function applySmoothDelta(
   element: HTMLElement,
   scroller: SmoothScroller,
   delta: number,
+  shouldAbort?: () => boolean,
 ): number {
   if (delta === 0) return 0;
+
+  if (shouldAbort?.()) return delta;
 
   if (scroller.rafId === null) {
     scroller.targetScrollTop = element.scrollTop;
@@ -77,7 +91,9 @@ function applySmoothDelta(
   }
 
   if (scroller.rafId === null) {
-    scroller.rafId = requestAnimationFrame(() => runSmoothScroll(element, scroller));
+    scroller.rafId = requestAnimationFrame(() =>
+      runSmoothScroll(element, scroller, 'applySmoothDelta', shouldAbort),
+    );
   }
 
   return delta - applied;
@@ -122,12 +138,14 @@ type UsePlanStepScrollChainingOptions = {
   enabled: boolean;
   bodyRef: RefObject<HTMLElement | null>;
   rightRef: RefObject<HTMLElement | null>;
+  isDesktopLayout?: () => boolean;
 };
 
 export function usePlanStepScrollChaining({
   enabled,
   bodyRef,
   rightRef,
+  isDesktopLayout,
 }: UsePlanStepScrollChainingOptions) {
   useEffect(() => {
     if (!enabled) return;
@@ -141,16 +159,39 @@ export function usePlanStepScrollChaining({
     const rightScroller = createSmoothScroller();
     const mediaQuery = window.matchMedia(MD_BREAKPOINT);
 
-    const isDesktop = () => mediaQuery.matches;
+    const isDesktop = isDesktopLayout ?? (() => mediaQuery.matches);
+    let isLayoutChanging = false;
+    let layoutSettleTimer: number | null = null;
+
+    const shouldAbortSmoothScroll = () => isLayoutChanging;
+
+    const stopAllSmoothScrollers = () => {
+      stopSmoothScroller(body, bodyScroller);
+      stopSmoothScroller(right, rightScroller);
+    };
+
+    const markLayoutChanging = () => {
+      isLayoutChanging = true;
+      stopAllSmoothScrollers();
+
+      if (layoutSettleTimer !== null) {
+        window.clearTimeout(layoutSettleTimer);
+      }
+
+      layoutSettleTimer = window.setTimeout(() => {
+        isLayoutChanging = false;
+        layoutSettleTimer = null;
+      }, LAYOUT_SETTLE_MS);
+    };
 
     const applyBodyOverflowDelta = (delta: number): number => {
       if (delta > 0 && !canScrollDown(body)) return delta;
       if (delta < 0 && !canScrollUp(body)) return delta;
-      return applySmoothDelta(body, bodyScroller, delta);
+      return applySmoothDelta(body, bodyScroller, delta, shouldAbortSmoothScroll);
     };
 
     const handleRightWheel = (event: WheelEvent) => {
-      if (!isDesktop()) return;
+      if (!isDesktop() || isLayoutChanging) return;
 
       const delta = getScrollDelta(event);
       if (delta === 0) return;
@@ -158,7 +199,7 @@ export function usePlanStepScrollChaining({
       let remaining = delta;
 
       if (canScrollVertically(right)) {
-        remaining = applySmoothDelta(right, rightScroller, remaining);
+        remaining = applySmoothDelta(right, rightScroller, remaining, shouldAbortSmoothScroll);
       }
 
       if (remaining !== 0) {
@@ -176,7 +217,7 @@ export function usePlanStepScrollChaining({
     };
 
     const handleBodyWheel = (event: WheelEvent) => {
-      if (!isDesktop()) return;
+      if (!isDesktop() || isLayoutChanging) return;
 
       const target = event.target;
       if (!(target instanceof Node) || right.contains(target)) return;
@@ -200,7 +241,7 @@ export function usePlanStepScrollChaining({
         }
       }
 
-      applySmoothDelta(right, rightScroller, delta);
+      applySmoothDelta(right, rightScroller, delta, shouldAbortSmoothScroll);
 
       // Body hit its scroll boundary — always consume wheel here so the browser
       // does not fall through to page scroll while right column animates.
@@ -210,11 +251,20 @@ export function usePlanStepScrollChaining({
     const handleBodyScroll = () => syncScrollerTarget(body, bodyScroller);
     const handleRightScroll = () => syncScrollerTarget(right, rightScroller);
 
-    const bodyResizeObserver = new ResizeObserver(() => clampScrollerTarget(body, bodyScroller));
-    const rightResizeObserver = new ResizeObserver(() => clampScrollerTarget(right, rightScroller));
+    const handleScrollerLayoutChange = (_label: string, element: HTMLElement, scroller: SmoothScroller) => {
+      markLayoutChanging();
+      clampScrollerTarget(body, bodyScroller);
+      clampScrollerTarget(right, rightScroller);
+    };
+
+    const bodyResizeObserver = new ResizeObserver(() => handleScrollerLayoutChange('body', body, bodyScroller));
+    const rightResizeObserver = new ResizeObserver(() => handleScrollerLayoutChange('right', right, rightScroller));
 
     bodyResizeObserver.observe(body);
     rightResizeObserver.observe(right);
+
+    window.addEventListener('resize', markLayoutChanging);
+    mediaQuery.addEventListener('change', markLayoutChanging);
 
     right.addEventListener('wheel', handleRightWheel, { passive: false });
     body.addEventListener('wheel', handleBodyWheel, { passive: false });
@@ -224,6 +274,11 @@ export function usePlanStepScrollChaining({
     return () => {
       bodyResizeObserver.disconnect();
       rightResizeObserver.disconnect();
+      window.removeEventListener('resize', markLayoutChanging);
+      mediaQuery.removeEventListener('change', markLayoutChanging);
+      if (layoutSettleTimer !== null) {
+        window.clearTimeout(layoutSettleTimer);
+      }
       right.removeEventListener('wheel', handleRightWheel);
       body.removeEventListener('wheel', handleBodyWheel);
       body.removeEventListener('scroll', handleBodyScroll);
@@ -231,5 +286,5 @@ export function usePlanStepScrollChaining({
       stopSmoothScroller(body, bodyScroller);
       stopSmoothScroller(right, rightScroller);
     };
-  }, [enabled, bodyRef, rightRef]);
+  }, [enabled, bodyRef, rightRef, isDesktopLayout]);
 }
