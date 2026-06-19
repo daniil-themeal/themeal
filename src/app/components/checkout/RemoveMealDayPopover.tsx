@@ -1,7 +1,7 @@
 import { useCallback, useState, type MouseEvent, type ReactElement } from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 
-import { Button } from '../common/Button';
+import { Button, getButtonStyles } from '../common/Button';
 import { MealDayPopoverPricing } from './MealDayPopoverPricing';
 import { MealDayScopeButton } from './MealDayScopeButton';
 import { BORDER_RADIUS_TOKENS } from '../common/borderRadiusTokens';
@@ -28,11 +28,11 @@ export function RemoveMealDayPopover({
   children,
 }: RemoveMealDayPopoverProps) {
   const [open, setOpen] = useState(false);
-  const [selectedDaysPerWeek, setSelectedDaysPerWeek] = useState<1 | 2>(1);
+  const [selectedDaysPerWeek, setSelectedDaysPerWeek] = useState<1 | 2 | null>(null);
 
   const handleOpenChange = useCallback((nextOpen: boolean) => {
     if (nextOpen) {
-      setSelectedDaysPerWeek(1);
+      setSelectedDaysPerWeek(null);
     }
     setOpen(nextOpen);
   }, []);
@@ -48,13 +48,17 @@ export function RemoveMealDayPopover({
   const handleConfirm = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
+      if (selectedDaysPerWeek === null) {
+        return;
+      }
       onRemove(selectedDaysPerWeek);
       setOpen(false);
     },
     [onRemove, selectedDaysPerWeek],
   );
 
-  const previewQuote = selectedDaysPerWeek === 2 ? quoteMinus2 : quoteMinus1;
+  const previewQuote =
+    selectedDaysPerWeek === 2 ? quoteMinus2 : selectedDaysPerWeek === 1 ? quoteMinus1 : null;
 
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
@@ -110,13 +114,27 @@ export function RemoveMealDayPopover({
                 />
               </div>
 
-              <MealDayPopoverPricing
-                actionCostAed={previewQuote.actionCostAed}
-                periodPrice={previewQuote.periodPrice}
-                mode="remove"
-              />
+              {previewQuote ? (
+                <MealDayPopoverPricing
+                  actionCostAed={previewQuote.actionCostAed}
+                  periodPrice={previewQuote.periodPrice}
+                  mode="remove"
+                />
+              ) : null}
 
-              <Button type="button" variant="primary" size="small" fullWidth onClick={handleConfirm}>
+              <Button
+                type="button"
+                variant="primary"
+                size="small"
+                fullWidth
+                disabled={selectedDaysPerWeek === null}
+                onClick={handleConfirm}
+                style={{
+                  ...getButtonStyles('primary', false),
+                  '--button-shadow': 'none',
+                  '--button-shadow-hover': 'none',
+                }}
+              >
                 Confirm
               </Button>
             </div>
