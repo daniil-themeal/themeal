@@ -60,6 +60,10 @@ export const FULL_MENU_LIGHT_OPTION_TEXT_GAP_CLAMP =
 export const FULL_MENU_MEAL_CAROUSEL_INSET_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 4 / 448), 24px)';
 
+/** Bottom float meal carousel padding-bottom (4px → 8px). */
+export const FULL_MENU_MEAL_CAROUSEL_PADDING_BOTTOM_FLOAT_CLAMP =
+  FULL_MENU_LIGHT_CONTROLS_SPACING_CLAMP;
+
 /** Plus plan — widest meal row in Full Menu. */
 export const FULL_MENU_MAX_MEAL_COUNT = 4;
 

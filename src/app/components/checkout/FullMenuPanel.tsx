@@ -17,6 +17,7 @@ import {
   CHECKOUT_CARD_PADDING_CLAMP,
   CHECKOUT_FONT_CLAMP_14_16,
   FULL_MENU_MEAL_CAROUSEL_INSET_CLAMP,
+  FULL_MENU_MEAL_CAROUSEL_PADDING_BOTTOM_FLOAT_CLAMP,
   FULL_MENU_MEAL_CARD_WIDTH_CLAMP,
   FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP,
   FULL_MENU_MEAL_GAP_CLAMP,
@@ -98,6 +99,7 @@ export type FullMenuPanelCssVariables = CSSProperties & {
   '--full-menu-meal-card-width-md': string;
   '--full-menu-meal-gap': string;
   '--full-menu-meal-carousel-inset': string;
+  '--full-menu-meal-carousel-padding-bottom': string;
   '--full-menu-light-option-gap': string;
   '--full-menu-plan-light-divider-gap': string;
   '--full-menu-light-option-padding-x': string;
@@ -108,6 +110,7 @@ export const fullMenuPanelStyle: FullMenuPanelCssVariables = {
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
   '--checkout-scroll-edge-fade-width': FULL_MENU_MEAL_CAROUSEL_INSET_CLAMP,
   '--full-menu-meal-carousel-inset': FULL_MENU_MEAL_CAROUSEL_INSET_CLAMP,
+  '--full-menu-meal-carousel-padding-bottom': '20px',
   '--full-menu-bg': COLOR_TOKENS.base.white,
   '--full-menu-border': COLOR_TOKENS.neutral[100],
   '--full-menu-title': COLOR_TOKENS.neutral[900],
@@ -421,9 +424,17 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     .filter(Boolean)
     .join(' ');
 
+  const panelStyle: FullMenuPanelCssVariables = {
+    ...fullMenuPanelStyle,
+    '--full-menu-meal-carousel-padding-bottom':
+      variant === 'float'
+        ? FULL_MENU_MEAL_CAROUSEL_PADDING_BOTTOM_FLOAT_CLAMP
+        : '20px',
+  };
+
   return (
     <>
-      <div style={fullMenuPanelStyle} className={rootClassName}>
+      <div style={panelStyle} className={rootClassName}>
         <style>
           {`
             @keyframes mealsSlideFromRight {
@@ -600,7 +611,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                 onMouseMove={handleMealsMouseMove}
                 onMouseUp={stopMealsMouseDrag}
                 onMouseLeave={stopMealsMouseDrag}
-                className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain px-0 pb-[20px] pt-[6px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:cursor-default md:overflow-x-hidden ${
+                className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain px-0 pb-[length:var(--full-menu-meal-carousel-padding-bottom)] pt-[6px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:cursor-default md:overflow-x-hidden ${
                   isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
                 }`}
                 style={{

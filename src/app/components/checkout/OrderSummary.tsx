@@ -360,7 +360,7 @@ export function OrderSummary({
                   <CheckoutScrollEdgeGutter />
                   <div className="flex shrink-0 gap-[16px]">
                   {visibleMeals.map((meal) => (
-                    <button key={meal.id} type="button" onClick={() => { if (dragMovedRef.current) return; setSelectedMeal(meal); }} className="group relative z-0 flex w-[150px] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10">
+                    <button key={meal.id} type="button" onClick={() => { if (dragMovedRef.current) return; setSelectedMeal(meal); }} className="group relative z-0 flex w-[150px] shrink-0 cursor-pointer flex-col gap-[8px] text-left hover:z-10 focus-visible:z-10">
                       <div className="flex h-[114px] w-full items-center justify-center overflow-visible">
                         <img src={meal.img} alt={meal.name} className="pointer-events-none h-[108px] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105" />
                       </div>
