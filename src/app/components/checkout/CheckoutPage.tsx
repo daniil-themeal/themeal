@@ -277,6 +277,12 @@ export function CheckoutPage({
   }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified, sessionIsVerified, resetCloseState, clearSmsVerifyTimer]);
 
   useEffect(() => {
+    setDeliveryDetails((current) =>
+      current.extraMealDayKeys.length === 0 ? current : { ...current, extraMealDayKeys: [] },
+    );
+  }, [days, duration]);
+
+  useEffect(() => {
     if (!isOpen || checkoutStep !== 'plan') return;
 
     const anchor = todayTotalRef.current;
@@ -757,6 +763,8 @@ export function CheckoutPage({
             onChangeAddress={handleChangeAddress}
             days={days}
             duration={duration}
+            plan={plan}
+            persons={persons}
             onContinue={handleDeliveryDetailsContinue}
           />
         </div>

@@ -1,21 +1,29 @@
-import { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
 
-import type { DayOption, Duration } from '../../data/checkoutPricing';
+import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import { DatePill } from '../common/DatePill';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { FormSectionHeading } from '../common/FormSectionHeading';
-import { DeliveryIcon } from '../common/icons';
+import { DeliveryIcon, PlusIcon } from '../common/icons';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 
+import { AddMealDayPopover } from './AddMealDayPopover';
+import {
+  getExtraMealDaysQuote,
+  getProjectedExtraMealDayCount,
+} from './mealCalendarAddDaysPricing';
 import {
   addDays,
+  getAddableWeekdays,
   getCalendarWeeks,
   getMealDayRadiusByIndex,
   getMealDayRadiusClassName,
   getSubscriptionDays,
   getUpcomingDeliveryDates,
+  getWeeklyExtraMealDayKeys,
+  isAddableMealDayCell,
   isDatePillVisibleInContainer,
   isDeliveryDay,
   isInPeriod,
@@ -63,6 +71,12 @@ type CalendarCellProps = {
   endDate: Date;
   dayOption: DayOption;
   mealRadiusPosition?: MealDayRadiusPosition | null;
+  extraMealDayKeys?: ReadonlySet<string>;
+  enableAddMealDays?: boolean;
+  plan?: Plan;
+  persons?: number;
+  duration?: Duration;
+  onAddMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
 };
 
 function CalendarCell({
@@ -71,21 +85,99 @@ function CalendarCell({
   endDate,
   dayOption,
   mealRadiusPosition = null,
+  extraMealDayKeys,
+  enableAddMealDays = false,
+  plan,
+  persons = 1,
+  duration,
+  onAddMealDay,
 }: CalendarCellProps) {
+  const [isHovered, setIsHovered] = useState(false);
+
   const inPeriod = isInPeriod(date, startDate, endDate);
   const deliveryDay = inPeriod && isDeliveryDay(date);
-  const mealDay = isSubscriptionMealDay({ date, startDate, endDate, dayOption });
+  const mealDay = isSubscriptionMealDay({
+    date,
+    startDate,
+    endDate,
+    dayOption,
+    extraMealDayKeys,
+  });
+  const addable =
+    enableAddMealDays &&
+    plan &&
+    duration &&
+    onAddMealDay &&
+    isAddableMealDayCell({ date, startDate, endDate, dayOption, extraMealDayKeys });
   const textColor = inPeriod ? COLOR_TOKENS.neutral[900] : COLOR_TOKENS.neutral[300];
+  const showPlus = addable && isHovered;
 
-  return (
+  const canAddTwo = useMemo(() => getAddableWeekdays(dayOption).length >= 2, [dayOption]);
+
+  const { quotePlus1, quotePlus2 } = useMemo(() => {
+    if (!addable || !plan || !duration) {
+      return { quotePlus1: null, quotePlus2: null };
+    }
+
+    const existingKeys = extraMealDayKeys ?? new Set<string>();
+    const newKeysPlus1 = getWeeklyExtraMealDayKeys({
+      anchorDate: date,
+      startDate,
+      endDate,
+      dayOption,
+      daysPerWeek: 1,
+    });
+    const newKeysPlus2 = getWeeklyExtraMealDayKeys({
+      anchorDate: date,
+      startDate,
+      endDate,
+      dayOption,
+      daysPerWeek: 2,
+    });
+
+    return {
+      quotePlus1: getExtraMealDaysQuote({
+        plan,
+        days: dayOption,
+        duration,
+        persons,
+        extraMealDayCount: getProjectedExtraMealDayCount(existingKeys, newKeysPlus1),
+      }),
+      quotePlus2: getExtraMealDaysQuote({
+        plan,
+        days: dayOption,
+        duration,
+        persons,
+        extraMealDayCount: getProjectedExtraMealDayCount(existingKeys, newKeysPlus2),
+      }),
+    };
+  }, [
+    addable,
+    date,
+    dayOption,
+    duration,
+    endDate,
+    extraMealDayKeys,
+    persons,
+    plan,
+    startDate,
+  ]);
+
+  const cellContent = (
     <div
       className={[
         'relative flex h-[48px] flex-col items-center justify-center gap-[6px]',
         mealRadiusPosition ? getMealDayRadiusClassName(mealRadiusPosition) : '',
+        addable ? 'cursor-pointer transition-colors hover:bg-[var(--calendar-addable-hover-bg)]' : '',
       ]
         .filter(Boolean)
         .join(' ')}
-      style={{ backgroundColor: mealDay ? COLOR_TOKENS.primary[50] : 'transparent' }}
+      style={{
+        backgroundColor: mealDay ? COLOR_TOKENS.primary[50] : 'transparent',
+        ['--calendar-addable-hover-bg' as string]: COLOR_TOKENS.neutral[50],
+      }}
+      onMouseEnter={addable ? () => setIsHovered(true) : undefined}
+      onMouseLeave={addable ? () => setIsHovered(false) : undefined}
     >
       {deliveryDay ? (
         <span
@@ -96,36 +188,73 @@ function CalendarCell({
         </span>
       ) : null}
 
-      <span
-        className={[
-          TEXT_TRIM_CLASS_NAME,
-          'font-sans text-[length:var(--calendar-date-fs)] font-bold leading-none',
-        ].join(' ')}
-        style={{ color: textColor }}
-      >
-        {date.getDate()}
-      </span>
+      {showPlus ? (
+        <span style={{ color: COLOR_TOKENS.primary[500] }}>
+          <PlusIcon size={20} />
+        </span>
+      ) : (
+        <>
+          <span
+            className={[
+              TEXT_TRIM_CLASS_NAME,
+              'font-sans text-[length:var(--calendar-date-fs)] font-bold leading-none',
+            ].join(' ')}
+            style={{ color: textColor }}
+          >
+            {date.getDate()}
+          </span>
 
-      <span
-        className={[
-          TEXT_TRIM_CLASS_NAME,
-          'font-sans text-[length:var(--calendar-month-fs)] font-bold leading-none',
-        ].join(' ')}
-        style={{ color: textColor }}
-      >
-        {MONTH_ABBR[date.getMonth()]}
-      </span>
+          <span
+            className={[
+              TEXT_TRIM_CLASS_NAME,
+              'font-sans text-[length:var(--calendar-month-fs)] font-bold leading-none',
+            ].join(' ')}
+            style={{ color: textColor }}
+          >
+            {MONTH_ABBR[date.getMonth()]}
+          </span>
+        </>
+      )}
     </div>
   );
+
+  if (addable && quotePlus1 && quotePlus2) {
+    return (
+      <AddMealDayPopover
+        quotePlus1={quotePlus1}
+        quotePlus2={quotePlus2}
+        canAddTwo={canAddTwo}
+        onAdd={(daysPerWeek) => onAddMealDay({ anchorDate: date, daysPerWeek })}
+      >
+        {cellContent}
+      </AddMealDayPopover>
+    );
+  }
+
+  return cellContent;
 }
 
 type MealCalendarGridProps = {
   startDate: Date;
   duration: Duration;
   dayOption: DayOption;
+  extraMealDayKeys?: ReadonlySet<string>;
+  enableAddMealDays?: boolean;
+  plan?: Plan;
+  persons?: number;
+  onAddMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
 };
 
-function MealCalendarGrid({ startDate, duration, dayOption }: MealCalendarGridProps) {
+function MealCalendarGrid({
+  startDate,
+  duration,
+  dayOption,
+  extraMealDayKeys,
+  enableAddMealDays = false,
+  plan,
+  persons = 1,
+  onAddMealDay,
+}: MealCalendarGridProps) {
   const weeks = useMemo(() => getCalendarWeeks(startDate, duration), [startDate, duration]);
   const endDate = useMemo(
     () => addDays(startDate, getSubscriptionDays(duration)),
@@ -156,6 +285,7 @@ function MealCalendarGrid({ startDate, duration, dayOption }: MealCalendarGridPr
           startDate,
           endDate,
           dayOption,
+          extraMealDayKeys,
         });
 
         return (
@@ -168,6 +298,12 @@ function MealCalendarGrid({ startDate, duration, dayOption }: MealCalendarGridPr
                 endDate={endDate}
                 dayOption={dayOption}
                 mealRadiusPosition={mealRadiusByIndex[dayIndex]}
+                extraMealDayKeys={extraMealDayKeys}
+                enableAddMealDays={enableAddMealDays}
+                plan={plan}
+                persons={persons}
+                duration={duration}
+                onAddMealDay={onAddMealDay}
               />
             ))}
           </div>
@@ -179,7 +315,27 @@ function MealCalendarGrid({ startDate, duration, dayOption }: MealCalendarGridPr
 
 type MealCalendarLegendVariant = 'default' | 'success';
 
-function MealCalendarLegend({ variant = 'default' }: { variant?: MealCalendarLegendVariant }) {
+function MealCalendarLegend({
+  variant = 'default',
+  showAddMealDays = false,
+}: {
+  variant?: MealCalendarLegendVariant;
+  showAddMealDays?: boolean;
+}) {
+  const addMealDayLegendItem = showAddMealDays ? (
+    <div className="flex items-center gap-[6px]">
+      <span style={{ color: COLOR_TOKENS.primary[500] }}>
+        <PlusIcon size={16} />
+      </span>
+      <span
+        className={[TEXT_TRIM_CLASS_NAME, 'font-sans text-[12px] font-semibold'].join(' ')}
+        style={{ color: COLOR_TOKENS.neutral[600] }}
+      >
+        Tap to add
+      </span>
+    </div>
+  ) : null;
+
   if (variant === 'success') {
     return (
       <div className="flex flex-wrap items-center justify-center gap-[16px] pb-[8px] w-full">
@@ -212,7 +368,7 @@ function MealCalendarLegend({ variant = 'default' }: { variant?: MealCalendarLeg
   }
 
   return (
-    <div className="flex items-center gap-[20px]">
+    <div className="flex flex-wrap items-center gap-x-[20px] gap-y-[8px]">
       <div className="flex items-center gap-[6px]">
         <div
           className="h-[14px] w-[14px] rounded-[3px]"
@@ -237,6 +393,8 @@ function MealCalendarLegend({ variant = 'default' }: { variant?: MealCalendarLeg
           Delivery days
         </span>
       </div>
+
+      {addMealDayLegendItem}
     </div>
   );
 }
@@ -275,6 +433,11 @@ export type MealCalendarProps = {
   title?: ReactNode;
   subtitle?: ReactNode;
   className?: string;
+  enableAddMealDays?: boolean;
+  plan?: Plan;
+  persons?: number;
+  extraMealDayKeys?: ReadonlySet<string>;
+  onAddMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
 };
 
 export function MealCalendar({
@@ -287,6 +450,11 @@ export function MealCalendar({
   title = 'Choose the preferred first delivery date',
   subtitle = 'We deliver Wednesdays and Sundays — pick your start date',
   className = '',
+  enableAddMealDays = false,
+  plan,
+  persons = 1,
+  extraMealDayKeys,
+  onAddMealDay,
 }: MealCalendarProps) {
   const deliveryDates = useMemo(
     () => availableDates ?? getUpcomingDeliveryDates(withinDays),
@@ -466,8 +634,17 @@ export function MealCalendar({
           `flex w-full min-w-0 flex-col gap-[16px] ${CHECKOUT_STEP_SECTION_PX}`,
         )}
       >
-        <MealCalendarLegend />
-        <MealCalendarGrid startDate={selectedDate} duration={duration} dayOption={dayOption} />
+        <MealCalendarLegend showAddMealDays={enableAddMealDays} />
+        <MealCalendarGrid
+          startDate={selectedDate}
+          duration={duration}
+          dayOption={dayOption}
+          extraMealDayKeys={extraMealDayKeys}
+          enableAddMealDays={enableAddMealDays}
+          plan={plan}
+          persons={persons}
+          onAddMealDay={onAddMealDay}
+        />
       </div>
     </div>
   );

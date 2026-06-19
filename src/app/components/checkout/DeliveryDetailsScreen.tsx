@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 
-import type { DayOption, Duration } from '../../data/checkoutPricing';
+import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import type { TestAddress } from '../../data/testAddresses';
 import { Button } from '../common/Button';
 import { Checkbox } from '../common/Checkbox';
@@ -27,7 +27,12 @@ import {
   type DeliveryDetailsFieldErrors,
 } from './deliveryValidation';
 import { MealCalendar } from './MealCalendar';
-import { getUpcomingDeliveryDates } from './mealCalendarUtils';
+import {
+  addDays,
+  getSubscriptionDays,
+  getUpcomingDeliveryDates,
+  getWeeklyExtraMealDayKeys,
+} from './mealCalendarUtils';
 
 const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
 
@@ -72,6 +77,8 @@ type DeliveryDetailsScreenProps = {
   onChangeAddress: () => void;
   days: DayOption;
   duration: Duration;
+  plan: Plan;
+  persons: number;
   onContinue?: () => void;
 };
 
@@ -82,6 +89,8 @@ export function DeliveryDetailsScreen({
   onChangeAddress,
   days,
   duration,
+  plan,
+  persons,
   onContinue,
 }: DeliveryDetailsScreenProps) {
   const [fieldErrors, setFieldErrors] = useState<DeliveryDetailsFieldErrors>({});
@@ -198,8 +207,30 @@ export function DeliveryDetailsScreen({
             duration={duration}
             dayOption={days}
             selectedDate={deliveryDetails.selectedDate}
-            onSelectedDateChange={(selectedDate) => onDeliveryDetailsChange({ selectedDate })}
+            onSelectedDateChange={(selectedDate) =>
+              onDeliveryDetailsChange({ selectedDate, extraMealDayKeys: [] })
+            }
             availableDates={deliveryDates}
+            enableAddMealDays
+            plan={plan}
+            persons={persons}
+            extraMealDayKeys={new Set(deliveryDetails.extraMealDayKeys)}
+            onAddMealDay={({ anchorDate, daysPerWeek }) => {
+              const endDate = addDays(deliveryDetails.selectedDate, getSubscriptionDays(duration));
+              const newKeys = getWeeklyExtraMealDayKeys({
+                anchorDate,
+                startDate: deliveryDetails.selectedDate,
+                endDate,
+                dayOption: days,
+                daysPerWeek,
+              });
+
+              onDeliveryDetailsChange({
+                extraMealDayKeys: [
+                  ...new Set([...deliveryDetails.extraMealDayKeys, ...newKeys]),
+                ],
+              });
+            }}
           />
 
           <Divider color={COLOR_TOKENS.neutral[75]} className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />

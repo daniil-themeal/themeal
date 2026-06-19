@@ -90,6 +90,14 @@ export function isSameDay(a: Date, b: Date): boolean {
   );
 }
 
+export function getMealDayKey(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}`;
+}
+
 export function getUpcomingDeliveryDates(withinDays = 60): Date[] {
   const dates: Date[] = [];
   const start = addDays(new Date(), 2);
@@ -160,13 +168,85 @@ export function isSubscriptionMealDay({
   startDate,
   endDate,
   dayOption,
+  extraMealDayKeys,
 }: {
   date: Date;
   startDate: Date;
   endDate: Date;
   dayOption: DayOption;
+  extraMealDayKeys?: ReadonlySet<string>;
 }) {
-  return isInPeriod(date, startDate, endDate) && isMealDay(date, dayOption);
+  if (!isInPeriod(date, startDate, endDate)) return false;
+  if (isMealDay(date, dayOption)) return true;
+
+  return extraMealDayKeys?.has(getMealDayKey(date)) ?? false;
+}
+
+export function isAddableMealDayCell({
+  date,
+  startDate,
+  endDate,
+  dayOption,
+  extraMealDayKeys,
+}: {
+  date: Date;
+  startDate: Date;
+  endDate: Date;
+  dayOption: DayOption;
+  extraMealDayKeys?: ReadonlySet<string>;
+}) {
+  return (
+    isInPeriod(date, startDate, endDate) &&
+    !isSubscriptionMealDay({ date, startDate, endDate, dayOption, extraMealDayKeys })
+  );
+}
+
+export function getAddableWeekdays(dayOption: DayOption): number[] {
+  const weekdays: number[] = [];
+
+  for (let dayOfWeek = 0; dayOfWeek <= 6; dayOfWeek += 1) {
+    const probe = new Date(2024, 0, 7 + dayOfWeek);
+    if (!isMealDay(probe, dayOption)) weekdays.push(dayOfWeek);
+  }
+
+  return weekdays;
+}
+
+export function getWeeklyExtraMealDayKeys({
+  anchorDate,
+  startDate,
+  endDate,
+  dayOption,
+  daysPerWeek,
+}: {
+  anchorDate: Date;
+  startDate: Date;
+  endDate: Date;
+  dayOption: DayOption;
+  daysPerWeek: 1 | 2;
+}): string[] {
+  const addableWeekdays = getAddableWeekdays(dayOption);
+  const anchorWeekday = anchorDate.getDay();
+  const targetWeekdays =
+    daysPerWeek === 1 ? [anchorWeekday] : addableWeekdays;
+  const keys: string[] = [];
+  const cursor = new Date(startDate);
+
+  while (cursor < endDate) {
+    const dayOfWeek = cursor.getDay();
+
+    if (
+      targetWeekdays.includes(dayOfWeek) &&
+      isInPeriod(cursor, startDate, endDate) &&
+      !isMealDay(cursor, dayOption)
+    ) {
+      keys.push(getMealDayKey(cursor));
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return keys;
 }
 
 export function getMealDayRadiusByIndex({
@@ -174,15 +254,19 @@ export function getMealDayRadiusByIndex({
   startDate,
   endDate,
   dayOption,
+  extraMealDayKeys,
 }: {
   week: Date[];
   startDate: Date;
   endDate: Date;
   dayOption: DayOption;
+  extraMealDayKeys?: ReadonlySet<string>;
 }) {
   const mealDayIndices = week
     .map((date, index) =>
-      isSubscriptionMealDay({ date, startDate, endDate, dayOption }) ? index : -1,
+      isSubscriptionMealDay({ date, startDate, endDate, dayOption, extraMealDayKeys })
+        ? index
+        : -1,
     )
     .filter((index) => index >= 0);
 
