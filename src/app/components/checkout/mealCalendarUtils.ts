@@ -249,6 +249,66 @@ export function getWeeklyExtraMealDayKeys({
   return keys;
 }
 
+export function isRemovableExtraMealDayCell({
+  date,
+  startDate,
+  endDate,
+  dayOption,
+  extraMealDayKeys,
+}: {
+  date: Date;
+  startDate: Date;
+  endDate: Date;
+  dayOption: DayOption;
+  extraMealDayKeys?: ReadonlySet<string>;
+}) {
+  return (
+    isInPeriod(date, startDate, endDate) &&
+    !isMealDay(date, dayOption) &&
+    (extraMealDayKeys?.has(getMealDayKey(date)) ?? false)
+  );
+}
+
+export function getWeeklyRemovableExtraMealDayKeys({
+  anchorDate,
+  startDate,
+  endDate,
+  dayOption,
+  extraMealDayKeys,
+  daysPerWeek,
+}: {
+  anchorDate: Date;
+  startDate: Date;
+  endDate: Date;
+  dayOption: DayOption;
+  extraMealDayKeys: ReadonlySet<string>;
+  daysPerWeek: 1 | 2;
+}): string[] {
+  const addableWeekdays = getAddableWeekdays(dayOption);
+  const anchorWeekday = anchorDate.getDay();
+  const targetWeekdays = daysPerWeek === 1 ? [anchorWeekday] : addableWeekdays;
+  const keys: string[] = [];
+  const cursor = new Date(startDate);
+
+  while (cursor < endDate) {
+    const dayOfWeek = cursor.getDay();
+    const key = getMealDayKey(cursor);
+
+    if (
+      targetWeekdays.includes(dayOfWeek) &&
+      isInPeriod(cursor, startDate, endDate) &&
+      !isMealDay(cursor, dayOption) &&
+      extraMealDayKeys.has(key)
+    ) {
+      keys.push(key);
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return keys;
+}
+
 export function getMealDayRadiusByIndex({
   week,
   startDate,

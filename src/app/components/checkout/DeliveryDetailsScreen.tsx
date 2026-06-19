@@ -32,6 +32,7 @@ import {
   getSubscriptionDays,
   getUpcomingDeliveryDates,
   getWeeklyExtraMealDayKeys,
+  getWeeklyRemovableExtraMealDayKeys,
 } from './mealCalendarUtils';
 
 const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
@@ -79,6 +80,8 @@ type DeliveryDetailsScreenProps = {
   duration: Duration;
   plan: Plan;
   persons: number;
+  extraMealDayKeys: string[];
+  onExtraMealDayKeysChange: (keys: string[]) => void;
   onContinue?: () => void;
 };
 
@@ -91,6 +94,8 @@ export function DeliveryDetailsScreen({
   duration,
   plan,
   persons,
+  extraMealDayKeys,
+  onExtraMealDayKeysChange,
   onContinue,
 }: DeliveryDetailsScreenProps) {
   const [fieldErrors, setFieldErrors] = useState<DeliveryDetailsFieldErrors>({});
@@ -207,14 +212,12 @@ export function DeliveryDetailsScreen({
             duration={duration}
             dayOption={days}
             selectedDate={deliveryDetails.selectedDate}
-            onSelectedDateChange={(selectedDate) =>
-              onDeliveryDetailsChange({ selectedDate, extraMealDayKeys: [] })
-            }
+            onSelectedDateChange={(selectedDate) => onDeliveryDetailsChange({ selectedDate })}
             availableDates={deliveryDates}
             enableAddMealDays
             plan={plan}
             persons={persons}
-            extraMealDayKeys={new Set(deliveryDetails.extraMealDayKeys)}
+            extraMealDayKeys={new Set(extraMealDayKeys)}
             onAddMealDay={({ anchorDate, daysPerWeek }) => {
               const endDate = addDays(deliveryDetails.selectedDate, getSubscriptionDays(duration));
               const newKeys = getWeeklyExtraMealDayKeys({
@@ -225,11 +228,23 @@ export function DeliveryDetailsScreen({
                 daysPerWeek,
               });
 
-              onDeliveryDetailsChange({
-                extraMealDayKeys: [
-                  ...new Set([...deliveryDetails.extraMealDayKeys, ...newKeys]),
-                ],
+              onExtraMealDayKeysChange([...new Set([...extraMealDayKeys, ...newKeys])]);
+            }}
+            onRemoveMealDay={({ anchorDate, daysPerWeek }) => {
+              const endDate = addDays(deliveryDetails.selectedDate, getSubscriptionDays(duration));
+              const keysToRemove = getWeeklyRemovableExtraMealDayKeys({
+                anchorDate,
+                startDate: deliveryDetails.selectedDate,
+                endDate,
+                dayOption: days,
+                extraMealDayKeys: new Set(extraMealDayKeys),
+                daysPerWeek,
               });
+              const keysToRemoveSet = new Set(keysToRemove);
+
+              onExtraMealDayKeysChange(
+                extraMealDayKeys.filter((key) => !keysToRemoveSet.has(key)),
+              );
             }}
           />
 

@@ -4,12 +4,12 @@ import {
   DEFAULT_CHECKOUT_PRICING,
   formatAed,
   formatPricePerDay,
-  getCheckoutPrice,
   type CheckoutPricingTable,
   type DayOption,
   type Duration,
   type Plan,
 } from '../../data/checkoutPricing';
+import { getCheckoutOrderPricing } from './mealCalendarAddDaysPricing';
 import type { LightMealOption } from '../../data/testMeals';
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { Button } from '../common/Button';
@@ -69,6 +69,7 @@ export function BottomFloatTotalBlock({
   onLightMealOptionChange,
   onScrollToSummary,
   hidden = false,
+  extraMealDayKeys = [],
   pricingTable = DEFAULT_CHECKOUT_PRICING,
 }: {
   plan: Plan;
@@ -80,6 +81,7 @@ export function BottomFloatTotalBlock({
   onLightMealOptionChange: (option: LightMealOption) => void;
   onScrollToSummary: () => void;
   hidden?: boolean;
+  extraMealDayKeys?: string[];
   pricingTable?: CheckoutPricingTable;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -89,12 +91,13 @@ export function BottomFloatTotalBlock({
   const menuClosingRef = useRef(false);
   const menuCloseTimerRef = useRef<number | null>(null);
 
-  const pricing = getCheckoutPrice({
+  const orderPricing = getCheckoutOrderPricing({
     pricingTable,
     plan,
     days,
     duration,
     persons,
+    extraMealDayKeys,
   });
 
   const menuVisible = menuOpen || menuClosing;
@@ -210,9 +213,9 @@ export function BottomFloatTotalBlock({
                 <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-[16px] px-[length:var(--checkout-card-padding)] py-[8px]">
                   <div className="flex min-w-0 w-full flex-col items-center justify-start gap-[8px] overflow-hidden">
                     <div className="flex min-w-0 max-w-full items-end gap-[5px] tabular-nums">
-                      {pricing.oldPeriodPrice ? (
+                      {orderPricing.oldPeriodPrice ? (
                         <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-[var(--checkout-float-muted)] line-through">
-                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} animate />
+                          <AnimatedNumber value={orderPricing.oldPeriodPrice} format={formatAed} animate />
                         </p>
                       ) : null}
 
@@ -222,19 +225,19 @@ export function BottomFloatTotalBlock({
                         </p>
 
                         <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
-                          <AnimatedNumber value={pricing.periodPrice} format={formatAed} animate />
+                          <AnimatedNumber value={orderPricing.periodPrice} format={formatAed} animate />
                         </p>
                       </div>
 
-                      {pricing.oldPeriodPrice ? (
+                      {orderPricing.oldPeriodPrice ? (
                         <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-transparent opacity-0">
-                          <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} animate={false} />
+                          <AnimatedNumber value={orderPricing.oldPeriodPrice} format={formatAed} animate={false} />
                         </p>
                       ) : null}
                     </div>
 
                     <p className="text-right font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
-                      AED <AnimatedNumber value={pricing.pricePerDay} format={formatPricePerDay} animate />/day
+                      AED <AnimatedNumber value={orderPricing.pricePerDay} format={formatPricePerDay} animate />/day
                     </p>
                   </div>
 

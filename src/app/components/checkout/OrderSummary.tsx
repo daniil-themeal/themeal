@@ -27,14 +27,13 @@ import { LEGAL_ROUTES } from '../../legal/routes';
 import type { Meal as MealDetail } from '../../types/meal';
 import {
   DEFAULT_CHECKOUT_PRICING,
-  getCheckoutPrice,
   getFinalPeriodPrice,
-  getTotalMeals,
   type CheckoutPricingTable,
   type DayOption,
   type Duration,
   type Plan,
 } from '../../data/checkoutPricing';
+import { getCheckoutOrderPricing } from './mealCalendarAddDaysPricing';
 import { getPromoCodeDiscount } from '../../config/promoCodes';
 import { MealDetailModal } from './MealDetailModal';
 import { CheckoutPromoCode } from './CheckoutPromoCode';
@@ -138,6 +137,7 @@ export function OrderSummary({
   ingredients,
   persons,
   lightMealOption,
+  extraMealDayKeys = [],
   onPersonsChange,
   onOpenMenu,
   onOrder,
@@ -156,6 +156,7 @@ export function OrderSummary({
   ingredients: string[];
   persons: number;
   lightMealOption: LightMealOption;
+  extraMealDayKeys?: string[];
   onPersonsChange: (n: number) => void;
   onOpenMenu?: () => void;
   onOrder?: () => void;
@@ -180,10 +181,16 @@ export function OrderSummary({
   const prevMealsCountRef = useRef(visibleMeals.length);
   const animationTokenRef = useRef(0);
 
-  const pricing = getCheckoutPrice({ pricingTable, plan, days, duration, persons });
-  const mealsCount = getTotalMeals({ pricingTable, plan, days, duration, persons });
+  const orderPricing = getCheckoutOrderPricing({
+    pricingTable,
+    plan,
+    days,
+    duration,
+    persons,
+    extraMealDayKeys,
+  });
   const promoDiscount = appliedPromoCode ? getPromoCodeDiscount(appliedPromoCode) : null;
-  const finalPeriodPrice = getFinalPeriodPrice(pricing.periodPrice, promoDiscount);
+  const finalPeriodPrice = getFinalPeriodPrice(orderPricing.periodPrice, promoDiscount);
   const previewMeals = useMemo(
     () => getMealsForPlan(testMenuDays[0], plan, lightMealOption),
     [plan, lightMealOption],
@@ -409,11 +416,11 @@ export function OrderSummary({
               <p className="min-w-0 font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">
                 Total meals{' '}
                 <sup className="font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[130%] text-[var(--order-summary-muted)]">
-                  (over <AnimatedNumber value={pricing.paidDays} /> days)
+                  (over <AnimatedNumber value={orderPricing.totalPaidDays} /> days)
                 </sup>
               </p>
               <p className="shrink-0 text-right font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[150%] text-[var(--order-summary-text)]">
-                <AnimatedNumber value={mealsCount} animate={false} />
+                <AnimatedNumber value={orderPricing.totalMeals} animate={false} />
               </p>
             </div>
 
@@ -435,9 +442,9 @@ export function OrderSummary({
               className={['h-fit w-full scroll-mt-4 scroll-mb-[72px]', orderSummarySectionPx].join(' ')}
             >
               <CheckoutTodayTotal
-                oldPeriodPrice={pricing.oldPeriodPrice}
+                oldPeriodPrice={orderPricing.oldPeriodPrice}
                 periodPrice={finalPeriodPrice}
-                pricePerDay={pricing.pricePerDay}
+                pricePerDay={orderPricing.pricePerDay}
                 animate={false}
                 style={{
                   '--today-total-title-fs': 'var(--order-summary-title-font-size)',
@@ -466,7 +473,7 @@ export function OrderSummary({
             <div className={['mt-[length:var(--order-summary-section-gap)] scroll-mb-[72px]', orderSummarySectionPx].join(' ')}>
               <TabbyPromoWidget
                 price={finalPeriodPrice}
-                pricePerMonth={pricing.pricePerMonth}
+                pricePerMonth={orderPricing.pricePerMonth}
                 source="cart"
               />
             </div>

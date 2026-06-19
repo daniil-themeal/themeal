@@ -4,10 +4,9 @@ import type { CSSProperties, ReactNode } from 'react';
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import {
   formatAed,
-  getCheckoutPrice,
   getFinalPeriodPrice,
-  getTotalMeals,
 } from '../../data/checkoutPricing';
+import { getCheckoutOrderPricing } from './mealCalendarAddDaysPricing';
 import type { TestAddress } from '../../data/testAddresses';
 import { getPromoCodeDiscount } from '../../config/promoCodes';
 import { Button } from '../common/Button';
@@ -170,6 +169,7 @@ type PaymentScreenProps = {
   ingredients: string[];
   lightMealOption: LightMealOption;
   persons: number;
+  extraMealDayKeys?: string[];
   selectedAddress: TestAddress | null;
   deliveryDetails: DeliveryDetailsData;
   onEditPlan: () => void;
@@ -186,6 +186,7 @@ export function PaymentScreen({
   ingredients,
   lightMealOption,
   persons,
+  extraMealDayKeys = [],
   selectedAddress,
   deliveryDetails,
   onEditPlan,
@@ -197,21 +198,17 @@ export function PaymentScreen({
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>('card');
   const [sessionSeconds, setSessionSeconds] = useState(SESSION_SECONDS);
 
-  const pricing = useMemo(
-    () => getCheckoutPrice({ plan, days, duration, persons }),
-    [plan, days, duration, persons],
-  );
-  const mealsCount = useMemo(
-    () => getTotalMeals({ plan, days, duration, persons }),
-    [plan, days, duration, persons],
+  const orderPricing = useMemo(
+    () => getCheckoutOrderPricing({ plan, days, duration, persons, extraMealDayKeys }),
+    [plan, days, duration, persons, extraMealDayKeys],
   );
   const promoDiscount = useMemo(
     () => (appliedPromoCode ? getPromoCodeDiscount(appliedPromoCode) : null),
     [appliedPromoCode],
   );
   const finalPeriodPrice = useMemo(
-    () => getFinalPeriodPrice(pricing.periodPrice, promoDiscount),
-    [pricing.periodPrice, promoDiscount],
+    () => getFinalPeriodPrice(orderPricing.periodPrice, promoDiscount),
+    [orderPricing.periodPrice, promoDiscount],
   );
   const planTariffChips = useMemo(
     () =>
@@ -365,10 +362,10 @@ export function PaymentScreen({
               <PriceRow
                 label={
                   <>
-                    Total meals <span className="font-medium">(over {pricing.paidDays} days)</span>
+                    Total meals <span className="font-medium">(over {orderPricing.totalPaidDays} days)</span>
                   </>
                 }
-                value={mealsCount}
+                value={orderPricing.totalMeals}
               />
 
               <PriceRow label="Delivery and pause" value="Free" />
@@ -382,9 +379,9 @@ export function PaymentScreen({
 
               <CheckoutTodayTotal
                 className="pt-[4px]"
-                oldPeriodPrice={pricing.oldPeriodPrice}
+                oldPeriodPrice={orderPricing.oldPeriodPrice}
                 periodPrice={finalPeriodPrice}
-                pricePerDay={pricing.pricePerDay}
+                pricePerDay={orderPricing.pricePerDay}
                 animate
               />
             </div>

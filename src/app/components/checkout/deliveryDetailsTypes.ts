@@ -8,7 +8,6 @@ export type DeliveryDetailsData = {
   leaveAtDoor: boolean;
   selectedTimeSlot: string;
   selectedDate: Date;
-  extraMealDayKeys: string[];
 };
 
 export function createInitialDeliveryDetails(): DeliveryDetailsData {
@@ -22,6 +21,5 @@ export function createInitialDeliveryDetails(): DeliveryDetailsData {
     leaveAtDoor: false,
     selectedTimeSlot: '',
     selectedDate: deliveryDates[0],
-    extraMealDayKeys: [],
   };
 }

@@ -20,21 +20,21 @@ import type { ExtraMealDaysQuote } from './mealCalendarAddDaysPricing';
 
 const POPOVER_CLOSE_DELAY_MS = 120;
 
-type AddMealDayPopoverProps = {
-  quotePlus1: ExtraMealDaysQuote;
-  quotePlus2: ExtraMealDaysQuote;
-  canAddTwo: boolean;
-  onAdd: (daysPerWeek: 1 | 2) => void;
+type RemoveMealDayPopoverProps = {
+  quoteMinus1: ExtraMealDaysQuote;
+  quoteMinus2: ExtraMealDaysQuote;
+  canRemoveTwo: boolean;
+  onRemove: (daysPerWeek: 1 | 2) => void;
   children: ReactElement;
 };
 
-export function AddMealDayPopover({
-  quotePlus1,
-  quotePlus2,
-  canAddTwo,
-  onAdd,
+export function RemoveMealDayPopover({
+  quoteMinus1,
+  quoteMinus2,
+  canRemoveTwo,
+  onRemove,
   children,
-}: AddMealDayPopoverProps) {
+}: RemoveMealDayPopoverProps) {
   const [open, setOpen] = useState(false);
   const [selectedDaysPerWeek, setSelectedDaysPerWeek] = useState<1 | 2>(1);
   const closeTimerRef = useRef<number | null>(null);
@@ -71,13 +71,13 @@ export function AddMealDayPopover({
   const handleConfirm = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
-      onAdd(selectedDaysPerWeek);
+      onRemove(selectedDaysPerWeek);
       setOpen(false);
     },
-    [onAdd, selectedDaysPerWeek],
+    [onRemove, selectedDaysPerWeek],
   );
 
-  const previewQuote = selectedDaysPerWeek === 2 ? quotePlus2 : quotePlus1;
+  const previewQuote = selectedDaysPerWeek === 2 ? quoteMinus2 : quoteMinus1;
 
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
@@ -118,14 +118,14 @@ export function AddMealDayPopover({
               <p
                 className={[
                   TEXT_TRIM_CLASS_NAME,
-                  'font-sans text-[length:var(--add-meal-day-title-fs)] font-bold leading-[130%]',
+                  'font-sans text-[length:var(--remove-meal-day-title-fs)] font-bold leading-[130%]',
                 ].join(' ')}
                 style={{
                   color: COLOR_TOKENS.neutral[900],
-                  ['--add-meal-day-title-fs' as string]: FONT_SIZE_TOKENS[14],
+                  ['--remove-meal-day-title-fs' as string]: FONT_SIZE_TOKENS[14],
                 }}
               >
-                Add meal day
+                Remove meal day
               </p>
 
               <div className="flex gap-[8px]">
@@ -138,7 +138,7 @@ export function AddMealDayPopover({
                 <MealDayScopeButton
                   label="+2"
                   selected={selectedDaysPerWeek === 2}
-                  disabled={!canAddTwo}
+                  disabled={!canRemoveTwo}
                   onClick={handleSelect(2)}
                 />
               </div>
@@ -146,7 +146,7 @@ export function AddMealDayPopover({
               <MealDayPopoverPricing
                 actionCostAed={previewQuote.actionCostAed}
                 periodPrice={previewQuote.periodPrice}
-                mode="add"
+                mode="remove"
               />
 
               <Button type="button" variant="primary" size="small" fullWidth onClick={handleConfirm}>

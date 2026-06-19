@@ -183,6 +183,7 @@ export function CheckoutPage({
   const [smsError, setSmsError] = useState<string | undefined>();
   const [isSmsVerifying, setIsSmsVerifying] = useState(false);
   const [appliedPromoCode, setAppliedPromoCode] = useState('');
+  const [extraMealDayKeys, setExtraMealDayKeys] = useState<string[]>([]);
 
   const smsVerifyTimerRef = useRef<number | null>(null);
 
@@ -277,9 +278,7 @@ export function CheckoutPage({
   }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified, sessionIsVerified, resetCloseState, clearSmsVerifyTimer]);
 
   useEffect(() => {
-    setDeliveryDetails((current) =>
-      current.extraMealDayKeys.length === 0 ? current : { ...current, extraMealDayKeys: [] },
-    );
+    setExtraMealDayKeys([]);
   }, [days, duration]);
 
   useEffect(() => {
@@ -512,6 +511,14 @@ export function CheckoutPage({
 
   const handleDeliveryDetailsChange = (patch: Partial<DeliveryDetailsData>) => {
     setDeliveryDetails((current) => ({ ...current, ...patch }));
+
+    if ('selectedDate' in patch) {
+      setExtraMealDayKeys([]);
+    }
+  };
+
+  const handleExtraMealDayKeysChange = (keys: string[]) => {
+    setExtraMealDayKeys(keys);
   };
 
   const handleEditPlan = () => {
@@ -710,6 +717,7 @@ export function CheckoutPage({
                   ingredients={ingredients}
                   persons={persons}
                   lightMealOption={lightMealOption}
+                  extraMealDayKeys={extraMealDayKeys}
                   onPersonsChange={setPersons}
                   onOpenMenu={() => setMenuOpen(true)}
                   onOrder={handleContinueFromPlan}
@@ -740,6 +748,7 @@ export function CheckoutPage({
             duration={duration}
             persons={persons}
             lightMealOption={lightMealOption}
+            extraMealDayKeys={extraMealDayKeys}
             onPlanChange={setPlan}
             onLightMealOptionChange={setLightMealOption}
             onScrollToSummary={handleScrollToSummary}
@@ -765,6 +774,8 @@ export function CheckoutPage({
             duration={duration}
             plan={plan}
             persons={persons}
+            extraMealDayKeys={extraMealDayKeys}
+            onExtraMealDayKeysChange={handleExtraMealDayKeysChange}
             onContinue={handleDeliveryDetailsContinue}
           />
         </div>
@@ -777,6 +788,7 @@ export function CheckoutPage({
             ingredients={ingredients}
             lightMealOption={lightMealOption}
             persons={persons}
+            extraMealDayKeys={extraMealDayKeys}
             selectedAddress={selectedAddress}
             deliveryDetails={deliveryDetails}
             onEditPlan={handleEditPlan}
@@ -822,6 +834,7 @@ export function CheckoutPage({
                 days={days}
                 duration={duration}
                 startDate={deliveryDetails.selectedDate}
+                extraMealDayKeys={extraMealDayKeys}
                 onClose={handleDismissResultOverlay}
                 onTabChange={handleResultTabChange}
                 onGoToMain={handleGoToMain}

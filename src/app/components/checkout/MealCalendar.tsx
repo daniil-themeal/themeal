@@ -6,13 +6,15 @@ import { DatePill } from '../common/DatePill';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { FormSectionHeading } from '../common/FormSectionHeading';
-import { DeliveryIcon, PlusIcon } from '../common/icons';
+import { DeliveryIcon, MinusIcon, PlusIcon } from '../common/icons';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 
 import { AddMealDayPopover } from './AddMealDayPopover';
+import { RemoveMealDayPopover } from './RemoveMealDayPopover';
 import {
   getExtraMealDaysQuote,
   getProjectedExtraMealDayCount,
+  getProjectedExtraMealDayCountAfterRemove,
 } from './mealCalendarAddDaysPricing';
 import {
   addDays,
@@ -23,10 +25,12 @@ import {
   getSubscriptionDays,
   getUpcomingDeliveryDates,
   getWeeklyExtraMealDayKeys,
+  getWeeklyRemovableExtraMealDayKeys,
   isAddableMealDayCell,
   isDatePillVisibleInContainer,
   isDeliveryDay,
   isInPeriod,
+  isRemovableExtraMealDayCell,
   isSameDay,
   isSubscriptionMealDay,
   MONTH_ABBR,
@@ -77,6 +81,7 @@ type CalendarCellProps = {
   persons?: number;
   duration?: Duration;
   onAddMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
+  onRemoveMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
 };
 
 function CalendarCell({
@@ -91,6 +96,7 @@ function CalendarCell({
   persons = 1,
   duration,
   onAddMealDay,
+  onRemoveMealDay,
 }: CalendarCellProps) {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -109,10 +115,19 @@ function CalendarCell({
     duration &&
     onAddMealDay &&
     isAddableMealDayCell({ date, startDate, endDate, dayOption, extraMealDayKeys });
+  const removable =
+    enableAddMealDays &&
+    plan &&
+    duration &&
+    onRemoveMealDay &&
+    extraMealDayKeys &&
+    isRemovableExtraMealDayCell({ date, startDate, endDate, dayOption, extraMealDayKeys });
+  const interactive = addable || removable;
   const textColor = inPeriod ? COLOR_TOKENS.neutral[900] : COLOR_TOKENS.neutral[300];
   const showPlus = addable && isHovered;
+  const showMinus = removable && isHovered;
 
-  const canAddTwo = useMemo(() => getAddableWeekdays(dayOption).length >= 2, [dayOption]);
+  const canToggleTwo = useMemo(() => getAddableWeekdays(dayOption).length >= 2, [dayOption]);
 
   const { quotePlus1, quotePlus2 } = useMemo(() => {
     if (!addable || !plan || !duration) {
@@ -135,12 +150,15 @@ function CalendarCell({
       daysPerWeek: 2,
     });
 
+    const previousExtraMealDayCount = existingKeys.size;
+
     return {
       quotePlus1: getExtraMealDaysQuote({
         plan,
         days: dayOption,
         duration,
         persons,
+        previousExtraMealDayCount,
         extraMealDayCount: getProjectedExtraMealDayCount(existingKeys, newKeysPlus1),
       }),
       quotePlus2: getExtraMealDaysQuote({
@@ -148,6 +166,7 @@ function CalendarCell({
         days: dayOption,
         duration,
         persons,
+        previousExtraMealDayCount,
         extraMealDayCount: getProjectedExtraMealDayCount(existingKeys, newKeysPlus2),
       }),
     };
@@ -163,12 +182,74 @@ function CalendarCell({
     startDate,
   ]);
 
+  const { quoteMinus1, quoteMinus2 } = useMemo(() => {
+    if (!removable || !plan || !duration || !extraMealDayKeys) {
+      return { quoteMinus1: null, quoteMinus2: null };
+    }
+
+    const keysToRemovePlus1 = getWeeklyRemovableExtraMealDayKeys({
+      anchorDate: date,
+      startDate,
+      endDate,
+      dayOption,
+      extraMealDayKeys,
+      daysPerWeek: 1,
+    });
+    const keysToRemovePlus2 = getWeeklyRemovableExtraMealDayKeys({
+      anchorDate: date,
+      startDate,
+      endDate,
+      dayOption,
+      extraMealDayKeys,
+      daysPerWeek: 2,
+    });
+
+    const previousExtraMealDayCount = extraMealDayKeys.size;
+
+    return {
+      quoteMinus1: getExtraMealDaysQuote({
+        plan,
+        days: dayOption,
+        duration,
+        persons,
+        previousExtraMealDayCount,
+        extraMealDayCount: getProjectedExtraMealDayCountAfterRemove(
+          extraMealDayKeys,
+          keysToRemovePlus1,
+        ),
+      }),
+      quoteMinus2: getExtraMealDaysQuote({
+        plan,
+        days: dayOption,
+        duration,
+        persons,
+        previousExtraMealDayCount,
+        extraMealDayCount: getProjectedExtraMealDayCountAfterRemove(
+          extraMealDayKeys,
+          keysToRemovePlus2,
+        ),
+      }),
+    };
+  }, [
+    date,
+    dayOption,
+    duration,
+    endDate,
+    extraMealDayKeys,
+    persons,
+    plan,
+    removable,
+    startDate,
+  ]);
+
   const cellContent = (
     <div
       className={[
         'relative flex h-[48px] flex-col items-center justify-center gap-[6px]',
         mealRadiusPosition ? getMealDayRadiusClassName(mealRadiusPosition) : '',
-        addable ? 'cursor-pointer transition-colors hover:bg-[var(--calendar-addable-hover-bg)]' : '',
+        addable || removable
+          ? 'cursor-pointer transition-colors hover:bg-[var(--calendar-addable-hover-bg)]'
+          : '',
       ]
         .filter(Boolean)
         .join(' ')}
@@ -176,8 +257,8 @@ function CalendarCell({
         backgroundColor: mealDay ? COLOR_TOKENS.primary[50] : 'transparent',
         ['--calendar-addable-hover-bg' as string]: COLOR_TOKENS.neutral[50],
       }}
-      onMouseEnter={addable ? () => setIsHovered(true) : undefined}
-      onMouseLeave={addable ? () => setIsHovered(false) : undefined}
+      onMouseEnter={interactive ? () => setIsHovered(true) : undefined}
+      onMouseLeave={interactive ? () => setIsHovered(false) : undefined}
     >
       {deliveryDay ? (
         <span
@@ -191,6 +272,10 @@ function CalendarCell({
       {showPlus ? (
         <span style={{ color: COLOR_TOKENS.primary[500] }}>
           <PlusIcon size={20} />
+        </span>
+      ) : showMinus ? (
+        <span style={{ color: COLOR_TOKENS.primary[500] }}>
+          <MinusIcon size={20} />
         </span>
       ) : (
         <>
@@ -223,11 +308,24 @@ function CalendarCell({
       <AddMealDayPopover
         quotePlus1={quotePlus1}
         quotePlus2={quotePlus2}
-        canAddTwo={canAddTwo}
+        canAddTwo={canToggleTwo}
         onAdd={(daysPerWeek) => onAddMealDay({ anchorDate: date, daysPerWeek })}
       >
         {cellContent}
       </AddMealDayPopover>
+    );
+  }
+
+  if (removable && quoteMinus1 && quoteMinus2) {
+    return (
+      <RemoveMealDayPopover
+        quoteMinus1={quoteMinus1}
+        quoteMinus2={quoteMinus2}
+        canRemoveTwo={canToggleTwo}
+        onRemove={(daysPerWeek) => onRemoveMealDay({ anchorDate: date, daysPerWeek })}
+      >
+        {cellContent}
+      </RemoveMealDayPopover>
     );
   }
 
@@ -243,6 +341,7 @@ type MealCalendarGridProps = {
   plan?: Plan;
   persons?: number;
   onAddMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
+  onRemoveMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
 };
 
 function MealCalendarGrid({
@@ -254,6 +353,7 @@ function MealCalendarGrid({
   plan,
   persons = 1,
   onAddMealDay,
+  onRemoveMealDay,
 }: MealCalendarGridProps) {
   const weeks = useMemo(() => getCalendarWeeks(startDate, duration), [startDate, duration]);
   const endDate = useMemo(
@@ -304,6 +404,7 @@ function MealCalendarGrid({
                 persons={persons}
                 duration={duration}
                 onAddMealDay={onAddMealDay}
+                onRemoveMealDay={onRemoveMealDay}
               />
             ))}
           </div>
@@ -403,6 +504,7 @@ export type MealCalendarPreviewProps = {
   startDate: Date;
   duration: Duration;
   dayOption: DayOption;
+  extraMealDayKeys?: ReadonlySet<string>;
   className?: string;
 };
 
@@ -410,6 +512,7 @@ export function MealCalendarPreview({
   startDate,
   duration,
   dayOption,
+  extraMealDayKeys,
   className = '',
 }: MealCalendarPreviewProps) {
   return (
@@ -418,7 +521,12 @@ export function MealCalendarPreview({
       style={mealCalendarStyle}
     >
       <MealCalendarLegend variant="success" />
-      <MealCalendarGrid startDate={startDate} duration={duration} dayOption={dayOption} />
+      <MealCalendarGrid
+        startDate={startDate}
+        duration={duration}
+        dayOption={dayOption}
+        extraMealDayKeys={extraMealDayKeys}
+      />
     </div>
   );
 }
@@ -438,6 +546,7 @@ export type MealCalendarProps = {
   persons?: number;
   extraMealDayKeys?: ReadonlySet<string>;
   onAddMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
+  onRemoveMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
 };
 
 export function MealCalendar({
@@ -455,6 +564,7 @@ export function MealCalendar({
   persons = 1,
   extraMealDayKeys,
   onAddMealDay,
+  onRemoveMealDay,
 }: MealCalendarProps) {
   const deliveryDates = useMemo(
     () => availableDates ?? getUpcomingDeliveryDates(withinDays),
@@ -644,6 +754,7 @@ export function MealCalendar({
           plan={plan}
           persons={persons}
           onAddMealDay={onAddMealDay}
+          onRemoveMealDay={onRemoveMealDay}
         />
       </div>
     </div>

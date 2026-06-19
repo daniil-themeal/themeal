@@ -26,6 +26,7 @@ type PaymentSuccessScreenProps = {
   days: DayOption;
   duration: Duration;
   startDate: Date;
+  extraMealDayKeys?: string[];
   onClose: () => void;
   onTabChange: (tab: PaymentResultTab) => void;
   onGoToMain: () => void;
@@ -136,6 +137,7 @@ export function PaymentSuccessScreen({
   days,
   duration,
   startDate,
+  extraMealDayKeys = [],
   onClose,
   onTabChange,
   onGoToMain,
@@ -179,6 +181,7 @@ export function PaymentSuccessScreen({
               startDate={startDate}
               duration={duration}
               dayOption={days}
+              extraMealDayKeys={new Set(extraMealDayKeys)}
               className="w-full"
             />
           </div>
