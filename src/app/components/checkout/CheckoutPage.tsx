@@ -734,6 +734,8 @@ export function CheckoutPage({
             duration={duration}
             persons={persons}
             lightMealOption={lightMealOption}
+            onPlanChange={setPlan}
+            onLightMealOptionChange={setLightMealOption}
             onScrollToSummary={handleScrollToSummary}
             hidden={summaryVisible || isMealDetailOpen}
           />

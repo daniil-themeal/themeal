@@ -1,13 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type MouseEvent,
-  type TouchEvent,
-} from 'react';
-import { createPortal } from 'react-dom';
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from 'react';
 
 import {
   DEFAULT_CHECKOUT_PRICING,
@@ -19,27 +10,15 @@ import {
   type Duration,
   type Plan,
 } from '../../data/checkoutPricing';
-import { getMealsForPlan, testMenuDays, type LightMealOption } from '../../data/testMeals';
-import type { Meal as MealDetail } from '../../types/meal';
+import type { LightMealOption } from '../../data/testMeals';
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { ChevronRightIcon } from '../common/icons';
-import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { CHECKOUT_FONT_CLAMP_14_16, CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP } from './checkoutSpacing';
+import { FullMenuPanel } from './FullMenuPanel';
 
-import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
-import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
-import { MealDetailModal } from './MealDetailModal';
-import { CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING } from './checkoutStepPageLayoutTokens';
-import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
-
-const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
-const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-const MENU_DAYS_COUNT = testMenuDays.length;
-const MOUSE_DRAG_CLICK_THRESHOLD = 6;
 const MENU_EXIT_ANIMATION_FALLBACK_MS = 260;
 
 type BottomFloatTotalBlockCssVariables = CSSProperties & {
@@ -80,31 +59,14 @@ const bottomFloatTotalBlockStyle: BottomFloatTotalBlockCssVariables = {
   '--checkout-float-discount': COLOR_TOKENS.neutral[300],
 };
 
-function clamp(value: number, min: number, max: number) {
-  return Math.min(Math.max(value, min), max);
-}
-
-function getMenuDays() {
-  return testMenuDays.map((menuDay, i) => {
-    const d = new Date(`${menuDay.date}T00:00:00`);
-    const dayIndex = d.getDay() === 0 ? 6 : d.getDay() - 1;
-
-    return {
-      date: d.getDate(),
-      month: MONTH_NAMES[d.getMonth()],
-      day: DAY_NAMES[dayIndex],
-      absoluteDayIndex: i,
-      menuDayId: menuDay.id,
-    };
-  });
-}
-
 export function BottomFloatTotalBlock({
   plan,
   days,
   duration,
   persons = 1,
   lightMealOption,
+  onPlanChange,
+  onLightMealOptionChange,
   onScrollToSummary,
   hidden = false,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
@@ -114,28 +76,15 @@ export function BottomFloatTotalBlock({
   duration: Duration;
   persons?: number;
   lightMealOption: LightMealOption;
+  onPlanChange: (plan: Plan) => void;
+  onLightMealOptionChange: (option: LightMealOption) => void;
   onScrollToSummary: () => void;
   hidden?: boolean;
   pricingTable?: CheckoutPricingTable;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuClosing, setMenuClosing] = useState(false);
-  const [selectedDayIndex, setSelectedDayIndex] = useState(0);
-  const [isDraggingDays, setIsDraggingDays] = useState(false);
-  const [isDraggingMeals, setIsDraggingMeals] = useState(false);
-  const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
-
-  const dayRefs = useRef<Array<HTMLButtonElement | null>>([]);
-  const daysScrollRef = useRef<HTMLDivElement | null>(null);
-  const mealsScrollRef = useRef<HTMLDivElement | null>(null);
-
-  const daysDragStartXRef = useRef(0);
-  const daysDragStartScrollLeftRef = useRef(0);
-  const suppressDayClickRef = useRef(false);
-
-  const mealsDragStartXRef = useRef(0);
-  const mealsDragStartScrollLeftRef = useRef(0);
-  const suppressMealClickRef = useRef(false);
+  const [mealDetailOpen, setMealDetailOpen] = useState(false);
 
   const menuClosingRef = useRef(false);
   const menuCloseTimerRef = useRef<number | null>(null);
@@ -148,18 +97,7 @@ export function BottomFloatTotalBlock({
     persons,
   });
 
-  const menuDays = getMenuDays();
-  const canGoPrev = selectedDayIndex > 0;
-  const canGoNext = selectedDayIndex < MENU_DAYS_COUNT - 1;
   const menuVisible = menuOpen || menuClosing;
-
-  const selectedDayMeals = getMealsForPlan(
-    testMenuDays[selectedDayIndex],
-    plan,
-    lightMealOption,
-  );
-  const { showStartFade: showMealsStartFade, showEndFade: showMealsEndFade } =
-    useHorizontalScrollEdgeFades(mealsScrollRef, selectedDayMeals.length);
 
   const clearMenuCloseTimer = useCallback(() => {
     if (menuCloseTimerRef.current !== null) {
@@ -210,159 +148,6 @@ export function BottomFloatTotalBlock({
     onScrollToSummary();
   };
 
-  const scrollSelectedDayIntoView = (dayIndex: number) => {
-    const selectedButton = dayRefs.current[dayIndex];
-
-    selectedButton?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'nearest',
-      inline: 'nearest',
-    });
-  };
-
-  const selectDay = (dayIndex: number) => {
-    const nextDayIndex = clamp(dayIndex, 0, MENU_DAYS_COUNT - 1);
-
-    if (nextDayIndex === selectedDayIndex) return;
-
-    setSelectedDayIndex(nextDayIndex);
-
-    window.requestAnimationFrame(() => {
-      scrollSelectedDayIntoView(nextDayIndex);
-      mealsScrollRef.current?.scrollTo({ left: 0, behavior: 'smooth' });
-    });
-  };
-
-  const handlePrevDay = () => {
-    if (!canGoPrev) return;
-    selectDay(selectedDayIndex - 1);
-  };
-
-  const handleNextDay = () => {
-    if (!canGoNext) return;
-    selectDay(selectedDayIndex + 1);
-  };
-
-  const handleDayClick = (dayIndex: number) => {
-    if (suppressDayClickRef.current) {
-      suppressDayClickRef.current = false;
-      return;
-    }
-
-    selectDay(dayIndex);
-  };
-
-  const handleDaysMouseDown = (event: MouseEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return;
-
-    const scrollContainer = daysScrollRef.current;
-    if (!scrollContainer) return;
-
-    setIsDraggingDays(true);
-    suppressDayClickRef.current = false;
-    daysDragStartXRef.current = event.clientX;
-    daysDragStartScrollLeftRef.current = scrollContainer.scrollLeft;
-  };
-
-  const handleDaysMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-    if (!isDraggingDays) return;
-
-    const scrollContainer = daysScrollRef.current;
-    if (!scrollContainer) return;
-
-    const deltaX = event.clientX - daysDragStartXRef.current;
-
-    if (Math.abs(deltaX) > MOUSE_DRAG_CLICK_THRESHOLD) {
-      suppressDayClickRef.current = true;
-    }
-
-    scrollContainer.scrollLeft = daysDragStartScrollLeftRef.current - deltaX;
-  };
-
-  const stopDaysMouseDrag = () => {
-    if (!isDraggingDays) return;
-
-    setIsDraggingDays(false);
-
-    window.setTimeout(() => {
-      suppressDayClickRef.current = false;
-    }, 80);
-  };
-
-  const handleMealsMouseDown = (event: MouseEvent<HTMLDivElement>) => {
-    if (event.button !== 0) return;
-
-    const scrollContainer = mealsScrollRef.current;
-    if (!scrollContainer) return;
-
-    setIsDraggingMeals(true);
-    suppressMealClickRef.current = false;
-    mealsDragStartXRef.current = event.clientX;
-    mealsDragStartScrollLeftRef.current = scrollContainer.scrollLeft;
-  };
-
-  const handleMealsMouseMove = (event: MouseEvent<HTMLDivElement>) => {
-    if (!isDraggingMeals) return;
-
-    const scrollContainer = mealsScrollRef.current;
-    if (!scrollContainer) return;
-
-    const deltaX = event.clientX - mealsDragStartXRef.current;
-
-    if (Math.abs(deltaX) > MOUSE_DRAG_CLICK_THRESHOLD) {
-      suppressMealClickRef.current = true;
-    }
-
-    scrollContainer.scrollLeft = mealsDragStartScrollLeftRef.current - deltaX;
-  };
-
-  const stopMealsMouseDrag = () => {
-    if (!isDraggingMeals) return;
-
-    setIsDraggingMeals(false);
-
-    window.setTimeout(() => {
-      suppressMealClickRef.current = false;
-    }, 80);
-  };
-
-  const handleMealsTouchStart = (event: TouchEvent<HTMLDivElement>) => {
-    const scrollContainer = mealsScrollRef.current;
-    if (!scrollContainer) return;
-
-    suppressMealClickRef.current = false;
-    mealsDragStartXRef.current = event.touches[0].clientX;
-    mealsDragStartScrollLeftRef.current = scrollContainer.scrollLeft;
-  };
-
-  const handleMealsTouchMove = (event: TouchEvent<HTMLDivElement>) => {
-    const scrollContainer = mealsScrollRef.current;
-    if (!scrollContainer) return;
-
-    const deltaX = event.touches[0].clientX - mealsDragStartXRef.current;
-
-    if (Math.abs(deltaX) > MOUSE_DRAG_CLICK_THRESHOLD) {
-      suppressMealClickRef.current = true;
-    }
-
-    scrollContainer.scrollLeft = mealsDragStartScrollLeftRef.current - deltaX;
-  };
-
-  const handleMealsTouchEnd = () => {
-    window.setTimeout(() => {
-      suppressMealClickRef.current = false;
-    }, 80);
-  };
-
-  const handleMealClick = (meal: MealDetail) => {
-    if (suppressMealClickRef.current) {
-      suppressMealClickRef.current = false;
-      return;
-    }
-
-    setSelectedMeal(meal);
-  };
-
   useEffect(() => {
     return () => {
       clearMenuCloseTimer();
@@ -370,37 +155,36 @@ export function BottomFloatTotalBlock({
   }, [clearMenuCloseTimer]);
 
   return (
-    <>
-      <div
-        className={`fixed bottom-0 left-0 right-0 z-[150] flex flex-col items-end pb-[env(safe-area-inset-bottom)] transition-transform duration-300 ease-in-out md:hidden ${
-          hidden || selectedMeal ? 'translate-y-full' : 'translate-y-0'
-        }`}
-        style={bottomFloatTotalBlockStyle}
-      >
-        <div className="relative z-20 px-[length:var(--checkout-card-padding)]">
-          <Button
-            type="button"
-            variant="neutral"
-            size="x-small"
-            onClick={toggleMenu}
-            className="!rounded-tl-[4px] !rounded-tr-[4px] !rounded-bl-none !rounded-br-none [corner-shape:round]"
-            rightIcon={
-              <ChevronRightIcon
-                size={16}
-                className={`transition-transform duration-200 ${menuOpen ? 'rotate-90' : ''}`}
-              />
-            }
-          >
-            {menuOpen ? 'Hide menu' : 'Show menu'}
-          </Button>
-        </div>
+    <div
+      className={`fixed bottom-0 left-0 right-0 z-[150] flex flex-col items-end pb-[env(safe-area-inset-bottom)] transition-transform duration-300 ease-in-out md:hidden ${
+        hidden || mealDetailOpen ? 'translate-y-full' : 'translate-y-0'
+      }`}
+      style={bottomFloatTotalBlockStyle}
+    >
+      <div className="relative z-20 px-[length:var(--checkout-card-padding)]">
+        <Button
+          type="button"
+          variant="neutral"
+          size="x-small"
+          onClick={toggleMenu}
+          className="!rounded-tl-[4px] !rounded-tr-[4px] !rounded-bl-none !rounded-br-none [corner-shape:round]"
+          rightIcon={
+            <ChevronRightIcon
+              size={16}
+              className={`transition-transform duration-200 ${menuOpen ? 'rotate-90' : ''}`}
+            />
+          }
+        >
+          {menuOpen ? 'Hide menu' : 'Show menu'}
+        </Button>
+      </div>
 
-        <div className="w-full shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
-          <div className="overflow-hidden bg-[var(--checkout-float-surface)]">
-            <div className="relative">
+      <div className="w-full shadow-[0_-4px_12px_rgba(0,0,0,0.08)]">
+        <div className="bg-[var(--checkout-float-surface)]">
+          <div className="relative">
             {menuVisible && (
               <div
-                className={`${menuClosing ? 'modal-exit-mobile-full' : 'modal-enter-mobile-full'} relative z-0 bg-[var(--checkout-float-surface)]`}
+                className={`${menuClosing ? 'modal-exit-mobile-full' : 'modal-enter-mobile-full'} relative z-0 overflow-hidden bg-[var(--checkout-float-surface)]`}
                 onAnimationEnd={(event) => {
                   if (event.currentTarget !== event.target) return;
 
@@ -409,192 +193,23 @@ export function BottomFloatTotalBlock({
                   }
                 }}
               >
-                <div className="px-[length:var(--checkout-card-padding)] pt-[20px]">
-                  <div className="flex w-full items-stretch">
-                    <button
-                      type="button"
-                      onClick={handlePrevDay}
-                      className={`flex w-[40px] shrink-0 items-center justify-center rounded-[8px] transition-colors hover:bg-[var(--checkout-float-active-hover)] ${
-                        !canGoPrev ? 'pointer-events-none opacity-0' : 'cursor-pointer'
-                      }`}
-                    >
-                      <svg
-                        fill="none"
-                        viewBox="0 0 7 12"
-                        width="7"
-                        height="12"
-                        aria-hidden="true"
-                        focusable="false"
-                      >
-                        <path
-                          d="M6 11L1 6L6 1"
-                          stroke="var(--checkout-float-muted)"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                        />
-                      </svg>
-                    </button>
-
-                    <div
-                      ref={daysScrollRef}
-                      onMouseDown={handleDaysMouseDown}
-                      onMouseMove={handleDaysMouseMove}
-                      onMouseUp={stopDaysMouseDrag}
-                      onMouseLeave={stopDaysMouseDrag}
-                      className={`scrollbar-hide min-w-0 flex-1 touch-pan-x select-none overflow-x-auto overflow-y-hidden ${
-                        isDraggingDays ? 'cursor-grabbing' : 'cursor-default'
-                      }`}
-                    >
-                      <div className="relative flex w-[200%]">
-                        {menuDays.map((d) => {
-                          const active = d.absoluteDayIndex === selectedDayIndex;
-
-                          return (
-                            <button
-                              key={d.menuDayId}
-                              ref={(el) => {
-                                dayRefs.current[d.absoluteDayIndex] = el;
-                              }}
-                              type="button"
-                              onClick={() => handleDayClick(d.absoluteDayIndex)}
-                              className={`relative flex flex-[0_0_calc(100%/14)] cursor-pointer flex-col items-center justify-center gap-[6px] rounded-[8px] py-[8px] hover:bg-[var(--checkout-float-active-hover)] ${
-                                active ? 'bg-[var(--checkout-float-active-soft)]' : ''
-                              }`}
-                            >
-                              <div className="flex w-full flex-col items-center gap-[4px]">
-                                <p
-                                  className={`font-sans text-[length:var(--checkout-float-font-size-md)] font-bold leading-none tracking-[-0.16px] ${
-                                    active
-                                      ? 'text-[var(--checkout-float-active)]'
-                                      : 'text-[var(--checkout-float-text)]'
-                                  }`}
-                                >
-                                  {d.date}
-                                </p>
-
-                                <p
-                                  className={`font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none tracking-[-0.12px] ${
-                                    active
-                                      ? 'text-[var(--checkout-float-active)]'
-                                      : 'text-[var(--checkout-float-text)]'
-                                  }`}
-                                >
-                                  {d.month}
-                                </p>
-                              </div>
-
-                              <p
-                                className={`font-sans text-[length:var(--checkout-float-font-size-sm)] font-medium leading-none tracking-[-0.12px] ${
-                                  active
-                                    ? 'text-[var(--checkout-float-active-muted)]'
-                                    : 'text-[var(--checkout-float-muted)]'
-                                }`}
-                              >
-                                {d.day}
-                              </p>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={handleNextDay}
-                      className={`flex w-[40px] shrink-0 items-center justify-center rounded-[8px] transition-colors hover:bg-[var(--checkout-float-active-hover)] ${
-                        !canGoNext ? 'pointer-events-none opacity-0' : 'cursor-pointer'
-                      }`}
-                    >
-                      <svg
-                        fill="none"
-                        viewBox="0 0 7 12"
-                        width="7"
-                        height="12"
-                        aria-hidden="true"
-                        focusable="false"
-                      >
-                        <path
-                          d="M1 11L6 6L1 1"
-                          stroke="var(--checkout-float-muted)"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                        />
-                      </svg>
-                    </button>
-                  </div>
-                </div>
-
-                <div className={['relative', CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING].join(' ')}>
-                  <div
-                    ref={mealsScrollRef}
-                    onMouseDown={handleMealsMouseDown}
-                    onMouseMove={handleMealsMouseMove}
-                    onMouseUp={stopMealsMouseDrag}
-                    onMouseLeave={stopMealsMouseDrag}
-                    onTouchStart={handleMealsTouchStart}
-                    onTouchMove={handleMealsTouchMove}
-                    onTouchEnd={handleMealsTouchEnd}
-                    className={`scrollbar-hide flex touch-pan-x select-none justify-start gap-[20px] overflow-x-auto overflow-y-visible pt-[8px] pb-[16px] md:justify-center ${
-                      isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
-                    }`}
-                  >
-                    <CheckoutScrollEdgeGutter />
-                    {selectedDayMeals.map((meal) => (
-                      <button
-                        key={meal.id}
-                        type="button"
-                        onClick={() => handleMealClick(meal)}
-                        className="group relative z-0 flex shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10"
-                      >
-                        <div className="flex h-[114px] w-[150px] items-center justify-center overflow-visible md:h-[122px] md:w-[160px]">
-                          <img
-                            src={meal.img}
-                            alt={meal.name}
-                            draggable={false}
-                            className="pointer-events-none h-[108px] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105 md:h-[116px] md:w-[160px]"
-                          />
-                        </div>
-
-                        <div className="flex w-[150px] flex-col gap-[12px] md:w-[160px]">
-                          <p
-                            className={[
-                              TEXT_TRIM_CLASS_NAME,
-                              'flex w-[150px] flex-wrap items-center gap-x-[0.35em] font-sans text-[length:var(--checkout-float-meal-meta-font-size)] font-medium leading-[140%] text-[var(--checkout-float-muted)] md:w-[160px]',
-                            ].join(' ')}
-                          >
-                            <span>{meal.kcal} kcal • {meal.weight} g</span>
-                            <span>{meal.type}</span>
-                          </p>
-
-                          <p
-                            className={[
-                              'w-[150px] line-clamp-3 [text-box-trim:none] [text-box-edge:auto] font-sans text-[length:var(--checkout-float-meal-title-font-size)] font-semibold leading-[140%] text-[var(--checkout-float-text)] transition-colors group-hover:text-[var(--checkout-float-active)] md:w-[160px]',
-                            ].join(' ')}
-                          >
-                            {meal.name}
-                          </p>
-                        </div>
-                      </button>
-                    ))}
-                    <CheckoutScrollEdgeGutter />
-                  </div>
-
-                  <CheckoutScrollEdgeFades
-                    showStart={showMealsStartFade}
-                    showEnd={showMealsEndFade}
-                    edgeColor={COLOR_TOKENS.base.white}
-                  />
-                </div>
+                <FullMenuPanel
+                  variant="float"
+                  isActive={menuOpen}
+                  plan={plan}
+                  lightMealOption={lightMealOption}
+                  onPlanChange={onPlanChange}
+                  onLightMealOptionChange={onLightMealOptionChange}
+                  onMealDetailOpenChange={setMealDetailOpen}
+                />
               </div>
             )}
 
             <div className="relative z-10 w-full bg-[var(--checkout-float-surface)]">
               <div className="w-full">
-                <div className="flex items-center gap-[16px] px-[length:var(--checkout-card-padding)] py-[8px]">
-                  <div className="flex flex-1 flex-col items-center justify-start gap-[8px]">
-                    <div className="flex items-end gap-[5px] tabular-nums">
+                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-[16px] px-[length:var(--checkout-card-padding)] py-[8px]">
+                  <div className="flex min-w-0 w-full flex-col items-center justify-start gap-[8px] overflow-hidden">
+                    <div className="flex min-w-0 max-w-full items-end gap-[5px] tabular-nums">
                       {pricing.oldPeriodPrice ? (
                         <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-[var(--checkout-float-muted)] line-through">
                           <AnimatedNumber value={pricing.oldPeriodPrice} format={formatAed} animate />
@@ -627,8 +242,7 @@ export function BottomFloatTotalBlock({
                     type="button"
                     variant="primary"
                     size="small"
-                    fullWidth
-                    className="min-w-0 flex-1 rounded-[4px]"
+                    className="min-w-[120px] shrink-0 rounded-[4px]"
                     onClick={handleScrollToSummary}
                   >
                     Order
@@ -639,16 +253,8 @@ export function BottomFloatTotalBlock({
               <div className="h-px w-full bg-[var(--checkout-float-divider)]" />
             </div>
           </div>
-          </div>
         </div>
       </div>
-
-      {selectedMeal
-        ? createPortal(
-            <MealDetailModal meal={selectedMeal} onClose={() => setSelectedMeal(null)} />,
-            document.body,
-          )
-        : null}
-    </>
+    </div>
   );
 }

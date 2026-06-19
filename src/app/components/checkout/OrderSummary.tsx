@@ -300,7 +300,7 @@ export function OrderSummary({
                   onClick={() => setIsMealsExpanded((expanded) => !expanded)}
                   aria-expanded={isMealsExpanded}
                   aria-controls="order-summary-meals-carousel"
-                  className="group flex min-w-0 flex-1 cursor-pointer items-center gap-[8px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--order-summary-primary)] focus-visible:ring-offset-2"
+                  className="group flex min-w-0 flex-1 cursor-pointer items-center gap-[4px] text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--order-summary-primary)] focus-visible:ring-offset-2"
                 >
                   <span className="font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">
                     What you'll eat
