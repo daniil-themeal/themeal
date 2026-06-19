@@ -309,6 +309,27 @@ export function getWeeklyRemovableExtraMealDayKeys({
   return keys;
 }
 
+function getContiguousIndexGroups(indices: number[]): number[][] {
+  if (indices.length === 0) {
+    return [];
+  }
+
+  const groups: number[][] = [[indices[0]]];
+
+  for (let index = 1; index < indices.length; index += 1) {
+    const previousIndex = indices[index - 1];
+    const currentIndex = indices[index];
+
+    if (currentIndex === previousIndex + 1) {
+      groups[groups.length - 1].push(currentIndex);
+    } else {
+      groups.push([currentIndex]);
+    }
+  }
+
+  return groups;
+}
+
 export function getMealDayRadiusByIndex({
   week,
   startDate,
@@ -332,14 +353,14 @@ export function getMealDayRadiusByIndex({
 
   const radiusByIndex: Array<MealDayRadiusPosition | null> = week.map(() => null);
 
-  if (mealDayIndices.length === 1) {
-    radiusByIndex[mealDayIndices[0]] = 'single';
-    return radiusByIndex;
-  }
+  for (const group of getContiguousIndexGroups(mealDayIndices)) {
+    if (group.length === 1) {
+      radiusByIndex[group[0]] = 'single';
+      continue;
+    }
 
-  if (mealDayIndices.length > 1) {
-    radiusByIndex[mealDayIndices[0]] = 'start';
-    radiusByIndex[mealDayIndices[mealDayIndices.length - 1]] = 'end';
+    radiusByIndex[group[0]] = 'start';
+    radiusByIndex[group[group.length - 1]] = 'end';
   }
 
   return radiusByIndex;

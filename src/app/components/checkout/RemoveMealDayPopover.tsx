@@ -1,10 +1,4 @@
-import {
-  useCallback,
-  useRef,
-  useState,
-  type MouseEvent,
-  type ReactElement,
-} from 'react';
+import { useCallback, useState, type MouseEvent, type ReactElement } from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 
 import { Button } from '../common/Button';
@@ -17,8 +11,6 @@ import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 
 import type { ExtraMealDaysQuote } from './mealCalendarAddDaysPricing';
-
-const POPOVER_CLOSE_DELAY_MS = 120;
 
 type RemoveMealDayPopoverProps = {
   quoteMinus1: ExtraMealDaysQuote;
@@ -37,28 +29,13 @@ export function RemoveMealDayPopover({
 }: RemoveMealDayPopoverProps) {
   const [open, setOpen] = useState(false);
   const [selectedDaysPerWeek, setSelectedDaysPerWeek] = useState<1 | 2>(1);
-  const closeTimerRef = useRef<number | null>(null);
 
-  const clearCloseTimer = useCallback(() => {
-    if (closeTimerRef.current !== null) {
-      window.clearTimeout(closeTimerRef.current);
-      closeTimerRef.current = null;
+  const handleOpenChange = useCallback((nextOpen: boolean) => {
+    if (nextOpen) {
+      setSelectedDaysPerWeek(1);
     }
+    setOpen(nextOpen);
   }, []);
-
-  const scheduleClose = useCallback(() => {
-    clearCloseTimer();
-    closeTimerRef.current = window.setTimeout(() => {
-      setOpen(false);
-      closeTimerRef.current = null;
-    }, POPOVER_CLOSE_DELAY_MS);
-  }, [clearCloseTimer]);
-
-  const handleOpen = useCallback(() => {
-    clearCloseTimer();
-    setSelectedDaysPerWeek(1);
-    setOpen(true);
-  }, [clearCloseTimer]);
 
   const handleSelect = useCallback(
     (daysPerWeek: 1 | 2) => (event: MouseEvent<HTMLButtonElement>) => {
@@ -80,17 +57,9 @@ export function RemoveMealDayPopover({
   const previewQuote = selectedDaysPerWeek === 2 ? quoteMinus2 : quoteMinus1;
 
   return (
-    <PopoverPrimitive.Root open={open} onOpenChange={setOpen}>
+    <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
       <PopoverPrimitive.Trigger asChild>
-        <div
-          className="relative h-full w-full"
-          onMouseEnter={handleOpen}
-          onMouseLeave={scheduleClose}
-          onFocus={handleOpen}
-          onBlur={scheduleClose}
-        >
-          {children}
-        </div>
+        <div className="relative h-full w-full cursor-pointer">{children}</div>
       </PopoverPrimitive.Trigger>
 
       <PopoverPrimitive.Portal>
@@ -103,8 +72,6 @@ export function RemoveMealDayPopover({
             zIndex: Z_INDEX_TOKENS.checkout,
             filter: 'drop-shadow(0 12px 32px rgba(47, 56, 70, 0.16))',
           }}
-          onMouseEnter={handleOpen}
-          onMouseLeave={scheduleClose}
           onOpenAutoFocus={(event) => event.preventDefault()}
         >
           <div

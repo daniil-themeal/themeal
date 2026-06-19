@@ -3,7 +3,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
-import { XIcon } from '../common/icons';
+import { ChevronLeftIcon, XIcon } from '../common/icons';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 import { PaymentResultTabs, type PaymentResultTab } from './PaymentResultTabs';
 import { CheckoutAuthDevTabs, type CheckoutAuthDevMode } from './CheckoutAuthDevTabs';
@@ -187,27 +187,6 @@ function CheckoutLogo() {
   );
 }
 
-function ChevronLeftIcon() {
-  return (
-    <svg
-      width="12"
-      height="20"
-      viewBox="0 0 12 20"
-      fill="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        d="M10 2L2 10L10 18"
-        stroke="currentColor"
-        strokeWidth="2.4"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
 export function CheckoutHeader({
   step = 'plan',
   title,
@@ -241,10 +220,17 @@ export function CheckoutHeader({
             <button
               type="button"
               onClick={onBack}
-              className="flex size-[56px] cursor-pointer items-center justify-center text-[var(--checkout-header-back-icon)]"
+              className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
               aria-label="Back"
             >
-              <ChevronLeftIcon />
+              <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--checkout-header-close-bg)] transition-colors duration-150 group-hover:bg-[var(--checkout-header-close-bg-hover)]">
+                <span
+                  className={iconColorClassName.emphasis}
+                  style={iconColorStyle.emphasis}
+                >
+                  <ChevronLeftIcon size={16} />
+                </span>
+              </span>
             </button>
           ) : onLogoClick ? (
             <button

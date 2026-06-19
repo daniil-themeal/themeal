@@ -247,7 +247,7 @@ function CalendarCell({
       className={[
         'relative flex h-[48px] flex-col items-center justify-center gap-[6px]',
         mealRadiusPosition ? getMealDayRadiusClassName(mealRadiusPosition) : '',
-        addable || removable
+        interactive
           ? 'cursor-pointer transition-colors hover:bg-[var(--calendar-addable-hover-bg)]'
           : '',
       ]
