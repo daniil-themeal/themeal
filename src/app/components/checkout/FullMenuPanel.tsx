@@ -5,6 +5,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type RefObject,
 } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -23,6 +24,7 @@ import {
   FULL_MENU_MEAL_GAP_CLAMP,
   FULL_MENU_LIGHT_OPTION_GAP_CLAMP,
   FULL_MENU_LIGHT_OPTION_FONT_SIZE_CLAMP,
+  FULL_MENU_LIGHT_OPTION_MAX_WIDTH_CLAMP,
   FULL_MENU_LIGHT_OPTION_TEXT_GAP_CLAMP,
   FULL_MENU_PLAN_LIGHT_DIVIDER_GAP_CLAMP,
   FULL_MENU_LIGHT_OPTION_PADDING_X_CLAMP,
@@ -102,6 +104,7 @@ export type FullMenuPanelCssVariables = CSSProperties & {
   '--full-menu-meal-carousel-padding-bottom': string;
   '--full-menu-light-option-gap': string;
   '--full-menu-plan-light-divider-gap': string;
+  '--full-menu-light-option-max-width': string;
   '--full-menu-light-option-padding-x': string;
   '--full-menu-modal-width'?: string;
 };
@@ -132,6 +135,7 @@ export const fullMenuPanelStyle: FullMenuPanelCssVariables = {
   '--full-menu-meal-gap': FULL_MENU_MEAL_GAP_CLAMP,
   '--full-menu-light-option-gap': FULL_MENU_LIGHT_OPTION_GAP_CLAMP,
   '--full-menu-plan-light-divider-gap': FULL_MENU_PLAN_LIGHT_DIVIDER_GAP_CLAMP,
+  '--full-menu-light-option-max-width': FULL_MENU_LIGHT_OPTION_MAX_WIDTH_CLAMP,
   '--full-menu-light-option-padding-x': FULL_MENU_LIGHT_OPTION_PADDING_X_CLAMP,
 };
 
@@ -174,6 +178,7 @@ export type FullMenuPanelProps = {
   onLightMealOptionChange: (option: LightMealOption) => void;
   onMealDetailOpenChange?: (open: boolean) => void;
   className?: string;
+  scrollContainerRef?: RefObject<HTMLDivElement | null>;
 };
 
 export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>(function FullMenuPanel(
@@ -186,6 +191,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     onLightMealOptionChange,
     onMealDetailOpenChange,
     className = '',
+    scrollContainerRef,
   },
   ref,
 ) {
@@ -408,8 +414,8 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   }, [isActive, selectedDayIndex]);
 
   const planToggleClassName = isModal
-    ? 'flex w-full shrink-0 items-center border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)] py-[12px] pl-[16px] pr-[56px] md:pl-[20px]'
-    : 'flex w-full shrink-0 items-center border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)] px-[length:var(--checkout-card-padding)] py-[12px]';
+    ? 'flex h-[56px] w-full shrink-0 items-center bg-[var(--full-menu-bg)] pl-[16px] pr-[56px] shadow-[inset_0_-1px_0_0_var(--full-menu-border)] md:pl-[20px]'
+    : 'flex h-[56px] w-full shrink-0 items-center bg-[var(--full-menu-bg)] px-[length:var(--checkout-card-padding)] shadow-[inset_0_-1px_0_0_var(--full-menu-border)]';
 
   const mealsOuterClassName = isModal
     ? 'flex-1 overflow-x-hidden overflow-y-auto'
@@ -599,6 +605,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
         </div>
 
         <div
+          ref={isModal ? scrollContainerRef : undefined}
           className={mealsOuterClassName}
           {...(isModal ? { [SPACING_CONTENT_ATTR]: '' } : {})}
         >

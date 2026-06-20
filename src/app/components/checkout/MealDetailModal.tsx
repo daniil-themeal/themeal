@@ -7,6 +7,7 @@ import {
   CHECKOUT_MODAL_SHELL_INNER_CLASSNAME,
   CHECKOUT_MODAL_SHELL_PANEL_CLASSNAME,
   CHECKOUT_MODAL_SHELL_ROOT_CLASSNAME,
+  CHECKOUT_ROOT_CLASSNAME,
 } from './checkoutModalShellTokens';
 import {
   CHECKOUT_FONT_CLAMP_28_32,
@@ -89,7 +90,7 @@ export function MealDetailModal({
       onClose={onClose}
       variant="fullscreen"
       zIndex={Z_INDEX_TOKENS.modal}
-      rootClassName={CHECKOUT_MODAL_SHELL_ROOT_CLASSNAME}
+      rootClassName={`${CHECKOUT_ROOT_CLASSNAME} ${CHECKOUT_MODAL_SHELL_ROOT_CLASSNAME}`}
       panelClassName={CHECKOUT_MODAL_SHELL_PANEL_CLASSNAME}
     >
       {(requestClose) => (

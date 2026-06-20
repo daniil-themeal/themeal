@@ -29,11 +29,14 @@ import { COLOR_TOKENS } from '../common/colorTokens';
 import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_SELECTOR_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
 import { useEscapeLayer } from '../common/escapeStack';
 import { useModalShell } from '../common/ModalShell';
+import { useSwipeToDismiss } from '../common/useSwipeToDismiss';
 import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { CHECKOUT_LAYER_Z_INDEX, Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { formatUaePhoneInput, normalizeUaePhone } from './phoneValidation';
 import { isValidTestSmsCode, SMS_CODE_ERROR, SMS_CODE_SUCCESS_HOLD_MS } from './smsCodeValidation';
 import { usePlanStepScrollChaining } from './usePlanStepScrollChaining';
+import { CHECKOUT_ROOT_CLASSNAME } from './checkoutModalShellTokens';
+import './checkout.css';
 
 type CheckoutUiStep = 'plan' | 'delivery' | 'payment';
 type CheckoutStep = CheckoutUiStep | 'verification' | 'success' | 'failed';
@@ -198,6 +201,7 @@ export function CheckoutPage({
   const todayTotalRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const resultBodyRef = useRef<HTMLDivElement>(null);
+  const checkoutPanelRef = useRef<HTMLDivElement>(null);
 
   const headerStep =
     checkoutStep === 'plan'
@@ -643,11 +647,27 @@ export function CheckoutPage({
     handleEscapeRef.current();
   });
 
+  useSwipeToDismiss({
+    enabled: isOpen,
+    disabled:
+      isClosing ||
+      authModalOpen ||
+      menuOpen ||
+      isMealDetailOpen ||
+      Boolean(resultOverlay),
+    onDismiss: requestClose,
+    panelRef: checkoutPanelRef,
+    scrollContainerRef: bodyRef,
+    waitForEnterAnimation: true,
+  });
+
   if (!isOpen) return null;
 
   return (
     <div
+      ref={checkoutPanelRef}
       className={[
+        CHECKOUT_ROOT_CLASSNAME,
         'fixed inset-0 z-[200] flex flex-col',
         isClosing
           ? 'pointer-events-none modal-exit-responsive'

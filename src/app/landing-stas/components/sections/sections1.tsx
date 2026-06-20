@@ -8,14 +8,12 @@ import { HeroPrice } from '../HeroPrice';
 function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
   const [shown, setShown] = useState(true);
   const [solid, setSolid] = useState(false);
-  const [canGoTop, setCanGoTop] = useState(false);
   const [hovered, setHovered] = useState(false);
   const last = useRef(0);
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
       setSolid(y > 40);
-      setCanGoTop(y > 0);
       if (y === 0) setShown(true);
       else setShown(y < last.current);
       last.current = y;
@@ -49,8 +47,10 @@ function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
         }
       },
       createElement('div', { className:'wrap row hdr-row', style:{ height:64, justifyContent:'space-between' } },
-        createElement('a', { href:'#top', className:`row hdr-logo${canGoTop ? ' logo-top-link' : ''}` },
-          createElement(Logo, { tone: 'yellow' })
+        createElement('a', { href:'#top', className:'row hdr-logo logo-top-link', 'aria-label':'Back to top' },
+          createElement('span', { className:'hover-lift' },
+            createElement(Logo, { tone: 'yellow' })
+          )
         ),
         createElement('nav', { className:'row hdr-nav', style:{ fontWeight:600, color:txt } },
           links.map(([h, l]) => createElement('a', {
@@ -90,12 +90,25 @@ function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
 }
 
 /* ---------------- TrayBelt: looping conveyor shaped as a fan ---------------- */
+const HERO_TRAY_MEALS = [
+  '/landing-stas/assets/meals/meal-01.avif',
+  '/landing-stas/assets/meals/meal-03.avif',
+  '/landing-stas/assets/meals/meal-05.avif',
+  '/landing-stas/assets/meals/meal-07.avif',
+  '/landing-stas/assets/meals/meal-09.avif',
+  '/landing-stas/assets/meals/meal-11.avif',
+];
+
 const TRAY_BELT_AUTO_SPEED = 26; // px per second
 const TRAY_BELT_MOMENTUM_FRICTION = 4.5;
 const TRAY_BELT_MOMENTUM_THRESHOLD = 8; // px/s
 const TRAY_BELT_MAX_VELOCITY = 2400; // px/s
 
-function TrayBelt({ meals }) {
+function clampTrayBeltVelocity(value) {
+  return Math.max(-TRAY_BELT_MAX_VELOCITY, Math.min(TRAY_BELT_MAX_VELOCITY, value));
+}
+
+function TrayBelt() {
   const trackRef = useRef(null);
   const offsetRef = useRef(0);
   const velocityRef = useRef(0);
@@ -104,7 +117,7 @@ function TrayBelt({ meals }) {
   const dragStartOffsetRef = useRef(0);
   const lastPointerXRef = useRef(0);
   const lastPointerTimeRef = useRef(0);
-  const halfWRef = useRef(1);
+  const halfWRef = useRef(0);
   const metasRef = useRef([]);
 
   const normalizeOffset = (value) => {
@@ -116,26 +129,54 @@ function TrayBelt({ meals }) {
     return next;
   };
 
+  const updateArc = (track) => {
+    const rect = track.getBoundingClientRect();
+    const cx = window.innerWidth / 2;
+    for (const m of metasRef.current) {
+      const x = rect.left + m.l + m.w / 2;
+      let t = (x - cx) / cx;
+      t = Math.max(-1.2, Math.min(1.2, t));
+      m.im.style.transform = `translateY(${-3.6 + 25.2 * t * t}px) rotate(${6.75 * t}deg)`;
+    }
+  };
+
+  const measureTrack = (track) => {
+    if (!track) return;
+    const imgs = Array.from(track.querySelectorAll('img'));
+    metasRef.current = imgs.map((im) => ({ im, l: im.offsetLeft, w: im.offsetWidth }));
+    const halfW = track.scrollWidth / 2;
+    if (halfW > 0) halfWRef.current = halfW;
+  };
+
   useEffect(() => {
     const track = trackRef.current;
     if (!track) return;
+
     const imgs = Array.from(track.querySelectorAll('img'));
-    const measure = () => {
-      metasRef.current = imgs.map((im) => ({ im, l: im.offsetLeft, w: im.offsetWidth }));
-      halfWRef.current = track.scrollWidth / 2;
-    };
+    const measure = () => measureTrack(track);
     measure();
     imgs.forEach((im) => {
       if (!im.complete) im.addEventListener('load', measure, { once: true });
     });
     window.addEventListener('resize', measure);
 
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let last = performance.now(), raf = 0, frames = 0;
+    const ro = typeof ResizeObserver !== 'undefined'
+      ? new ResizeObserver(measure)
+      : null;
+    ro?.observe(track);
+
+    let last = performance.now();
+    let raf = 0;
 
     const tick = (now) => {
-      const dt = Math.min((now - last) / 1000, 0.05); last = now;
-      if (!reduced && halfWRef.current > 0 && !isDraggingRef.current) {
+      const dt = Math.min((now - last) / 1000, 0.05);
+      last = now;
+
+      if (halfWRef.current <= 0) {
+        measure();
+      }
+
+      if (halfWRef.current > 0 && !isDraggingRef.current) {
         if (Math.abs(velocityRef.current) > TRAY_BELT_MOMENTUM_THRESHOLD) {
           offsetRef.current = normalizeOffset(offsetRef.current + velocityRef.current * dt);
           velocityRef.current *= Math.exp(-TRAY_BELT_MOMENTUM_FRICTION * dt);
@@ -144,30 +185,26 @@ function TrayBelt({ meals }) {
           offsetRef.current = normalizeOffset(offsetRef.current - TRAY_BELT_AUTO_SPEED * dt);
         }
       }
-      track.style.transform = `translateX(${offsetRef.current}px)`;
 
-      const rect = track.getBoundingClientRect();
-      const cx = window.innerWidth / 2;
-      for (const m of metasRef.current) {
-        const x = rect.left + m.l + m.w / 2;
-        let t = (x - cx) / cx;
-        t = Math.max(-1.2, Math.min(1.2, t));
-        m.im.style.transform = `translateY(${-3.6 + 25.2 * t * t}px) rotate(${6.75 * t}deg)`;
-      }
-      frames++;
-      if (reduced && frames > 2 && !isDraggingRef.current && Math.abs(velocityRef.current) <= TRAY_BELT_MOMENTUM_THRESHOLD) return;
+      track.style.transform = `translateX(${offsetRef.current}px)`;
+      updateArc(track);
       raf = requestAnimationFrame(tick);
     };
+
     raf = requestAnimationFrame(tick);
+
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', measure);
+      ro?.disconnect();
       imgs.forEach((im) => im.removeEventListener('load', measure));
     };
-  }, [meals]);
+  }, []);
 
   const onPointerDown = (e) => {
     if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const track = trackRef.current;
+    if (track) measureTrack(track);
     isDraggingRef.current = true;
     velocityRef.current = 0;
     dragStartXRef.current = e.clientX;
@@ -186,17 +223,14 @@ function TrayBelt({ meals }) {
     const now = performance.now();
     const dt = Math.max(now - lastPointerTimeRef.current, 1);
     const dx = e.clientX - lastPointerXRef.current;
-    const instantVelocity = (dx / dt) * 1000;
-    velocityRef.current = Math.max(
-      -TRAY_BELT_MAX_VELOCITY,
-      Math.min(TRAY_BELT_MAX_VELOCITY, instantVelocity),
-    );
+    velocityRef.current = clampTrayBeltVelocity((dx / dt) * 1000);
     lastPointerXRef.current = e.clientX;
     lastPointerTimeRef.current = now;
 
     const delta = e.clientX - dragStartXRef.current;
     offsetRef.current = normalizeOffset(dragStartOffsetRef.current + delta);
     track.style.transform = `translateX(${offsetRef.current}px)`;
+    updateArc(track);
   };
 
   const onPointerUp = (e) => {
@@ -218,13 +252,14 @@ function TrayBelt({ meals }) {
       onPointerCancel: onPointerUp,
       style: {
         position: 'relative',
-        zIndex: 1,
+        zIndex: 3,
         height: 'clamp(198px,25.2vh,270px)',
         marginTop: -6,
         overflow: 'hidden',
         cursor: 'grab',
         touchAction: 'none',
         userSelect: 'none',
+        pointerEvents: 'auto',
       },
     },
       createElement('div', { ref:trackRef, style:{ position:'absolute', bottom:13, left:0, display:'flex', alignItems:'flex-end', width:'max-content', willChange:'transform' } },
@@ -232,7 +267,7 @@ function TrayBelt({ meals }) {
           createElement('div', { key:half, style:{ display:'flex', alignItems:'flex-end', gap:'clamp(14px,2.16vw,32px)', paddingInlineEnd:'clamp(14px,2.16vw,32px)' } },
             Array.from({length:15}).map((_,i)=>
               createElement('img', {
-                key:`${half}-${i}`, src:meals[i % meals.length], alt:'', draggable:false,
+                key:`${half}-${i}`, src:HERO_TRAY_MEALS[i % HERO_TRAY_MEALS.length], alt:'', draggable:false,
                 style:{
                   width:'clamp(135px, 15.3vw, 225px)',
                   transform:`translateY(${[18,5,-2,5,18][i%5]}px) rotate(${[-6,-3,0,3,6][i%5]}deg)`,
@@ -250,7 +285,6 @@ function TrayBelt({ meals }) {
 
 /* ---------------- Hero ---------------- */
 function Hero({ t, onOrder }) {
-  const meals = ['/landing-stas/assets/meals/meal-01.avif','/landing-stas/assets/meals/meal-03.avif','/landing-stas/assets/meals/meal-05.avif','/landing-stas/assets/meals/meal-07.avif','/landing-stas/assets/meals/meal-09.avif','/landing-stas/assets/meals/meal-11.avif'];
   return (
     createElement('section', { id:'top', style:{
       background:'radial-gradient(120% 90% at 50% -10%, #5A2487 0%, var(--plum-700) 45%, var(--plum-900) 100%)',
@@ -289,7 +323,7 @@ function Hero({ t, onOrder }) {
       ),
 
       /* conveyor of meal trays — seamless loop shaped as a fan/arc */
-      createElement(TrayBelt, { meals }),
+      createElement(TrayBelt),
     )
   );
 }
@@ -342,7 +376,7 @@ function Compare({ t }) {
         ),
         createElement('div', { className:'grid-12 compare-cards', style:{ alignItems:'stretch' } },
           /* problems */
-          createElement('div', { className:'card reveal', style:{ padding:'24px 32px 32px', background:'var(--cream-2)', boxShadow:'none' } },
+          createElement('div', { className:'card reveal compare-card--problems', style:{ padding:'24px 32px 32px', background:'var(--cream-2)' } },
             createElement('div', { className:'compare-card-head compare-card-head--problems' }, t.compare.problemsTitle),
             createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:16 } },
               t.compare.problems.map((p,i)=>createElement('li', { key:i, className:'row', style:{ gap:14, width:'100%', alignItems:'center', color:'var(--slate)', fontWeight:600, fontSize:'var(--fs-16)' } },
@@ -353,7 +387,7 @@ function Compare({ t }) {
             ),
           ),
           /* solutions */
-          createElement('div', { className:'card reveal compare-card--solutions', 'data-d':'1', style:{ padding:'24px 32px 32px', background:'linear-gradient(155deg, #6E34A2 0%, #4C1F77 100%)', color:'#fff', boxShadow:'var(--shadow-lg)', position:'relative', overflow:'hidden' } },
+          createElement('div', { className:'card reveal compare-card--solutions', 'data-d':'1', style:{ padding:'24px 32px 32px', background:'linear-gradient(155deg, #6E34A2 0%, #4C1F77 100%)', color:'#fff', position:'relative', overflow:'hidden' } },
             createElement('div', { className:'compare-card-head compare-card-head--solutions' },
               createElement('span', { className:'compare-card-head__badge' }, t.compare.bestShort, ' 🔥'),
               createElement(Logo, { height: 24, color: '#fff', accent: '#fff' })),
@@ -368,7 +402,7 @@ function Compare({ t }) {
         ),
         ),
         /* price — cost per meal (compact) */
-        t.compare.compare && createElement('div', { className:'card reveal', style:{ background:'#fff', padding:'var(--space-24) var(--space-32) clamp(var(--space-24), 3vw, var(--space-32))', marginTop:'var(--space-24)', height:'fit-content' } },
+        t.compare.compare && createElement('div', { className:'card reveal compare-card--cost', style:{ background:'#fff', padding:'var(--space-24) var(--space-32) clamp(var(--space-24), 3vw, var(--space-32))', marginTop:'var(--space-24)', height:'fit-content' } },
           createElement('div', { style:{ marginBottom:'var(--space-8)' } },
             createElement('span', { className:'label', style:{ color:'var(--stone)', fontSize:'14px', fontWeight:700, letterSpacing:'.12em', textTransform:'uppercase' } }, t.compare.costTitle)),
           createElement('div', { className:'compare-cost-grid' },
@@ -491,7 +525,7 @@ function HowItWorks({ t }) {
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.how.title)
         ),
         createElement('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:16 } },
-          t.how.steps.map((s,i)=>createElement('div', { key:i, className:'card reveal', 'data-d':String(i+1), style:{ overflow:'hidden', background:cardBg[i], borderRadius:'50px', boxShadow:'none', color:'rgba(42, 34, 48, 1)' } },
+          t.how.steps.map((s,i)=>createElement('div', { key:i, className:`card reveal how-step-card--${i}`, 'data-d':String(i+1), style:{ overflow:'hidden', background:cardBg[i], borderRadius:'50px', color:'rgba(42, 34, 48, 1)' } },
             createElement('div', { style:{ position:'relative', aspectRatio:'5/4', overflow:'hidden', display:'grid', placeItems:'center' } },
               createElement('span', { className:'mono', style:{ position:'static', fontSize:'12px', fontWeight:500, color:stepColors[i], opacity: i === 2 ? 1 : 0.7, marginInline:0, paddingInline:32, width:'100%' } }, s.n),
               createElement(HowIllu, { i })

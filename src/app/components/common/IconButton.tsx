@@ -2,6 +2,7 @@ import { forwardRef, type ButtonHTMLAttributes, type CSSProperties, type ReactNo
 
 import {
   getButtonStyles,
+  getGhostButtonStyles,
   getIconSlotClassName,
   ICON_BUTTON_BORDER_RADIUS,
   ICON_BUTTON_SIZE_CLASS_NAMES,
@@ -24,19 +25,6 @@ type IconButtonCssVariables = CSSProperties & {
   '--button-border-disabled': string;
   '--button-shadow': string;
   '--button-shadow-hover': string;
-};
-
-const GHOST_BUTTON_STYLES: Omit<IconButtonCssVariables, '--button-border-radius'> = {
-  '--button-bg': 'transparent',
-  '--button-bg-hover': COLOR_TOKENS.neutral[50],
-  '--button-text': COLOR_TOKENS.neutral[500],
-  '--button-bg-disabled': 'transparent',
-  '--button-text-disabled': COLOR_TOKENS.neutral[300],
-  '--button-border': 'transparent',
-  '--button-border-hover': 'transparent',
-  '--button-border-disabled': 'transparent',
-  '--button-shadow': 'none',
-  '--button-shadow-hover': 'none',
 };
 
 const SOFT_BUTTON_STYLES: Omit<IconButtonCssVariables, '--button-border-radius'> = {
@@ -63,7 +51,7 @@ function getIconButtonSurfaceStyles({
   variant: ButtonVariant;
   outline: boolean;
 }): Omit<IconButtonCssVariables, '--button-border-radius'> {
-  if (ghost) return GHOST_BUTTON_STYLES;
+  if (ghost) return getGhostButtonStyles('neutral');
   if (soft) return SOFT_BUTTON_STYLES;
   return getButtonStyles(variant, outline);
 }

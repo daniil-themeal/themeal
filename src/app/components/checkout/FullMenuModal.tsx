@@ -29,6 +29,7 @@ export function FullMenuModal({
   onLightMealOptionChange: (option: LightMealOption) => void;
 }) {
   const panelRef = useRef<FullMenuPanelHandle>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [mealDetailOpen, setMealDetailOpen] = useState(false);
 
   return (
@@ -38,6 +39,7 @@ export function FullMenuModal({
       variant="bottom-sheet"
       zIndex={Z_INDEX_TOKENS.overlay}
       panelStyle={getFullMenuModalPanelStyle()}
+      swipeScrollContainerRef={scrollContainerRef}
       overlayClassName={mealDetailOpen ? 'pointer-events-none opacity-0' : ''}
       panelClassName={[
         'relative flex max-h-[88svh] w-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-2xl transition-opacity duration-150',
@@ -65,6 +67,7 @@ export function FullMenuModal({
 
           <FullMenuPanel
             ref={panelRef}
+            scrollContainerRef={scrollContainerRef}
             variant="modal"
             isActive={isOpen}
             plan={plan}

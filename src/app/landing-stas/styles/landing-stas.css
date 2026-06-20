@@ -53,6 +53,12 @@
 
   --shadow-sm:0 2px 6px rgba(42,34,48,.04);
   --shadow-md:0 2px 4px rgba(42,34,48,.05), 0 8px 24px rgba(42,34,48,.07);
+  --shadow-how-brand:0 2px 4px rgba(154,56,239,.08), 0 8px 24px rgba(154,56,239,.10);
+  --shadow-how-green:0 2px 4px rgba(91,174,39,.08), 0 8px 24px rgba(91,174,39,.10);
+  --shadow-how-plum:0 2px 4px rgba(65,24,100,.08), 0 8px 24px rgba(65,24,100,.10);
+  --shadow-why-cream:0 2px 4px rgba(42,34,48,.06), 0 8px 24px rgba(42,34,48,.08);
+  --shadow-why-solutions:0 2px 4px rgba(76,31,119,.18), 0 8px 24px rgba(154,56,239,.16);
+  --shadow-why-white:var(--shadow-sm);
   --shadow-lg:0 8px 18px rgba(42,34,48,.08), 0 24px 56px rgba(42,34,48,.12);
   --shadow-pink:0 6px 18px rgba(240,41,168,.30), 0 14px 40px rgba(240,41,168,.22);
   --shadow-primary:0 6px 18px rgba(154,56,239,.32), 0 14px 40px rgba(154,56,239,.24);
@@ -206,11 +212,6 @@ body {
 }
 .landing-stas #top .hero-title__price--hover {
   box-shadow:0 18px 48px rgba(252,222,2,.38);
-}
-@media (prefers-reduced-motion: reduce) {
-  .landing-stas #top .hero-title__price {
-    transition:box-shadow .18s var(--ease);
-  }
 }
 .landing-stas #top .hero-title__was {
   font-size:var(--hero-price-secondary-fs);
@@ -840,18 +841,46 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
 #why .eyebrow {
   margin-bottom: var(--space-24);
 }
+.landing-stas #why .compare-card--problems {
+  box-shadow:var(--shadow-why-cream);
+}
+.landing-stas #why .compare-card--solutions {
+  box-shadow:var(--shadow-why-solutions);
+}
+.landing-stas #why .compare-card--cost {
+  box-shadow:var(--shadow-why-white);
+}
+.landing-stas #why .card.reveal.in {
+  transform:translateY(0);
+  transition:transform .2s var(--ease), box-shadow .2s var(--ease);
+}
+.landing-stas #why .card.reveal.in:hover {
+  transform:translateY(-4px);
+}
 
 /* ---- how it works section ---- */
 #how .eyebrow {
   margin-bottom: var(--space-24);
 }
-.landing-stas #how .card:hover {
+.landing-stas #how .how-step-card--0 {
+  box-shadow:var(--shadow-how-brand);
+}
+.landing-stas #how .how-step-card--1 {
+  box-shadow:var(--shadow-how-green);
+}
+.landing-stas #how .how-step-card--2 {
+  box-shadow:var(--shadow-how-plum);
+}
+.landing-stas #how .card.reveal.in {
+  transform:translateY(0);
+  transition:transform .2s var(--ease), box-shadow .2s var(--ease);
+}
+.landing-stas #how .card.reveal.in:hover {
   transform:translateY(-4px);
 }
 @media (prefers-reduced-motion: reduce) {
-  .landing-stas #how .card:hover,
-  .landing-stas #benefits .card:hover,
-  .landing-stas #delivery .delivery-feat-card:hover {
+  .landing-stas #delivery .delivery-feat-card:hover,
+  .landing-stas #qa .card:hover {
     transform:none;
   }
 }
@@ -865,7 +894,11 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
 .landing-stas #benefits .card {
   border-radius: 50px;
 }
-.landing-stas #benefits .card:hover {
+.landing-stas #benefits .card.reveal.in {
+  transform:translateY(0);
+  transition:transform .2s var(--ease);
+}
+.landing-stas #benefits .card.reveal.in:hover {
   transform:translateY(-4px);
 }
 #benefits .eyebrow {
@@ -941,15 +974,32 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
 }
 .logo-top-link {
   opacity:.88;
-  transition:opacity .15s var(--ease), transform .15s var(--ease);
+  transition:opacity .15s var(--ease);
 }
 .logo-top-link:hover {
   opacity:1;
+}
+.logo-top-link .hover-lift {
+  display:inline-flex;
+  transition:transform .18s var(--ease);
+}
+.logo-top-link:hover .hover-lift {
   transform:translateY(-2px);
 }
-@media (prefers-reduced-motion: reduce) {
-  .logo-top-link { transition:opacity .15s var(--ease); }
-  .logo-top-link:hover { transform:none; }
+.footer-social-link {
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:rgba(255,255,255,.8);
+  background:rgba(255,255,255,.08);
+  transition:transform .18s var(--ease), background .15s var(--ease), color .15s var(--ease);
+}
+.footer-social-link:hover {
+  transform:translateY(-2px);
+  background:var(--brand);
+  color:#fff;
 }
 
 /* ---- header nav: hide links on small screens ---- */
@@ -1420,6 +1470,9 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
 }
 
 /* ---- reviews horizontal carousel ---- */
+#reviews {
+  overflow:visible;
+}
 #reviews .reviews-carousel-outer {
   display:flex;
   flex-direction:column;
@@ -1429,21 +1482,30 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
 #reviews .reviews-carousel-wrap {
   width:100%;
   touch-action:pan-y;
+  overflow:visible;
 }
 #reviews .reviews-carousel-shell {
   position:relative;
 }
 #reviews .reviews-carousel-viewport {
-  overflow:hidden;
+  overflow:visible;
+  width:100%;
+  padding-block:var(--space-24);
+  margin-block:calc(var(--space-24) * -1);
+}
+#reviews .reviews-carousel-clip {
+  overflow-x:hidden;
   width:100%;
 }
 #reviews .reviews-carousel-track {
   display:flex;
+  align-items:stretch;
   will-change:transform;
 }
 #reviews .reviews-carousel-slide {
   flex:0 0 auto;
   min-width:0;
+  padding-block:12px 28px;
 }
 #reviews .reviews-card {
   height:100%;
@@ -1767,4 +1829,8 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
   .faq-section .faq-tabs.gutter-x--center::before {
     display:none;
   }
+}
+
+.landing-stas #qa .card:hover {
+  transform:translateY(-4px);
 }

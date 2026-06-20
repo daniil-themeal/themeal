@@ -7,7 +7,7 @@ import { AnimatedNumber } from '../common/AnimatedNumber';
 import { Button } from '../common/Button';
 import { IconButton } from '../common/IconButton';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
-import { TempPhoneResetButton } from '../common/TempPhoneResetButton';
+import { VerifiedPhoneLogoutButton } from '../common/VerifiedPhoneLogoutButton';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { Divider } from '../common/Divider';
 import { CHECKOUT_ANIMATION_DURATION_MS, easeInOutCubic } from '../common/easing';
@@ -453,13 +453,10 @@ export function OrderSummary({
               />
             </div>
 
-            <div className={['mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[12px]', orderSummarySectionPx].join(' ')}>
-              {isPhoneVerified && phone ? (
-                <div className="flex items-center justify-center gap-[4px]">
-                  <p className="text-center font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[140%] text-[var(--order-summary-muted)]">
-                    +971 {phone}
-                  </p>
-                  {onResetPhone ? <TempPhoneResetButton onClick={onResetPhone} /> : null}
+            <div className={['mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[8px]', orderSummarySectionPx].join(' ')}>
+              {isPhoneVerified && phone && onResetPhone ? (
+                <div className="flex justify-center">
+                  <VerifiedPhoneLogoutButton phone={phone} onClick={onResetPhone} />
                 </div>
               ) : null}
 

@@ -16,6 +16,7 @@ import {
 import {
   CHECKOUT_AUTH_MODAL_INNER_CLASSNAME,
   CHECKOUT_AUTH_MODAL_PANEL_CLASSNAME,
+  CHECKOUT_ROOT_CLASSNAME,
 } from './checkoutModalShellTokens';
 import { ModalShell } from '../common/ModalShell';
 import { TextInput } from '../common/TextInput';
@@ -121,6 +122,7 @@ export function OutOfAreaContactForm({ isOpen, onClose }: OutOfAreaContactFormPr
       onClose={onClose}
       variant="bottom-sheet"
       zIndex={Z_INDEX_TOKENS.modal}
+      rootClassName={CHECKOUT_ROOT_CLASSNAME}
       panelClassName={CHECKOUT_AUTH_MODAL_PANEL_CLASSNAME}
     >
       {(requestClose) => (

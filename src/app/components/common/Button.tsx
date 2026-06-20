@@ -44,6 +44,7 @@ type ButtonBaseProps = {
   children: ReactNode;
   variant?: ButtonVariant;
   outline?: boolean;
+  ghost?: boolean;
   size?: ButtonSize;
   fullWidth?: boolean;
   loading?: boolean;
@@ -240,10 +241,48 @@ function getOutlineStyles(variant: ButtonVariant): Omit<ButtonCssVariables, '--b
   };
 }
 
+export function getGhostButtonStyles(
+  variant: ButtonVariant,
+): Omit<ButtonCssVariables, '--button-font-size'> {
+  if (variant === 'neutral') {
+    return {
+      '--button-bg': 'transparent',
+      '--button-bg-hover': COLOR_TOKENS.neutral[50],
+      '--button-text': COLOR_TOKENS.neutral[500],
+      '--button-bg-disabled': 'transparent',
+      '--button-text-disabled': COLOR_TOKENS.neutral[300],
+      '--button-border': 'transparent',
+      '--button-border-hover': 'transparent',
+      '--button-border-disabled': 'transparent',
+      '--button-shadow': NO_BUTTON_SHADOW.shadow,
+      '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
+    };
+  }
+
+  const palette = COLOR_TOKENS[variant as ColorPaletteName];
+  const ghostText =
+    variant === 'success' || variant === 'warning' ? palette[600] : palette[500];
+
+  return {
+    '--button-bg': 'transparent',
+    '--button-bg-hover': palette[50],
+    '--button-text': ghostText,
+    '--button-bg-disabled': 'transparent',
+    '--button-text-disabled': hexToRgba(palette[500], 0.5),
+    '--button-border': 'transparent',
+    '--button-border-hover': 'transparent',
+    '--button-border-disabled': 'transparent',
+    '--button-shadow': NO_BUTTON_SHADOW.shadow,
+    '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
+  };
+}
+
 export function getButtonStyles(
   variant: ButtonVariant,
   outline: boolean,
+  ghost = false,
 ): Omit<ButtonCssVariables, '--button-font-size'> {
+  if (ghost) return getGhostButtonStyles(variant);
   return outline ? getOutlineStyles(variant) : BUTTON_FILLED_STYLES[variant];
 }
 
@@ -303,7 +342,7 @@ const BUTTON_CONTENT_CLASS_NAMES: Record<ButtonSize, string> = {
   'x-large': 'inline-flex items-center justify-center gap-[12px]',
 };
 
-const BUTTON_VISUAL_BASE_CLASS_NAMES = [
+export const BUTTON_VISUAL_BASE_CLASS_NAMES = [
   'relative inline-flex items-center justify-center',
   'rounded-[length:var(--button-border-radius)]',
   'border border-[length:1px] border-[var(--button-border)]',
@@ -339,6 +378,7 @@ export function Button({
   children,
   variant = 'primary',
   outline = false,
+  ghost = false,
   size = 'medium',
   fullWidth = false,
   loading = false,
@@ -359,7 +399,7 @@ export function Button({
       disabled={isDisabled}
       aria-busy={loading || undefined}
       style={{
-        ...getButtonStyles(variant, outline),
+        ...getButtonStyles(variant, outline, ghost),
         '--button-font-size': BUTTON_FONT_SIZE_TOKENS[size],
         '--button-border-radius': BUTTON_BORDER_RADIUS[size],
         ...style,

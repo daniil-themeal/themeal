@@ -2,10 +2,6 @@ import type { CSSProperties, ReactNode } from 'react';
 
 import type { Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
-import {
-  FULL_MENU_LIGHT_OPTION_GAP_CLAMP,
-  FULL_MENU_PLAN_LIGHT_DIVIDER_GAP_CLAMP,
-} from './checkoutSpacing';
 
 const PLANS: { id: Plan; label: string }[] = [
   { id: 'light', label: 'Light' },
@@ -36,16 +32,26 @@ type FullMenuDayPillCssVariables = CSSProperties & {
   '--full-menu-day-bg-hover': string;
 };
 
+const PLAN_PILL_HIT_AREA_CLASS_NAME = [
+  'group flex h-full min-w-0 flex-1 basis-0 items-center justify-center',
+  'border-0 bg-transparent p-0',
+].join(' ');
+
 const PLAN_PILL_CLASS_NAME = [
-  'flex min-w-0 flex-1 basis-0 cursor-pointer flex-col items-center justify-center gap-[4px]',
-  'rounded-[8px] border border-solid bg-[var(--full-menu-day-bg)] px-[12px] py-[8px]',
-  'transition-colors duration-150 hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
+  'flex min-w-0 flex-col items-center justify-center gap-[4px]',
+  'rounded-[8px] border border-solid bg-[var(--full-menu-day-bg)] px-[12px] py-[6px]',
+  'transition-colors duration-150',
+].join(' ');
+
+const LIGHT_PILL_HIT_AREA_CLASS_NAME = [
+  'group flex h-full shrink-0 items-center justify-center',
+  'border-0 bg-transparent p-0',
 ].join(' ');
 
 const LIGHT_PILL_CLASS_NAME = [
-  'grid min-w-0 flex-1 basis-0 cursor-pointer place-items-center self-stretch',
+  'grid min-w-0 place-items-center max-w-[length:var(--full-menu-light-option-max-width)]',
   'rounded-[8px] border border-solid bg-[var(--full-menu-day-bg)] px-[length:var(--full-menu-light-option-padding-x)] py-[4px]',
-  'transition-colors duration-150 hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
+  'transition-colors duration-150',
 ].join(' ');
 
 const PLAN_PILL_TEXT_CLASS_NAME =
@@ -65,6 +71,16 @@ function getPillBorderClassName(selected: boolean) {
   return selected
     ? 'border-[var(--full-menu-day-border-selected)]'
     : 'border-transparent';
+}
+
+function getPillHoverClassName(selected: boolean) {
+  return selected
+    ? ''
+    : 'group-hover:bg-[var(--full-menu-day-bg-hover)] group-focus-visible:bg-[var(--full-menu-day-bg-hover)]';
+}
+
+function getPillCursorClassName(selected: boolean) {
+  return selected ? 'cursor-default' : 'cursor-pointer';
 }
 
 function LightOptionLabel({
@@ -116,7 +132,10 @@ function PlanPill({
   isLayoutHidden?: boolean;
 }) {
   const isLightOption = variant === 'lightOption';
-  const resolvedPillClassName = isLightOption ? LIGHT_PILL_CLASS_NAME : pillClassName;
+  const hitAreaClassName = isLightOption
+    ? LIGHT_PILL_HIT_AREA_CLASS_NAME
+    : PLAN_PILL_HIT_AREA_CLASS_NAME;
+  const visualClassName = isLightOption ? LIGHT_PILL_CLASS_NAME : pillClassName;
 
   const textColorClassName = selected
     ? 'text-[var(--full-menu-active)]'
@@ -138,12 +157,20 @@ function PlanPill({
       aria-hidden={isLayoutHidden || undefined}
       tabIndex={isLayoutHidden ? -1 : undefined}
       onClick={onClick}
-      className={[resolvedPillClassName, getPillBorderClassName(selected), className]
-        .filter(Boolean)
-        .join(' ')}
-      style={selected ? pillSelectedStyle : pillDefaultStyle}
+      className={[hitAreaClassName, getPillCursorClassName(selected), className].filter(Boolean).join(' ')}
     >
-      {labelContent}
+      <span
+        className={[
+          visualClassName,
+          getPillBorderClassName(selected),
+          getPillHoverClassName(selected),
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        style={selected ? pillSelectedStyle : pillDefaultStyle}
+      >
+        {labelContent}
+      </span>
     </button>
   );
 }
@@ -167,14 +194,11 @@ export function FullMenuPlanToggle({
   const hiddenLightControlsClassName = isLightPlan ? '' : 'invisible pointer-events-none';
 
   return (
-    <div
-      className="flex w-full min-w-0 items-center"
-      style={{ gap: FULL_MENU_PLAN_LIGHT_DIVIDER_GAP_CLAMP }}
-    >
+    <div className="relative flex h-full w-full min-w-0 items-center">
       <div
         role="tablist"
         aria-label="Plan"
-        className="flex min-w-0 flex-[2] basis-0 items-center gap-[8px] overflow-visible"
+        className="flex h-full shrink-0 items-stretch gap-[8px] overflow-visible"
       >
         {PLANS.map((item) => (
           <PlanPill
@@ -191,31 +215,34 @@ export function FullMenuPlanToggle({
       </div>
 
       <div
-        className="flex min-w-0 flex-[3] basis-0 items-stretch overflow-hidden"
-        style={{ gap: FULL_MENU_LIGHT_OPTION_GAP_CLAMP }}
+        className={[
+          'flex h-full items-stretch ml-[length:var(--full-menu-plan-light-divider-gap)] gap-[length:var(--full-menu-plan-light-divider-gap)]',
+          hiddenLightControlsClassName,
+        ]
+          .filter(Boolean)
+          .join(' ')}
       >
         <div
-          className={['h-[24px] w-px shrink-0 self-center bg-[var(--full-menu-border)]', hiddenLightControlsClassName]
-            .filter(Boolean)
-            .join(' ')}
+          className="h-[24px] w-px shrink-0 self-center bg-[var(--full-menu-border)]"
           aria-hidden
         />
 
-        {LIGHT_OPTIONS.map((option) => (
-          <PlanPill
-            key={option.id}
-            selected={lightMealOption === option.id}
-            onClick={() => onLightMealOptionChange(option.id)}
-            pillDefaultStyle={pillDefaultStyle}
-            pillSelectedStyle={pillSelectedStyle}
-            label={option.label}
-            lightOptionWords={option.words}
-            ariaLabel={option.label}
-            variant="lightOption"
-            className={hiddenLightControlsClassName}
-            isLayoutHidden={!isLightPlan}
-          />
-        ))}
+        <div className="flex h-full items-stretch gap-[length:var(--full-menu-light-option-gap)]">
+          {LIGHT_OPTIONS.map((option) => (
+            <PlanPill
+              key={option.id}
+              selected={lightMealOption === option.id}
+              onClick={() => onLightMealOptionChange(option.id)}
+              pillDefaultStyle={pillDefaultStyle}
+              pillSelectedStyle={pillSelectedStyle}
+              label={option.label}
+              lightOptionWords={option.words}
+              ariaLabel={option.label}
+              variant="lightOption"
+              isLayoutHidden={!isLightPlan}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

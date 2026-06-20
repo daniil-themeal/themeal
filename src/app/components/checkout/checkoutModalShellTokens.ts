@@ -1,3 +1,5 @@
+export const CHECKOUT_ROOT_CLASSNAME = 'checkout';
+
 export const CHECKOUT_MODAL_SHELL_ROOT_CLASSNAME =
   'bg-[var(--meal-detail-card-bg)] pb-[env(safe-area-inset-bottom)] sm:p-[24px]';
 

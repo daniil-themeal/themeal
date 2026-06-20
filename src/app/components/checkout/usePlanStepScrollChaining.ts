@@ -1,7 +1,21 @@
 import { useEffect, type RefObject } from 'react';
 
+const SCROLL_SYNC_DRIFT_THRESHOLD = 24;
+const SCROLL_LERP = 0.18;
+const SCROLL_STOP_EPSILON = 0.5;
 const SCROLL_EPSILON = 1;
 const PLAN_DESKTOP_MEDIA_QUERY = '(min-width: 768px)';
+const LAYOUT_SETTLE_MS = 150;
+
+type SmoothScroller = {
+  targetScrollTop: number;
+  rafId: number | null;
+  isAnimating: boolean;
+};
+
+function createSmoothScroller(): SmoothScroller {
+  return { targetScrollTop: 0, rafId: null, isAnimating: false };
+}
 
 function getScrollDelta(event: WheelEvent): number {
   return event.deltaY;
@@ -23,28 +37,100 @@ function canScrollVertically(element: HTMLElement): boolean {
   return element.scrollHeight > element.clientHeight + SCROLL_EPSILON;
 }
 
-function clampBodyScrollTop(body: HTMLElement) {
-  const maxScrollTop = getMaxScrollTop(body);
-
-  if (body.scrollTop > maxScrollTop) {
-    body.scrollTop = maxScrollTop;
+function runSmoothScroll(
+  element: HTMLElement,
+  scroller: SmoothScroller,
+  shouldAbort?: () => boolean,
+) {
+  if (shouldAbort?.()) {
+    stopSmoothScroller(element, scroller);
+    return;
   }
+
+  scroller.isAnimating = true;
+  clampScrollerTarget(element, scroller);
+
+  const distance = scroller.targetScrollTop - element.scrollTop;
+
+  if (Math.abs(distance) < SCROLL_STOP_EPSILON) {
+    element.scrollTop = scroller.targetScrollTop;
+    scroller.targetScrollTop = element.scrollTop;
+    scroller.isAnimating = false;
+    scroller.rafId = null;
+    return;
+  }
+
+  element.scrollTop += distance * SCROLL_LERP;
+  scroller.rafId = requestAnimationFrame(() => runSmoothScroll(element, scroller, shouldAbort));
 }
 
-function applyScrollDelta(element: HTMLElement, delta: number): number {
+function applySmoothDelta(
+  element: HTMLElement,
+  scroller: SmoothScroller,
+  delta: number,
+  shouldAbort?: () => boolean,
+): number {
   if (delta === 0) return 0;
 
+  if (shouldAbort?.()) return delta;
+
+  if (scroller.rafId === null) {
+    scroller.targetScrollTop = element.scrollTop;
+  }
+
   const maxScrollTop = getMaxScrollTop(element);
-  const oldScrollTop = element.scrollTop;
-  const newScrollTop = Math.max(0, Math.min(oldScrollTop + delta, maxScrollTop));
-  const applied = newScrollTop - oldScrollTop;
+  const oldTarget = scroller.targetScrollTop;
+  const newTarget = Math.max(0, Math.min(oldTarget + delta, maxScrollTop));
+  const applied = newTarget - oldTarget;
+
+  scroller.targetScrollTop = newTarget;
 
   if (Math.abs(applied) < SCROLL_EPSILON) {
     return delta;
   }
 
-  element.scrollTop = newScrollTop;
+  if (scroller.rafId === null) {
+    scroller.rafId = requestAnimationFrame(() =>
+      runSmoothScroll(element, scroller, shouldAbort),
+    );
+  }
+
   return delta - applied;
+}
+
+function stopSmoothScroller(element: HTMLElement, scroller: SmoothScroller) {
+  if (scroller.rafId !== null) {
+    cancelAnimationFrame(scroller.rafId);
+    scroller.rafId = null;
+  }
+
+  scroller.isAnimating = false;
+  scroller.targetScrollTop = element.scrollTop;
+}
+
+function syncScrollerTarget(element: HTMLElement, scroller: SmoothScroller) {
+  if (scroller.isAnimating) return;
+
+  const drift = Math.abs(element.scrollTop - scroller.targetScrollTop);
+
+  if (drift <= SCROLL_SYNC_DRIFT_THRESHOLD) {
+    scroller.targetScrollTop = element.scrollTop;
+    return;
+  }
+
+  if (scroller.rafId !== null) {
+    cancelAnimationFrame(scroller.rafId);
+    scroller.rafId = null;
+  }
+
+  scroller.targetScrollTop = element.scrollTop;
+}
+
+function clampScrollerTarget(element: HTMLElement, scroller: SmoothScroller) {
+  const maxScrollTop = getMaxScrollTop(element);
+  if (scroller.targetScrollTop > maxScrollTop) {
+    scroller.targetScrollTop = maxScrollTop;
+  }
 }
 
 type UsePlanStepScrollChainingOptions = {
@@ -66,23 +152,43 @@ export function usePlanStepScrollChaining({
 
     if (!body || !right) return;
 
+    const bodyScroller = createSmoothScroller();
+    const rightScroller = createSmoothScroller();
     const desktopMediaQuery = window.matchMedia(PLAN_DESKTOP_MEDIA_QUERY);
-    const isDesktop = () => desktopMediaQuery.matches;
 
-    const handleLayoutBreakpointChange = () => {
-      requestAnimationFrame(() => clampBodyScrollTop(body));
+    const isDesktop = () => desktopMediaQuery.matches;
+    let isLayoutChanging = false;
+    let layoutSettleTimer: number | null = null;
+
+    const shouldAbortSmoothScroll = () => isLayoutChanging;
+
+    const stopAllSmoothScrollers = () => {
+      stopSmoothScroller(body, bodyScroller);
+      stopSmoothScroller(right, rightScroller);
     };
 
-    desktopMediaQuery.addEventListener('change', handleLayoutBreakpointChange);
+    const markLayoutChanging = () => {
+      isLayoutChanging = true;
+      stopAllSmoothScrollers();
+
+      if (layoutSettleTimer !== null) {
+        window.clearTimeout(layoutSettleTimer);
+      }
+
+      layoutSettleTimer = window.setTimeout(() => {
+        isLayoutChanging = false;
+        layoutSettleTimer = null;
+      }, LAYOUT_SETTLE_MS);
+    };
 
     const applyBodyOverflowDelta = (delta: number): number => {
       if (delta > 0 && !canScrollDown(body)) return delta;
       if (delta < 0 && !canScrollUp(body)) return delta;
-      return applyScrollDelta(body, delta);
+      return applySmoothDelta(body, bodyScroller, delta, shouldAbortSmoothScroll);
     };
 
     const handleRightWheel = (event: WheelEvent) => {
-      if (!isDesktop()) return;
+      if (!isDesktop() || isLayoutChanging) return;
 
       const delta = getScrollDelta(event);
       if (delta === 0) return;
@@ -90,7 +196,7 @@ export function usePlanStepScrollChaining({
       let remaining = delta;
 
       if (canScrollVertically(right)) {
-        remaining = applyScrollDelta(right, remaining);
+        remaining = applySmoothDelta(right, rightScroller, remaining, shouldAbortSmoothScroll);
       }
 
       if (remaining !== 0) {
@@ -108,7 +214,7 @@ export function usePlanStepScrollChaining({
     };
 
     const handleBodyWheel = (event: WheelEvent) => {
-      if (!isDesktop()) return;
+      if (!isDesktop() || isLayoutChanging) return;
 
       const target = event.target;
       if (!(target instanceof Node) || right.contains(target)) return;
@@ -132,17 +238,47 @@ export function usePlanStepScrollChaining({
         }
       }
 
-      applyScrollDelta(right, delta);
+      applySmoothDelta(right, rightScroller, delta, shouldAbortSmoothScroll);
       event.preventDefault();
     };
 
+    const handleBodyScroll = () => syncScrollerTarget(body, bodyScroller);
+    const handleRightScroll = () => syncScrollerTarget(right, rightScroller);
+
+    const handleScrollerLayoutChange = () => {
+      markLayoutChanging();
+      clampScrollerTarget(body, bodyScroller);
+      clampScrollerTarget(right, rightScroller);
+    };
+
+    const bodyResizeObserver = new ResizeObserver(handleScrollerLayoutChange);
+    const rightResizeObserver = new ResizeObserver(handleScrollerLayoutChange);
+
+    bodyResizeObserver.observe(body);
+    rightResizeObserver.observe(right);
+
+    window.addEventListener('resize', markLayoutChanging);
+    desktopMediaQuery.addEventListener('change', markLayoutChanging);
+
     right.addEventListener('wheel', handleRightWheel, { passive: false });
     body.addEventListener('wheel', handleBodyWheel, { passive: false });
+    body.addEventListener('scroll', handleBodyScroll, { passive: true });
+    right.addEventListener('scroll', handleRightScroll, { passive: true });
 
     return () => {
-      desktopMediaQuery.removeEventListener('change', handleLayoutBreakpointChange);
+      bodyResizeObserver.disconnect();
+      rightResizeObserver.disconnect();
+      window.removeEventListener('resize', markLayoutChanging);
+      desktopMediaQuery.removeEventListener('change', markLayoutChanging);
+      if (layoutSettleTimer !== null) {
+        window.clearTimeout(layoutSettleTimer);
+      }
       right.removeEventListener('wheel', handleRightWheel);
       body.removeEventListener('wheel', handleBodyWheel);
+      body.removeEventListener('scroll', handleBodyScroll);
+      right.removeEventListener('scroll', handleRightScroll);
+      stopSmoothScroller(body, bodyScroller);
+      stopSmoothScroller(right, rightScroller);
     };
   }, [enabled, bodyRef, rightRef]);
 }

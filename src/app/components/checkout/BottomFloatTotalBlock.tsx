@@ -16,6 +16,7 @@ import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { ChevronRightIcon } from '../common/icons';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { CHECKOUT_FONT_CLAMP_14_16, CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP } from './checkoutSpacing';
 import { FullMenuPanel } from './FullMenuPanel';
 
@@ -211,33 +212,80 @@ export function BottomFloatTotalBlock({
             <div className="relative z-10 w-full bg-[var(--checkout-float-surface)]">
               <div className="w-full">
                 <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-[16px] px-[length:var(--checkout-card-padding)] py-[8px]">
-                  <div className="flex min-w-0 w-full flex-col items-center justify-start gap-[8px] overflow-hidden">
-                    <div className="flex min-w-0 max-w-full items-end gap-[5px] tabular-nums">
+                  <div className="flex min-w-0 w-full flex-col items-center justify-start gap-[8px]">
+                    <div className="flex min-w-0 items-end gap-[5px] tabular-nums">
                       {orderPricing.oldPeriodPrice ? (
-                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-[var(--checkout-float-muted)] line-through">
-                          <AnimatedNumber value={orderPricing.oldPeriodPrice} format={formatAed} animate />
+                        <p
+                          className={[
+                            TEXT_TRIM_CLASS_NAME,
+                            'font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-[var(--checkout-float-muted)] line-through',
+                          ].join(' ')}
+                        >
+                          <AnimatedNumber
+                            value={orderPricing.oldPeriodPrice}
+                            format={formatAed}
+                            animate
+                            className={TEXT_TRIM_CLASS_NAME}
+                          />
                         </p>
                       ) : null}
 
                       <div className="flex items-end gap-[4px]">
-                        <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
+                        <p
+                          className={[
+                            TEXT_TRIM_CLASS_NAME,
+                            'font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]',
+                          ].join(' ')}
+                        >
                           AED
                         </p>
 
-                        <p className="font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]">
-                          <AnimatedNumber value={orderPricing.periodPrice} format={formatAed} animate />
+                        <p
+                          className={[
+                            TEXT_TRIM_CLASS_NAME,
+                            'font-sans text-[length:var(--checkout-float-font-size-lg)] font-bold leading-none text-[var(--checkout-float-active)]',
+                          ].join(' ')}
+                        >
+                          <AnimatedNumber
+                            value={orderPricing.periodPrice}
+                            format={formatAed}
+                            animate
+                            className={TEXT_TRIM_CLASS_NAME}
+                          />
                         </p>
                       </div>
 
                       {orderPricing.oldPeriodPrice ? (
-                        <p className="font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-transparent opacity-0">
-                          <AnimatedNumber value={orderPricing.oldPeriodPrice} format={formatAed} animate={false} />
+                        <p
+                          className={[
+                            TEXT_TRIM_CLASS_NAME,
+                            'font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold leading-none text-transparent opacity-0',
+                          ].join(' ')}
+                        >
+                          <AnimatedNumber
+                            value={orderPricing.oldPeriodPrice}
+                            format={formatAed}
+                            animate={false}
+                            className={TEXT_TRIM_CLASS_NAME}
+                          />
                         </p>
                       ) : null}
                     </div>
 
-                    <p className="text-right font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]">
-                      AED <AnimatedNumber value={orderPricing.pricePerDay} format={formatPricePerDay} animate />/day
+                    <p
+                      className={[
+                        TEXT_TRIM_CLASS_NAME,
+                        'text-right font-sans text-[length:var(--checkout-float-font-size-sm)] font-bold text-[var(--checkout-float-text)]',
+                      ].join(' ')}
+                    >
+                      AED{' '}
+                      <AnimatedNumber
+                        value={orderPricing.pricePerDay}
+                        format={formatPricePerDay}
+                        animate
+                        className={TEXT_TRIM_CLASS_NAME}
+                      />
+                      /day
                     </p>
                   </div>
 

@@ -41,8 +41,10 @@ export function LegalHeader({ t }: LegalHeaderProps) {
         }}
       >
         <div className="wrap row hdr-row" style={{ height: 'var(--hdr-h)', justifyContent: 'space-between' }}>
-          <Link to="/" className="row hdr-logo" aria-label="Back to home">
-            <Logo tone="yellow" />
+          <Link to="/" className="row hdr-logo logo-top-link" aria-label="Back to home">
+            <span className="hover-lift">
+              <Logo tone="yellow" />
+            </span>
           </Link>
           <div className="hdr-profile">
             <button

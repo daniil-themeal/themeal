@@ -159,7 +159,8 @@ function Footer({ t, lang, setLang }) {
         createElement('div', { className:'footer-grid' },
           createElement('div', { className:'stack footer-brand' },
             createElement('a', { href:'#top', className:'footer-logo logo-top-link', 'aria-label':'Back to top' },
-              createElement(Logo, { height:28 })),
+              createElement('span', { className:'hover-lift' },
+                createElement(Logo, { height:28 }))),
             createElement('p', { style:{ margin:0, fontSize:'var(--fs-16)', lineHeight:1.5 } }, t.footer.tagline)),
           createElement('div', { className:'stack', style:{ gap:'var(--space-20)', width:'100%', alignItems:'flex-start' } },
             createElement('nav', { style:{ display:'flex', flexWrap:'wrap', gap:'12px 28px', fontWeight:600, fontSize:'var(--fs-16)', width:'100%' } },
@@ -179,9 +180,7 @@ function Footer({ t, lang, setLang }) {
               })),
             createElement('div', { className:'row', style:{ gap:10, flexWrap:'wrap' } },
               socials.map(([k,href])=>createElement('a', { key:k, href, target:'_blank', rel:'noopener noreferrer', 'aria-label':k, title:k,
-                style:{ width:42, height:42, borderRadius:'50%', display:'grid', placeItems:'center', color:'rgba(255,255,255,.8)', background:'rgba(255,255,255,.08)', transition:'all .15s var(--ease)' },
-                onMouseEnter:e=>{ e.currentTarget.style.background='var(--brand)'; e.currentTarget.style.color='#fff'; },
-                onMouseLeave:e=>{ e.currentTarget.style.background='rgba(255,255,255,.08)'; e.currentTarget.style.color='rgba(255,255,255,.8)'; } },
+                className:'footer-social-link' },
                 createElement(Social[k], { size:19 })))))
         )
       ),

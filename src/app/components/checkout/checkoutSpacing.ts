@@ -45,7 +45,13 @@ export const FULL_MENU_LIGHT_CONTROLS_SPACING_CLAMP =
 
 export const FULL_MENU_LIGHT_OPTION_GAP_CLAMP = FULL_MENU_LIGHT_CONTROLS_SPACING_CLAMP;
 
-export const FULL_MENU_PLAN_LIGHT_DIVIDER_GAP_CLAMP = FULL_MENU_LIGHT_CONTROLS_SPACING_CLAMP;
+/** Symmetric gap before/after the Light options divider (4px → 24px). */
+export const FULL_MENU_PLAN_LIGHT_DIVIDER_GAP_CLAMP =
+  'clamp(4px, calc(4px + (100vw - 20rem) * 20 / 448), 24px)';
+
+/** Max width of a single Light option pill. */
+export const FULL_MENU_LIGHT_OPTION_MAX_WIDTH_CLAMP =
+  'clamp(120px, calc(120px + (100vw - 20rem) * 60 / 448), 180px)';
 
 export const FULL_MENU_LIGHT_OPTION_PADDING_X_CLAMP = FULL_MENU_LIGHT_CONTROLS_SPACING_CLAMP;
 

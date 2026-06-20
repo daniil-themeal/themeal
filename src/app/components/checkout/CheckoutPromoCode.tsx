@@ -180,7 +180,7 @@ export function CheckoutPromoCode({
               <RadioCheckIcon size={20} checkColor={COLOR_TOKENS.warning[800]} />
             </span>
             <span
-              className="truncate font-sans font-semibold leading-normal text-[var(--promo-code-text)]"
+              className="font-sans font-semibold leading-normal text-[var(--promo-code-text)]"
               style={{ fontSize: FIELD_SIZE_CONFIG.large.fontSize }}
             >
               {appliedCode}

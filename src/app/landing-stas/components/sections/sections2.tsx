@@ -665,30 +665,33 @@ function Customers({ t }) {
               createElement('span', { className:'reviews-carousel-nav__icon' },
                 createElement(Icon.arrow, { size:20, style:{ transform:'scaleX(-1)' } }))),
             createElement('div', {
-              ref: viewportRef,
               className:'reviews-carousel-viewport gutter-x',
               'aria-live':'polite',
             },
               createElement('div', {
-                ref: trackRef,
-                className:'reviews-carousel-track',
-                onTransitionEnd: onTrackTransitionEnd,
-                style:{
-                  gap:`${REVIEWS_CAROUSEL_GAP}px`,
-                  transform: stepPx ? `translateX(-${position * stepPx}px)` : undefined,
-                  transition: reducedMotion || !enableTransition ? 'none' : 'transform 0.55s var(--ease)',
-                },
+                ref: viewportRef,
+                className:'reviews-carousel-clip',
               },
-                slides.map((review, slideIndex) => createElement('div', {
-                  key:`${review.id ?? review.n}-${slideIndex}`,
-                  className:'reviews-carousel-slide',
-                  style: slideWidth ? { width: slideWidth, flex: `0 0 ${slideWidth}px` } : undefined,
+                createElement('div', {
+                  ref: trackRef,
+                  className:'reviews-carousel-track',
+                  onTransitionEnd: onTrackTransitionEnd,
+                  style:{
+                    gap:`${REVIEWS_CAROUSEL_GAP}px`,
+                    transform: stepPx ? `translateX(-${position * stepPx}px)` : undefined,
+                    transition: reducedMotion || !enableTransition ? 'none' : 'transform 0.55s var(--ease)',
+                  },
                 },
-                  createElement(ReviewCard, {
-                    review,
-                    compact:true,
-                    onOpen:() => setSelectedReview(review),
-                  }))))),
+                  slides.map((review, slideIndex) => createElement('div', {
+                    key:`${review.id ?? review.n}-${slideIndex}`,
+                    className:'reviews-carousel-slide',
+                    style: slideWidth ? { width: slideWidth, flex: `0 0 ${slideWidth}px` } : undefined,
+                  },
+                    createElement(ReviewCard, {
+                      review,
+                      compact:true,
+                      onOpen:() => setSelectedReview(review),
+                    })))))),
             showNav && createElement('button', {
               type:'button',
               className:'reviews-carousel-nav reviews-carousel-nav--next',

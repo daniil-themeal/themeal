@@ -6,7 +6,9 @@ import { CHECKOUT_LAYER_Z_INDEX, Z_INDEX_TOKENS } from './common/zIndexTokens';
 
 import { Badge, BADGE_VARIANTS } from './common/Badge';
 import { Button, BUTTON_SIZE_LABELS, BUTTON_SIZES, BUTTON_VARIANTS } from './common/Button';
+import { GhostButton } from './common/GhostButton';
 import { IconButton } from './common/IconButton';
+import { VerifiedPhoneLogoutButton } from './common/VerifiedPhoneLogoutButton';
 import { Checkbox } from './common/Checkbox';
 import { CHECKBOX_SIZE_LABELS, CHECKBOX_SIZES, RADIO_SIZE_LABELS, RADIO_SIZES } from './common/checkboxSizeTokens';
 import { Radio, RadioGroup } from './common/Radio';
@@ -31,6 +33,7 @@ import {
   SuccessIcon,
   TruckIcon,
   XIcon,
+  LogOutIcon,
 } from './common/icons';
 import type { IconSize } from './common/icons/iconSize';
 import { FEATHER_ICON_CATALOG_ENTRIES } from './common/icons/feather/iconCatalog';
@@ -205,7 +208,7 @@ const demoNavigationItems: DemoNavigationItem[] = [
       { id: 'date-pill', label: 'DatePill' },
       { id: 'icon-text-row', label: 'IconTextRow' },
       { id: 'text-link', label: 'TextLink' },
-      { id: 'checkout-today-total', label: 'CheckoutTodayTotal' },
+      { id: 'checkout-today-total', label: 'Order summary' },
       { id: 'pay-method-card', label: 'PayMethodCard' },
       { id: 'delivery-address-card', label: 'DeliveryAddressCard' },
       { id: 'button-variants', label: 'Button variants' },
@@ -1879,12 +1882,27 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
 
           <DemoCard
             id="checkout-today-total"
-            title="CheckoutTodayTotal"
-            description="Price summary row with optional strikethrough and per-day caption."
+            title="Order summary"
+            description="Checkout summary blocks: Today total row and verified-session footer with GhostButton logout."
           >
             <div className="flex flex-col gap-[16px]">
               <CheckoutTodayTotal periodPrice={999} pricePerDay={39.9} oldPeriodPrice={1596} />
               <CheckoutTodayTotal periodPrice={749} pricePerDay={29.9} title="Today" />
+            </div>
+
+            <div className="mt-[16px] flex flex-col gap-[8px]">
+              <DemoSubheading>Verified session footer</DemoSubheading>
+              <div className="flex flex-col gap-[8px] rounded-[16px] bg-[var(--demo-card-bg)] px-[20px] py-[16px]">
+                <div className="flex justify-center">
+                  <VerifiedPhoneLogoutButton
+                    phone="50 123 4567"
+                    onClick={() => undefined}
+                  />
+                </div>
+                <Button type="button" variant="primary" size="medium" fullWidth>
+                  Continue to Delivery
+                </Button>
+              </div>
             </div>
           </DemoCard>
 
@@ -1940,11 +1958,11 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           <DemoCard
             id="button-variants"
             title="Button variants"
-            description="Color variants with filled and outline styles. Outline uses transparent background and 1px border in the same palette."
+            description="Color variants with filled, outline, and ghost styles. Ghost uses transparent background, colored text, subtle hover fill (palette[50]), no border or shadow."
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {BUTTON_VARIANTS.map((variant) => (
-                <div key={variant} className="flex flex-col">
+                <div key={variant} className="flex flex-col gap-[8px]">
                   <DemoSubheading>
                     <CodeLabel>{`variant="${variant}"`}</CodeLabel>
                   </DemoSubheading>
@@ -1968,6 +1986,18 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                   <Button variant={variant} outline fullWidth disabled>
                     {capitalizeWord(variant)} Outline Disabled
                   </Button>
+
+                  <Button variant={variant} ghost fullWidth>
+                    {capitalizeWord(variant)} Ghost
+                  </Button>
+
+                  <Button variant={variant} ghost fullWidth disabled>
+                    {capitalizeWord(variant)} Ghost Disabled
+                  </Button>
+
+                  <Button variant={variant} ghost fullWidth loading>
+                    {capitalizeWord(variant)} Ghost Loading
+                  </Button>
                 </div>
               ))}
             </div>
@@ -1980,7 +2010,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="flex flex-col gap-[16px]">
               {BUTTON_SIZES.map((size) => (
-                <div key={size} className="flex flex-col">
+                <div key={size} className="flex flex-col gap-[8px]">
                   <DemoSubheading>
                     <CodeLabel>{`size="${size}"`}</CodeLabel>
                     <span className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-description)]">
@@ -1990,6 +2020,10 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
 
                   <Button size={size} fullWidth>
                     {BUTTON_SIZE_LABELS[size]} Button
+                  </Button>
+
+                  <Button ghost size={size} fullWidth>
+                    {BUTTON_SIZE_LABELS[size]} Ghost
                   </Button>
                 </div>
               ))}
@@ -2055,6 +2089,20 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
               >
                 Outline + left icon
               </Button>
+
+              <Button variant="primary" ghost fullWidth rightIcon={<XIcon size={16} />}>
+                Ghost + right icon
+              </Button>
+            </div>
+
+            <div className="mt-[16px] flex flex-col gap-[8px]">
+              <DemoSubheading>Inline ghost (GhostButton)</DemoSubheading>
+              <GhostButton>Neutral ghost</GhostButton>
+              <GhostButton variant="primary">Primary ghost</GhostButton>
+              <GhostButton variant="danger">Danger ghost</GhostButton>
+              <GhostButton size="small" rightIcon={<LogOutIcon size={16} />} disabled>
+                Disabled ghost
+              </GhostButton>
             </div>
           </DemoCard>
 
@@ -2065,7 +2113,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <div className="grid grid-cols-1 gap-[16px] md:grid-cols-2">
               {BUTTON_VARIANTS.map((variant) => (
-                <div key={variant} className="flex flex-col">
+                <div key={variant} className="flex flex-col gap-[8px]">
                   <DemoSubheading>
                     <CodeLabel>{`variant="${variant}"`}</CodeLabel>
                   </DemoSubheading>
@@ -2113,14 +2161,39 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
 
           <DemoCard
             id="icon-button-soft"
-            title="IconButton soft"
-            description="Round soft icon controls for light surfaces: neutral[50] background, neutral[75] on hover, no border. Used for checkout close controls, counters, and inline hints."
+            title="IconButton soft & ghost"
+            description="Soft: neutral[50] background, neutral[75] on hover. Ghost: transparent surface, neutral text, neutral[50] hover fill — no border."
           >
             <div className="flex flex-wrap items-center gap-[8px]">
               <IconButton soft aria-label="Soft action" icon={<XIcon />} />
               <IconButton soft aria-label="Soft action disabled" icon={<XIcon />} disabled />
               <IconButton soft aria-label="Soft action loading" icon={<XIcon />} loading />
               <IconButton soft size="small" aria-label="Soft small action" icon={<XIcon size={16} />} />
+            </div>
+
+            <div className="mt-[16px] flex flex-col gap-[8px]">
+              <DemoSubheading>Ghost</DemoSubheading>
+              <div className="flex flex-wrap items-center gap-[8px]">
+                <IconButton ghost aria-label="Ghost action" icon={<XIcon />} />
+                <IconButton ghost aria-label="Ghost action disabled" icon={<XIcon />} disabled />
+                <IconButton ghost aria-label="Ghost action loading" icon={<XIcon />} loading />
+              </div>
+            </div>
+
+            <div className="mt-[16px] flex flex-wrap items-end gap-[16px]">
+              {(['x-small', 'small', 'medium'] as const).map((size) => (
+                <div key={size} className="flex flex-col items-center gap-[8px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`ghost size="${size}"`}</CodeLabel>
+                  </DemoSubheading>
+                  <IconButton
+                    ghost
+                    size={size}
+                    aria-label={`${BUTTON_SIZE_LABELS[size]} ghost action`}
+                    icon={<XIcon />}
+                  />
+                </div>
+              ))}
             </div>
           </DemoCard>
 
