@@ -5,7 +5,6 @@ import {
   useRef,
   useState,
   type CSSProperties,
-  type RefObject,
 } from 'react';
 import { createPortal } from 'react-dom';
 
@@ -178,7 +177,6 @@ export type FullMenuPanelProps = {
   onLightMealOptionChange: (option: LightMealOption) => void;
   onMealDetailOpenChange?: (open: boolean) => void;
   className?: string;
-  scrollContainerRef?: RefObject<HTMLDivElement | null>;
 };
 
 export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>(function FullMenuPanel(
@@ -191,7 +189,6 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     onLightMealOptionChange,
     onMealDetailOpenChange,
     className = '',
-    scrollContainerRef,
   },
   ref,
 ) {
@@ -605,7 +602,6 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
         </div>
 
         <div
-          ref={isModal ? scrollContainerRef : undefined}
           className={mealsOuterClassName}
           {...(isModal ? { [SPACING_CONTENT_ATTR]: '' } : {})}
         >

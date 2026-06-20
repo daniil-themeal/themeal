@@ -23,13 +23,13 @@ import { PaymentSuccessScreen } from './PaymentSuccessScreen';
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
 import type { TestAddress } from '../../data/testAddresses';
+import { testUaeAddresses } from '../../data/testAddresses';
 import type { PhoneSession } from '../../phoneSession';
 import { loadPhoneSession, mergePhoneSession } from '../../phoneSession';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_SELECTOR_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
 import { useEscapeLayer } from '../common/escapeStack';
 import { useModalShell } from '../common/ModalShell';
-import { useSwipeToDismiss } from '../common/useSwipeToDismiss';
 import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
 import { CHECKOUT_LAYER_Z_INDEX, Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { formatUaePhoneInput, normalizeUaePhone } from './phoneValidation';
@@ -133,6 +133,16 @@ function phoneDigitsFromInitial(initialPhone?: string): string {
   return initialPhone.replace(/\D/g, '').replace(/^971/, '').slice(-9);
 }
 
+function resolveDeliveryStep(selectedAddress: TestAddress | null): DeliveryStep {
+  return selectedAddress ? 'details' : 'address';
+}
+
+function restoreAddressFromSession(session: PhoneSession | null): TestAddress | null {
+  if (!session?.selectedAddressId) return null;
+
+  return testUaeAddresses.find((address) => address.id === session.selectedAddressId) ?? null;
+}
+
 export function CheckoutPage({
   isOpen,
   onClose,
@@ -201,7 +211,6 @@ export function CheckoutPage({
   const todayTotalRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const resultBodyRef = useRef<HTMLDivElement>(null);
-  const checkoutPanelRef = useRef<HTMLDivElement>(null);
 
   const headerStep =
     checkoutStep === 'plan'
@@ -229,6 +238,7 @@ export function CheckoutPage({
           isVerified,
           checkoutStep: patch.checkoutStep ?? checkoutStep,
           deliveryStep: patch.deliveryStep ?? deliveryStep,
+          selectedAddressId: patch.selectedAddressId ?? selectedAddress?.id,
         }),
       );
     },
@@ -241,18 +251,32 @@ export function CheckoutPage({
       resetCloseState();
       document.body.style.overflow = 'hidden';
       const nextState = resolveInitialCheckoutState(initialCheckoutStep);
+      const session = loadPhoneSession();
       setCheckoutStep(nextState.flowStep);
       setResultOverlay(nextState.resultOverlay);
-      setDeliveryStep(initialDeliveryStep);
+      const restoredAddress = restoreAddressFromSession(session);
+      setSelectedAddress(restoredAddress);
+      setDeliveryStep(
+        initialDeliveryStep === 'details' && restoredAddress
+          ? 'details'
+          : initialDeliveryStep === 'details'
+            ? 'address'
+            : initialDeliveryStep,
+      );
       setIsPhoneVerified(initialIsVerified || sessionIsVerified);
       setDevSkipAuth(false);
       setMenuOpen(false);
       setSummaryVisible(nextState.flowStep !== 'plan');
+      const pendingSmsVerification =
+        Boolean(session?.phone) &&
+        !initialIsVerified &&
+        !sessionIsVerified &&
+        (session?.checkoutStep === 'verification' || session?.checkoutStep === 'delivery');
+
       setAuthModalOpen(
         !initialIsVerified &&
           !sessionIsVerified &&
-          (nextState.shouldOpenAuthModal ||
-            loadPhoneSession()?.checkoutStep === 'verification'),
+          (nextState.shouldOpenAuthModal || pendingSmsVerification),
       );
 
       const digits = phoneDigitsFromInitial(initialPhone);
@@ -357,8 +381,16 @@ export function CheckoutPage({
     setIsSmsVerifying(false);
     setAuthModalOpen(false);
     setSmsError(undefined);
-    persistSession({ checkoutStep: 'plan' });
-  }, [clearSmsVerifyTimer, persistSession]);
+
+    if (!isAuthComplete) {
+      setCheckoutStep('plan');
+      setSummaryVisible(true);
+      persistSession({ checkoutStep: 'plan' });
+      return;
+    }
+
+    persistSession({ checkoutStep });
+  }, [checkoutStep, clearSmsVerifyTimer, isAuthComplete, persistSession]);
 
   const handleDevAuthModeChange = useCallback((mode: CheckoutAuthDevMode) => {
     const skip = mode === 'skip';
@@ -381,6 +413,31 @@ export function CheckoutPage({
       setAuthModalOpen(false);
     }
   }, [clearSmsVerifyTimer, isPhoneVerified, phone, sessionIsVerified]);
+
+  const handleAuthModalSkip = useCallback(() => {
+    if (!import.meta.env.DEV) return;
+
+    setDevSkipAuth(true);
+    clearSmsVerifyTimer();
+    setIsSmsVerifying(false);
+    setAuthModalOpen(false);
+    setSmsError(undefined);
+
+    const nextPhone = phone || formatUaePhoneInput('501234567');
+    if (!phone) {
+      setPhone(nextPhone);
+    }
+
+    setCheckoutStep('delivery');
+    setDeliveryStep('address');
+    persistSession({
+      phone: normalizeUaePhone(nextPhone) ?? nextPhone,
+      checkoutStep: 'delivery',
+      deliveryStep: 'address',
+      isVerified: false,
+    });
+    scrollBodyToTop();
+  }, [clearSmsVerifyTimer, persistSession, phone, scrollBodyToTop]);
 
   const handleScrollToSummary = () => {
     setMenuOpen(false);
@@ -405,9 +462,10 @@ export function CheckoutPage({
     setSummaryVisible(true);
 
     if (isAuthComplete) {
+      const nextDeliveryStep = resolveDeliveryStep(selectedAddress);
       setCheckoutStep('delivery');
-      setDeliveryStep('address');
-      persistSession({ checkoutStep: 'delivery', deliveryStep: 'address' });
+      setDeliveryStep(nextDeliveryStep);
+      persistSession({ checkoutStep: 'delivery', deliveryStep: nextDeliveryStep });
       scrollBodyToTop();
       return;
     }
@@ -419,32 +477,37 @@ export function CheckoutPage({
     (normalizedPhone: string) => {
       const digits = normalizedPhone.replace(/\D/g, '').slice(-9);
       setPhone(formatUaePhoneInput(digits));
+      setCheckoutStep('delivery');
+      setDeliveryStep('address');
       persistSession({
         phone: normalizedPhone,
-        checkoutStep: 'verification',
+        checkoutStep: 'delivery',
+        deliveryStep: 'address',
         isVerified: false,
       });
+      scrollBodyToTop();
     },
-    [persistSession],
+    [persistSession, scrollBodyToTop],
   );
 
   const handleSmsContinue = useCallback(() => {
     setAuthModalOpen(false);
     setIsPhoneVerified(true);
+    const nextDeliveryStep = resolveDeliveryStep(selectedAddress);
     setCheckoutStep('delivery');
-    setDeliveryStep('address');
+    setDeliveryStep(nextDeliveryStep);
     const normalized = normalizeUaePhone(phone);
     persistSession(
       {
         phone: normalized ?? phone,
         checkoutStep: 'delivery',
-        deliveryStep: 'address',
+        deliveryStep: nextDeliveryStep,
         isVerified: true,
       },
       true,
     );
     scrollBodyToTop();
-  }, [persistSession, phone, scrollBodyToTop]);
+  }, [persistSession, phone, scrollBodyToTop, selectedAddress]);
 
   const handleSmsCodeComplete = useCallback((code: string) => {
     if (isSmsVerifying) return;
@@ -475,8 +538,17 @@ export function CheckoutPage({
     if (!selectedAddress) return;
 
     setDeliveryStep('details');
-    persistSession({ checkoutStep: 'delivery', deliveryStep: 'details' });
+    persistSession({
+      checkoutStep: 'delivery',
+      deliveryStep: 'details',
+      selectedAddressId: selectedAddress.id,
+    });
     scrollBodyToTop();
+  };
+
+  const handleSelectedAddressChange = (address: TestAddress | null) => {
+    setSelectedAddress(address);
+    persistSession({ selectedAddressId: address?.id });
   };
 
   const handleChangeAddress = () => {
@@ -647,25 +719,10 @@ export function CheckoutPage({
     handleEscapeRef.current();
   });
 
-  useSwipeToDismiss({
-    enabled: isOpen,
-    disabled:
-      isClosing ||
-      authModalOpen ||
-      menuOpen ||
-      isMealDetailOpen ||
-      Boolean(resultOverlay),
-    onDismiss: requestClose,
-    panelRef: checkoutPanelRef,
-    scrollContainerRef: bodyRef,
-    waitForEnterAnimation: true,
-  });
-
   if (!isOpen) return null;
 
   return (
     <div
-      ref={checkoutPanelRef}
       className={[
         CHECKOUT_ROOT_CLASSNAME,
         'fixed inset-0 z-[200] flex flex-col',
@@ -779,7 +836,7 @@ export function CheckoutPage({
         <div ref={bodyRef} className={checkoutFormStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
           <DeliveryAddressScreen
             selectedAddress={selectedAddress}
-            onSelectedAddressChange={setSelectedAddress}
+            onSelectedAddressChange={handleSelectedAddressChange}
             onContinue={handleAddressContinue}
           />
         </div>
@@ -830,6 +887,7 @@ export function CheckoutPage({
         isVerifying={isSmsVerifying}
         onCodeChange={handleSmsCodeChange}
         onCodeComplete={handleSmsCodeComplete}
+        onSkip={import.meta.env.DEV ? handleAuthModalSkip : undefined}
       />
 
       {resultOverlay ? (

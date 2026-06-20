@@ -60,7 +60,7 @@ export function ClearIcon() {
     >
       <path
         d="M4.5 4.5L13.5 13.5M13.5 4.5L4.5 13.5"
-        stroke="#8594AC"
+        stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
       />

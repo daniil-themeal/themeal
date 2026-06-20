@@ -11,6 +11,8 @@ import {
 import { Button } from '../common/Button';
 import { CHECKOUT_LAYER_Z_INDEX } from '../common/zIndexTokens';
 import { COLOR_TOKENS } from '../common/colorTokens';
+import { InputClearButton } from '../common/InputClearButton';
+import { getFieldSizeStyle } from '../common/fieldSizeTokens';
 import { MapPinIcon } from '../common/icons';
 import { FONT_FAMILY_TOKENS } from '../common/fontFamilyTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
@@ -145,26 +147,6 @@ function DeliveryUnavailableIcon() {
         />
       </svg>
     </div>
-  );
-}
-
-function ClearIcon() {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 18 18"
-      fill="none"
-      aria-hidden="true"
-      focusable="false"
-    >
-      <path
-        d="M4.5 4.5L13.5 13.5M13.5 4.5L4.5 13.5"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
   );
 }
 
@@ -544,8 +526,16 @@ function AddressSearchInput({
   autoFocus?: boolean;
   placeholder?: string;
 }) {
+  const showClearButton = Boolean(value);
+
   return (
-    <div className="flex h-[48px] items-center rounded-[8px] bg-[var(--delivery-address-search-bg)] px-[16px] ring-1 ring-[var(--delivery-address-search-border)] focus-within:ring-2 focus-within:ring-[var(--delivery-address-search-focus)]">
+    <div
+      className={[
+        'flex h-[48px] items-center rounded-[8px] bg-[var(--delivery-address-search-bg)] pl-[16px] ring-1 ring-[var(--delivery-address-search-border)] focus-within:ring-2 focus-within:ring-[var(--delivery-address-search-focus)]',
+        showClearButton ? 'pr-0' : 'pr-[16px]',
+      ].join(' ')}
+      style={getFieldSizeStyle('large')}
+    >
       <input
         type="text"
         value={value}
@@ -557,15 +547,12 @@ function AddressSearchInput({
         className="w-full bg-transparent font-sans text-[length:var(--delivery-address-input-font-size)] font-semibold leading-[140%] text-[var(--delivery-address-text)] outline-none placeholder:text-[var(--delivery-address-placeholder)]"
       />
 
-      {value ? (
-        <button
-          type="button"
+      {showClearButton ? (
+        <InputClearButton
           onClick={onClear}
-          className="ml-[12px] flex size-[24px] shrink-0 cursor-pointer items-center justify-center text-[var(--delivery-address-muted)]"
           aria-label="Clear address"
-        >
-          <ClearIcon />
-        </button>
+          className="ml-[8px]"
+        />
       ) : null}
     </div>
   );
@@ -594,7 +581,7 @@ function SuggestionRow({
       type="button"
       onClick={() => onSelect(suggestion)}
       className={[
-        'flex w-full cursor-pointer gap-[12px] border-b border-[var(--delivery-address-border)] px-[16px] py-[12px] text-left transition-colors',
+        'flex w-full cursor-pointer gap-[12px] border-b border-[var(--delivery-address-border)] px-[16px] py-[16px] text-left transition-colors',
         isActive
           ? 'bg-[var(--delivery-address-hover-bg)]'
           : 'hover:bg-[var(--delivery-address-hover-bg)]',
@@ -604,7 +591,7 @@ function SuggestionRow({
         <MapPinIcon size={16} />
       </div>
 
-      <div className="min-w-0 flex-1">
+      <div className="flex min-w-0 flex-1 flex-col gap-[8px]">
         <p
           className={[
             TEXT_TRIM_CLASS_NAME,
@@ -618,7 +605,7 @@ function SuggestionRow({
         <p
           className={[
             TEXT_TRIM_CLASS_NAME,
-            'mt-[2px] min-w-0 font-sans text-[length:var(--delivery-address-subtitle-font-size)] font-semibold leading-[130%] text-[var(--delivery-address-muted)]',
+            'min-w-0 font-sans text-[length:var(--delivery-address-subtitle-font-size)] font-semibold leading-[130%] text-[var(--delivery-address-muted)]',
           ].join(' ')}
         >
           {suggestion.subtitle}
@@ -923,7 +910,7 @@ export function DeliveryAddressScreen({
   const renderSuggestions = () => {
     if (visibleSuggestions.length === 0) {
       return (
-        <p className="px-[24px] py-[18px] font-sans text-[length:var(--delivery-address-empty-font-size)] font-semibold leading-[140%] text-[var(--delivery-address-muted)] md:px-[24px]">
+        <p className="px-[24px] py-[24px] font-sans text-[length:var(--delivery-address-empty-font-size)] font-semibold leading-[140%] text-[var(--delivery-address-muted)] md:px-[24px]">
           No UAE addresses found
         </p>
       );

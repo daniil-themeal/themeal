@@ -337,35 +337,6 @@
   }
 }
 
-.modal-swipe-dragging {
-  animation: none !important;
-  transition: none !important;
-}
-
-.modal-swipe-snap-back {
-  transition: transform 200ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.modal-swipe-handle {
-  position: absolute;
-  top: 8px;
-  left: 50%;
-  z-index: 2;
-  height: 4px;
-  width: 36px;
-  -webkit-transform: translateX(-50%);
-  transform: translateX(-50%);
-  border-radius: 999px;
-  background: rgb(0 0 0 / 12%);
-  pointer-events: none;
-}
-
-@media (width >= theme(--breakpoint-sm)) {
-  .modal-swipe-handle {
-    display: none;
-  }
-}
-
 /* Tabby promo.js injects its own dialog; we use TabbyPromoModal instead. */
 #TabbyDialogContainer {
   display: none !important;

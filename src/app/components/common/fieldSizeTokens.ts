@@ -48,6 +48,12 @@ export const FIELD_SIZE_CONFIG: Record<FieldSize, FieldSizeConfig> = {
   },
 };
 
+export const FIELD_CLEAR_CIRCLE_SIZE_PX = 36;
+
+function getFieldClearInset(heightPx: number) {
+  return Math.max(0, (heightPx - FIELD_CLEAR_CIRCLE_SIZE_PX) / 2);
+}
+
 export type FieldSizeCssVariables = {
   '--field-height': string;
   '--field-font-size': string;
@@ -57,10 +63,14 @@ export type FieldSizeCssVariables = {
   '--field-icon-slot-width': string;
   '--field-icon-size': string;
   '--field-textarea-vertical-padding': string;
+  '--field-clear-circle-size': string;
+  '--field-clear-inset': string;
+  '--field-clear-slot-width': string;
 };
 
 export function getFieldSizeStyle(size: FieldSize): FieldSizeCssVariables {
   const config = FIELD_SIZE_CONFIG[size];
+  const clearInsetPx = getFieldClearInset(config.heightPx);
 
   return {
     '--field-height': `${config.heightPx}px`,
@@ -71,5 +81,8 @@ export function getFieldSizeStyle(size: FieldSize): FieldSizeCssVariables {
     '--field-icon-slot-width': `${config.iconSlotWidthPx}px`,
     '--field-icon-size': `${config.iconSizePx}px`,
     '--field-textarea-vertical-padding': `${config.textareaVerticalPaddingPx}px`,
+    '--field-clear-circle-size': `${FIELD_CLEAR_CIRCLE_SIZE_PX}px`,
+    '--field-clear-inset': `${clearInsetPx}px`,
+    '--field-clear-slot-width': `${FIELD_CLEAR_CIRCLE_SIZE_PX + clearInsetPx}px`,
   };
 }

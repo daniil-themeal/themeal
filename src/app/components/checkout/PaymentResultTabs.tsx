@@ -9,9 +9,9 @@ type PaymentResultTabsProps = {
   onTabChange: (tab: PaymentResultTab) => void;
 };
 
-const TABS: { id: PaymentResultTab; label: string }[] = [
-  { id: 'success', label: 'Success' },
-  { id: 'failed', label: 'Failed' },
+const TABS: { id: PaymentResultTab; emoji: string; ariaLabel: string }[] = [
+  { id: 'success', emoji: '✅', ariaLabel: 'Success' },
+  { id: 'failed', emoji: '❌', ariaLabel: 'Failed' },
 ];
 
 const tabStyle = {
@@ -33,15 +33,17 @@ export function PaymentResultTabs({ activeTab, onTabChange }: PaymentResultTabsP
             type="button"
             onClick={() => onTabChange(tab.id)}
             className={[
-              'cursor-pointer rounded-[8px] px-[12px] py-[6px] font-sans text-[13px] font-semibold leading-[130%] transition-colors',
+              'flex size-[32px] cursor-pointer items-center justify-center rounded-[8px] text-[16px] leading-none transition-colors',
               isActive
-                ? 'bg-[var(--result-tab-active-bg)] text-[var(--result-tab-active-text)]'
-                : 'bg-transparent text-[var(--result-tab-inactive-text)] hover:bg-[var(--result-tab-hover-bg)]',
+                ? 'bg-[var(--result-tab-active-bg)]'
+                : 'bg-transparent hover:bg-[var(--result-tab-hover-bg)]',
             ].join(' ')}
             style={tabStyle}
+            aria-label={tab.ariaLabel}
             aria-current={isActive ? 'page' : undefined}
+            title={tab.ariaLabel}
           >
-            {tab.label}
+            {tab.emoji}
           </button>
         );
       })}

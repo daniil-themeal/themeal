@@ -6,6 +6,7 @@ export type PhoneSession = {
   isVerified: boolean;
   checkoutStep?: PhoneSessionCheckoutStep;
   deliveryStep?: PhoneSessionDeliveryStep;
+  selectedAddressId?: string;
 };
 
 const STORAGE_KEY = 'themeal_phone_session';
@@ -40,6 +41,9 @@ export function loadPhoneSession(): PhoneSession | null {
     }
     if (isDeliveryStep(parsed.deliveryStep)) {
       session.deliveryStep = parsed.deliveryStep;
+    }
+    if (typeof parsed.selectedAddressId === 'string') {
+      session.selectedAddressId = parsed.selectedAddressId;
     }
 
     return session;
@@ -77,5 +81,6 @@ export function mergePhoneSession(
     isVerified: patch.isVerified ?? current?.isVerified ?? false,
     checkoutStep: patch.checkoutStep ?? current?.checkoutStep,
     deliveryStep: patch.deliveryStep ?? current?.deliveryStep,
+    selectedAddressId: patch.selectedAddressId ?? current?.selectedAddressId,
   };
 }

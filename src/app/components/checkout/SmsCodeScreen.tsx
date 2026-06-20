@@ -29,6 +29,7 @@ type SmsCodeScreenProps = {
   onClose?: () => void;
   onCodeChange?: (code: string) => void;
   onCodeComplete?: (code: string) => void;
+  onSkip?: () => void;
 };
 
 type SmsCodeMode = 'code' | 'phone';
@@ -105,6 +106,7 @@ export function SmsCodeScreen({
   onClose,
   onCodeChange,
   onCodeComplete,
+  onSkip,
 }: SmsCodeScreenProps) {
   const isModal = layout === 'modal';
   const [mode, setMode] = useState<SmsCodeMode>(() => getInitialMode(phone));
@@ -317,6 +319,20 @@ export function SmsCodeScreen({
               </Button>
             </div>
           )}
+
+          {isModal && onSkip ? (
+            <div className="mt-[16px] flex justify-center">
+              <Button
+                type="button"
+                variant="neutral"
+                size="small"
+                onClick={onSkip}
+                disabled={isVerifying}
+              >
+                Skip
+              </Button>
+            </div>
+          ) : null}
         </div>
       </div>
     </div>

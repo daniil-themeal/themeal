@@ -1,16 +1,7 @@
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  type CSSProperties,
-  type ReactNode,
-  type RefObject,
-} from 'react';
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 
 import { useEscapeLayer } from './escapeStack';
 import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
-import { useSwipeToDismiss } from './useSwipeToDismiss';
 import { Z_INDEX_TOKENS } from './zIndexTokens';
 
 export const MODAL_SHELL_EXIT_FALLBACK_MS = 260;
@@ -33,8 +24,6 @@ type ModalShellProps = {
   disableOverlayClick?: boolean;
   pointerEventsNoneWhenClosing?: boolean;
   onEscape?: () => boolean;
-  enableSwipeToDismiss?: boolean;
-  swipeScrollContainerRef?: RefObject<HTMLElement | null>;
 };
 
 export function useModalShell(onClose: () => void) {
@@ -106,27 +95,14 @@ export function ModalShell({
   disableOverlayClick = false,
   pointerEventsNoneWhenClosing = true,
   onEscape,
-  enableSwipeToDismiss = true,
-  swipeScrollContainerRef,
 }: ModalShellProps) {
-  const panelRef = useRef<HTMLDivElement>(null);
-  const overlayRef = useRef<HTMLDivElement>(null);
-
   const {
     isClosing,
+    isClosingRef,
     requestClose,
     resetCloseState,
     handlePanelAnimationEnd,
   } = useModalShell(onClose);
-
-  useSwipeToDismiss({
-    enabled: isOpen && enableSwipeToDismiss,
-    disabled: isClosing,
-    onDismiss: requestClose,
-    panelRef,
-    overlayRef: variant === 'bottom-sheet' ? overlayRef : undefined,
-    scrollContainerRef: swipeScrollContainerRef,
-  });
 
   useEscapeLayer(isOpen, zIndex, () => {
     if (onEscape?.()) return;
@@ -160,7 +136,6 @@ export function ModalShell({
     .join(' ');
   const panelChildren =
     typeof children === 'function' ? children(requestClose) : children;
-  const showSwipeHandle = variant === 'bottom-sheet';
 
   if (variant === 'fullscreen') {
     return (
@@ -189,7 +164,6 @@ export function ModalShell({
 
         <div className="relative z-[1] flex min-h-0 flex-1 flex-col sm:pointer-events-auto sm:min-h-full sm:flex sm:items-center sm:justify-center">
           <div
-            ref={panelRef}
             className={['min-h-0 flex-1 overflow-y-auto scrollbar-hide sm:flex-none', panelClasses]
               .filter(Boolean)
               .join(' ')}
@@ -217,7 +191,6 @@ export function ModalShell({
       >
         <div className="min-h-full sm:flex sm:items-center sm:justify-center">
           <div
-            ref={panelRef}
             className={panelClasses}
             style={panelStyle}
             onClick={(event) => event.stopPropagation()}
@@ -245,20 +218,17 @@ export function ModalShell({
       {...{ [SPACING_ROOT_ATTR]: '' }}
     >
       <div
-        ref={overlayRef}
         className={overlayClasses}
         onClick={disableOverlayClick ? undefined : requestClose}
       />
 
       <div
-        ref={panelRef}
         className={panelClasses}
         style={panelStyle}
         onClick={(event) => event.stopPropagation()}
         onAnimationEnd={handlePanelAnimationEnd}
         {...{ [SPACING_CONTENT_ATTR]: '' }}
       >
-        {showSwipeHandle ? <div aria-hidden="true" className="modal-swipe-handle" /> : null}
         {panelChildren}
       </div>
     </div>

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import type { CSSProperties, KeyboardEvent } from 'react';
 
+import { InputClearButton } from '../../common/InputClearButton';
 import { COLOR_TOKENS } from '../../common/colorTokens';
+import { getFieldSizeStyle } from '../../common/fieldSizeTokens';
 import { FONT_SIZE_TOKENS } from '../../common/fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../../common/textTrimTokens';
-
-import { ClearIcon } from './addressIcons';
 
 type AddressSearchInputProps = {
   value: string;
@@ -46,10 +46,15 @@ export function AddressSearchInput({
 }: AddressSearchInputProps) {
   const [isFocused, setIsFocused] = useState(false);
 
+  const showClearButton = Boolean(value) && isFocused;
+
   return (
     <div
-      className="flex h-[48px] items-center rounded-[8px] bg-[var(--address-search-bg)] px-[16px] ring-1 ring-[var(--address-search-ring)] focus-within:ring-2 focus-within:ring-[var(--address-search-focus-ring)]"
-      style={addressSearchInputStyle}
+      className={[
+        'flex h-[48px] items-center rounded-[8px] bg-[var(--address-search-bg)] pl-[16px] ring-1 ring-[var(--address-search-ring)] focus-within:ring-2 focus-within:ring-[var(--address-search-focus-ring)]',
+        showClearButton ? 'pr-0' : 'pr-[16px]',
+      ].join(' ')}
+      style={{ ...addressSearchInputStyle, ...getFieldSizeStyle('large') }}
     >
       <input
         type="text"
@@ -69,16 +74,12 @@ export function AddressSearchInput({
         ].join(' ')}
       />
 
-      {value && isFocused ? (
-        <button
-          type="button"
+      {showClearButton ? (
+        <InputClearButton
           onClick={onClear}
-          onMouseDown={(event) => event.preventDefault()}
-          className="ml-[12px] flex size-[24px] shrink-0 cursor-pointer items-center justify-center"
           aria-label="Clear address"
-        >
-          <ClearIcon />
-        </button>
+          className="ml-[8px]"
+        />
       ) : null}
     </div>
   );

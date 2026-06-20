@@ -246,7 +246,7 @@ export function CheckoutHeader({
           )}
         </div>
 
-        <div className="flex h-full flex-1 items-stretch justify-center px-[8px]">
+        <div className="flex h-full min-w-0 flex-1 items-stretch justify-center px-[8px]">
           {title ? (
             <p
               className={[
@@ -257,7 +257,7 @@ export function CheckoutHeader({
               {title}
             </p>
           ) : (
-            <div className="flex h-full items-center justify-center">
+            <div className="flex h-full min-w-0 items-center justify-center">
               <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
               {import.meta.env.DEV && onAuthDevModeChange ? (
                 <div className="hidden items-center md:flex">

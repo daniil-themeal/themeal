@@ -233,10 +233,7 @@ export function TextArea({
         />
 
         {showClearButton ? (
-          <InputClearButton
-            onClick={handleClear}
-            className="absolute top-0 right-0"
-          />
+          <InputClearButton onClick={handleClear} placement="corner" />
         ) : null}
       </div>
 

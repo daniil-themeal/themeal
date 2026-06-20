@@ -21,6 +21,7 @@ type CheckoutAuthModalProps = {
   isVerifying?: boolean;
   onCodeChange?: (code: string) => void;
   onCodeComplete?: (code: string) => void;
+  onSkip?: () => void;
 };
 
 const authModalStyle = {
@@ -37,6 +38,7 @@ export function CheckoutAuthModal({
   isVerifying = false,
   onCodeChange,
   onCodeComplete,
+  onSkip,
 }: CheckoutAuthModalProps) {
   return createPortal(
     <ModalShell
@@ -65,6 +67,7 @@ export function CheckoutAuthModal({
             isVerifying={isVerifying}
             onCodeChange={onCodeChange}
             onCodeComplete={onCodeComplete}
+            onSkip={onSkip}
           />
         </div>
       )}
