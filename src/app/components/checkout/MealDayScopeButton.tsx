@@ -1,7 +1,7 @@
 import type { MouseEvent } from 'react';
 
 import { Button, getButtonStyles } from '../common/Button';
-import { CheckIcon, XIcon } from '../common/icons';
+import { CheckIcon, PlusIcon, XIcon } from '../common/icons';
 import { COLOR_TOKENS } from '../common/colorTokens';
 
 type MealDayScopeButtonProps = {
@@ -33,16 +33,13 @@ export function MealDayScopeButton({
 }: MealDayScopeButtonProps) {
   const isDayToggle = dayShort != null && label == null;
 
-  const content =
-    label ??
-    (selected ? (
-      dayShort
-    ) : (
-      <span className="inline-flex items-center gap-[4px]">
-        <span>+</span>
-        <span>{dayShort}</span>
-      </span>
-    ));
+  const leftIcon = isDayToggle
+    ? selected
+      ? <SelectedDayIcon />
+      : <PlusIcon size={16} className="text-[var(--button-text)]" />
+    : undefined;
+
+  const content = label ?? dayShort;
 
   return (
     <Button
@@ -55,13 +52,13 @@ export function MealDayScopeButton({
       aria-pressed={selected}
       onClick={onClick}
       className="group"
-      leftIcon={isDayToggle && selected ? <SelectedDayIcon /> : undefined}
+      leftIcon={leftIcon}
       style={
         selected
           ? {
               ...getButtonStyles('primary', true),
               '--button-bg': COLOR_TOKENS.primary[50],
-              '--button-bg-hover': COLOR_TOKENS.primary[100],
+              '--button-bg-hover': COLOR_TOKENS.primary[75],
               '--button-border-hover': COLOR_TOKENS.primary[600],
             }
           : undefined

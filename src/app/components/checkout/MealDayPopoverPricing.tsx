@@ -28,16 +28,12 @@ const mealDayPopoverPricingStyle: MealDayPopoverPricingCssVariables = {
 type MealDayPopoverPricingProps = {
   actionCostAed: number;
   periodPrice: number;
-  mode?: 'add' | 'remove';
 };
 
 export function MealDayPopoverPricing({
   actionCostAed,
   periodPrice,
-  mode = 'add',
 }: MealDayPopoverPricingProps) {
-  const actionPrefix = mode === 'remove' ? '−' : '+';
-
   return (
     <div
       className="flex w-full min-w-0 flex-col gap-[8px]"
@@ -50,7 +46,7 @@ export function MealDayPopoverPricing({
 
         <div className="flex flex-wrap items-end justify-end gap-[5px]">
           <p className="font-sans text-[length:var(--today-total-price-fs)] font-bold leading-[150%] text-[var(--today-total-primary)]">
-            {actionPrefix}
+            +
           </p>
 
           <p className="font-sans text-[length:var(--today-total-price-fs)] font-bold leading-[150%] text-[var(--today-total-primary)]">

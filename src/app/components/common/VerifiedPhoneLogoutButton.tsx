@@ -18,6 +18,7 @@ export function VerifiedPhoneLogoutButton({
     <GhostButton
       size="small"
       variant="neutral"
+      fullWidth
       rightIcon={<LogOutIcon size={16} />}
       onClick={onClick}
       aria-label="Log out"

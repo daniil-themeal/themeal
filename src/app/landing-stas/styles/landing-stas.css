@@ -147,8 +147,9 @@ body {
   font-family:var(--font);
 }
 .landing-stas img { display:block; max-width:100%; }
-.landing-stas button { font-family:inherit; cursor:pointer; border:none; }
-.landing-stas :where(button:not(.btn)) { background:none; }
+.landing-stas button { font-family:inherit; cursor:pointer; }
+.landing-stas button:not(.ds-ghost-button) { border:none; }
+.landing-stas :where(button:not(.btn):not(.ds-ghost-button)) { background:none; }
 .landing-stas a { color:inherit; text-decoration:none; }
 .landing-stas ::selection { background:var(--brand-soft-2); color:var(--plum-800); }
 
@@ -262,6 +263,8 @@ body {
 .lead-section .lead-title {
   flex-wrap: wrap;
   align-items: center;
+  column-gap: 4px;
+  row-gap: var(--space-8);
 }
 .lead-section .lead-title-wa {
   display:inline-flex;

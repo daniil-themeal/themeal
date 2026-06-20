@@ -43,6 +43,7 @@ type GhostButtonProps = {
   children: ReactNode;
   variant?: ButtonVariant;
   size?: GhostButtonSize;
+  fullWidth?: boolean;
   className?: string;
 } & GhostButtonIconProps &
   ButtonHTMLAttributes<HTMLButtonElement>;
@@ -51,6 +52,7 @@ export function GhostButton({
   children,
   variant = 'neutral',
   size = 'small',
+  fullWidth = false,
   leftIcon,
   rightIcon,
   className = '',
@@ -76,7 +78,10 @@ export function GhostButton({
       }}
       className={[
         ghostButtonVisualClassName,
-        'inline-flex items-center justify-center gap-[4px]',
+        'ds-ghost-button items-center gap-[4px]',
+        fullWidth
+          ? 'flex w-full justify-between'
+          : 'inline-flex justify-center',
         sizeStyles.paddingClassName,
         className,
       ]

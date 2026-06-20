@@ -595,7 +595,7 @@ function SuggestionRow({
         <p
           className={[
             TEXT_TRIM_CLASS_NAME,
-            'min-w-0 font-sans text-[length:var(--delivery-address-title-font-size)] leading-[125%] text-[var(--delivery-address-text)]',
+            'min-w-0 font-sans text-[16px] leading-[125%] text-[var(--delivery-address-text)]',
             strong || isActive ? 'font-bold' : 'font-semibold',
           ].join(' ')}
         >

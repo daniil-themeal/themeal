@@ -34,44 +34,46 @@ export function PaymentFailedScreen({
       <PaymentResultHeader activeTab="failed" onTabChange={onTabChange} onClose={onClose} />
 
       <div className={CHECKOUT_STEP_PAGE_LAYOUT.container}>
-        <div className={CHECKOUT_STEP_PAGE_LAYOUT.header}>
-          <div className="flex flex-col items-center gap-[24px]">
-            <div className="size-[56px] shrink-0">
-              <PaymentFailedIcon />
-            </div>
+        <div className={CHECKOUT_STEP_PAGE_LAYOUT.resultHero}>
+          <div className={CHECKOUT_STEP_PAGE_LAYOUT.header}>
+            <div className="flex flex-col items-center gap-[24px]">
+              <div className="size-[56px] shrink-0">
+                <PaymentFailedIcon />
+              </div>
 
-            <div className="flex w-full flex-col items-center gap-[16px] text-center">
-              <h1 className={CHECKOUT_STEP_PAGE_LAYOUT.headerTitle}>Payment Unsuccessful</h1>
-              <p
-                className={[CHECKOUT_STEP_PAGE_LAYOUT.headerSubtitle, 'max-w-[560px]'].join(' ')}
-              >
-                {message}
-              </p>
+              <div className="flex w-full flex-col items-center gap-[16px] text-center">
+                <h1 className={CHECKOUT_STEP_PAGE_LAYOUT.headerTitle}>Payment Unsuccessful</h1>
+                <p
+                  className={[CHECKOUT_STEP_PAGE_LAYOUT.headerSubtitle, 'max-w-[560px]'].join(' ')}
+                >
+                  {message}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mx-auto inline-grid grid-cols-2 gap-[12px]">
-          <Button
-            type="button"
-            variant="primary"
-            size="medium"
-            fullWidth
-            className="whitespace-nowrap"
-            onClick={onRepeatPayment}
-          >
-            Repeat payment
-          </Button>
-          <Button
-            type="button"
-            variant="neutral"
-            size="medium"
-            fullWidth
-            className="whitespace-nowrap"
-            onClick={onChangePaymentMethod}
-          >
-            Change payment method
-          </Button>
+          <div className="mx-auto grid w-full max-w-[560px] grid-cols-1 gap-[12px] min-[520px]:grid-cols-2">
+            <Button
+              type="button"
+              variant="primary"
+              size="medium"
+              fullWidth
+              className="whitespace-nowrap"
+              onClick={onRepeatPayment}
+            >
+              Repeat payment
+            </Button>
+            <Button
+              type="button"
+              variant="neutral"
+              size="medium"
+              fullWidth
+              className="whitespace-nowrap"
+              onClick={onChangePaymentMethod}
+            >
+              Change payment method
+            </Button>
+          </div>
         </div>
 
         <SuccessContactSection showFollowUs={false} />

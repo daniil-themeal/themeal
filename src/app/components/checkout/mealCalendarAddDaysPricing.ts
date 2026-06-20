@@ -8,6 +8,15 @@ import {
   type Plan,
 } from '../../data/checkoutPricing';
 
+import {
+  getWeeklyExtraMealDayKeys,
+  getWeeklyRemovableExtraMealDayKeysForWeekday,
+  SATURDAY,
+  SUNDAY,
+} from './mealCalendarUtils';
+
+export type MealDayTargetWeekday = typeof SATURDAY | typeof SUNDAY;
+
 export type ExtraMealDaysQuote = {
   extraDaysLabel: string;
   periodPrice: number;
@@ -68,6 +77,140 @@ export function getExtraMealDaysQuote({
     periodPrice: base.periodPrice + extraMealDayCount * base.pricePerDay,
     pricePerDay: base.pricePerDay,
     actionCostAed: Math.abs(dayDelta) * base.pricePerDay,
+  };
+}
+
+export function getMealDayWeekdayDelta(
+  selectedWeekdays: ReadonlySet<MealDayTargetWeekday>,
+  addedWeekdays: ReadonlySet<MealDayTargetWeekday>,
+): { toAdd: MealDayTargetWeekday[]; toRemove: MealDayTargetWeekday[] } {
+  const toAdd: MealDayTargetWeekday[] = [];
+  const toRemove: MealDayTargetWeekday[] = [];
+
+  for (const weekday of selectedWeekdays) {
+    if (!addedWeekdays.has(weekday)) {
+      toAdd.push(weekday);
+    }
+  }
+
+  for (const weekday of addedWeekdays) {
+    if (!selectedWeekdays.has(weekday)) {
+      toRemove.push(weekday);
+    }
+  }
+
+  return { toAdd, toRemove };
+}
+
+export function hasMealDayWeekdayDelta(
+  selectedWeekdays: ReadonlySet<MealDayTargetWeekday>,
+  addedWeekdays: ReadonlySet<MealDayTargetWeekday>,
+): boolean {
+  const { toAdd, toRemove } = getMealDayWeekdayDelta(selectedWeekdays, addedWeekdays);
+
+  return toAdd.length > 0 || toRemove.length > 0;
+}
+
+export function getMealDayChangeQuote({
+  plan,
+  days,
+  duration,
+  persons = 1,
+  existingKeys,
+  selectedWeekdays,
+  addedWeekdays,
+  dayOption,
+  startDate,
+  endDate,
+}: {
+  plan: Plan;
+  days: DayOption;
+  duration: Duration;
+  persons?: number;
+  existingKeys: ReadonlySet<string>;
+  selectedWeekdays: ReadonlySet<MealDayTargetWeekday>;
+  addedWeekdays: ReadonlySet<MealDayTargetWeekday>;
+  dayOption: DayOption;
+  startDate: Date;
+  endDate: Date;
+}): {
+  keysToAdd: string[];
+  keysToRemove: string[];
+} | null {
+  const { toAdd, toRemove } = getMealDayWeekdayDelta(selectedWeekdays, addedWeekdays);
+
+  if (toAdd.length === 0 && toRemove.length === 0) {
+    return null;
+  }
+
+  const keysToAdd = toAdd.flatMap((targetWeekday) =>
+    getWeeklyExtraMealDayKeys({
+      startDate,
+      endDate,
+      dayOption,
+      targetWeekday,
+    }),
+  );
+  const keysToRemove = toRemove.flatMap((targetWeekday) =>
+    getWeeklyRemovableExtraMealDayKeysForWeekday({
+      startDate,
+      endDate,
+      dayOption,
+      extraMealDayKeys: existingKeys,
+      targetWeekday,
+    }),
+  );
+
+  return { keysToAdd, keysToRemove };
+}
+
+export function getMealDayDisplayQuote({
+  plan,
+  days,
+  duration,
+  persons = 1,
+  selectedWeekdays,
+  addedWeekdays,
+  dayOption,
+  startDate,
+  endDate,
+}: {
+  plan: Plan;
+  days: DayOption;
+  duration: Duration;
+  persons?: number;
+  selectedWeekdays: ReadonlySet<MealDayTargetWeekday>;
+  addedWeekdays: ReadonlySet<MealDayTargetWeekday>;
+  dayOption: DayOption;
+  startDate: Date;
+  endDate: Date;
+}): ExtraMealDaysQuote | null {
+  if (selectedWeekdays.size === 0) {
+    return null;
+  }
+
+  const hasDelta = hasMealDayWeekdayDelta(selectedWeekdays, addedWeekdays);
+
+  if (!hasDelta && selectedWeekdays.size < 2) {
+    return null;
+  }
+
+  const keysForRemaining = [...selectedWeekdays].flatMap((targetWeekday) =>
+    getWeeklyExtraMealDayKeys({
+      startDate,
+      endDate,
+      dayOption,
+      targetWeekday,
+    }),
+  );
+  const extraMealDayCount = keysForRemaining.length;
+  const base = getCheckoutPrice({ plan, days, duration, persons });
+
+  return {
+    extraDaysLabel: formatExtraDaysLabel(extraMealDayCount),
+    periodPrice: base.periodPrice + extraMealDayCount * base.pricePerDay,
+    pricePerDay: base.pricePerDay,
+    actionCostAed: extraMealDayCount * base.pricePerDay,
   };
 }
 

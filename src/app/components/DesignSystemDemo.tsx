@@ -1893,12 +1893,10 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
             <div className="mt-[16px] flex flex-col gap-[8px]">
               <DemoSubheading>Verified session footer</DemoSubheading>
               <div className="flex flex-col gap-[8px] rounded-[16px] bg-[var(--demo-card-bg)] px-[20px] py-[16px]">
-                <div className="flex justify-center">
-                  <VerifiedPhoneLogoutButton
-                    phone="50 123 4567"
-                    onClick={() => undefined}
-                  />
-                </div>
+                <VerifiedPhoneLogoutButton
+                  phone="50 123 4567"
+                  onClick={() => undefined}
+                />
                 <Button type="button" variant="primary" size="medium" fullWidth>
                   Continue to Delivery
                 </Button>

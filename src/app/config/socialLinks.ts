@@ -16,3 +16,10 @@ export const landingFooterSocials = [
   ['whatsapp', socialLinks.whatsapp],
   ['telegram', socialLinks.telegram],
 ] as const;
+
+export const landingFollowSocials = [
+  ['facebook', socialLinks.facebook],
+  ['instagram', socialLinks.instagram],
+  ['tiktok', socialLinks.tiktok],
+  ['youtube', socialLinks.youtube],
+] as const;

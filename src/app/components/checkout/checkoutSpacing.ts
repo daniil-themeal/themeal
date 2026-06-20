@@ -15,6 +15,10 @@ export const CHECKOUT_SELECTOR_CARD_PADDING_CLAMP =
 export const CHECKOUT_SECTION_GAP_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 4 / 448), 24px)';
 
+/** Promo Activate button horizontal padding — scales with InputButtonRow @container width (12px at 260px → 16px at 400px). */
+export const PROMO_ACTIVATE_BUTTON_PADDING_X_CLAMP =
+  'clamp(12px, calc(12px + (100cqw - 260px) * 4 / 140), 16px)';
+
 /** Vertical gap between major sections on delivery details card (variant B). */
 export const CHECKOUT_DELIVERY_SECTION_GAP_CLAMP =
   'clamp(24px, calc(24px + (100vw - 20rem) * 8 / 448), 32px)';

@@ -10,6 +10,7 @@ export function createFontSizeClamp(
 }
 
 export const FONT_SIZE_CLAMP_12_14 = createFontSizeClamp(12, 14);
+export const FONT_SIZE_CLAMP_12_16 = createFontSizeClamp(12, 16);
 export const FONT_SIZE_CLAMP_14_16 = createFontSizeClamp(14, 16);
 export const FONT_SIZE_CLAMP_16_20 = createFontSizeClamp(16, 20);
 export const FONT_SIZE_CLAMP_18_20 = createFontSizeClamp(18, 20);

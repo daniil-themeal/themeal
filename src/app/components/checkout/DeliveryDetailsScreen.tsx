@@ -27,13 +27,7 @@ import {
   type DeliveryDetailsFieldErrors,
 } from './deliveryValidation';
 import { MealCalendar } from './MealCalendar';
-import {
-  addDays,
-  getSubscriptionDays,
-  getUpcomingDeliveryDates,
-  getWeeklyExtraMealDayKeys,
-  getWeeklyRemovableExtraMealDayKeys,
-} from './mealCalendarUtils';
+import { getUpcomingDeliveryDates } from './mealCalendarUtils';
 
 const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
 
@@ -218,34 +212,18 @@ export function DeliveryDetailsScreen({
             plan={plan}
             persons={persons}
             extraMealDayKeys={new Set(extraMealDayKeys)}
-            onAddMealDay={({ targetWeekdays }) => {
-              const endDate = addDays(deliveryDetails.selectedDate, getSubscriptionDays(duration));
-              const newKeys = targetWeekdays.flatMap((targetWeekday) =>
-                getWeeklyExtraMealDayKeys({
-                  startDate: deliveryDetails.selectedDate,
-                  endDate,
-                  dayOption: days,
-                  targetWeekday,
-                }),
-              );
+            onMealDayKeysChange={({ keysToAdd, keysToRemove }) => {
+              const next = new Set(extraMealDayKeys);
 
-              onExtraMealDayKeysChange([...new Set([...extraMealDayKeys, ...newKeys])]);
-            }}
-            onRemoveMealDay={({ anchorDate, daysPerWeek }) => {
-              const endDate = addDays(deliveryDetails.selectedDate, getSubscriptionDays(duration));
-              const keysToRemove = getWeeklyRemovableExtraMealDayKeys({
-                anchorDate,
-                startDate: deliveryDetails.selectedDate,
-                endDate,
-                dayOption: days,
-                extraMealDayKeys: new Set(extraMealDayKeys),
-                daysPerWeek,
-              });
-              const keysToRemoveSet = new Set(keysToRemove);
+              for (const key of keysToAdd) {
+                next.add(key);
+              }
 
-              onExtraMealDayKeysChange(
-                extraMealDayKeys.filter((key) => !keysToRemoveSet.has(key)),
-              );
+              for (const key of keysToRemove) {
+                next.delete(key);
+              }
+
+              onExtraMealDayKeysChange([...next]);
             }}
           />
 

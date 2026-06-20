@@ -3,6 +3,7 @@ import { useEffect, useState, type CSSProperties } from 'react';
 import { getPromoCodeDiscount, validatePromoCode, VALID_PROMO_CODES } from '../../config/promoCodes';
 import { formatAed } from '../../data/checkoutPricing';
 import { PromoCodeEstimateHint } from './PromoCodeEstimateHint';
+import { PROMO_ACTIVATE_BUTTON_PADDING_X_CLAMP } from './checkoutSpacing';
 import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FIELD_SIZE_CONFIG } from '../common/fieldSizeTokens';
@@ -221,7 +222,9 @@ export function CheckoutPromoCode({
   }
 
   const activateButtonClassName =
-    'w-full min-w-0 @[280px]:w-auto @[280px]:shrink-0 @[280px]:px-[12px]';
+    variant === 'summary'
+      ? 'w-auto shrink-0'
+      : 'w-full min-w-0 @[400px]:w-auto @[400px]:shrink-0';
 
   const activateAction = (
     <Button
@@ -230,6 +233,7 @@ export function CheckoutPromoCode({
       size="medium"
       loading={isActivating}
       disabled={!draftCode.trim()}
+      style={{ paddingInline: PROMO_ACTIVATE_BUTTON_PADDING_X_CLAMP }}
       className={activateButtonClassName}
       onClick={() => void handleActivate()}
     >
@@ -239,6 +243,8 @@ export function CheckoutPromoCode({
 
   const inputRow = (
     <InputButtonRow
+      layoutMode={variant === 'summary' ? 'row' : 'responsive'}
+      rowBreakpoint={400}
       align="center"
       error={error}
       actionClassName={showEstimateHint ? 'gap-[8px]' : undefined}

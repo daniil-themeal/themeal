@@ -5,6 +5,7 @@ import { FONT_SIZE_TOKENS } from './fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
 type RowBreakpoint = 280 | 400;
+type InputButtonRowLayoutMode = 'responsive' | 'row';
 
 const ROW_LAYOUT_CLASSES: Record<
   RowBreakpoint,
@@ -46,6 +47,7 @@ type InputButtonRowProps = {
   action: ReactNode;
   error?: ReactNode;
   align?: 'start' | 'end' | 'center';
+  layoutMode?: InputButtonRowLayoutMode;
   rowBreakpoint?: RowBreakpoint;
   className?: string;
   actionClassName?: string;
@@ -56,34 +58,57 @@ export function InputButtonRow({
   action,
   error,
   align = 'end',
+  layoutMode = 'responsive',
   rowBreakpoint = 280,
   className = '',
   actionClassName = '',
 }: InputButtonRowProps) {
   const rowLayout = ROW_LAYOUT_CLASSES[rowBreakpoint];
-  const rowAlignClassName =
-    align === 'start'
+  const isFixedRow = layoutMode === 'row';
+  const rowAlignClassName = isFixedRow
+    ? align === 'start'
+      ? 'items-start'
+      : align === 'center'
+        ? 'items-center'
+        : 'items-end'
+    : align === 'start'
       ? rowLayout.itemsStart
       : align === 'center'
         ? rowLayout.itemsCenter
         : rowLayout.itemsEnd;
   const inputWrapperClassName = [
     'min-w-0 flex-1',
-    align === 'center' ? rowLayout.selfCenter : '',
+    isFixedRow ? 'transition-[flex-basis,max-width] duration-200 ease-out' : '',
+    !isFixedRow && align === 'center' ? rowLayout.selfCenter : '',
   ]
     .filter(Boolean)
     .join(' ');
-  const actionWrapperClassName = [
-    rowLayout.actionWidth,
-    align === 'start'
-      ? rowLayout.actionStart
-      : align === 'center'
-        ? rowLayout.actionCenter
-        : '',
-    actionClassName,
-  ]
-    .filter(Boolean)
-    .join(' ');
+  const actionWrapperClassName = isFixedRow
+    ? [
+        'w-auto shrink-0',
+        align === 'start'
+          ? 'self-start'
+          : align === 'center'
+            ? 'flex items-center h-[48px] self-center'
+            : '',
+        actionClassName,
+      ]
+        .filter(Boolean)
+        .join(' ')
+    : [
+        rowLayout.actionWidth,
+        align === 'start'
+          ? rowLayout.actionStart
+          : align === 'center'
+            ? rowLayout.actionCenter
+            : '',
+        actionClassName,
+      ]
+        .filter(Boolean)
+        .join(' ');
+  const rowClassName = isFixedRow
+    ? ['flex w-full flex-row gap-[12px]', rowAlignClassName].join(' ')
+    : ['flex w-full flex-col gap-[12px]', rowLayout.flexRow, rowAlignClassName].join(' ');
 
   return (
     <div
@@ -95,13 +120,7 @@ export function InputButtonRow({
         .filter(Boolean)
         .join(' ')}
     >
-      <div
-        className={[
-          'flex w-full flex-col gap-[12px]',
-          rowLayout.flexRow,
-          rowAlignClassName,
-        ].join(' ')}
-      >
+      <div className={rowClassName}>
         <div className={inputWrapperClassName}>{input}</div>
         <div className={actionWrapperClassName}>
           {action}

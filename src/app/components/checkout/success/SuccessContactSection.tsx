@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react';
 
-import { socialLinks } from '../../../config/socialLinks';
+import { landingFollowSocials, socialLinks } from '../../../config/socialLinks';
+import { Social } from '../../../landing-stas/components/icons';
 import { COLOR_TOKENS } from '../../common/colorTokens';
-import { FacebookIcon, InstagramIcon, YoutubeIcon } from '../../common/icons/feather';
 import { TEXT_TRIM_CLASS_NAME } from '../../common/textTrimTokens';
 
 import { CHECKOUT_STEP_SECTION_PX } from '../checkoutStepPageLayoutTokens';
@@ -74,14 +74,6 @@ function TelegramIcon() {
   );
 }
 
-function TikTokIcon() {
-  return (
-    <svg className="block size-full" fill="none" viewBox="0 0 40 40" aria-hidden>
-      <path d={svgPaths.padbdf00} fill="currentColor" />
-    </svg>
-  );
-}
-
 function ContactIconButton({
   label,
   children,
@@ -108,35 +100,6 @@ function ContactIconButton({
     </button>
   );
 }
-
-function SocialIconButton({
-  label,
-  children,
-  href,
-}: {
-  label: string;
-  children: ReactNode;
-  href?: string;
-}) {
-  const className =
-    'flex size-[48px] shrink-0 items-center justify-center transition-opacity hover:opacity-70';
-
-  if (href) {
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={className} aria-label={label}>
-        <div className="flex size-[40px] items-center justify-center">{children}</div>
-      </a>
-    );
-  }
-
-  return (
-    <button type="button" className={className} aria-label={label}>
-      <div className="flex size-[40px] items-center justify-center">{children}</div>
-    </button>
-  );
-}
-
-const socialIconColor = COLOR_TOKENS.neutral[200];
 
 type SuccessContactSectionProps = {
   showFollowUs?: boolean;
@@ -183,31 +146,19 @@ export function SuccessContactSection({ showFollowUs = true }: SuccessContactSec
             Follow us
           </p>
 
-          <div className={`flex w-full items-center justify-center gap-[16px] ${CHECKOUT_STEP_SECTION_PX}`}>
-            <SocialIconButton label="Facebook" href={socialLinks.facebook}>
-              <FacebookIcon size={40} className="text-[var(--success-social-icon)]" />
-            </SocialIconButton>
+          <div className={`flex w-full flex-wrap items-center justify-center gap-[16px] ${CHECKOUT_STEP_SECTION_PX}`}>
+            {landingFollowSocials.map(([key, href]) => {
+              const Icon = Social[key];
 
-            <SocialIconButton label="TikTok" href={socialLinks.tiktok}>
-              <div className="size-[40px] text-[var(--success-social-icon)]">
-                <TikTokIcon />
-              </div>
-            </SocialIconButton>
-
-            <SocialIconButton label="Instagram" href={socialLinks.instagram}>
-              <InstagramIcon size={40} className="text-[var(--success-social-icon)]" />
-            </SocialIconButton>
-
-            <SocialIconButton label="YouTube" href={socialLinks.youtube}>
-              <YoutubeIcon size={40} className="text-[var(--success-social-icon)]" />
-            </SocialIconButton>
+              return (
+                <ContactIconButton key={key} label={key} href={href}>
+                  <Icon size={24} />
+                </ContactIconButton>
+              );
+            })}
           </div>
         </section>
       ) : null}
     </>
   );
 }
-
-export const successContactSectionStyle = {
-  '--success-social-icon': socialIconColor,
-} as const;

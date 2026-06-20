@@ -1,7 +1,13 @@
 import { useCallback, useMemo, useState, type MouseEvent, type ReactElement } from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 
+import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import { Button, getButtonStyles } from '../common/Button';
+import {
+  getMealDayChangeQuote,
+  getMealDayDisplayQuote,
+  type MealDayTargetWeekday,
+} from './mealCalendarAddDaysPricing';
 import { MealDayPopoverPricing } from './MealDayPopoverPricing';
 import { MealDayScopeButton } from './MealDayScopeButton';
 import { SATURDAY, SUNDAY } from './mealCalendarUtils';
@@ -11,88 +17,138 @@ import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 
-import type { ExtraMealDaysQuote } from './mealCalendarAddDaysPricing';
+export type { MealDayTargetWeekday };
 
-export type AddMealDayTargetWeekday = typeof SATURDAY | typeof SUNDAY;
-
-type AddMealDayPopoverProps = {
-  quoteSat: ExtraMealDaysQuote | null;
-  quoteSun: ExtraMealDaysQuote | null;
-  quoteBoth: ExtraMealDaysQuote | null;
+type ManageMealDayPopoverProps = {
+  plan: Plan;
+  duration: Duration;
+  dayOption: DayOption;
+  startDate: Date;
+  endDate: Date;
+  persons?: number;
+  extraMealDayKeys: ReadonlySet<string>;
   canAddSat: boolean;
   canAddSun: boolean;
-  onAdd: (targetWeekdays: AddMealDayTargetWeekday[]) => void;
+  addedWeekdays: ReadonlySet<MealDayTargetWeekday>;
+  onConfirm: (params: { keysToAdd: string[]; keysToRemove: string[] }) => void;
+  onOpenChange?: (open: boolean) => void;
   children: ReactElement;
 };
 
-export function AddMealDayPopover({
-  quoteSat,
-  quoteSun,
-  quoteBoth,
+export function ManageMealDayPopover({
+  plan,
+  duration,
+  dayOption,
+  startDate,
+  endDate,
+  persons = 1,
+  extraMealDayKeys,
   canAddSat,
   canAddSun,
-  onAdd,
+  addedWeekdays,
+  onConfirm,
+  onOpenChange,
   children,
-}: AddMealDayPopoverProps) {
+}: ManageMealDayPopoverProps) {
   const [open, setOpen] = useState(false);
-  const [selectedWeekdays, setSelectedWeekdays] = useState<Set<AddMealDayTargetWeekday>>(
+  const [selectedWeekdays, setSelectedWeekdays] = useState<Set<MealDayTargetWeekday>>(
     () => new Set(),
   );
 
-  const handleOpenChange = useCallback((nextOpen: boolean) => {
-    if (nextOpen) {
-      setSelectedWeekdays(new Set());
-    }
-    setOpen(nextOpen);
-  }, []);
+  const handleOpenChange = useCallback(
+    (nextOpen: boolean) => {
+      if (nextOpen) {
+        setSelectedWeekdays(new Set(addedWeekdays));
+      }
+      setOpen(nextOpen);
+      onOpenChange?.(nextOpen);
+    },
+    [addedWeekdays, onOpenChange],
+  );
 
   const handleSelect =
-    (targetWeekday: AddMealDayTargetWeekday) => (event: MouseEvent<HTMLButtonElement>) => {
+    (targetWeekday: MealDayTargetWeekday) => (event: MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
       setSelectedWeekdays((current) => {
         const next = new Set(current);
+
         if (next.has(targetWeekday)) {
           next.delete(targetWeekday);
         } else {
           next.add(targetWeekday);
         }
+
         return next;
       });
     };
 
-  const previewQuote = useMemo(() => {
-    if (selectedWeekdays.size === 0) {
-      return null;
-    }
+  const applyDelta = useMemo(
+    () =>
+      getMealDayChangeQuote({
+        plan,
+        days: dayOption,
+        duration,
+        persons,
+        existingKeys: extraMealDayKeys,
+        selectedWeekdays,
+        addedWeekdays,
+        dayOption,
+        startDate,
+        endDate,
+      }),
+    [
+      addedWeekdays,
+      dayOption,
+      duration,
+      endDate,
+      extraMealDayKeys,
+      persons,
+      plan,
+      selectedWeekdays,
+      startDate,
+    ],
+  );
 
-    const hasSat = selectedWeekdays.has(SATURDAY);
-    const hasSun = selectedWeekdays.has(SUNDAY);
-
-    if (hasSat && hasSun) {
-      return quoteBoth;
-    }
-
-    if (hasSat) {
-      return quoteSat;
-    }
-
-    if (hasSun) {
-      return quoteSun;
-    }
-
-    return null;
-  }, [quoteBoth, quoteSat, quoteSun, selectedWeekdays]);
+  const displayQuote = useMemo(
+    () =>
+      getMealDayDisplayQuote({
+        plan,
+        days: dayOption,
+        duration,
+        persons,
+        selectedWeekdays,
+        addedWeekdays,
+        dayOption,
+        startDate,
+        endDate,
+      }),
+    [
+      addedWeekdays,
+      dayOption,
+      duration,
+      endDate,
+      persons,
+      plan,
+      selectedWeekdays,
+      startDate,
+    ],
+  );
 
   const handleConfirm = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
-      if (selectedWeekdays.size === 0) {
+
+      if (!applyDelta) {
         return;
       }
-      onAdd([...selectedWeekdays]);
-      setOpen(false);
+
+      onConfirm({
+        keysToAdd: applyDelta.keysToAdd,
+        keysToRemove: applyDelta.keysToRemove,
+      });
+      handleOpenChange(false);
     },
-    [onAdd, selectedWeekdays],
+    [applyDelta, handleOpenChange, onConfirm],
   );
 
   return (
@@ -128,7 +184,7 @@ export function AddMealDayPopover({
                 ].join(' ')}
                 style={{
                   color: COLOR_TOKENS.neutral[900],
-                  ['--add-meal-day-title-fs' as string]: FONT_SIZE_TOKENS[14],
+                  ['--add-meal-day-title-fs' as string]: FONT_SIZE_TOKENS[16],
                 }}
               >
                 Add meal day
@@ -138,23 +194,22 @@ export function AddMealDayPopover({
                 <MealDayScopeButton
                   dayShort="Sat"
                   selected={selectedWeekdays.has(SATURDAY)}
-                  disabled={!canAddSat}
+                  disabled={!canAddSat && !addedWeekdays.has(SATURDAY)}
                   onClick={handleSelect(SATURDAY)}
                 />
 
                 <MealDayScopeButton
                   dayShort="Sun"
                   selected={selectedWeekdays.has(SUNDAY)}
-                  disabled={!canAddSun}
+                  disabled={!canAddSun && !addedWeekdays.has(SUNDAY)}
                   onClick={handleSelect(SUNDAY)}
                 />
               </div>
 
-              {previewQuote ? (
+              {displayQuote ? (
                 <MealDayPopoverPricing
-                  actionCostAed={previewQuote.actionCostAed}
-                  periodPrice={previewQuote.periodPrice}
-                  mode="add"
+                  actionCostAed={displayQuote.actionCostAed}
+                  periodPrice={displayQuote.periodPrice}
                 />
               ) : null}
 
@@ -163,7 +218,7 @@ export function AddMealDayPopover({
                 variant="primary"
                 size="small"
                 fullWidth
-                disabled={selectedWeekdays.size === 0}
+                disabled={applyDelta === null}
                 onClick={handleConfirm}
                 style={{
                   ...getButtonStyles('primary', false),

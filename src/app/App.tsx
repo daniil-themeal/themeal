@@ -1,7 +1,14 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Route, Routes } from 'react-router';
 import LandingStasPage from './landing-stas/LandingStasPage';
+import { CheckoutAuthModal } from './components/checkout/CheckoutAuthModal';
 import { CheckoutPage } from './components/checkout/CheckoutPage';
+import { formatUaePhoneInput, normalizeUaePhone } from './components/checkout/phoneValidation';
+import {
+  isValidTestSmsCode,
+  SMS_CODE_ERROR,
+  SMS_CODE_SUCCESS_HOLD_MS,
+} from './components/checkout/smsCodeValidation';
 import DesignSystemDemo from './components/DesignSystemDemo';
 import PrivacyPolicyPage from './legal/PrivacyPolicyPage';
 import TermsAndConditionsPage from './legal/TermsAndConditionsPage';
@@ -35,6 +42,11 @@ function resumeCheckoutStep(session: PhoneSession): InitialCheckoutStep {
   return step;
 }
 
+function displayPhoneFromNormalized(normalized: string): string {
+  const digits = normalized.replace(/\D/g, '').slice(-9);
+  return formatUaePhoneInput(digits);
+}
+
 function HomePage() {
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [designSystemOpen, setDesignSystemOpen] = useState(false);
@@ -45,6 +57,19 @@ function HomePage() {
     useState<InitialDeliveryStep>('address');
   const [checkoutInitialPhone, setCheckoutInitialPhone] = useState<string | undefined>();
   const [initialIsVerified, setInitialIsVerified] = useState(false);
+  const [leadAuthModalOpen, setLeadAuthModalOpen] = useState(() => {
+    const session = loadPhoneSession();
+    return Boolean(session?.phone && !session.isVerified);
+  });
+  const [leadAuthPhone, setLeadAuthPhone] = useState(() => {
+    const session = loadPhoneSession();
+    return session?.phone && !session.isVerified
+      ? displayPhoneFromNormalized(session.phone)
+      : '';
+  });
+  const [leadSmsError, setLeadSmsError] = useState<string | undefined>();
+  const [leadIsSmsVerifying, setLeadIsSmsVerifying] = useState(false);
+  const leadSmsVerifyTimerRef = useRef<number | null>(null);
 
   const handleSessionUpdate = useCallback((session: PhoneSession) => {
     setPhoneSession(session);
@@ -53,6 +78,20 @@ function HomePage() {
       setInitialIsVerified(true);
     }
   }, []);
+
+  const clearLeadSmsVerifyTimer = useCallback(() => {
+    if (leadSmsVerifyTimerRef.current !== null) {
+      window.clearTimeout(leadSmsVerifyTimerRef.current);
+      leadSmsVerifyTimerRef.current = null;
+    }
+  }, []);
+
+  const closeLeadAuthModal = useCallback(() => {
+    clearLeadSmsVerifyTimer();
+    setLeadIsSmsVerifying(false);
+    setLeadSmsError(undefined);
+    setLeadAuthModalOpen(false);
+  }, [clearLeadSmsVerifyTimer]);
 
   const openCheckoutAt = useCallback(
     (
@@ -104,6 +143,10 @@ function HomePage() {
         deliveryStep: 'address',
       });
       handleSessionUpdate(next);
+      setLeadAuthPhone(displayPhoneFromNormalized(phone));
+      setLeadSmsError(undefined);
+      setLeadIsSmsVerifying(false);
+      setLeadAuthModalOpen(true);
     },
     [handleSessionUpdate, phoneSession],
   );
@@ -121,20 +164,116 @@ function HomePage() {
     [handleSessionUpdate, phoneSession],
   );
 
+  const handleLeadSmsContinue = useCallback(() => {
+    const normalized = normalizeUaePhone(leadAuthPhone);
+    if (normalized) {
+      handleLeadSmsVerified(normalized);
+    }
+    setLeadIsSmsVerifying(false);
+    setLeadAuthModalOpen(false);
+  }, [handleLeadSmsVerified, leadAuthPhone]);
+
+  const handleLeadSmsCodeComplete = useCallback(
+    (code: string) => {
+      if (leadIsSmsVerifying) return;
+
+      if (!isValidTestSmsCode(code)) {
+        setLeadSmsError(SMS_CODE_ERROR);
+        return;
+      }
+
+      setLeadSmsError(undefined);
+      setLeadIsSmsVerifying(true);
+      clearLeadSmsVerifyTimer();
+
+      leadSmsVerifyTimerRef.current = window.setTimeout(() => {
+        leadSmsVerifyTimerRef.current = null;
+        handleLeadSmsContinue();
+      }, SMS_CODE_SUCCESS_HOLD_MS);
+    },
+    [clearLeadSmsVerifyTimer, handleLeadSmsContinue, leadIsSmsVerifying],
+  );
+
+  const handleLeadSmsCodeChange = useCallback(() => {
+    if (leadSmsError) {
+      setLeadSmsError(undefined);
+    }
+  }, [leadSmsError]);
+
+  const handleLeadPhoneChange = useCallback((value: string) => {
+    setLeadAuthPhone(formatUaePhoneInput(value));
+  }, []);
+
+  const handleLeadPhoneContinueFromModal = useCallback(
+    (normalizedPhone: string) => {
+      setLeadAuthPhone(displayPhoneFromNormalized(normalizedPhone));
+      const next = mergePhoneSession(phoneSession, {
+        phone: normalizedPhone,
+        isVerified: false,
+        checkoutStep: 'plan',
+        deliveryStep: 'address',
+      });
+      handleSessionUpdate(next);
+    },
+    [handleSessionUpdate, phoneSession],
+  );
+
+  const handleLeadAuthModalSkip = useCallback(() => {
+    if (!import.meta.env.DEV) return;
+
+    clearLeadSmsVerifyTimer();
+    setLeadIsSmsVerifying(false);
+    setLeadSmsError(undefined);
+    setLeadAuthModalOpen(false);
+
+    const nextPhone = leadAuthPhone || formatUaePhoneInput('501234567');
+    if (!leadAuthPhone) {
+      setLeadAuthPhone(nextPhone);
+    }
+
+    const next = mergePhoneSession(phoneSession, {
+      phone: normalizeUaePhone(nextPhone) ?? nextPhone,
+      isVerified: false,
+      checkoutStep: 'plan',
+      deliveryStep: 'address',
+    });
+    handleSessionUpdate(next);
+  }, [clearLeadSmsVerifyTimer, handleSessionUpdate, leadAuthPhone, phoneSession]);
+
   const pendingPhone =
     phoneSession && !phoneSession.isVerified ? phoneSession.phone : undefined;
 
-  const resetPhoneSession = useCallback((options?: { closeCheckout?: boolean }) => {
-    clearPhoneSession();
-    setPhoneSession(null);
-    if (options?.closeCheckout ?? true) {
-      setCheckoutOpen(false);
+  const resetPhoneSession = useCallback(
+    (options?: { closeCheckout?: boolean }) => {
+      clearLeadSmsVerifyTimer();
+      setLeadAuthModalOpen(false);
+      setLeadAuthPhone('');
+      setLeadSmsError(undefined);
+      setLeadIsSmsVerifying(false);
+      clearPhoneSession();
+      setPhoneSession(null);
+      if (options?.closeCheckout ?? true) {
+        setCheckoutOpen(false);
+      }
+      setInitialIsVerified(false);
+      setCheckoutInitialPhone(undefined);
+      setInitialCheckoutStep('plan');
+      setInitialDeliveryStep('address');
+    },
+    [clearLeadSmsVerifyTimer],
+  );
+
+  useEffect(() => {
+    if (checkoutOpen) {
+      setLeadAuthModalOpen(false);
     }
-    setInitialIsVerified(false);
-    setCheckoutInitialPhone(undefined);
-    setInitialCheckoutStep('plan');
-    setInitialDeliveryStep('address');
-  }, []);
+  }, [checkoutOpen]);
+
+  useEffect(() => {
+    return () => {
+      clearLeadSmsVerifyTimer();
+    };
+  }, [clearLeadSmsVerifyTimer]);
 
   const closeCheckout = () => {
     setCheckoutOpen(false);
@@ -157,13 +296,26 @@ function HomePage() {
       <LandingStasPage
         onOrderClick={openCheckout}
         onPhoneSubmit={handleLeadPhoneSubmit}
-        onSmsVerified={handleLeadSmsVerified}
         onContinueClick={openCheckoutResume}
         onResetPhone={resetPhoneSession}
         onDesignSystemClick={openDesignSystem}
         checkoutOpen={checkoutOpen}
         isPhoneVerified={phoneSession?.isVerified ?? false}
+        verifiedPhone={phoneSession?.isVerified ? phoneSession.phone : undefined}
         pendingPhone={pendingPhone}
+      />
+
+      <CheckoutAuthModal
+        isOpen={leadAuthModalOpen && !checkoutOpen}
+        onClose={closeLeadAuthModal}
+        phone={leadAuthPhone}
+        onPhoneChange={handleLeadPhoneChange}
+        onPhoneContinue={handleLeadPhoneContinueFromModal}
+        error={leadSmsError}
+        isVerifying={leadIsSmsVerifying}
+        onCodeChange={handleLeadSmsCodeChange}
+        onCodeComplete={handleLeadSmsCodeComplete}
+        onSkip={import.meta.env.DEV ? handleLeadAuthModalSkip : undefined}
       />
 
       {/* BACKLOG: full-page checkout вместо overlay — docs/backlog/checkout-fullpage.md */}

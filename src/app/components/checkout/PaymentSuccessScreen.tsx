@@ -12,10 +12,9 @@ import {
 import { CHECKOUT_FONT_CLAMP_25_31 } from './checkoutSpacing';
 import type { PaymentResultTab } from './PaymentResultHeader';
 import { PaymentResultHeader } from './PaymentResultHeader';
-import { MealCalendarPreview } from './MealCalendar';
+import { MealCalendar } from './MealCalendar';
 import {
   SuccessContactSection,
-  successContactSectionStyle,
 } from './success/SuccessContactSection';
 import {
   SuccessRuleIcon,
@@ -99,7 +98,7 @@ function PaymentSuccessIcon() {
 
 function SuccessRuleRow({ iconBg, iconKey, title, description }: SuccessRule) {
   return (
-    <div className="flex w-full items-start gap-[20px]">
+    <div className="flex w-full items-start gap-[16px]">
       <div className="relative size-[48px] shrink-0">
         <svg className="absolute inset-0 block size-full" fill="none" viewBox="0 0 48 48" aria-hidden>
           <circle cx="24" cy="24" fill={iconBg} r="24" />
@@ -147,38 +146,40 @@ export function PaymentSuccessScreen({
       className={CHECKOUT_STEP_PAGE_LAYOUT.page}
       style={{
         ...CHECKOUT_STEP_PAGE_VARS,
-        ...successContactSectionStyle,
         '--checkout-success-rules-title-fs': CHECKOUT_FONT_CLAMP_25_31,
       }}
     >
       <PaymentResultHeader activeTab="success" onTabChange={onTabChange} onClose={onClose} />
 
       <div className={CHECKOUT_STEP_PAGE_LAYOUT.container}>
-        <div className={CHECKOUT_STEP_PAGE_LAYOUT.header}>
-          <div className="flex flex-col items-center gap-[24px]">
-            <div className="size-[56px] shrink-0">
-              <PaymentSuccessIcon />
-            </div>
+        <div className={CHECKOUT_STEP_PAGE_LAYOUT.resultHero}>
+          <div className={CHECKOUT_STEP_PAGE_LAYOUT.header}>
+            <div className="flex flex-col items-center gap-[24px]">
+              <div className="size-[56px] shrink-0">
+                <PaymentSuccessIcon />
+              </div>
 
-            <div className="flex w-full flex-col items-center gap-[16px] text-center">
-              <h1 className={CHECKOUT_STEP_PAGE_LAYOUT.headerTitle}>Payment successful!</h1>
-              <p className={CHECKOUT_STEP_PAGE_LAYOUT.headerSubtitle}>
-                Thank you for choosing us!
-              </p>
+              <div className="flex w-full flex-col items-center gap-[16px] text-center">
+                <h1 className={CHECKOUT_STEP_PAGE_LAYOUT.headerTitle}>Payment successful!</h1>
+                <p className={CHECKOUT_STEP_PAGE_LAYOUT.headerSubtitle}>
+                  Thank you for choosing us!
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="relative z-[1] mx-auto w-full max-w-[380px]">
-          <Button type="button" variant="primary" size="medium" fullWidth onClick={onGoToMain}>
-            Go to main page
-          </Button>
+          <div className="relative z-[1] mx-auto w-full max-w-[380px]">
+            <Button type="button" variant="primary" size="medium" fullWidth onClick={onGoToMain}>
+              Go to main page
+            </Button>
+          </div>
         </div>
 
         <div className={`relative z-0 ${CHECKOUT_STEP_PAGE_LAYOUT.card}`}>
           <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSection} ${CHECKOUT_STEP_SECTION_PX}`}>
-            <MealCalendarPreview
-              startDate={startDate}
+            <MealCalendar
+              mode="preview"
+              selectedDate={startDate}
               duration={duration}
               dayOption={days}
               extraMealDayKeys={new Set(extraMealDayKeys)}

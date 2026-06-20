@@ -87,6 +87,7 @@ export const CHECKOUT_STEP_PAGE_LAYOUT = {
   container: `mx-auto flex w-full flex-col md:py-[120px] ${headerToCardGap}`,
   header:
     'mx-auto flex h-fit w-full max-w-[688px] flex-col gap-[12px] bg-[var(--checkout-step-surface)] pt-[length:var(--checkout-step-header-pt)] text-center md:bg-transparent md:pt-0',
+  resultHero: `mx-auto flex w-full max-w-[688px] flex-col gap-[24px] ${CHECKOUT_STEP_SECTION_PX}`,
   headerTitle: [
     TEXT_TRIM_FIT_CLASS_NAME,
     'font-sans text-[length:var(--checkout-step-title-fs)] font-bold leading-[130%] tracking-[-0.64px] text-[var(--checkout-step-title-color)]',

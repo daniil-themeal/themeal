@@ -455,9 +455,7 @@ export function OrderSummary({
 
             <div className={['mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[8px]', orderSummarySectionPx].join(' ')}>
               {isPhoneVerified && phone && onResetPhone ? (
-                <div className="flex justify-center">
-                  <VerifiedPhoneLogoutButton phone={phone} onClick={onResetPhone} />
-                </div>
+                <VerifiedPhoneLogoutButton phone={phone} onClick={onResetPhone} />
               ) : null}
 
               <Button type="button" variant="primary" size="medium" fullWidth onClick={onOrder}>

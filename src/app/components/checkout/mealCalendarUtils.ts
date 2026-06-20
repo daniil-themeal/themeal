@@ -246,6 +246,59 @@ export function getWeeklyExtraMealDayKeys({
   return keys;
 }
 
+export function isExtraMealWeekdayFullyAdded({
+  startDate,
+  endDate,
+  dayOption,
+  extraMealDayKeys,
+  targetWeekday,
+}: {
+  startDate: Date;
+  endDate: Date;
+  dayOption: DayOption;
+  extraMealDayKeys?: ReadonlySet<string>;
+  targetWeekday: number;
+}): boolean {
+  if (!extraMealDayKeys?.size) {
+    return false;
+  }
+
+  const expectedKeys = getWeeklyExtraMealDayKeys({
+    startDate,
+    endDate,
+    dayOption,
+    targetWeekday,
+  });
+
+  if (expectedKeys.length === 0) {
+    return false;
+  }
+
+  return expectedKeys.every((key) => extraMealDayKeys.has(key));
+}
+
+export function getActiveExtraMealWeekdays({
+  startDate,
+  endDate,
+  dayOption,
+  extraMealDayKeys,
+}: {
+  startDate: Date;
+  endDate: Date;
+  dayOption: DayOption;
+  extraMealDayKeys?: ReadonlySet<string>;
+}): number[] {
+  return getAddableWeekdays(dayOption).filter((targetWeekday) =>
+    isExtraMealWeekdayFullyAdded({
+      startDate,
+      endDate,
+      dayOption,
+      extraMealDayKeys,
+      targetWeekday,
+    }),
+  );
+}
+
 export function isRemovableExtraMealDayCell({
   date,
   startDate,
@@ -264,6 +317,41 @@ export function isRemovableExtraMealDayCell({
     !isMealDay(date, dayOption) &&
     (extraMealDayKeys?.has(getMealDayKey(date)) ?? false)
   );
+}
+
+export function getWeeklyRemovableExtraMealDayKeysForWeekday({
+  startDate,
+  endDate,
+  dayOption,
+  extraMealDayKeys,
+  targetWeekday,
+}: {
+  startDate: Date;
+  endDate: Date;
+  dayOption: DayOption;
+  extraMealDayKeys: ReadonlySet<string>;
+  targetWeekday: number;
+}): string[] {
+  const keys: string[] = [];
+  const cursor = new Date(startDate);
+
+  while (cursor < endDate) {
+    const dayOfWeek = cursor.getDay();
+    const key = getMealDayKey(cursor);
+
+    if (
+      dayOfWeek === targetWeekday &&
+      isInPeriod(cursor, startDate, endDate) &&
+      !isMealDay(cursor, dayOption) &&
+      extraMealDayKeys.has(key)
+    ) {
+      keys.push(key);
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return keys;
 }
 
 export function getWeeklyRemovableExtraMealDayKeys({
