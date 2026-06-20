@@ -82,8 +82,8 @@ const smsCodeScreenStyle: SmsCodeScreenCssVariables = {
   '--sms-code-primary': COLOR_TOKENS.primary[500],
   '--sms-code-primary-hover': COLOR_TOKENS.primary[600],
   '--sms-code-danger': COLOR_TOKENS.danger[500],
-  '--sms-code-digit-bg': COLOR_TOKENS.neutral[75],
-  '--sms-code-digit-active-bg': COLOR_TOKENS.neutral[100],
+  '--sms-code-digit-bg': COLOR_TOKENS.neutral[50],
+  '--sms-code-digit-active-bg': COLOR_TOKENS.neutral[75],
   '--sms-code-digit-success-bg': COLOR_TOKENS.primary[500],
   '--sms-code-digit-success-text': COLOR_TOKENS.base.white,
   '--sms-code-digit-ring': COLOR_TOKENS.neutral[200],
@@ -179,7 +179,7 @@ export function SmsCodeScreen({
     ? [
         'flex w-full flex-col',
         showModalHeader
-          ? 'p-[length:var(--checkout-card-padding)] md:p-[length:var(--meal-detail-content-p)]'
+          ? 'p-[length:var(--checkout-card-padding)] sm:p-[length:var(--meal-detail-content-p)]'
           : '',
       ]
         .filter(Boolean)
@@ -192,7 +192,9 @@ export function SmsCodeScreen({
 
   const codeSectionMt = isModal ? (showModalHeader ? '' : 'mt-[24px]') : 'mt-[32px]';
   const phoneSectionMt = isModal ? (showModalHeader ? '' : 'mt-[24px]') : 'mt-[32px]';
-  const resendMt = isModal ? 'mt-[20px]' : 'mt-[28px]';
+  const codeActionsMt = isModal ? 'mt-[40px]' : 'mt-[56px]';
+  const codeActionTextClassName =
+    'text-center font-sans text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-muted)]';
   const smsCodeAutoFocusDelay =
     isModal && openedDirectlyInCodeModeRef.current ? MODAL_SHELL_ENTER_ANIMATION_MS : 0;
 
@@ -200,7 +202,7 @@ export function SmsCodeScreen({
     <div className={rootClassName} style={smsCodeScreenStyle}>
       {showModalHeader ? (
         <div className="flex h-[56px] shrink-0 items-center gap-[8px] border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
-          <p className="min-w-0 flex-1 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px]">
+          <p className="min-w-0 flex-1 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] sm:pl-[20px]">
             {screenTitle}
           </p>
 
@@ -248,30 +250,32 @@ export function SmsCodeScreen({
                 </p>
               ) : null}
 
-              <p className={`${resendMt} text-center font-sans text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-muted)]`}>
-                <button
-                  type="button"
-                  disabled={isVerifying}
-                  className="cursor-pointer font-sans font-bold text-[var(--sms-code-primary)] disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  Send again
-                </button>{' '}
-                the code after 60 seconds
-              </p>
+              <div className={`${codeActionsMt} flex w-full flex-col`}>
+                <p className={codeActionTextClassName}>
+                  <button
+                    type="button"
+                    disabled={isVerifying}
+                    className="cursor-pointer font-sans font-bold text-[var(--sms-code-primary)] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Send again
+                  </button>{' '}
+                  the code after 60 seconds
+                </p>
 
-              <p className="mt-[12px] text-center font-sans text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-muted)]">
-                <button
-                  type="button"
-                  onClick={handleChangeNumberClick}
-                  disabled={isVerifying}
-                  className="cursor-pointer font-sans font-bold text-[var(--sms-code-primary)] disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  Change number
-                </button>{' '}
-                <span className="font-sans font-bold">
-                  {formattedPhone}
-                </span>
-              </p>
+                <p className={`mt-[20px] ${codeActionTextClassName}`}>
+                  <button
+                    type="button"
+                    onClick={handleChangeNumberClick}
+                    disabled={isVerifying}
+                    className="cursor-pointer font-sans font-bold text-[var(--sms-code-primary)] disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    Change number
+                  </button>{' '}
+                  <span className="font-sans font-bold">
+                    {formattedPhone}
+                  </span>
+                </p>
+              </div>
             </>
           ) : isModal ? (
             <InputButtonRow
@@ -284,7 +288,7 @@ export function SmsCodeScreen({
                   value={phone}
                   onChange={handlePhoneChange}
                   error={phoneError}
-                  className="w-full"
+                  className="w-full sm:[&>div:first-child>div:last-child]:min-w-[176px]"
                 />
               }
               action={

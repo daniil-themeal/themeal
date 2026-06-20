@@ -20,7 +20,7 @@ type ModalShellProps = {
   panelClassName?: string;
   panelStyle?: CSSProperties;
   /** Bottom sheet only: keep panel on the bottom edge at all breakpoints. */
-  sheetVerticalAlign?: 'bottom' | 'center-on-md';
+  sheetVerticalAlign?: 'bottom' | 'center-on-sm' | 'center-on-md';
   disableOverlayClick?: boolean;
   pointerEventsNoneWhenClosing?: boolean;
   onEscape?: () => boolean;
@@ -208,7 +208,11 @@ export function ModalShell({
     <div
       className={[
         'fixed inset-0 flex justify-center',
-        sheetVerticalAlign === 'bottom' ? 'items-end' : 'items-end md:items-center',
+        sheetVerticalAlign === 'bottom'
+          ? 'items-end'
+          : sheetVerticalAlign === 'center-on-sm'
+            ? 'items-end sm:items-center'
+            : 'items-end md:items-center',
         isClosing && pointerEventsNoneWhenClosing ? 'pointer-events-none' : '',
         rootClassName,
       ]

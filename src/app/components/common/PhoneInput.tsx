@@ -7,6 +7,7 @@ import { UaeFlag } from './UaeFlag';
 type PhoneInputCssVariables = CSSProperties & {
   '--phone-input-bg': string;
   '--phone-input-border': string;
+  '--phone-input-focus-border': string;
   '--phone-input-text': string;
   '--phone-input-placeholder': string;
   '--phone-input-error': string;
@@ -16,6 +17,7 @@ type PhoneInputCssVariables = CSSProperties & {
 const phoneInputStyle: PhoneInputCssVariables = {
   '--phone-input-bg': COLOR_TOKENS.neutral[50],
   '--phone-input-border': COLOR_TOKENS.neutral[200],
+  '--phone-input-focus-border': COLOR_TOKENS.neutral[300],
   '--phone-input-text': COLOR_TOKENS.neutral[900],
   '--phone-input-placeholder': COLOR_TOKENS.neutral[300],
   '--phone-input-error': COLOR_TOKENS.danger[400],
@@ -59,7 +61,10 @@ export function PhoneInput({
         <div
           className={[
             'flex h-[48px] flex-1 items-center rounded-[8px] border bg-[var(--phone-input-bg)] px-[16px]',
-            hasError ? 'border-[var(--phone-input-error)]' : 'border-[var(--phone-input-border)]',
+            'transition-colors',
+            hasError
+              ? 'border-[var(--phone-input-error)]'
+              : 'border-[var(--phone-input-border)] focus-within:border-[var(--phone-input-focus-border)]',
           ]
             .filter(Boolean)
             .join(' ')}

@@ -176,11 +176,11 @@ export function CheckoutPromoCode({
               backgroundColor: COLOR_TOKENS.warning[100],
             }}
           >
-            <span className="shrink-0" style={{ color: COLOR_TOKENS.warning[500] }}>
+            <span className="flex shrink-0 items-center" style={{ color: COLOR_TOKENS.warning[500] }}>
               <RadioCheckIcon size={20} checkColor={COLOR_TOKENS.warning[800]} />
             </span>
             <span
-              className="font-sans font-semibold leading-normal text-[var(--promo-code-text)]"
+              className="min-w-0 truncate font-sans font-semibold leading-normal text-[var(--promo-code-text)]"
               style={{ fontSize: FIELD_SIZE_CONFIG.large.fontSize }}
             >
               {appliedCode}
@@ -207,7 +207,14 @@ export function CheckoutPromoCode({
               onClick={handleRemove}
             />
           </div>
-          {showEstimateHint ? <PromoCodeEstimateHint /> : null}
+          {showEstimateHint ? (
+            <span
+              className="flex shrink-0 items-center"
+              style={{ height: FIELD_SIZE_CONFIG.large.heightPx }}
+            >
+              <PromoCodeEstimateHint />
+            </span>
+          ) : null}
         </div>
       </div>
     );

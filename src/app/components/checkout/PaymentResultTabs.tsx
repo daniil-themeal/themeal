@@ -15,8 +15,7 @@ const TABS: { id: PaymentResultTab; emoji: string; ariaLabel: string }[] = [
 ];
 
 const tabStyle = {
-  '--result-tab-active-bg': COLOR_TOKENS.primary[500],
-  '--result-tab-active-text': COLOR_TOKENS.base.white,
+  '--result-tab-active-bg': COLOR_TOKENS.neutral[75],
   '--result-tab-inactive-text': COLOR_TOKENS.neutral[500],
   '--result-tab-hover-bg': COLOR_TOKENS.neutral[50],
 } as CSSProperties;

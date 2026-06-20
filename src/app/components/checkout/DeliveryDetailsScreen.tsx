@@ -218,15 +218,16 @@ export function DeliveryDetailsScreen({
             plan={plan}
             persons={persons}
             extraMealDayKeys={new Set(extraMealDayKeys)}
-            onAddMealDay={({ anchorDate, daysPerWeek }) => {
+            onAddMealDay={({ targetWeekdays }) => {
               const endDate = addDays(deliveryDetails.selectedDate, getSubscriptionDays(duration));
-              const newKeys = getWeeklyExtraMealDayKeys({
-                anchorDate,
-                startDate: deliveryDetails.selectedDate,
-                endDate,
-                dayOption: days,
-                daysPerWeek,
-              });
+              const newKeys = targetWeekdays.flatMap((targetWeekday) =>
+                getWeeklyExtraMealDayKeys({
+                  startDate: deliveryDetails.selectedDate,
+                  endDate,
+                  dayOption: days,
+                  targetWeekday,
+                }),
+              );
 
               onExtraMealDayKeysChange([...new Set([...extraMealDayKeys, ...newKeys])]);
             }}

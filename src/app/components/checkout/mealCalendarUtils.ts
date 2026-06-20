@@ -6,6 +6,9 @@ export { MONTH_ABBR };
 
 export const WEEKDAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 
+export const SATURDAY = 6;
+export const SUNDAY = 0;
+
 // DatePill: w-[56px] + gap-[8px]
 const DATE_PILL_SCROLL_STEP = 64;
 
@@ -213,22 +216,16 @@ export function getAddableWeekdays(dayOption: DayOption): number[] {
 }
 
 export function getWeeklyExtraMealDayKeys({
-  anchorDate,
   startDate,
   endDate,
   dayOption,
-  daysPerWeek,
+  targetWeekday,
 }: {
-  anchorDate: Date;
   startDate: Date;
   endDate: Date;
   dayOption: DayOption;
-  daysPerWeek: 1 | 2;
+  targetWeekday: number;
 }): string[] {
-  const addableWeekdays = getAddableWeekdays(dayOption);
-  const anchorWeekday = anchorDate.getDay();
-  const targetWeekdays =
-    daysPerWeek === 1 ? [anchorWeekday] : addableWeekdays;
   const keys: string[] = [];
   const cursor = new Date(startDate);
 
@@ -236,7 +233,7 @@ export function getWeeklyExtraMealDayKeys({
     const dayOfWeek = cursor.getDay();
 
     if (
-      targetWeekdays.includes(dayOfWeek) &&
+      dayOfWeek === targetWeekday &&
       isInPeriod(cursor, startDate, endDate) &&
       !isMealDay(cursor, dayOption)
     ) {

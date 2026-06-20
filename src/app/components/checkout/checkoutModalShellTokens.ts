@@ -11,8 +11,8 @@ export const CHECKOUT_MODAL_SHELL_INNER_CLASSNAME =
 
 export const CHECKOUT_AUTH_MODAL_PANEL_CLASSNAME = [
   'relative flex w-full max-w-none flex-col overflow-hidden rounded-t-[20px] bg-[var(--meal-detail-card-bg)] pb-[env(safe-area-inset-bottom)] shadow-2xl',
-  'md:mx-[24px] md:max-w-[clamp(480px,calc(480px+(100vw-48rem)*80/448),560px)] md:rounded-[20px]',
+  'sm:mx-[24px] sm:max-w-[clamp(496px,calc(496px+(100vw-48rem)*80/448),576px)] sm:rounded-[20px]',
 ].join(' ');
 
 export const CHECKOUT_AUTH_MODAL_INNER_CLASSNAME =
-  'flex min-h-0 flex-1 flex-col overflow-hidden bg-[var(--meal-detail-card-bg)] md:rounded-[20px]';
+  'flex min-h-0 flex-1 flex-col overflow-hidden bg-[var(--meal-detail-card-bg)] sm:rounded-[20px]';

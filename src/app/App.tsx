@@ -24,9 +24,13 @@ type InitialCheckoutStep =
 type InitialDeliveryStep = 'address' | 'details';
 
 function resumeCheckoutStep(session: PhoneSession): InitialCheckoutStep {
+  if (!session.isVerified) {
+    return session.checkoutStep === 'verification' ? 'verification' : 'plan';
+  }
+
   const step = session.checkoutStep;
   if (!step || step === 'verification') {
-    return session.isVerified ? 'delivery' : 'plan';
+    return 'delivery';
   }
   return step;
 }

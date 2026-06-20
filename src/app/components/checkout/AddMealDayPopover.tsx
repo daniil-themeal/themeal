@@ -1,9 +1,10 @@
-import { useCallback, useState, type MouseEvent, type ReactElement } from 'react';
+import { useCallback, useMemo, useState, type MouseEvent, type ReactElement } from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
 
 import { Button, getButtonStyles } from '../common/Button';
 import { MealDayPopoverPricing } from './MealDayPopoverPricing';
 import { MealDayScopeButton } from './MealDayScopeButton';
+import { SATURDAY, SUNDAY } from './mealCalendarUtils';
 import { BORDER_RADIUS_TOKENS } from '../common/borderRadiusTokens';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
@@ -12,53 +13,87 @@ import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 
 import type { ExtraMealDaysQuote } from './mealCalendarAddDaysPricing';
 
+export type AddMealDayTargetWeekday = typeof SATURDAY | typeof SUNDAY;
+
 type AddMealDayPopoverProps = {
-  quotePlus1: ExtraMealDaysQuote;
-  quotePlus2: ExtraMealDaysQuote;
-  canAddTwo: boolean;
-  onAdd: (daysPerWeek: 1 | 2) => void;
+  quoteSat: ExtraMealDaysQuote | null;
+  quoteSun: ExtraMealDaysQuote | null;
+  quoteBoth: ExtraMealDaysQuote | null;
+  canAddSat: boolean;
+  canAddSun: boolean;
+  onAdd: (targetWeekdays: AddMealDayTargetWeekday[]) => void;
   children: ReactElement;
 };
 
 export function AddMealDayPopover({
-  quotePlus1,
-  quotePlus2,
-  canAddTwo,
+  quoteSat,
+  quoteSun,
+  quoteBoth,
+  canAddSat,
+  canAddSun,
   onAdd,
   children,
 }: AddMealDayPopoverProps) {
   const [open, setOpen] = useState(false);
-  const [selectedDaysPerWeek, setSelectedDaysPerWeek] = useState<1 | 2 | null>(null);
+  const [selectedWeekdays, setSelectedWeekdays] = useState<Set<AddMealDayTargetWeekday>>(
+    () => new Set(),
+  );
 
   const handleOpenChange = useCallback((nextOpen: boolean) => {
     if (nextOpen) {
-      setSelectedDaysPerWeek(null);
+      setSelectedWeekdays(new Set());
     }
     setOpen(nextOpen);
   }, []);
 
-  const handleSelect = useCallback(
-    (daysPerWeek: 1 | 2) => (event: MouseEvent<HTMLButtonElement>) => {
+  const handleSelect =
+    (targetWeekday: AddMealDayTargetWeekday) => (event: MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
-      setSelectedDaysPerWeek(daysPerWeek);
-    },
-    [],
-  );
+      setSelectedWeekdays((current) => {
+        const next = new Set(current);
+        if (next.has(targetWeekday)) {
+          next.delete(targetWeekday);
+        } else {
+          next.add(targetWeekday);
+        }
+        return next;
+      });
+    };
+
+  const previewQuote = useMemo(() => {
+    if (selectedWeekdays.size === 0) {
+      return null;
+    }
+
+    const hasSat = selectedWeekdays.has(SATURDAY);
+    const hasSun = selectedWeekdays.has(SUNDAY);
+
+    if (hasSat && hasSun) {
+      return quoteBoth;
+    }
+
+    if (hasSat) {
+      return quoteSat;
+    }
+
+    if (hasSun) {
+      return quoteSun;
+    }
+
+    return null;
+  }, [quoteBoth, quoteSat, quoteSun, selectedWeekdays]);
 
   const handleConfirm = useCallback(
     (event: MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
-      if (selectedDaysPerWeek === null) {
+      if (selectedWeekdays.size === 0) {
         return;
       }
-      onAdd(selectedDaysPerWeek);
+      onAdd([...selectedWeekdays]);
       setOpen(false);
     },
-    [onAdd, selectedDaysPerWeek],
+    [onAdd, selectedWeekdays],
   );
-
-  const previewQuote =
-    selectedDaysPerWeek === 2 ? quotePlus2 : selectedDaysPerWeek === 1 ? quotePlus1 : null;
 
   return (
     <PopoverPrimitive.Root open={open} onOpenChange={handleOpenChange}>
@@ -101,16 +136,17 @@ export function AddMealDayPopover({
 
               <div className="flex gap-[8px]">
                 <MealDayScopeButton
-                  label="+1"
-                  selected={selectedDaysPerWeek === 1}
-                  onClick={handleSelect(1)}
+                  dayShort="Sat"
+                  selected={selectedWeekdays.has(SATURDAY)}
+                  disabled={!canAddSat}
+                  onClick={handleSelect(SATURDAY)}
                 />
 
                 <MealDayScopeButton
-                  label="+2"
-                  selected={selectedDaysPerWeek === 2}
-                  disabled={!canAddTwo}
-                  onClick={handleSelect(2)}
+                  dayShort="Sun"
+                  selected={selectedWeekdays.has(SUNDAY)}
+                  disabled={!canAddSun}
+                  onClick={handleSelect(SUNDAY)}
                 />
               </div>
 
@@ -127,7 +163,7 @@ export function AddMealDayPopover({
                 variant="primary"
                 size="small"
                 fullWidth
-                disabled={selectedDaysPerWeek === null}
+                disabled={selectedWeekdays.size === 0}
                 onClick={handleConfirm}
                 style={{
                   ...getButtonStyles('primary', false),

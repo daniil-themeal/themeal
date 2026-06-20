@@ -45,6 +45,7 @@ export function CheckoutAuthModal({
       isOpen={isOpen}
       onClose={onClose}
       variant="bottom-sheet"
+      sheetVerticalAlign="center-on-sm"
       zIndex={Z_INDEX_TOKENS.modal}
       rootClassName={CHECKOUT_ROOT_CLASSNAME}
       panelClassName={CHECKOUT_AUTH_MODAL_PANEL_CLASSNAME}

@@ -34,7 +34,9 @@ import {
   isSameDay,
   isSubscriptionMealDay,
   MONTH_ABBR,
+  SATURDAY,
   scrollDatePillsOnEdgeClick,
+  SUNDAY,
   WEEKDAY_SHORT,
   type MealDayRadiusPosition,
 } from './mealCalendarUtils';
@@ -80,7 +82,7 @@ type CalendarCellProps = {
   plan?: Plan;
   persons?: number;
   duration?: Duration;
-  onAddMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
+  onAddMealDay?: (params: { targetWeekdays: Array<typeof SATURDAY | typeof SUNDAY> }) => void;
   onRemoveMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
 };
 
@@ -128,51 +130,65 @@ function CalendarCell({
   const showMinus = removable && isHovered;
 
   const canToggleTwo = useMemo(() => getAddableWeekdays(dayOption).length >= 2, [dayOption]);
+  const addableWeekdays = useMemo(() => getAddableWeekdays(dayOption), [dayOption]);
+  const canAddSat = addableWeekdays.includes(SATURDAY);
+  const canAddSun = addableWeekdays.includes(SUNDAY);
 
-  const { quotePlus1, quotePlus2 } = useMemo(() => {
+  const { quoteSat, quoteSun, quoteBoth } = useMemo(() => {
     if (!addable || !plan || !duration) {
-      return { quotePlus1: null, quotePlus2: null };
+      return { quoteSat: null, quoteSun: null, quoteBoth: null };
     }
 
     const existingKeys = extraMealDayKeys ?? new Set<string>();
-    const newKeysPlus1 = getWeeklyExtraMealDayKeys({
-      anchorDate: date,
-      startDate,
-      endDate,
-      dayOption,
-      daysPerWeek: 1,
-    });
-    const newKeysPlus2 = getWeeklyExtraMealDayKeys({
-      anchorDate: date,
-      startDate,
-      endDate,
-      dayOption,
-      daysPerWeek: 2,
-    });
-
     const previousExtraMealDayCount = existingKeys.size;
 
+    const getQuoteForWeekday = (targetWeekday: typeof SATURDAY | typeof SUNDAY) => {
+      const newKeys = getWeeklyExtraMealDayKeys({
+        startDate,
+        endDate,
+        dayOption,
+        targetWeekday,
+      });
+
+      return getExtraMealDaysQuote({
+        plan,
+        days: dayOption,
+        duration,
+        persons,
+        previousExtraMealDayCount,
+        extraMealDayCount: getProjectedExtraMealDayCount(existingKeys, newKeys),
+      });
+    };
+
+    const newKeysSat = canAddSat
+      ? getWeeklyExtraMealDayKeys({ startDate, endDate, dayOption, targetWeekday: SATURDAY })
+      : [];
+    const newKeysSun = canAddSun
+      ? getWeeklyExtraMealDayKeys({ startDate, endDate, dayOption, targetWeekday: SUNDAY })
+      : [];
+
     return {
-      quotePlus1: getExtraMealDaysQuote({
-        plan,
-        days: dayOption,
-        duration,
-        persons,
-        previousExtraMealDayCount,
-        extraMealDayCount: getProjectedExtraMealDayCount(existingKeys, newKeysPlus1),
-      }),
-      quotePlus2: getExtraMealDaysQuote({
-        plan,
-        days: dayOption,
-        duration,
-        persons,
-        previousExtraMealDayCount,
-        extraMealDayCount: getProjectedExtraMealDayCount(existingKeys, newKeysPlus2),
-      }),
+      quoteSat: canAddSat ? getQuoteForWeekday(SATURDAY) : null,
+      quoteSun: canAddSun ? getQuoteForWeekday(SUNDAY) : null,
+      quoteBoth:
+        canAddSat && canAddSun
+          ? getExtraMealDaysQuote({
+              plan,
+              days: dayOption,
+              duration,
+              persons,
+              previousExtraMealDayCount,
+              extraMealDayCount: getProjectedExtraMealDayCount(existingKeys, [
+                ...newKeysSat,
+                ...newKeysSun,
+              ]),
+            })
+          : null,
     };
   }, [
     addable,
-    date,
+    canAddSat,
+    canAddSun,
     dayOption,
     duration,
     endDate,
@@ -303,13 +319,15 @@ function CalendarCell({
     </div>
   );
 
-  if (addable && quotePlus1 && quotePlus2) {
+  if (addable && (quoteSat || quoteSun)) {
     return (
       <AddMealDayPopover
-        quotePlus1={quotePlus1}
-        quotePlus2={quotePlus2}
-        canAddTwo={canToggleTwo}
-        onAdd={(daysPerWeek) => onAddMealDay({ anchorDate: date, daysPerWeek })}
+        quoteSat={quoteSat}
+        quoteSun={quoteSun}
+        quoteBoth={quoteBoth}
+        canAddSat={canAddSat}
+        canAddSun={canAddSun}
+        onAdd={(targetWeekdays) => onAddMealDay({ targetWeekdays })}
       >
         {cellContent}
       </AddMealDayPopover>
@@ -340,7 +358,7 @@ type MealCalendarGridProps = {
   enableAddMealDays?: boolean;
   plan?: Plan;
   persons?: number;
-  onAddMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
+  onAddMealDay?: (params: { targetWeekdays: Array<typeof SATURDAY | typeof SUNDAY> }) => void;
   onRemoveMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
 };
 
@@ -545,7 +563,7 @@ export type MealCalendarProps = {
   plan?: Plan;
   persons?: number;
   extraMealDayKeys?: ReadonlySet<string>;
-  onAddMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
+  onAddMealDay?: (params: { targetWeekdays: Array<typeof SATURDAY | typeof SUNDAY> }) => void;
   onRemoveMealDay?: (params: { anchorDate: Date; daysPerWeek: 1 | 2 }) => void;
 };
 
