@@ -285,7 +285,7 @@ export function OrderSummary({
                   onClick={() => onPersonsChange(Math.max(1, persons - 1))}
                 />
                 <p className="w-[16px] text-center font-sans text-[length:var(--order-summary-title-font-size)] font-semibold text-[var(--order-summary-text)]">
-                  <AnimatedNumber value={persons} animate={false} />
+                  <AnimatedNumber value={persons} animate />
                 </p>
                 <IconButton
                   type="button"
@@ -407,20 +407,15 @@ export function OrderSummary({
 
             <OrderSummaryDivider color="var(--order-summary-divider)" />
 
-            <div
-              className={[
-                'flex min-w-0 flex-wrap items-end justify-between gap-x-[8px] gap-y-[4px]',
-                orderSummarySectionPx,
-              ].join(' ')}
-            >
+            <div className={['flex items-center justify-between gap-[16px]', orderSummarySectionPx].join(' ')}>
               <p className="min-w-0 font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">
                 Total meals{' '}
-                <sup className="font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[130%] text-[var(--order-summary-muted)]">
-                  (over <AnimatedNumber value={orderPricing.totalPaidDays} /> days)
-                </sup>
+                <span className="font-medium">
+                  (over <AnimatedNumber value={orderPricing.totalPaidDays} animate /> days)
+                </span>
               </p>
               <p className="shrink-0 text-right font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[150%] text-[var(--order-summary-text)]">
-                <AnimatedNumber value={orderPricing.totalMeals} animate={false} />
+                <AnimatedNumber value={orderPricing.totalMeals} animate />
               </p>
             </div>
 
@@ -445,7 +440,7 @@ export function OrderSummary({
                 oldPeriodPrice={orderPricing.oldPeriodPrice}
                 periodPrice={finalPeriodPrice}
                 pricePerDay={orderPricing.pricePerDay}
-                animate={false}
+                animate
                 style={{
                   '--today-total-title-fs': 'var(--order-summary-title-font-size)',
                   '--today-total-title-fs-md': 'var(--order-summary-title-font-size)',
@@ -459,7 +454,7 @@ export function OrderSummary({
               ) : null}
 
               <Button type="button" variant="primary" size="medium" fullWidth onClick={onOrder}>
-                {isPhoneVerified ? 'Continue to Delivery' : 'Continue'}
+                Continue to Delivery
               </Button>
 
               <p className="text-center font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[140%] text-[var(--order-summary-muted)]">By continuing, you accept our <Link to={LEGAL_ROUTES.terms} className="underline">Terms</Link> and <Link to={LEGAL_ROUTES.privacy} className="underline">Privacy Policy</Link></p>

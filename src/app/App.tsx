@@ -36,7 +36,7 @@ function resumeCheckoutStep(session: PhoneSession): InitialCheckoutStep {
   }
 
   const step = session.checkoutStep;
-  if (!step || step === 'verification') {
+  if (!step || step === 'verification' || step === 'plan') {
     return 'delivery';
   }
   return step;
@@ -74,8 +74,29 @@ function HomePage() {
   const handleSessionUpdate = useCallback((session: PhoneSession) => {
     setPhoneSession(session);
     savePhoneSession(session);
+
+    if (session.phone) {
+      setCheckoutInitialPhone(session.phone);
+    }
+
     if (session.isVerified) {
       setInitialIsVerified(true);
+    }
+
+    const step = session.checkoutStep;
+    if (
+      step === 'plan' ||
+      step === 'verification' ||
+      step === 'delivery' ||
+      step === 'payment' ||
+      step === 'success' ||
+      step === 'failed'
+    ) {
+      setInitialCheckoutStep(step);
+    }
+
+    if (session.deliveryStep) {
+      setInitialDeliveryStep(session.deliveryStep);
     }
   }, []);
 
@@ -156,7 +177,7 @@ function HomePage() {
       const next = mergePhoneSession(phoneSession, {
         phone,
         isVerified: true,
-        checkoutStep: 'plan',
+        checkoutStep: 'delivery',
         deliveryStep: 'address',
       });
       handleSessionUpdate(next);
@@ -168,10 +189,11 @@ function HomePage() {
     const normalized = normalizeUaePhone(leadAuthPhone);
     if (normalized) {
       handleLeadSmsVerified(normalized);
+      openCheckoutAt('delivery', 'address', normalized, true);
     }
     setLeadIsSmsVerifying(false);
     setLeadAuthModalOpen(false);
-  }, [handleLeadSmsVerified, leadAuthPhone]);
+  }, [handleLeadSmsVerified, leadAuthPhone, openCheckoutAt]);
 
   const handleLeadSmsCodeComplete = useCallback(
     (code: string) => {

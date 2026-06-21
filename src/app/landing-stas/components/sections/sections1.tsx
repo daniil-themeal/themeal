@@ -288,38 +288,41 @@ function Hero({ t, onOrder }) {
   return (
     createElement('section', { id:'top', style:{
       background:'radial-gradient(120% 90% at 50% -10%, #5A2487 0%, var(--plum-700) 45%, var(--plum-900) 100%)',
-      color:'#fff', position:'relative', overflow:'hidden', minHeight:'100svh',
-      display:'flex', flexDirection:'column', paddingTop:96,
+      color:'#fff', position:'relative', overflow:'hidden', minHeight:'100svh', height:'100svh',
+      display:'flex', flexDirection:'column', paddingTop:96, boxSizing:'border-box',
     } },
       /* soft glow blobs */
       createElement('div', { style:{ position:'absolute', top:'-10%', insetInlineEnd:'-8%', width:480, height:480, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.5), transparent 70%)', filter:'blur(20px)', pointerEvents:'none' } }),
       createElement('div', { style:{ position:'absolute', bottom:'18%', insetInlineStart:'-10%', width:420, height:420, borderRadius:'50%', background:'radial-gradient(circle, rgba(240,41,168,.28), transparent 70%)', filter:'blur(20px)', pointerEvents:'none' } }),
 
-      createElement('div', { className:'wrap', style:{ position:'relative', zIndex:2, flex:1, display:'flex', flexDirection:'column', alignItems:'center', textAlign:'center', justifyContent:'center', gap:'clamp(var(--space-12), 2vh, var(--space-24))', paddingBottom:'var(--space-20)' } },
-        /* headline merged with the price offer */
-        createElement('h1', { className:'hero-title reveal' },
-          createElement('span', { className:'hero-title__line' }, t.hero.title),
-          createElement('span', { className:'hero-title__offer' },
-            createElement('span', { className:'hero-title__only' }, t.hero.only),
-            createElement(HeroPrice, { was: t.hero.was, now: t.hero.now, cur: t.hero.cur }))),
+      createElement('div', { className:'hero-wrap', style:{ position:'relative', zIndex:2, flex:'1 1 0', minHeight:0 } },
+        createElement('div', { className:'hero-top' },
+          createElement('h1', { className:'hero-title reveal' },
+            createElement('span', { className:'hero-title__line' }, t.hero.title),
+            createElement('span', { className:'hero-title__offer' },
+              createElement('span', { className:'hero-title__only' }, t.hero.only),
+              createElement(HeroPrice, { was: t.hero.was, now: t.hero.now, cur: t.hero.cur })))),
 
-        /* cta + price-per-day */
-        createElement('div', { className:'reveal', 'data-d':'2', style:{ marginTop:2 } },
-          createElement('button', {
-            className:'btn btn-secondary menu-head-cta',
-            onClick:onOrder,
-            style:{
-              flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'var(--space-8)',
-              textAlign:'center',
+        createElement('div', { className:'hero-spacer', 'aria-hidden': true }),
+
+        createElement('div', { className:'hero-bottom' },
+          createElement('div', { className:'reveal', 'data-d':'2' },
+            createElement('button', {
+              className:'btn btn-secondary menu-head-cta',
+              onClick:onOrder,
+              style:{
+                flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'var(--space-8)',
+                textAlign:'center',
+              },
             },
-          },
-            createElement('span', { className:'stack', style:{ alignItems:'center', gap:'var(--space-8)' } },
-              t.hero.cta,
-              createElement('span', { className:'mono', style:{ fontSize:'var(--fs-14)', fontWeight:700, opacity:.92 } }, t.hero.ctaSub))
-          )
-        ),
+              createElement('span', { className:'stack', style:{ alignItems:'center', gap:'var(--space-8)' } },
+                t.hero.cta,
+                createElement('span', { className:'mono', style:{ fontSize:'var(--fs-14)', fontWeight:700, opacity:.92 } }, t.hero.ctaSub))
+            )
+          ),
 
-        createElement(HeroStats, { stats:t.hero.stats, className:'reveal hero-stats', style:{ marginTop:24 }, dataD:'3' })
+          createElement(HeroStats, { stats:t.hero.stats, className:'reveal hero-stats', dataD:'3' })
+        )
       ),
 
       /* conveyor of meal trays — seamless loop shaped as a fan/arc */

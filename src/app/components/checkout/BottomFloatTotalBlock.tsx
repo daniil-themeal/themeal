@@ -76,8 +76,6 @@ export function BottomFloatTotalBlock({
   duration,
   persons = 1,
   lightMealOption,
-  onPlanChange,
-  onLightMealOptionChange,
   onScrollToSummary,
   hidden = false,
   extraMealDayKeys = [],
@@ -88,8 +86,6 @@ export function BottomFloatTotalBlock({
   duration: Duration;
   persons?: number;
   lightMealOption: LightMealOption;
-  onPlanChange: (plan: Plan) => void;
-  onLightMealOptionChange: (option: LightMealOption) => void;
   onScrollToSummary: () => void;
   hidden?: boolean;
   extraMealDayKeys?: string[];
@@ -212,8 +208,6 @@ export function BottomFloatTotalBlock({
                   isActive={menuOpen}
                   plan={plan}
                   lightMealOption={lightMealOption}
-                  onPlanChange={onPlanChange}
-                  onLightMealOptionChange={onLightMealOptionChange}
                   onMealDetailOpenChange={setMealDetailOpen}
                 />
               </div>
@@ -221,8 +215,8 @@ export function BottomFloatTotalBlock({
 
             <div className="relative z-10 w-full bg-[var(--checkout-float-surface)]">
               <div className="w-full">
-                <div className="flex items-center gap-[16px] px-[length:var(--checkout-card-padding)] py-[8px]">
-                  <div className="flex min-w-0 shrink-0 flex-col items-center justify-start gap-[8px]">
+                <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-[16px] px-[length:var(--checkout-card-padding)] py-[8px]">
+                  <div className="flex min-w-0 w-full flex-col items-center justify-start gap-[8px]">
                     <div className="flex min-w-0 items-end gap-[5px] tabular-nums">
                       {orderPricing.oldPeriodPrice ? (
                         <AnimatedNumber
@@ -277,8 +271,7 @@ export function BottomFloatTotalBlock({
                     type="button"
                     variant="primary"
                     size="small"
-                    fullWidth
-                    className="min-w-0 flex-1 rounded-[4px]"
+                    className="min-w-[120px] shrink-0 rounded-[4px]"
                     onClick={handleScrollToSummary}
                   >
                     Order

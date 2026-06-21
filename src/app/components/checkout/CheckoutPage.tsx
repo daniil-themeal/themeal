@@ -199,6 +199,7 @@ export function CheckoutPage({
   const [extraMealDayKeys, setExtraMealDayKeys] = useState<string[]>([]);
 
   const smsVerifyTimerRef = useRef<number | null>(null);
+  const smsSuccessPendingRef = useRef(false);
   const wasCheckoutOpenRef = useRef(false);
 
   const clearSmsVerifyTimer = useCallback(() => {
@@ -206,6 +207,7 @@ export function CheckoutPage({
       window.clearTimeout(smsVerifyTimerRef.current);
       smsVerifyTimerRef.current = null;
     }
+    smsSuccessPendingRef.current = false;
   }, []);
 
   const rightRef = useRef<HTMLDivElement>(null);
@@ -319,6 +321,18 @@ export function CheckoutPage({
   }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified, sessionIsVerified, resetCloseState, clearSmsVerifyTimer]);
 
   useEffect(() => {
+    if (!isOpen || !isAuthComplete) return;
+
+    const nextState = resolveInitialCheckoutState(initialCheckoutStep);
+    if (nextState.flowStep !== 'delivery' && nextState.flowStep !== 'payment') return;
+
+    setCheckoutStep(nextState.flowStep);
+    setDeliveryStep(initialDeliveryStep);
+    setAuthModalOpen(false);
+    setMenuOpen(false);
+  }, [initialCheckoutStep, initialDeliveryStep, isAuthComplete, isOpen]);
+
+  useEffect(() => {
     setExtraMealDayKeys([]);
   }, [days, duration]);
 
@@ -390,6 +404,11 @@ export function CheckoutPage({
   }, [persistSession]);
 
   const closeAuthModal = useCallback(() => {
+    if (smsSuccessPendingRef.current) {
+      setAuthModalOpen(false);
+      return;
+    }
+
     clearSmsVerifyTimer();
     setIsSmsVerifying(false);
     setAuthModalOpen(false);
@@ -497,27 +516,26 @@ export function CheckoutPage({
   );
 
   const handleSmsContinue = useCallback(() => {
+    smsSuccessPendingRef.current = false;
     setAuthModalOpen(false);
     setIsPhoneVerified(true);
     setMenuOpen(false);
-    setSummaryVisible(true);
 
-    const nextDeliveryStep = resolveDeliveryStep(selectedAddress);
     setCheckoutStep('delivery');
-    setDeliveryStep(nextDeliveryStep);
+    setDeliveryStep('address');
 
     const normalized = normalizeUaePhone(phone);
     persistSession(
       {
         phone: normalized ?? phone,
         checkoutStep: 'delivery',
-        deliveryStep: nextDeliveryStep,
+        deliveryStep: 'address',
         isVerified: true,
       },
       true,
     );
     scrollBodyToTop();
-  }, [persistSession, phone, scrollBodyToTop, selectedAddress]);
+  }, [persistSession, phone, scrollBodyToTop]);
 
   const handleSmsCodeComplete = useCallback((code: string) => {
     if (isSmsVerifying) return;
@@ -530,6 +548,7 @@ export function CheckoutPage({
     setSmsError(undefined);
     setIsSmsVerifying(true);
     clearSmsVerifyTimer();
+    smsSuccessPendingRef.current = true;
 
     smsVerifyTimerRef.current = window.setTimeout(() => {
       smsVerifyTimerRef.current = null;
@@ -825,8 +844,6 @@ export function CheckoutPage({
             onClose={() => setMenuOpen(false)}
             plan={plan}
             lightMealOption={lightMealOption}
-            onPlanChange={setPlan}
-            onLightMealOptionChange={setLightMealOption}
           />
 
           <BottomFloatTotalBlock
@@ -836,8 +853,6 @@ export function CheckoutPage({
             persons={persons}
             lightMealOption={lightMealOption}
             extraMealDayKeys={extraMealDayKeys}
-            onPlanChange={setPlan}
-            onLightMealOptionChange={setLightMealOption}
             onScrollToSummary={handleScrollToSummary}
             hidden={summaryVisible || isMealDetailOpen}
           />

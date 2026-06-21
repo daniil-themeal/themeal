@@ -16,6 +16,7 @@ import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import {
   CHECKOUT_CARD_PADDING_CLAMP,
   CHECKOUT_FONT_CLAMP_14_16,
+  CHECKOUT_FONT_CLAMP_20_25,
   FULL_MENU_MEAL_CAROUSEL_INSET_CLAMP,
   FULL_MENU_MEAL_CAROUSEL_PADDING_BOTTOM_FLOAT_CLAMP,
   FULL_MENU_MEAL_CARD_WIDTH_CLAMP,
@@ -38,21 +39,11 @@ import {
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
 import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
 import { SPACING_CONTENT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
+import { XIcon } from '../common/icons';
+import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
-import { FullMenuPlanToggle } from './FullMenuPlanToggle';
 import { MealDetailModal } from './MealDetailModal';
 import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
-
-const PLAN_ORDER: Record<Plan, number> = {
-  light: 0,
-  base: 1,
-  plus: 2,
-};
-
-const LIGHT_OPTION_ORDER: Record<LightMealOption, number> = {
-  'breakfast-main': 0,
-  'lunch-dinner': 1,
-};
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -89,6 +80,7 @@ export type FullMenuPanelCssVariables = CSSProperties & {
   '--full-menu-active-muted': string;
   '--full-menu-close-bg': string;
   '--full-menu-close-bg-hover': string;
+  '--full-menu-heading-font-size': string;
   '--full-menu-day-date-font-size': string;
   '--full-menu-day-meta-font-size': string;
   '--full-menu-light-option-font-size': string;
@@ -122,6 +114,7 @@ export const fullMenuPanelStyle: FullMenuPanelCssVariables = {
   '--full-menu-active-muted': COLOR_TOKENS.primary[400],
   '--full-menu-close-bg': COLOR_TOKENS.neutral[50],
   '--full-menu-close-bg-hover': COLOR_TOKENS.neutral[75],
+  '--full-menu-heading-font-size': CHECKOUT_FONT_CLAMP_20_25,
   '--full-menu-day-date-font-size': CHECKOUT_FONT_CLAMP_14_16,
   '--full-menu-day-meta-font-size': FONT_SIZE_TOKENS[12],
   '--full-menu-light-option-font-size': FULL_MENU_LIGHT_OPTION_FONT_SIZE_CLAMP,
@@ -173,8 +166,7 @@ export type FullMenuPanelProps = {
   isActive: boolean;
   plan: Plan;
   lightMealOption: LightMealOption;
-  onPlanChange: (plan: Plan) => void;
-  onLightMealOptionChange: (option: LightMealOption) => void;
+  onRequestClose?: () => void;
   onMealDetailOpenChange?: (open: boolean) => void;
   className?: string;
 };
@@ -185,8 +177,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     isActive,
     plan,
     lightMealOption,
-    onPlanChange,
-    onLightMealOptionChange,
+    onRequestClose,
     onMealDetailOpenChange,
     className = '',
   },
@@ -359,22 +350,6 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     setSelectedMeal(meal);
   };
 
-  const handlePlanChange = (nextPlan: Plan) => {
-    if (nextPlan === plan) return;
-
-    setSlideDirection(PLAN_ORDER[nextPlan] > PLAN_ORDER[plan] ? 'left' : 'right');
-    onPlanChange(nextPlan);
-  };
-
-  const handleLightMealOptionChange = (option: LightMealOption) => {
-    if (option === lightMealOption) return;
-
-    setSlideDirection(
-      LIGHT_OPTION_ORDER[option] > LIGHT_OPTION_ORDER[lightMealOption] ? 'left' : 'right',
-    );
-    onLightMealOptionChange(option);
-  };
-
   const closeMealDetail = () => {
     if (!selectedMeal) return false;
 
@@ -410,9 +385,8 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     });
   }, [isActive, selectedDayIndex]);
 
-  const planToggleClassName = isModal
-    ? 'flex h-[56px] w-full shrink-0 items-center bg-[var(--full-menu-bg)] pl-[16px] pr-[56px] shadow-[inset_0_-1px_0_0_var(--full-menu-border)] md:pl-[20px]'
-    : 'flex h-[56px] w-full shrink-0 items-center bg-[var(--full-menu-bg)] px-[length:var(--checkout-card-padding)] shadow-[inset_0_-1px_0_0_var(--full-menu-border)]';
+  const headerTitleClassName =
+    'min-w-0 flex-1 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px]';
 
   const mealsOuterClassName = isModal
     ? 'flex-1 overflow-x-hidden overflow-y-auto'
@@ -464,16 +438,26 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
           `}
         </style>
 
-        <div className={planToggleClassName}>
-          <FullMenuPlanToggle
-            plan={plan}
-            lightMealOption={lightMealOption}
-            onPlanChange={handlePlanChange}
-            onLightMealOptionChange={handleLightMealOptionChange}
-            pillDefaultStyle={FULL_MENU_DAY_PILL_DEFAULT_STYLE}
-            pillSelectedStyle={FULL_MENU_DAY_PILL_SELECTED_STYLE}
-          />
-        </div>
+        {isModal ? (
+          <div className="flex h-[56px] shrink-0 items-center gap-[8px] border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
+            <p className={headerTitleClassName}>Full menu</p>
+
+            {onRequestClose ? (
+              <button
+                type="button"
+                onClick={onRequestClose}
+                className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
+                aria-label="Close"
+              >
+                <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--full-menu-close-bg)] transition-colors duration-150 group-hover:bg-[var(--full-menu-close-bg-hover)]">
+                  <span className={iconColorClassName.emphasis} style={iconColorStyle.emphasis}>
+                    <XIcon size={16} />
+                  </span>
+                </span>
+              </button>
+            ) : null}
+          </div>
+        ) : null}
 
         <div className="shrink-0 px-[8px] pt-[12px] pb-0">
           <div className="flex w-full items-stretch" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>

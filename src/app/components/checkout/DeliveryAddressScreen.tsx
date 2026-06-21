@@ -1,4 +1,5 @@
 import {
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -771,22 +772,61 @@ export function DeliveryAddressScreen({
     setActiveSuggestionIndex(0);
   };
 
-  const handleClearAddress = () => {
+  const handleClearAddress = useCallback(() => {
     setAddressQuery('');
     onSelectedAddressChange(null);
     setActiveSuggestionIndex(0);
-  };
+  }, [onSelectedAddressChange]);
 
   const handleSelectSuggestion = (suggestion: TestAddress) => {
     selectAddress(suggestion);
   };
 
-  const handleContinue = () => {
+  const handleContinue = useCallback(() => {
     if (!canContinue) return;
     onContinue?.();
-  };
+  }, [canContinue, onContinue]);
 
   const handleSearchKeyDown = (event: KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      if (canContinue) {
+        event.preventDefault();
+        handleContinue();
+        return;
+      }
+
+      if (!hasSuggestions) return;
+
+      event.preventDefault();
+
+      const activeSuggestion = visibleSuggestions[activeSuggestionIndex];
+
+      if (activeSuggestion) {
+        handleSelectSuggestion(activeSuggestion);
+      }
+
+      return;
+    }
+
+    if (event.key === 'Escape') {
+      if (mobileSearchOpen) {
+        event.preventDefault();
+        event.stopPropagation();
+        setActiveSuggestionIndex(0);
+        setMobileSearchOpen(false);
+        return;
+      }
+
+      if (hasQuery && !selectedAddress) {
+        event.preventDefault();
+        event.stopPropagation();
+        handleClearAddress();
+        return;
+      }
+
+      return;
+    }
+
     if (selectedAddress) return;
 
     if (event.key === 'ArrowDown') {
@@ -809,35 +849,40 @@ export function DeliveryAddressScreen({
       setActiveSuggestionIndex((current) =>
         current <= 0 ? visibleSuggestions.length - 1 : current - 1,
       );
-
-      return;
     }
+  };
 
-    if (event.key === 'Enter') {
-      if (!hasSuggestions) return;
+  useEffect(() => {
+    const handleWindowKeyDown = (event: globalThis.KeyboardEvent) => {
+      const target = event.target;
+      const isFormControl =
+        target instanceof HTMLInputElement ||
+        target instanceof HTMLTextAreaElement ||
+        target instanceof HTMLSelectElement ||
+        target instanceof HTMLButtonElement;
 
-      event.preventDefault();
+      if (event.key === 'Escape') {
+        if (hasQuery && !selectedAddress && !isFormControl) {
+          event.preventDefault();
+          event.stopPropagation();
+          handleClearAddress();
+        }
 
-      const activeSuggestion = visibleSuggestions[activeSuggestionIndex];
-
-      if (activeSuggestion) {
-        handleSelectSuggestion(activeSuggestion);
-      }
-
-      return;
-    }
-
-    if (event.key === 'Escape') {
-      if (mobileSearchOpen) {
-        event.stopPropagation();
-        setActiveSuggestionIndex(0);
-        setMobileSearchOpen(false);
         return;
       }
 
-      setActiveSuggestionIndex(0);
-    }
-  };
+      if (event.key !== 'Enter' || !canContinue || isFormControl) return;
+
+      event.preventDefault();
+      handleContinue();
+    };
+
+    window.addEventListener('keydown', handleWindowKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleWindowKeyDown);
+    };
+  }, [canContinue, handleClearAddress, handleContinue, hasQuery, selectedAddress]);
 
   const handleMapPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (event.button !== 0 && event.pointerType === 'mouse') return;
