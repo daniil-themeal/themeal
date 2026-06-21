@@ -175,7 +175,7 @@ export function CheckoutPage({
   const [devSkipAuth, setDevSkipAuth] = useState(false);
 
   const isAuthComplete =
-    isPhoneVerified || sessionIsVerified || (import.meta.env.DEV && devSkipAuth);
+    isPhoneVerified || sessionIsVerified || devSkipAuth;
   const isSessionVerified = isPhoneVerified || sessionIsVerified;
 
   const [plan, setPlan] = useState<Plan>('base');
@@ -428,8 +428,6 @@ export function CheckoutPage({
   }, [clearSmsVerifyTimer, isPhoneVerified, phone, sessionIsVerified]);
 
   const handleAuthModalSkip = useCallback(() => {
-    if (!import.meta.env.DEV) return;
-
     setDevSkipAuth(true);
     clearSmsVerifyTimer();
     setIsSmsVerifying(false);
@@ -899,7 +897,7 @@ export function CheckoutPage({
         isVerifying={isSmsVerifying}
         onCodeChange={handleSmsCodeChange}
         onCodeComplete={handleSmsCodeComplete}
-        onSkip={import.meta.env.DEV ? handleAuthModalSkip : undefined}
+        onSkip={handleAuthModalSkip}
       />
 
       {resultOverlay ? (

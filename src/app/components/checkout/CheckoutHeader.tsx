@@ -259,8 +259,8 @@ export function CheckoutHeader({
           ) : (
             <div className="flex h-full min-w-0 items-center justify-center">
               <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
-              {import.meta.env.DEV && onAuthDevModeChange ? (
-                <div className="hidden items-center md:flex">
+              {onAuthDevModeChange ? (
+                <div className="flex items-center">
                   <div className="mx-[8px] h-px w-[12px] bg-[var(--checkout-header-border)]" />
                   <CheckoutAuthDevTabs
                     activeMode={authDevMode}

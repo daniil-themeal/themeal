@@ -219,8 +219,6 @@ function HomePage() {
   );
 
   const handleLeadAuthModalSkip = useCallback(() => {
-    if (!import.meta.env.DEV) return;
-
     clearLeadSmsVerifyTimer();
     setLeadIsSmsVerifying(false);
     setLeadSmsError(undefined);
@@ -315,7 +313,7 @@ function HomePage() {
         isVerifying={leadIsSmsVerifying}
         onCodeChange={handleLeadSmsCodeChange}
         onCodeComplete={handleLeadSmsCodeComplete}
-        onSkip={import.meta.env.DEV ? handleLeadAuthModalSkip : undefined}
+        onSkip={handleLeadAuthModalSkip}
       />
 
       {/* BACKLOG: full-page checkout вместо overlay — docs/backlog/checkout-fullpage.md */}
