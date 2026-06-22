@@ -311,7 +311,7 @@ function Hero({ t, onOrder }) {
       createElement('div', { style:{ position:'absolute', top:'-10%', insetInlineEnd:'-8%', width:480, height:480, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.5), transparent 70%)', filter:'blur(20px)', pointerEvents:'none' } }),
       createElement('div', { style:{ position:'absolute', bottom:'18%', insetInlineStart:'-10%', width:420, height:420, borderRadius:'50%', background:'radial-gradient(circle, rgba(240,41,168,.28), transparent 70%)', filter:'blur(20px)', pointerEvents:'none' } }),
 
-      createElement('div', { className:'hero-wrap', style:{ flex:'1 1 0', minHeight:0 } },
+      createElement('div', { className:'hero-wrap' },
         createElement('div', { className:'hero-top' },
           createElement('h1', { className:'hero-title reveal' },
             createElement('span', { className:'hero-title__line' }, t.hero.title),
