@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { Icon, Logo } from '../landing-stas/components/icons';
+import { Logo } from '../landing-stas/components/icons';
+import { SiteLangSwitcher } from '../landing-stas/components/SiteLangSwitcher';
+import { SiteNavBurgerButton, SiteNavDrawer } from '../landing-stas/components/SiteNavDrawer';
 import type { mealContentEn } from '../landing-stas/content/mealContentEn';
+import { usePhoneAuth } from '../phoneAuth/PhoneAuthProvider';
 
 type LegalHeaderProps = {
   t: typeof mealContentEn;
@@ -10,7 +13,16 @@ type LegalHeaderProps = {
 export function LegalHeader({ t }: LegalHeaderProps) {
   const [shown, setShown] = useState(true);
   const [hovered, setHovered] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
   const last = useRef(0);
+  const {
+    isPhoneVerified,
+    verifiedPhone,
+    pendingPhone,
+    openSignIn,
+    resetPhoneSession,
+    handleResumeVerification,
+  } = usePhoneAuth();
 
   useEffect(() => {
     const onScroll = () => {
@@ -46,20 +58,26 @@ export function LegalHeader({ t }: LegalHeaderProps) {
               <Logo tone="yellow" />
             </span>
           </Link>
-          <div className="hdr-profile">
-            <button
-              type="button"
-              title={t.nav.signin}
-              aria-label={t.nav.signin}
-              className="hdr-profile-btn"
-            >
-              <span className="hdr-profile-icon">
-                <Icon.user size={20} />
-              </span>
-            </button>
+          <div className="row hdr-actions">
+            <SiteLangSwitcher />
+            <SiteNavBurgerButton
+              label={t.siteNav.openMenu}
+              onClick={() => setNavOpen(true)}
+            />
           </div>
         </div>
       </header>
+      <SiteNavDrawer
+        open={navOpen}
+        onOpenChange={setNavOpen}
+        t={t}
+        isPhoneVerified={isPhoneVerified}
+        verifiedPhone={verifiedPhone}
+        pendingPhone={pendingPhone}
+        onSignInClick={openSignIn}
+        onResetPhone={() => resetPhoneSession()}
+        onResumeVerification={handleResumeVerification}
+      />
     </div>
   );
 }

@@ -40,8 +40,12 @@ const VARIANT_STYLE: Record<CheckoutPromoCodeVariant, CheckoutPromoCodeCssVariab
   },
 };
 
-const titleButtonClassName =
-  'block w-full cursor-pointer text-left font-sans text-[length:var(--promo-code-title-fs)] font-bold leading-[130%] text-[var(--promo-code-primary)] transition-opacity hover:opacity-80';
+const PROMO_CODE_TITLE = 'Have promocode?';
+
+const titleClassName =
+  'block w-full text-left font-sans text-[length:var(--promo-code-title-fs)] font-bold leading-[130%] text-[var(--promo-code-primary)]';
+
+const titleButtonClassName = `${titleClassName} cursor-pointer transition-opacity hover:opacity-80`;
 
 function getInitialView(variant: CheckoutPromoCodeVariant, appliedCode: string): PromoCodeView {
   if (appliedCode) return 'applied';
@@ -145,19 +149,30 @@ export function CheckoutPromoCode({
     setError(null);
   };
 
+  const handleSummaryTitleToggle = () => {
+    if (view === 'collapsed') {
+      setView('input');
+      return;
+    }
+
+    if (view === 'input') {
+      setError(null);
+      setView('collapsed');
+    }
+  };
+
   const variantStyle = VARIANT_STYLE[variant];
   const showEstimateHint = variant === 'summary';
 
   if (view === 'collapsed') {
     return (
       <div className="flex flex-col gap-[8px]" style={variantStyle}>
-        <PromoCodeDevHint onSelect={handleHintSelect} />
         <button
           type="button"
           className={titleButtonClassName}
-          onClick={() => setView('input')}
+          onClick={handleSummaryTitleToggle}
         >
-          Have promocode?
+          {PROMO_CODE_TITLE}
         </button>
       </div>
     );
@@ -284,17 +299,22 @@ export function CheckoutPromoCode({
   if (variant === 'payment') {
     return (
       <div className="flex flex-col gap-[12px]" style={variantStyle}>
-        <PromoCodeDevHint onSelect={handleHintSelect} />
         <FormLabel as="span">Have a promo code?</FormLabel>
+        <PromoCodeDevHint onSelect={handleHintSelect} />
         {inputRow}
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-[8px]" style={variantStyle}>
-      <PromoCodeDevHint onSelect={handleHintSelect} />
-      {inputRow}
+    <div className="flex flex-col gap-[12px]" style={variantStyle}>
+      <button type="button" className={titleButtonClassName} onClick={handleSummaryTitleToggle}>
+        {PROMO_CODE_TITLE}
+      </button>
+      <div className="flex flex-col gap-[8px]">
+        <PromoCodeDevHint onSelect={handleHintSelect} />
+        {inputRow}
+      </div>
     </div>
   );
 }

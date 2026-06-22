@@ -1,11 +1,25 @@
 // @ts-nocheck
 import { createElement, Fragment, useState, useEffect, useRef } from 'react';
+import { SiteLangSwitcher } from '../SiteLangSwitcher';
+import { SiteNavBurgerButton, SiteNavDrawer } from '../SiteNavDrawer';
 import { Icon, Logo, Stars, Social } from '../icons';
 import { HeroStats } from '../HeroStats';
 import { HeroPrice } from '../HeroPrice';
 
 /* ---------------- Header (scroll + cursor reveal — Bender) ---------------- */
-function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
+function Header({
+  t,
+  onOrder,
+  dark,
+  onDesignSystemClick,
+  isPhoneVerified,
+  verifiedPhone,
+  pendingPhone,
+  onSignInClick,
+  onResetPhone,
+  onResumeVerification,
+}) {
+  const [navOpen, setNavOpen] = useState(false);
   const [shown, setShown] = useState(true);
   const [solid, setSolid] = useState(false);
   const [hovered, setHovered] = useState(false);
@@ -72,18 +86,27 @@ function Header({ t, lang, setLang, onOrder, dark, onDesignSystemClick }) {
             createElement('span', { className:'navlink__short' }, 'DS'),
           ) : null
         ),
-        createElement('div', { className:'hdr-profile' },
-          createElement('button', {
-            type:'button',
-            title:t.nav.signin, 'aria-label':t.nav.signin,
-            className:'hdr-profile-btn',
-          },
-            createElement('span', { className:'hdr-profile-icon' },
-              createElement(Icon.user,{size:20})
-            )
-          )
+        createElement('div', { className:'row hdr-actions' },
+          createElement(SiteLangSwitcher),
+          createElement(SiteNavBurgerButton, {
+            label: t.siteNav.openMenu,
+            onClick: () => setNavOpen(true),
+          })
         )
-      )
+      ),
+      createElement(SiteNavDrawer, {
+        open: navOpen,
+        onOpenChange: setNavOpen,
+        t,
+        isPhoneVerified,
+        verifiedPhone,
+        pendingPhone,
+        onSignInClick,
+        onResetPhone,
+        onResumeVerification,
+        onOrderClick: onOrder,
+        onDesignSystemClick,
+      })
     )
     )
   );

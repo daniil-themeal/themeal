@@ -426,6 +426,7 @@ function LeadCapture({
   t,
   onPhoneSubmit,
   onContinue,
+  onResumeVerification,
   onResetPhone,
   isPhoneVerified = false,
   verifiedPhone,
@@ -495,7 +496,21 @@ function LeadCapture({
                         })
                       : null,
                     createElement('button', { type:'button', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 }, onClick: onContinue }, l.continueCta))
-                : createElement(Fragment, null,
+                : pendingPhone
+                  ? createElement(Fragment, null,
+                      onResetPhone
+                        ? createElement(VerifiedPhoneLogoutButton, {
+                            phone: normalizedToDisplayPhone(pendingPhone),
+                            onClick: handleResetPhone,
+                          })
+                        : null,
+                      createElement('button', {
+                        type: 'button',
+                        className: 'btn btn-primary lead-form-submit',
+                        style: { minHeight: 58 },
+                        onClick: onResumeVerification,
+                      }, l.continueCta))
+                  : createElement(Fragment, null,
                     createElement('form', { className:'lead-form', onSubmit: handleSubmit },
                       createElement(PhoneInput, {
                         id: 'lead-phone',

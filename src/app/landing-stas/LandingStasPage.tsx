@@ -29,8 +29,10 @@ type LandingStasPageProps = {
   onOrderClick: () => void;
   onPhoneSubmit: (phone: string) => void;
   onContinueClick: () => void;
+  onResumeVerification?: () => void;
   onResetPhone?: () => void;
   onDesignSystemClick?: () => void;
+  onSignInClick?: () => void;
   checkoutOpen?: boolean;
   isPhoneVerified?: boolean;
   verifiedPhone?: string;
@@ -41,8 +43,10 @@ export default function LandingStasPage({
   onOrderClick,
   onPhoneSubmit,
   onContinueClick,
+  onResumeVerification,
   onResetPhone,
   onDesignSystemClick,
+  onSignInClick,
   checkoutOpen = false,
   isPhoneVerified = false,
   verifiedPhone,
@@ -61,7 +65,17 @@ export default function LandingStasPage({
 
   return (
     <div className="landing-stas min-h-screen w-full">
-      <Header {...shared} dark onDesignSystemClick={onDesignSystemClick} />
+      <Header
+        {...shared}
+        dark
+        onDesignSystemClick={onDesignSystemClick}
+        isPhoneVerified={isPhoneVerified}
+        verifiedPhone={verifiedPhone}
+        pendingPhone={pendingPhone}
+        onSignInClick={onSignInClick}
+        onResetPhone={onResetPhone}
+        onResumeVerification={onResumeVerification}
+      />
       <main>
         <Hero t={t} onOrder={onOrderClick} />
         <Compare t={t} />
@@ -71,6 +85,7 @@ export default function LandingStasPage({
           t={t}
           onPhoneSubmit={onPhoneSubmit}
           onContinue={onContinueClick}
+          onResumeVerification={onResumeVerification}
           onResetPhone={onResetPhone}
           isPhoneVerified={isPhoneVerified}
           verifiedPhone={verifiedPhone}

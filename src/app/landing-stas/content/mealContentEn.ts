@@ -12,6 +12,22 @@ export const mealContentEn = {
     "signin": "Sign in",
     "order": "View menu"
   },
+  "siteNav": {
+    "openMenu": "Open menu",
+    "menuTitle": "Menu",
+    "account": "Account",
+    "personalCabinet": "Personal account",
+    "navigation": "Navigation",
+    "reviews": "Reviews",
+    "legal": "Legal",
+    "support": "Support",
+    "followUs": "Follow us",
+    "signOut": "Log out",
+    "continueVerification": "Continue verification",
+    "whatsapp": "WhatsApp",
+    "telegram": "Telegram",
+    "email": "Email"
+  },
   "hero": {
     "badge": "Fresh, ready-to-eat meals · UAE",
     "title": "Tasty ready-to-eat meals for a month",
