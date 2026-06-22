@@ -1834,7 +1834,7 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
     --hero-tray-clearance: 0;
     padding-top: clamp(64px, 9vh, 88px);
     --hero-top-offset: clamp(18px, 2.5vh, 32px);
-    --hero-title-cta-gap: clamp(10px, 2.5vh, 28px);
+    --hero-title-cta-gap: clamp(8px, 2vh, 20px);
   }
   .landing-stas .hero-tray-belt__img {
     filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.38));
@@ -1853,8 +1853,8 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
   }
   .landing-stas #top .hero-spacer {
     display: block;
-    flex: 1 1 auto;
-    min-height: var(--hero-title-cta-gap);
+    flex: 0 0 auto;
+    height: var(--hero-title-cta-gap);
     width: 100%;
   }
   .landing-stas #top .hero-bottom {
@@ -1868,7 +1868,7 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
   .landing-stas #top {
     padding-top: clamp(58px, 8vh, 76px);
     --hero-top-offset: clamp(12px, 2vh, 22px);
-    --hero-title-cta-gap: clamp(6px, 2vh, 16px);
+    --hero-title-cta-gap: clamp(4px, 1.5vh, 12px);
   }
   .landing-stas #top .hero-bottom {
     gap: clamp(8px, 1.6vh, 14px);
