@@ -103,6 +103,11 @@ const TRAY_BELT_AUTO_SPEED = 26; // px per second
 const TRAY_BELT_MOMENTUM_FRICTION = 4.5;
 const TRAY_BELT_MOMENTUM_THRESHOLD = 8; // px/s
 const TRAY_BELT_MAX_VELOCITY = 2400; // px/s
+const TRAY_BELT_ARC_SCALE_MOBILE = 0.72;
+
+function getTrayBeltArcScale() {
+  return window.innerWidth < 768 ? TRAY_BELT_ARC_SCALE_MOBILE : 1;
+}
 
 function clampTrayBeltVelocity(value) {
   return Math.max(-TRAY_BELT_MAX_VELOCITY, Math.min(TRAY_BELT_MAX_VELOCITY, value));
@@ -132,11 +137,12 @@ function TrayBelt() {
   const updateArc = (track) => {
     const rect = track.getBoundingClientRect();
     const cx = window.innerWidth / 2;
+    const arcScale = getTrayBeltArcScale();
     for (const m of metasRef.current) {
       const x = rect.left + m.l + m.w / 2;
       let t = (x - cx) / cx;
       t = Math.max(-1.2, Math.min(1.2, t));
-      m.im.style.transform = `translateY(${-3.6 + 25.2 * t * t}px) rotate(${6.75 * t}deg)`;
+      m.im.style.transform = `translateY(${(-3.6 + 25.2 * t * t) * arcScale}px) rotate(${6.75 * t * arcScale}deg)`;
     }
   };
 
@@ -244,36 +250,24 @@ function TrayBelt() {
 
   return (
     createElement('div', {
+      className: 'hero-tray-belt',
       'aria-hidden': true,
       dir: 'ltr',
       onPointerDown,
       onPointerMove,
       onPointerUp,
       onPointerCancel: onPointerUp,
-      style: {
-        position: 'relative',
-        zIndex: 3,
-        height: 'clamp(198px,25.2vh,270px)',
-        marginTop: -6,
-        overflow: 'hidden',
-        cursor: 'grab',
-        touchAction: 'none',
-        userSelect: 'none',
-        pointerEvents: 'auto',
-      },
     },
-      createElement('div', { ref:trackRef, style:{ position:'absolute', bottom:13, left:0, display:'flex', alignItems:'flex-end', width:'max-content', willChange:'transform' } },
-        [0,1].map(half =>
-          createElement('div', { key:half, style:{ display:'flex', alignItems:'flex-end', gap:'clamp(14px,2.16vw,32px)', paddingInlineEnd:'clamp(14px,2.16vw,32px)' } },
-            Array.from({length:15}).map((_,i)=>
+      createElement('div', { ref: trackRef, className: 'hero-tray-belt__track' },
+        [0, 1].map(half =>
+          createElement('div', { key: half, className: 'hero-tray-belt__row' },
+            Array.from({ length: 15 }).map((_, i) =>
               createElement('img', {
-                key:`${half}-${i}`, src:HERO_TRAY_MEALS[i % HERO_TRAY_MEALS.length], alt:'', draggable:false,
-                style:{
-                  width:'clamp(135px, 15.3vw, 225px)',
-                  transform:`translateY(${[18,5,-2,5,18][i%5]}px) rotate(${[-6,-3,0,3,6][i%5]}deg)`,
-                  filter:'drop-shadow(0 16px 27px rgba(0,0,0,.4))',
-                  pointerEvents:'none',
-                }
+                key: `${half}-${i}`,
+                className: 'hero-tray-belt__img',
+                src: HERO_TRAY_MEALS[i % HERO_TRAY_MEALS.length],
+                alt: '',
+                draggable: false,
               })
             )
           )

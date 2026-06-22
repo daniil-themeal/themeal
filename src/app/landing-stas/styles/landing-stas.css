@@ -167,7 +167,44 @@ body {
 /* hero h1: legacy landing hero-title scale */
 .landing-stas #top {
   --hero-price-secondary-fs: clamp(var(--fs-20), 1.35vw, 22px);
-  --hero-tray-clearance: clamp(8px, 1.6vh, 16px);
+  --hero-tray-clearance: clamp(3px, 0.5vh, 5px);
+  --hero-title-cta-gap: clamp(32px, 7vh, 80px);
+  --hero-tray-belt-h: clamp(198px, 25.2vh, 270px);
+  --hero-tray-belt-mt: -6px;
+  --hero-tray-track-bottom: 13px;
+  --hero-tray-img-w: clamp(135px, 15.3vw, 225px);
+  --hero-tray-gap: clamp(14px, 2.16vw, 32px);
+}
+.landing-stas .hero-tray-belt {
+  position: relative;
+  z-index: 3;
+  height: var(--hero-tray-belt-h);
+  margin-top: var(--hero-tray-belt-mt);
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  pointer-events: auto;
+}
+.landing-stas .hero-tray-belt__track {
+  position: absolute;
+  bottom: var(--hero-tray-track-bottom);
+  left: 0;
+  display: flex;
+  align-items: flex-end;
+  width: max-content;
+  will-change: transform;
+}
+.landing-stas .hero-tray-belt__row {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--hero-tray-gap);
+  padding-inline-end: var(--hero-tray-gap);
+}
+.landing-stas .hero-tray-belt__img {
+  width: var(--hero-tray-img-w);
+  filter: drop-shadow(0 16px 27px rgba(0, 0, 0, 0.4));
+  pointer-events: none;
 }
 .landing-stas #top > .hero-wrap {
   display: flex;
@@ -182,13 +219,18 @@ body {
   min-height: 0;
 }
 .landing-stas #top .hero-top {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   min-width: 0;
-  flex-shrink: 0;
+  min-height: 0;
 }
 .landing-stas #top .hero-spacer {
-  flex: 1 1 0;
-  min-height: 0;
+  display: none;
+  flex: 0 0 0;
   width: 100%;
 }
 .landing-stas #top .hero-bottom {
@@ -201,6 +243,7 @@ body {
   min-width: 0;
   position: relative;
   z-index: 4;
+  margin-top: var(--hero-title-cta-gap);
   margin-bottom: var(--hero-tray-clearance);
 }
 .landing-stas #top .hero-title {
@@ -1501,7 +1544,59 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
   }
 }
 
+/* ---- hero: mobile layout — title under header, spacer gap, CTA at bottom ---- */
+@media (max-width: 767px) {
+  .landing-stas #top {
+    --hero-tray-belt-h: clamp(148px, 19vh, 185px);
+    --hero-tray-belt-mt: max(-10px, calc(-10px + (100vw - 480px) * 0.02));
+    --hero-tray-track-bottom: 6px;
+    --hero-tray-img-w: clamp(108px, 26vw, 128px);
+    --hero-tray-gap: clamp(10px, 2vw, 18px);
+    --hero-tray-clearance: 0;
+    --hero-top-offset: clamp(
+      42px,
+      calc(64px - max(0px, (100vw - 480px) * 0.12)),
+      64px
+    );
+    --hero-title-cta-gap: clamp(
+      32px,
+      calc(72px - max(0px, (100vw - 480px) * 0.15)),
+      72px
+    );
+  }
+  .landing-stas .hero-tray-belt__img {
+    filter: drop-shadow(0 12px 20px rgba(0, 0, 0, 0.38));
+  }
+  .landing-stas #top .hero-top {
+    flex: 0 0 auto;
+    justify-content: flex-start;
+    padding-top: var(--hero-top-offset);
+  }
+  .landing-stas #top .hero-title {
+    font-size: clamp(
+      2.75rem,
+      calc(5.291vw + 2.46rem - max(0px, (100vw - 480px) * 0.04)),
+      5rem
+    );
+  }
+  .landing-stas #top .hero-spacer {
+    display: block;
+    flex: 1 1 auto;
+    min-height: var(--hero-title-cta-gap);
+    width: 100%;
+  }
+  .landing-stas #top .hero-bottom {
+    margin-top: 0;
+  }
+}
+
 /* ---- hero: tighten spacing on short viewports ---- */
+@media (max-width: 767px) and (max-height: 650px) {
+  .landing-stas #top {
+    --hero-top-offset: clamp(21px, 5vh, 32px);
+    --hero-title-cta-gap: clamp(20px, 6vh, 40px);
+  }
+}
 @media (max-height: 650px) {
   .landing-stas #top {
     padding-top: clamp(72px, 12vh, var(--space-96));
