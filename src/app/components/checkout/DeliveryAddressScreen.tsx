@@ -673,7 +673,6 @@ export function DeliveryAddressScreen({
   } | null>(null);
 
   const hasQuery = addressQuery.trim().length > 0;
-  const canContinue = Boolean(selectedAddress);
 
   const visibleSuggestions = useMemo(() => {
     return searchTestUaeAddresses(addressQuery);
@@ -712,6 +711,9 @@ export function DeliveryAddressScreen({
 
     return getEffectiveDeliveryAvailability(selectedAddressMapPoint.point);
   }, [selectedAddressMapPoint]);
+
+  const canContinue =
+    Boolean(selectedAddress) && selectedAddressAvailability === 'available';
 
   const hasSuggestions = visibleSuggestions.length > 0;
   const selectedZoneId = selectedDeliveryZone?.id;
