@@ -3,6 +3,7 @@ import { createElement, Fragment, useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router';
 import { useHorizontalScroll } from '../../useHorizontalScroll';
 import { landingFooterSocials } from '../../../config/socialLinks';
+import { supportEmail } from '../../../config/siteLinks';
 import { Icon, Logo, Stars, Social } from '../icons';
 import { HeroStats } from '../HeroStats';
 
@@ -181,7 +182,11 @@ function Footer({ t, lang, setLang }) {
             createElement('div', { className:'row', style:{ gap:10, flexWrap:'wrap' } },
               socials.map(([k,href])=>createElement('a', { key:k, href, target:'_blank', rel:'noopener noreferrer', 'aria-label':k, title:k,
                 className:'footer-social-link' },
-                createElement(Social[k], { size:19 })))))
+                createElement(Social[k], { size:19 })))),
+            createElement('a', {
+              href:`mailto:${supportEmail}`,
+              className:'footer-email-link',
+            }, supportEmail))
         )
       ),
       createElement('div', { className:'wrap', style:{ marginTop:40, paddingTop:24, borderTop:'1px solid rgba(255,255,255,.12)' } },

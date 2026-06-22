@@ -9,10 +9,7 @@ import {
   SheetTitle,
 } from '../../components/ui/sheet';
 import { personalCabinetUrl, supportEmail } from '../../config/siteLinks';
-import {
-  landingFollowSocials,
-  socialLinks,
-} from '../../config/socialLinks';
+import { landingFooterSocials } from '../../config/socialLinks';
 import { LEGAL_ROUTES } from '../../legal/routes';
 import { displayPhoneFromNormalized } from '../../phoneAuth/PhoneAuthProvider';
 import type { MealContentEn } from '../content/mealContentEn';
@@ -29,7 +26,6 @@ type SiteNavDrawerProps = {
   onResetPhone?: () => void;
   onResumeVerification?: () => void;
   onOrderClick?: () => void;
-  onDesignSystemClick?: () => void;
 };
 
 type NavItem = {
@@ -53,10 +49,8 @@ export function SiteNavDrawer({
   onResetPhone,
   onResumeVerification,
   onOrderClick,
-  onDesignSystemClick,
 }: SiteNavDrawerProps) {
   const { pathname } = useLocation();
-
   const close = useCallback(() => onOpenChange(false), [onOpenChange]);
 
   const navItems: NavItem[] = [
@@ -71,12 +65,6 @@ export function SiteNavDrawer({
     { label: t.footer.privacy, href: LEGAL_ROUTES.privacy, isRoute: true },
     { label: t.footer.terms, href: LEGAL_ROUTES.terms, isRoute: true },
   ];
-
-  const supportItems = [
-    { key: 'whatsapp', label: t.siteNav.whatsapp, href: socialLinks.whatsapp, icon: Social.whatsapp },
-    { key: 'telegram', label: t.siteNav.telegram, href: socialLinks.telegram, icon: Social.telegram },
-    { key: 'email', label: t.siteNav.email, href: `mailto:${supportEmail}`, icon: null },
-  ] as const;
 
   const displayPhone = verifiedPhone
     ? displayPhoneFromNormalized(verifiedPhone)
@@ -117,11 +105,10 @@ export function SiteNavDrawer({
         className="site-nav-drawer"
         aria-describedby={undefined}
       >
-        <SheetTitle className="site-nav-drawer__title">{t.siteNav.menuTitle}</SheetTitle>
+        <SheetTitle className="sr-only">{t.siteNav.menuTitle}</SheetTitle>
 
         <div className="site-nav-drawer__body">
           <section className="site-nav-drawer__section site-nav-drawer__account">
-            <h3 className="site-nav-drawer__heading">{t.siteNav.account}</h3>
             <div className="site-nav-drawer__user">
               <span className="site-nav-drawer__avatar" aria-hidden>
                 <UserIcon size={20} />
@@ -187,7 +174,6 @@ export function SiteNavDrawer({
           </section>
 
           <section className="site-nav-drawer__section">
-            <h3 className="site-nav-drawer__heading">{t.siteNav.navigation}</h3>
             <nav className="site-nav-drawer__links">
               {navItems.map(renderNavLink)}
               {onOrderClick ? (
@@ -210,51 +196,18 @@ export function SiteNavDrawer({
                   {t.hero.cta}
                 </Link>
               )}
-              {onDesignSystemClick ? (
-                <button
-                  type="button"
-                  className="site-nav-drawer__link"
-                  onClick={() => {
-                    onDesignSystemClick();
-                    close();
-                  }}
-                >
-                  {t.nav.designSystem}
-                </button>
-              ) : null}
             </nav>
           </section>
 
           <section className="site-nav-drawer__section">
-            <h3 className="site-nav-drawer__heading">{t.siteNav.legal}</h3>
             <nav className="site-nav-drawer__links">
               {legalItems.map(renderNavLink)}
             </nav>
           </section>
 
           <section className="site-nav-drawer__section">
-            <h3 className="site-nav-drawer__heading">{t.siteNav.support}</h3>
-            <nav className="site-nav-drawer__links">
-              {supportItems.map(({ key, label, href, icon: IconComp }) => (
-                <a
-                  key={key}
-                  href={href}
-                  target={key === 'email' ? undefined : '_blank'}
-                  rel={key === 'email' ? undefined : 'noopener noreferrer'}
-                  className="site-nav-drawer__link site-nav-drawer__link--with-icon"
-                  onClick={close}
-                >
-                  {IconComp ? <IconComp size={18} /> : null}
-                  {label}
-                </a>
-              ))}
-            </nav>
-          </section>
-
-          <section className="site-nav-drawer__section">
-            <h3 className="site-nav-drawer__heading">{t.siteNav.followUs}</h3>
-            <div className="site-nav-drawer__socials">
-              {landingFollowSocials.map(([key, href]) => {
+            <div className="row site-nav-drawer__socials">
+              {landingFooterSocials.map(([key, href]) => {
                 const IconComp = Social[key as keyof typeof Social];
                 return (
                   <a
@@ -262,9 +215,8 @@ export function SiteNavDrawer({
                     href={href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="site-nav-drawer__social-link"
+                    className="footer-social-link"
                     aria-label={key}
-                    title={key}
                     onClick={close}
                   >
                     <IconComp size={19} />
@@ -272,6 +224,13 @@ export function SiteNavDrawer({
                 );
               })}
             </div>
+            <a
+              href={`mailto:${supportEmail}`}
+              className="site-nav-drawer__email"
+              onClick={close}
+            >
+              {supportEmail}
+            </a>
           </section>
         </div>
       </SheetContent>
@@ -296,7 +255,7 @@ export function SiteNavBurgerButton({
         onClick={onClick}
       >
         <span className="hdr-burger-icon">
-          <MenuIcon size={20} />
+          <MenuIcon size={24} />
         </span>
       </button>
     </div>

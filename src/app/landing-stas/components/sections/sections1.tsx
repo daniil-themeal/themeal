@@ -105,7 +105,6 @@ function Header({
         onResetPhone,
         onResumeVerification,
         onOrderClick: onOrder,
-        onDesignSystemClick,
       })
     )
     )

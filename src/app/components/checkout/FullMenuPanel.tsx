@@ -50,6 +50,10 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Se
 
 const MENU_DAYS_COUNT = testMenuDays.length;
 const MOUSE_DRAG_CLICK_THRESHOLD = 6;
+const FULL_MENU_DISCLAIMER =
+  "The actual menu may differ from the website. You'll see your final menu in your account after ordering.";
+const fullMenuDisclaimerClassName =
+  'font-sans text-[length:var(--full-menu-day-meta-font-size)] font-normal leading-[140%] text-[var(--full-menu-muted)]';
 type SlideDirection = 'left' | 'right';
 type FullMenuPanelVariant = 'modal' | 'float';
 
@@ -385,9 +389,6 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     });
   }, [isActive, selectedDayIndex]);
 
-  const headerTitleClassName =
-    'min-w-0 flex-1 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px]';
-
   const mealsOuterClassName = isModal
     ? 'flex-1 overflow-x-hidden overflow-y-auto'
     : 'max-h-[min(52svh,420px)] overflow-x-hidden overflow-y-auto';
@@ -406,7 +407,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     '--full-menu-meal-carousel-padding-bottom':
       variant === 'float'
         ? FULL_MENU_MEAL_CAROUSEL_PADDING_BOTTOM_FLOAT_CLAMP
-        : '20px',
+        : '8px',
   };
 
   return (
@@ -440,7 +441,9 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
 
         {isModal ? (
           <div className="flex h-[56px] shrink-0 items-center gap-[8px] border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
-            <p className={headerTitleClassName}>Full menu</p>
+            <p className="min-w-0 flex-1 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px]">
+              Full menu
+            </p>
 
             {onRequestClose ? (
               <button
@@ -609,29 +612,25 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                 }}
               >
                 <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
-                {mealSlots.map(({ meal, active }) => (
+                {mealSlots
+                  .filter((slot) => slot.active)
+                  .map(({ meal }) => (
                   <button
                     key={meal.id}
                     type="button"
                     onClick={() => handleMealClick(meal)}
-                    className={[
-                      'group relative z-0 flex w-[length:var(--full-menu-meal-card-width)] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10 md:w-[length:var(--full-menu-meal-card-width-md)]',
-                      active ? '' : 'hidden md:flex md:opacity-50',
-                    ].join(' ')}
+                    className="group relative z-0 flex w-[length:var(--full-menu-meal-card-width)] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10 md:w-[length:var(--full-menu-meal-card-width-md)]"
                   >
                     <div className="flex aspect-[25/19] w-full items-center justify-center overflow-visible">
                       <img
                         src={meal.img}
                         alt={meal.name}
                         draggable={false}
-                        className={[
-                          'pointer-events-none h-[94.74%] w-full rounded-[8px] object-cover origin-center transition-transform duration-200',
-                          active ? 'group-hover:scale-105' : 'md:group-hover:scale-100',
-                        ].join(' ')}
+                        className="pointer-events-none h-[94.74%] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105"
                       />
                     </div>
 
-                    <div className="flex w-full flex-col gap-[12px] px-[4px]">
+                    <div className="flex w-full flex-col gap-[8px] px-[4px]">
                       <p
                         className={[
                           TEXT_TRIM_CLASS_NAME,
@@ -644,8 +643,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
 
                       <p
                         className={[
-                          'line-clamp-3 w-full [text-box-edge:auto] [text-box-trim:none] font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors',
-                          active ? 'group-hover:text-[var(--full-menu-active)]' : '',
+                          'line-clamp-3 w-full [text-box-edge:auto] [text-box-trim:none] font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)]',
                         ].join(' ')}
                       >
                         {meal.name}
@@ -667,6 +665,18 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
               endPositionClassName="right-0"
             />
           </div>
+
+          {isModal ? (
+            <div className={mealsBleedClassName}>
+              <div className="flex">
+                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                <p className={`min-w-0 flex-1 px-[4px] pt-[4px] pb-[16px] ${fullMenuDisclaimerClassName}`}>
+                  {FULL_MENU_DISCLAIMER}
+                </p>
+                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+              </div>
+            </div>
+          ) : null}
         </div>
       </div>
 
