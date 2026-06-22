@@ -305,7 +305,7 @@ function Hero({ t, onOrder }) {
     createElement('section', { id:'top', style:{
       background:'radial-gradient(120% 90% at 50% -10%, #5A2487 0%, var(--plum-700) 45%, var(--plum-900) 100%)',
       color:'#fff', position:'relative', overflow:'hidden', minHeight:'100svh', height:'100svh',
-      display:'flex', flexDirection:'column', paddingTop:96, boxSizing:'border-box',
+      display:'flex', flexDirection:'column',
     } },
       /* soft glow blobs */
       createElement('div', { style:{ position:'absolute', top:'-10%', insetInlineEnd:'-8%', width:480, height:480, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.5), transparent 70%)', filter:'blur(20px)', pointerEvents:'none' } }),
