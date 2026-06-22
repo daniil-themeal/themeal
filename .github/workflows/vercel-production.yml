@@ -3,6 +3,7 @@ name: Vercel Production Deploy
 on:
   push:
     branches:
+      - master
       - feature/next
     paths-ignore:
       - "telegram-cursor-bot/**"
