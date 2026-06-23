@@ -1,4 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
+
+import { isDevToolsEnabled } from '../devToolsEnabled';
 import { CheckoutAuthModal } from '../components/checkout/CheckoutAuthModal';
 import { formatUaePhoneInput, normalizeUaePhone } from '../components/checkout/phoneValidation';
 import {
@@ -256,7 +258,7 @@ export function PhoneAuthProvider({ children }: PhoneAuthProviderProps) {
         isVerifying={leadIsSmsVerifying}
         onCodeChange={handleLeadSmsCodeChange}
         onCodeComplete={handleLeadSmsCodeComplete}
-        onSkip={import.meta.env.DEV ? handleLeadAuthModalSkip : undefined}
+        onSkip={isDevToolsEnabled ? handleLeadAuthModalSkip : undefined}
       />
     </PhoneAuthContext.Provider>
   );

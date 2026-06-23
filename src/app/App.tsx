@@ -8,6 +8,7 @@ import PrivacyPolicyPage from './legal/PrivacyPolicyPage';
 import TermsAndConditionsPage from './legal/TermsAndConditionsPage';
 import NotFoundPage from './NotFoundPage';
 import { LEGAL_ROUTES } from './legal/routes';
+import { isDevToolsEnabled } from './devToolsEnabled';
 import {
   loadPhoneSession,
   mergePhoneSession,
@@ -223,7 +224,7 @@ function HomePage() {
         onResumeVerification={handleResumeVerification}
         onResetPhone={() => resetPhoneAndCheckout()}
         onSignInClick={openSignIn}
-        onDesignSystemClick={import.meta.env.DEV ? openDesignSystem : undefined}
+        onDesignSystemClick={isDevToolsEnabled ? openDesignSystem : undefined}
         checkoutOpen={checkoutOpen}
         quizOpen={quizOpen}
         isPhoneVerified={isPhoneVerified}

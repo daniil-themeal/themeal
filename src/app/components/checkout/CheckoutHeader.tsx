@@ -1,5 +1,7 @@
 import type { CSSProperties, ReactNode } from 'react';
 
+import { isDevToolsEnabled } from '../../devToolsEnabled';
+
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
@@ -88,7 +90,7 @@ function Stepper({
   current: number;
   onStepSelect?: (step: CheckoutHeaderStep) => void;
 }) {
-  const isDevStepSelect = import.meta.env.DEV && Boolean(onStepSelect);
+  const isDevStepSelect = isDevToolsEnabled && Boolean(onStepSelect);
 
   return (
     <div className="flex h-full items-center justify-center gap-0 px-[0px] sm:px-[8px] md:px-[16px]">
@@ -261,7 +263,7 @@ export function CheckoutHeader({
           ) : (
             <div className="flex h-full min-w-0 items-center justify-center">
               <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
-              {import.meta.env.DEV && onAuthDevModeChange ? (
+              {isDevToolsEnabled && onAuthDevModeChange ? (
                 <div className="flex items-center">
                   <div className="mx-[8px] h-px w-[12px] bg-[var(--checkout-header-border)]" />
                   <CheckoutAuthDevTabs
@@ -270,7 +272,7 @@ export function CheckoutHeader({
                   />
                 </div>
               ) : null}
-              {import.meta.env.DEV && onResultSelect ? (
+              {isDevToolsEnabled && onResultSelect ? (
                 <div className="hidden items-center md:flex">
                   <div className="mx-[8px] h-px w-[12px] bg-[var(--checkout-header-border)]" />
                   <PaymentResultTabs onTabChange={onResultSelect} />

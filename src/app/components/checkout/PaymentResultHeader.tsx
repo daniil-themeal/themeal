@@ -1,5 +1,7 @@
 import type { CSSProperties } from 'react';
 
+import { isDevToolsEnabled } from '../../devToolsEnabled';
+
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { XIcon } from '../common/icons';
 import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
@@ -27,7 +29,7 @@ export function PaymentResultHeader({
         <div aria-hidden />
 
         <div className="flex items-center justify-center">
-          {import.meta.env.DEV ? (
+          {isDevToolsEnabled ? (
             <PaymentResultTabs activeTab={activeTab} onTabChange={onTabChange} />
           ) : null}
         </div>

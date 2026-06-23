@@ -40,6 +40,7 @@ import { usePlanStepScrollChaining } from './usePlanStepScrollChaining';
 import { CHECKOUT_ROOT_CLASSNAME } from './checkoutModalShellTokens';
 import { getUpcomingDeliveryDates, isSameDay } from './mealCalendarUtils';
 import { getSampleDeliveryAddress, getSampleDeliveryDetailsFill } from './deliverySampleData';
+import { isDevToolsEnabled } from '../../devToolsEnabled';
 import './checkout.css';
 
 type CheckoutUiStep = 'plan' | 'delivery' | 'payment';
@@ -822,14 +823,14 @@ export function CheckoutPage({
 
   if (!isOpen) return null;
 
-  const devStepSelectProps = import.meta.env.DEV ? { onStepSelect: handleStepSelect } : {};
-  const devAuthProps = import.meta.env.DEV
+  const devStepSelectProps = isDevToolsEnabled ? { onStepSelect: handleStepSelect } : {};
+  const devAuthProps = isDevToolsEnabled
     ? {
         authDevMode: (devSkipAuth ? 'skip' : 'required') as CheckoutAuthDevMode,
         onAuthDevModeChange: handleDevAuthModeChange,
       }
     : {};
-  const devResultSelectProps = import.meta.env.DEV
+  const devResultSelectProps = isDevToolsEnabled
     ? { onResultSelect: handleResultTabChange }
     : {};
 
@@ -997,7 +998,7 @@ export function CheckoutPage({
         isVerifying={isSmsVerifying}
         onCodeChange={handleSmsCodeChange}
         onCodeComplete={handleSmsCodeComplete}
-        onSkip={import.meta.env.DEV ? handleAuthModalSkip : undefined}
+        onSkip={isDevToolsEnabled ? handleAuthModalSkip : undefined}
       />
 
       {resultOverlay ? (

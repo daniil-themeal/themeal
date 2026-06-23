@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
 
+import { isDevToolsEnabled } from '../../devToolsEnabled';
 import { QUIZ_TOTAL_STEPS, type QuizStepId } from './quizTypes';
 
 type QuizStepHeaderProps = {
@@ -21,7 +22,7 @@ function QuizProgressSegments({
   totalSteps: number;
   onStepSelect?: (step: QuizStepId) => void;
 }) {
-  const isDevStepSelect = import.meta.env.DEV && Boolean(onStepSelect);
+  const isDevStepSelect = isDevToolsEnabled && Boolean(onStepSelect);
 
   return (
     <div

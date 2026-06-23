@@ -2,6 +2,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Bike, ChefHat, Store } from 'lucide-react';
 
+import { isDevToolsEnabled } from '../../devToolsEnabled';
+
 import { Button } from '../common/Button';
 import { ChevronLeftIcon } from '../common/icons';
 import { ModalHeader } from '../common/Modal';
@@ -67,7 +69,7 @@ export function QuizModal({ open, onClose, onSeePlan }: QuizModalProps) {
   } = useQuizState();
 
   const [verifiedPhone, setVerifiedPhone] = useState('');
-  const devStepSelectProps = import.meta.env.DEV ? { onStepSelect: goToStep } : {};
+  const devStepSelectProps = isDevToolsEnabled ? { onStepSelect: goToStep } : {};
 
   useEffect(() => {
     if (!open) {

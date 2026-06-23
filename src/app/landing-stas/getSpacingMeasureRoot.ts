@@ -1,3 +1,5 @@
+import { isDevToolsEnabled } from '../devToolsEnabled';
+
 export const SPACING_ROOT_ATTR = 'data-spacing-root';
 export const SPACING_CONTENT_ATTR = 'data-spacing-content';
 
@@ -37,7 +39,7 @@ export function getSpacingMeasureContext(): SpacingMeasureContext | null {
   if (topRoot) {
     const root = resolveContentRoot(topRoot);
 
-    if (root === topRoot && import.meta.env.DEV) {
+    if (root === topRoot && isDevToolsEnabled) {
       console.warn('[spacing] data-spacing-content missing inside open window', topRoot);
     }
 

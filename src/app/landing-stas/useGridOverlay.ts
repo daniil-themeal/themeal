@@ -1,5 +1,7 @@
 import { useSyncExternalStore } from 'react';
 
+import { isDevToolsEnabled } from '../devToolsEnabled';
+
 const COLS_KEY = 'landing-stas-grid-cols';
 const ROWS_KEY = 'landing-stas-grid-rows';
 const SPACING_KEY = 'landing-stas-grid-spacing';
@@ -155,7 +157,7 @@ function onKeyDown(event: KeyboardEvent) {
 let keyboardAttached = false;
 
 function attachKeyboard() {
-  if (!import.meta.env.DEV || keyboardAttached || typeof window === 'undefined') return;
+  if (!isDevToolsEnabled || keyboardAttached || typeof window === 'undefined') return;
   keyboardAttached = true;
   window.addEventListener('keydown', onKeyDown);
 }

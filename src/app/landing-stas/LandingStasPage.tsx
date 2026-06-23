@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { isDevToolsEnabled } from '../devToolsEnabled';
 import { mealContentEn } from './content/mealContentEn';
 import { landingLayoutStyle } from './landingLayoutTokens';
 import { useScrollReveal } from './useScrollReveal';
@@ -106,7 +107,7 @@ export default function LandingStasPage({
       <Footer t={t} />
       <OrderFab t={t} onOrderClick={onOrderClick} onQuizClick={onQuizClick} hidden={checkoutOpen || quizOpen} />
       <ScrollToTopFab hidden={checkoutOpen || quizOpen} />
-      {import.meta.env.DEV ? <DevToolsOverlays /> : null}
+      {isDevToolsEnabled ? <DevToolsOverlays /> : null}
     </div>
   );
 }
