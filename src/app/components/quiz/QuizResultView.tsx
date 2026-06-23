@@ -66,22 +66,18 @@ export function QuizResultView({ answers, result }: QuizResultViewProps) {
       </div>
 
       <div className={QUIZ_SECTION_PX_CLASSNAME}>
-        <div className="flex flex-col gap-[8px]">
-          <p className="text-center font-sans text-[length:var(--quiz-caption-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
-            Where it comes from
-          </p>
-          <div className="grid grid-cols-3 gap-[8px]">
-            <BreakdownCell label="Groceries" value={`${mCook} AED`} />
-            <BreakdownCell label="Delivery" value={`${mOrder} AED`} />
-            <BreakdownCell label="Dining out" value={`${mRest} AED`} />
-          </div>
-        </div>
+        <p className="text-center font-sans text-[length:var(--quiz-caption-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
+          Where it comes from: Groceries{' '}
+          <span className="font-bold text-[var(--quiz-text)]">{mCook}</span> · Delivery{' '}
+          <span className="font-bold text-[var(--quiz-text)]">{mOrder}</span> · Dining out{' '}
+          <span className="font-bold text-[var(--quiz-text)]">{mRest} AED</span>
+        </p>
       </div>
 
       <div className={QUIZ_SECTION_PX_CLASSNAME}>
-        <div className="flex flex-col gap-[16px] rounded-[16px] bg-[var(--quiz-surface)] p-[16px]">
+        <div className="flex flex-col gap-[16px]">
           <div className="flex flex-col gap-[8px]">
-            <h3 className="font-sans text-[length:var(--quiz-title-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
+            <h3 className="mb-[12px] font-sans text-[length:var(--quiz-title-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
               {heading}
             </h3>
             <p className="font-sans text-[length:var(--quiz-body-font-size)] font-semibold leading-[140%] text-[var(--quiz-muted)]">
@@ -99,19 +95,6 @@ export function QuizResultView({ answers, result }: QuizResultViewProps) {
           {upsell}
         </p>
       </div>
-    </div>
-  );
-}
-
-function BreakdownCell({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex min-h-[64px] flex-col items-center justify-center gap-[4px] rounded-[12px] border border-[var(--quiz-border)] bg-[var(--quiz-surface)] p-[12px] text-center">
-      <span className="font-sans text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--quiz-muted)]">
-        {label}
-      </span>
-      <span className="font-sans text-[length:var(--quiz-body-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
-        {value}
-      </span>
     </div>
   );
 }

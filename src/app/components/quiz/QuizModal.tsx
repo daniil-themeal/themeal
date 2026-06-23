@@ -1,9 +1,14 @@
 import { useCallback, useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Bike, ChefHat, Store } from 'lucide-react';
 
 import { Button } from '../common/Button';
-import { Modal } from '../common/Modal';
+import { ChevronLeftIcon } from '../common/icons';
+import { ModalHeader } from '../common/Modal';
+import { ModalShell } from '../common/ModalShell';
+import { modalTokensStyle } from '../common/modalTokens';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
+import { CHECKOUT_ROOT_CLASSNAME } from '../checkout/checkoutModalShellTokens';
 import { QuizCardOption } from './QuizCardOption';
 import { QuizLeadFlow } from './QuizLeadFlow';
 import { QuizResultView } from './QuizResultView';
@@ -12,9 +17,9 @@ import { QuizValueSlider } from './QuizValueSlider';
 import { toCheckoutSelection } from './quizCalculations';
 import type { QuizCheckoutSelection, QuizFreeDays, QuizPain, QuizPeople } from './quizTypes';
 import {
-  QUIZ_MODAL_INNER_CLASSNAME,
-  QUIZ_MODAL_PANEL_CLASSNAME,
-  QUIZ_MODAL_ROOT_CLASSNAME,
+  QUIZ_MODAL_SHELL_INNER_CLASSNAME,
+  QUIZ_MODAL_SHELL_PANEL_CLASSNAME,
+  QUIZ_MODAL_SHELL_ROOT_CLASSNAME,
   QUIZ_SECTION_PB_CLASSNAME,
   QUIZ_SECTION_PT_CLASSNAME,
   QUIZ_SECTION_PX_CLASSNAME,
@@ -95,7 +100,15 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
       ? (
           <div className={`flex w-full gap-[12px] ${QUIZ_SECTION_PX_CLASSNAME} pt-0 pb-[length:var(--checkout-card-padding)]`}>
             {canGoBack ? (
-              <Button type="button" variant="neutral" outline size="medium" className="min-w-[88px]" onClick={goBack}>
+              <Button
+                type="button"
+                variant="neutral"
+                outline
+                size="medium"
+                leftIcon={<ChevronLeftIcon size={20} />}
+                className="shrink-0"
+                onClick={goBack}
+              >
                 Back
               </Button>
             ) : null}
@@ -114,31 +127,42 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         )
       : null;
 
-  return (
-    <Modal
+  if (!open) return null;
+
+  return createPortal(
+    <ModalShell
       isOpen={open}
       onClose={onClose}
-      ariaLabel="Real spend test"
-      title="Real spend test"
-      subtitle="Compare your real food spend with TheMeal"
-      closeAriaLabel="Close quiz"
-      variant="centered-scroll"
-      bodyWrapper={false}
-      rootClassName={QUIZ_MODAL_ROOT_CLASSNAME}
+      variant="fullscreen"
       zIndex={Z_INDEX_TOKENS.modal}
-      panelClassName={QUIZ_MODAL_PANEL_CLASSNAME}
-      innerClassName={QUIZ_MODAL_INNER_CLASSNAME}
-      footer={footer}
-      footerClassName="border-t-0"
-      style={quizTokensStyle}
+      rootClassName={`${CHECKOUT_ROOT_CLASSNAME} ${QUIZ_MODAL_SHELL_ROOT_CLASSNAME}`}
+      panelClassName={QUIZ_MODAL_SHELL_PANEL_CLASSNAME}
     >
-      <div
-        className={[
-          'flex flex-col gap-[24px]',
-          QUIZ_SECTION_PT_CLASSNAME,
-          QUIZ_SECTION_PB_CLASSNAME,
-        ].join(' ')}
-      >
+      {(requestClose) => (
+        <div
+          style={{ ...modalTokensStyle, ...quizTokensStyle }}
+          className={QUIZ_MODAL_SHELL_INNER_CLASSNAME}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Real spend test"
+        >
+          <ModalHeader
+            title="Real spend test"
+            subtitle="Compare your real food spend with TheMeal"
+            onClose={requestClose}
+            closeAriaLabel="Close quiz"
+          />
+
+          <div className="flex flex-1 flex-col bg-[var(--quiz-modal-bg)] sm:flex-none">
+            <div
+              className={[
+                'flex flex-col gap-[24px]',
+                QUIZ_SECTION_PT_CLASSNAME,
+                footer ? '' : QUIZ_SECTION_PB_CLASSNAME,
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
         {phase.kind === 'question' && phase.step === 1 ? (
           <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
             <QuizStepHeader
@@ -352,8 +376,14 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
             onWhatsAppFirst={handleWhatsAppFirst}
           />
         ) : null}
-      </div>
-    </Modal>
+            </div>
+
+            {footer}
+          </div>
+        </div>
+      )}
+    </ModalShell>,
+    document.body,
   );
 }
 

@@ -11,15 +11,14 @@ import {
   MEAL_DETAIL_CONTENT_PADDING_CLAMP,
 } from '../checkout/checkoutSpacing';
 
-export const QUIZ_MODAL_PANEL_CLASSNAME = [
-  'relative flex w-full max-w-none flex-col overflow-hidden rounded-t-[20px] bg-[var(--quiz-modal-bg)] pb-[env(safe-area-inset-bottom)] shadow-2xl',
-  'sm:mx-[24px] sm:max-w-[520px] sm:rounded-[20px]',
-].join(' ');
+export const QUIZ_MODAL_SHELL_ROOT_CLASSNAME =
+  'bg-[var(--quiz-modal-bg)] pb-[env(safe-area-inset-bottom)] sm:p-[24px]';
 
-export const QUIZ_MODAL_ROOT_CLASSNAME = 'bg-black/40 py-[16px] sm:py-[24px]';
+export const QUIZ_MODAL_SHELL_PANEL_CLASSNAME =
+  'w-full bg-[var(--quiz-modal-bg)] sm:max-w-[520px] sm:overflow-hidden sm:rounded-[20px] sm:shadow-2xl';
 
-export const QUIZ_MODAL_INNER_CLASSNAME =
-  'flex flex-col overflow-hidden bg-[var(--quiz-modal-bg)] sm:rounded-[20px] !max-h-none';
+export const QUIZ_MODAL_SHELL_INNER_CLASSNAME =
+  'flex min-h-full flex-col bg-[var(--quiz-modal-bg)] sm:min-h-0 sm:overflow-hidden sm:rounded-[20px]';
 
 export const QUIZ_SECTION_PX_CLASSNAME =
   'px-[length:var(--checkout-card-padding)] sm:px-[length:var(--meal-detail-content-p)]';
@@ -146,10 +145,12 @@ export const QUIZ_METRIC_VARIANTS: Record<QuizMetricVariant, QuizMetricVariantSt
 };
 
 export const QUIZ_SLIDER_CLASSNAME = [
-  'h-[44px] min-h-[44px] items-center',
-  '[&_[data-slot=slider-track]]:h-full',
+  'h-[32px] min-h-[32px] items-center',
+  '[&_[data-slot=slider-track]]:h-[32px]',
+  '[&_[data-slot=slider-track]]:min-h-[32px]',
   '[&_[data-slot=slider-track]]:rounded-full',
   '[&_[data-slot=slider-track]]:bg-[var(--quiz-border)]',
+  '[&_[data-slot=slider-range]]:h-full',
   '[&_[data-slot=slider-range]]:rounded-full',
   '[&_[data-slot=slider-range]]:bg-[var(--quiz-slider-range)]',
   '[&_[data-slot=slider-thumb]]:relative',

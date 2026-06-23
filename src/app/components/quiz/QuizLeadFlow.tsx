@@ -177,7 +177,7 @@ export function QuizLeadFlow({
       className={[
         embedded ? 'flex flex-col gap-[16px]' : 'flex flex-col gap-[20px]',
         QUIZ_SECTION_PX_CLASSNAME,
-        embedded ? 'border-t border-[var(--quiz-border)] pt-[20px]' : '',
+        embedded ? 'border-t border-[var(--quiz-border)] pt-[20px] pb-[20px]' : '',
       ]
         .filter(Boolean)
         .join(' ')}
