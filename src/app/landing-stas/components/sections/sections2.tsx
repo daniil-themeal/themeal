@@ -504,6 +504,7 @@ function LeadCapture({
                       ? createElement(VerifiedPhoneLogoutButton, {
                           phone: normalizedToDisplayPhone(verifiedPhone),
                           onClick: handleResetPhone,
+                          size: 'large',
                         })
                       : null,
                     createElement('button', { type:'button', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 }, onClick: onContinue }, l.continueCta))
@@ -513,6 +514,7 @@ function LeadCapture({
                         ? createElement(VerifiedPhoneLogoutButton, {
                             phone: normalizedToDisplayPhone(pendingPhone),
                             onClick: handleResetPhone,
+                            size: 'large',
                           })
                         : null,
                       createElement('button', {

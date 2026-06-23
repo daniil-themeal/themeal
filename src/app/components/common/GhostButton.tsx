@@ -9,7 +9,7 @@ import { BORDER_RADIUS_TOKENS } from './borderRadiusTokens';
 import { FONT_SIZE_TOKENS } from './fontSizeTokens';
 import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
-export const GHOST_BUTTON_SIZES = ['small', 'medium'] as const;
+export const GHOST_BUTTON_SIZES = ['small', 'medium', 'large'] as const;
 
 export type GhostButtonSize = (typeof GHOST_BUTTON_SIZES)[number];
 
@@ -26,6 +26,11 @@ const GHOST_BUTTON_SIZE_STYLES: Record<
     fontSize: FONT_SIZE_TOKENS[14],
     iconClassName: '[&>svg]:size-[20px] [&>img]:size-[20px]',
     paddingClassName: 'px-[10px] py-[6px]',
+  },
+  large: {
+    fontSize: FONT_SIZE_TOKENS[20],
+    iconClassName: '[&>svg]:size-[20px] [&>img]:size-[20px]',
+    paddingClassName: 'min-h-[48px] px-[12px] py-[10px]',
   },
 };
 
