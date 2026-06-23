@@ -272,7 +272,7 @@ export const mealContentEn = {
         "items": [
           [
             "Affordable",
-            "39.9 AED/day"
+            "from 39.9 AED/day"
           ],
           [
             "Convenient",
