@@ -1,5 +1,8 @@
 name: Vercel Production Deploy
 
+# Production branch on Vercel: feature/next (see project Environments → Production).
+# Deploy hook must target feature/next — secret VERCEL_DEPLOY_HOOK = feature-next-prod hook.
+
 on:
   push:
     branches:
@@ -13,7 +16,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Vercel production deploy
+      - name: Trigger Vercel production deploy (feature/next)
         run: curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
