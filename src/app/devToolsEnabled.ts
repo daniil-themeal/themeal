@@ -1,3 +1,2 @@
-/** Temporarily enable dev overlays in production via VITE_ENABLE_DEV_TOOLS=true */
-export const isDevToolsEnabled =
-  import.meta.env.DEV || import.meta.env.VITE_ENABLE_DEV_TOOLS === 'true';
+/** TEMP: forced on for live testing — revert to env flag before public launch. */
+export const isDevToolsEnabled = true;
