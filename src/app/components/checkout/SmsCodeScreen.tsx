@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { CSSProperties } from 'react';
+import { Link } from 'react-router';
 
 import { Button } from '../common/Button';
 import { InputButtonRow } from '../common/InputButtonRow';
@@ -17,6 +18,7 @@ import {
 } from './checkoutSpacing';
 import { PhoneInput } from '../common/PhoneInput';
 import { MODAL_SHELL_ENTER_ANIMATION_MS } from '../common/ModalShell';
+import { LEGAL_ROUTES } from '../../legal/routes';
 import { validateUaePhone } from './phoneValidation';
 
 type SmsCodeScreenProps = {
@@ -278,31 +280,44 @@ export function SmsCodeScreen({
               </div>
             </>
           ) : isModal ? (
-            <InputButtonRow
-              rowBreakpoint={400}
-              align="start"
-              className={phoneSectionMt}
-              input={
-                <PhoneInput
-                  id="sms-code-phone"
-                  value={phone}
-                  onChange={handlePhoneChange}
-                  error={phoneError}
-                  className="w-full sm:[&>div:first-child>div:last-child]:min-w-[176px]"
-                />
-              }
-              action={
-                <Button
-                  type="button"
-                  variant="primary"
-                  size="medium"
-                  className="w-full @[400px]:w-auto @[400px]:shrink-0"
-                  onClick={handleContinueWithPhone}
-                >
-                  Continue
-                </Button>
-              }
-            />
+            <>
+              <InputButtonRow
+                rowBreakpoint={400}
+                align="start"
+                className={phoneSectionMt}
+                input={
+                  <PhoneInput
+                    id="sms-code-phone"
+                    value={phone}
+                    onChange={handlePhoneChange}
+                    error={phoneError}
+                    className="w-full sm:[&>div:first-child>div:last-child]:min-w-[176px]"
+                  />
+                }
+                action={
+                  <Button
+                    type="button"
+                    variant="primary"
+                    size="medium"
+                    className="w-full @[400px]:w-auto @[400px]:shrink-0"
+                    onClick={handleContinueWithPhone}
+                  >
+                    Continue
+                  </Button>
+                }
+              />
+
+              <p className="mt-[12px] text-center font-sans text-[14px] font-medium leading-[140%] text-[var(--sms-code-muted)]">
+                By continuing, you accept our{' '}
+                <Link to={LEGAL_ROUTES.terms} className="underline">
+                  Terms
+                </Link>{' '}
+                and{' '}
+                <Link to={LEGAL_ROUTES.privacy} className="underline">
+                  Privacy Policy
+                </Link>
+              </p>
+            </>
           ) : (
             <div className={`${phoneSectionMt} flex w-full flex-col gap-[16px]`}>
               <PhoneInput

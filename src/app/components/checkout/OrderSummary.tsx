@@ -1,8 +1,6 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
 import type { CSSProperties } from 'react';
 import { createPortal } from 'react-dom';
-import { Link } from 'react-router';
-
 import { AnimatedNumber } from '../common/AnimatedNumber';
 import { Button } from '../common/Button';
 import { IconButton } from '../common/IconButton';
@@ -23,7 +21,6 @@ import {
   testMenuDays,
   type LightMealOption,
 } from '../../data/testMeals';
-import { LEGAL_ROUTES } from '../../legal/routes';
 import type { Meal as MealDetail } from '../../types/meal';
 import {
   DEFAULT_CHECKOUT_PRICING,
@@ -268,9 +265,12 @@ export function OrderSummary({
   return (
     <>
       <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none max-md:pb-[length:var(--checkout-plan-column-pb-mobile)]" style={orderSummaryStyle}>
-        <div className="rounded-[16px] bg-[var(--order-summary-bg)] pt-[28px] pb-[28px] max-md:pb-[16px]">
+        <div
+          ref={planTariffAnchorRef}
+          className="rounded-[16px] bg-[var(--order-summary-bg)] pt-[28px] pb-[28px] max-md:pb-[16px]"
+        >
           <div className="flex flex-col">
-            <div ref={planTariffAnchorRef} className={orderSummarySectionPx}>
+            <div className={orderSummarySectionPx}>
               <PlanTariffSummary title={getPlanTariffTitle(plan)} chips={planTariffChips} />
             </div>
 
@@ -460,8 +460,6 @@ export function OrderSummary({
               <Button type="button" variant="primary" size="medium" fullWidth onClick={onOrder}>
                 Continue to Delivery
               </Button>
-
-              <p className="text-center font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[140%] text-[var(--order-summary-muted)]">By continuing, you accept our <Link to={LEGAL_ROUTES.terms} className="underline">Terms</Link> and <Link to={LEGAL_ROUTES.privacy} className="underline">Privacy Policy</Link></p>
             </div>
 
             <div className={['mt-[length:var(--order-summary-section-gap)] scroll-mb-[72px]', orderSummarySectionPx].join(' ')}>
