@@ -12,11 +12,6 @@ function Header({
   onOrder,
   dark,
   onDesignSystemClick,
-  isPhoneVerified,
-  verifiedPhone,
-  pendingPhone,
-  onResetPhone,
-  onResumeVerification,
 }) {
   const [navOpen, setNavOpen] = useState(false);
   const [shown, setShown] = useState(true);
@@ -97,11 +92,6 @@ function Header({
         open: navOpen,
         onOpenChange: setNavOpen,
         t,
-        isPhoneVerified,
-        verifiedPhone,
-        pendingPhone,
-        onResetPhone,
-        onResumeVerification,
         onOrderClick: onOrder,
       })
     )

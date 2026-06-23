@@ -4,7 +4,6 @@ import { Logo } from '../landing-stas/components/icons';
 import { SiteLangSwitcher } from '../landing-stas/components/SiteLangSwitcher';
 import { SiteNavBurgerButton, SiteNavDrawer } from '../landing-stas/components/SiteNavDrawer';
 import type { mealContentEn } from '../landing-stas/content/mealContentEn';
-import { usePhoneAuth } from '../phoneAuth/PhoneAuthProvider';
 
 type LegalHeaderProps = {
   t: typeof mealContentEn;
@@ -15,13 +14,6 @@ export function LegalHeader({ t }: LegalHeaderProps) {
   const [hovered, setHovered] = useState(false);
   const [navOpen, setNavOpen] = useState(false);
   const last = useRef(0);
-  const {
-    isPhoneVerified,
-    verifiedPhone,
-    pendingPhone,
-    resetPhoneSession,
-    handleResumeVerification,
-  } = usePhoneAuth();
 
   useEffect(() => {
     const onScroll = () => {
@@ -70,11 +62,6 @@ export function LegalHeader({ t }: LegalHeaderProps) {
         open={navOpen}
         onOpenChange={setNavOpen}
         t={t}
-        isPhoneVerified={isPhoneVerified}
-        verifiedPhone={verifiedPhone}
-        pendingPhone={pendingPhone}
-        onResetPhone={() => resetPhoneSession()}
-        onResumeVerification={handleResumeVerification}
       />
     </div>
   );

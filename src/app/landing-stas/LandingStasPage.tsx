@@ -75,12 +75,6 @@ export default function LandingStasPage({
         {...shared}
         dark
         onDesignSystemClick={onDesignSystemClick}
-        isPhoneVerified={isPhoneVerified}
-        verifiedPhone={verifiedPhone}
-        pendingPhone={pendingPhone}
-        onSignInClick={onSignInClick}
-        onResetPhone={onResetPhone}
-        onResumeVerification={onResumeVerification}
       />
       <main>
         <Hero t={t} onOrder={onOrderClick} />

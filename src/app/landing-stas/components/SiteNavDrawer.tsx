@@ -1,6 +1,5 @@
 import { useCallback } from 'react';
 import { Link, useLocation } from 'react-router';
-import { LogOutIcon } from '../../components/common/icons/feather/LogOutIcon';
 import { MenuIcon } from '../../components/common/icons/feather/MenuIcon';
 import { UserIcon } from '../../components/common/icons/feather/UserIcon';
 import {
@@ -11,7 +10,6 @@ import {
 import { personalCabinetUrl, supportEmail } from '../../config/siteLinks';
 import { landingFooterSocials } from '../../config/socialLinks';
 import { LEGAL_ROUTES } from '../../legal/routes';
-import { displayPhoneFromNormalized } from '../../phoneAuth/PhoneAuthProvider';
 import type { MealContentEn } from '../content/mealContentEn';
 import { Social } from './icons';
 
@@ -19,11 +17,6 @@ type SiteNavDrawerProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   t: MealContentEn;
-  isPhoneVerified?: boolean;
-  verifiedPhone?: string;
-  pendingPhone?: string;
-  onResetPhone?: () => void;
-  onResumeVerification?: () => void;
   onOrderClick?: () => void;
 };
 
@@ -41,11 +34,6 @@ export function SiteNavDrawer({
   open,
   onOpenChange,
   t,
-  isPhoneVerified = false,
-  verifiedPhone,
-  pendingPhone,
-  onResetPhone,
-  onResumeVerification,
   onOrderClick,
 }: SiteNavDrawerProps) {
   const { pathname } = useLocation();
@@ -63,12 +51,6 @@ export function SiteNavDrawer({
     { label: t.footer.privacy, href: LEGAL_ROUTES.privacy, isRoute: true },
     { label: t.footer.terms, href: LEGAL_ROUTES.terms, isRoute: true },
   ];
-
-  const displayPhone = verifiedPhone
-    ? displayPhoneFromNormalized(verifiedPhone)
-    : pendingPhone
-      ? displayPhoneFromNormalized(pendingPhone)
-      : null;
 
   const renderNavLink = (item: NavItem) => {
     const className = 'site-nav-drawer__link';
@@ -111,55 +93,16 @@ export function SiteNavDrawer({
               <span className="site-nav-drawer__avatar" aria-hidden>
                 <UserIcon size={20} />
               </span>
-              <div className="site-nav-drawer__user-info">
-                {isPhoneVerified && displayPhone ? (
-                  <span className="site-nav-drawer__phone">+971 {displayPhone}</span>
-                ) : pendingPhone && displayPhone ? (
-                  <span className="site-nav-drawer__phone site-nav-drawer__phone--pending">
-                    +971 {displayPhone}
-                  </span>
-                ) : (
-                  <span className="site-nav-drawer__guest">{t.nav.signin}</span>
-                )}
-                <a
-                  href={personalCabinetUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="site-nav-drawer__cabinet"
-                  onClick={close}
-                >
-                  {t.siteNav.personalCabinet}
-                </a>
-              </div>
+              <a
+                href={personalCabinetUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="site-nav-drawer__cabinet"
+                onClick={close}
+              >
+                {t.siteNav.personalCabinet}
+              </a>
             </div>
-            {isPhoneVerified || pendingPhone ? (
-              <div className="site-nav-drawer__account-actions">
-                {isPhoneVerified ? (
-                  <button
-                    type="button"
-                    className="site-nav-drawer__action-btn"
-                    onClick={() => {
-                      onResetPhone?.();
-                      close();
-                    }}
-                  >
-                    <LogOutIcon size={16} />
-                    {t.siteNav.signOut}
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="site-nav-drawer__action-btn site-nav-drawer__action-btn--primary"
-                    onClick={() => {
-                      onResumeVerification?.();
-                      close();
-                    }}
-                  >
-                    {t.siteNav.continueVerification}
-                  </button>
-                )}
-              </div>
-            ) : null}
           </section>
 
           <section className="site-nav-drawer__section">

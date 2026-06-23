@@ -1328,7 +1328,7 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
 }
 .site-nav-drawer__user {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 12px;
 }
 .site-nav-drawer__avatar {
@@ -1361,8 +1361,8 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
   color: rgba(255,255,255,.75);
 }
 .site-nav-drawer__cabinet {
-  font-size: var(--fs-14);
-  font-weight: 600;
+  font-size: var(--fs-16);
+  font-weight: 700;
   color: var(--yellow);
   text-decoration: none;
   transition: color .15s;
