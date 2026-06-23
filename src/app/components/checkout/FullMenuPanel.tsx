@@ -50,10 +50,9 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Se
 
 const MENU_DAYS_COUNT = testMenuDays.length;
 const MOUSE_DRAG_CLICK_THRESHOLD = 6;
-const FULL_MENU_DISCLAIMER =
-  "The actual menu may differ from the website. You'll see your final menu in your account after ordering.";
+const FULL_MENU_SURVEY_URL = 'https://survey.survicate.com/581878889e53a60e/?p=anonymous';
 const fullMenuDisclaimerClassName =
-  'font-sans text-[length:var(--full-menu-day-meta-font-size)] font-normal leading-[140%] text-[var(--full-menu-muted)]';
+  'font-sans text-[length:var(--full-menu-day-meta-font-size)] font-normal leading-[140%] whitespace-normal break-words text-[var(--full-menu-disclaimer-text)]';
 type SlideDirection = 'left' | 'right';
 type FullMenuPanelVariant = 'modal' | 'float';
 
@@ -79,6 +78,7 @@ export type FullMenuPanelCssVariables = CSSProperties & {
   '--full-menu-border': string;
   '--full-menu-title': string;
   '--full-menu-muted': string;
+  '--full-menu-disclaimer-text': string;
   '--full-menu-active': string;
   '--full-menu-active-soft': string;
   '--full-menu-active-muted': string;
@@ -113,6 +113,7 @@ export const fullMenuPanelStyle: FullMenuPanelCssVariables = {
   '--full-menu-border': COLOR_TOKENS.neutral[100],
   '--full-menu-title': COLOR_TOKENS.neutral[900],
   '--full-menu-muted': COLOR_TOKENS.neutral[500],
+  '--full-menu-disclaimer-text': COLOR_TOKENS.neutral[600],
   '--full-menu-active': COLOR_TOKENS.primary[500],
   '--full-menu-active-soft': COLOR_TOKENS.primary[50],
   '--full-menu-active-muted': COLOR_TOKENS.primary[400],
@@ -653,6 +654,24 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                 ))}
                 <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
               </div>
+
+              {isModal ? (
+                <div className="flex w-full min-w-0 gap-[length:var(--full-menu-meal-gap)]">
+                  <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                  <p className={`min-w-0 flex-1 px-[4px] pt-[4px] pb-[16px] ${fullMenuDisclaimerClassName}`}>
+                    Menu doesn&apos;t fit your taste?{' '}
+                    <a
+                      href={FULL_MENU_SURVEY_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="break-words underline underline-offset-2 text-[var(--full-menu-active)] transition-colors hover:text-[var(--full-menu-active-muted)]"
+                    >
+                      Take a quick survey and tell us what you&apos;d like.
+                    </a>
+                  </p>
+                  <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                </div>
+              ) : null}
             </div>
 
             <CheckoutScrollEdgeFades
@@ -665,18 +684,6 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
               endPositionClassName="right-0"
             />
           </div>
-
-          {isModal ? (
-            <div className={mealsBleedClassName}>
-              <div className="flex">
-                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
-                <p className={`min-w-0 flex-1 px-[4px] pt-[4px] pb-[16px] ${fullMenuDisclaimerClassName}`}>
-                  {FULL_MENU_DISCLAIMER}
-                </p>
-                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
-              </div>
-            </div>
-          ) : null}
         </div>
       </div>
 

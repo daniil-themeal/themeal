@@ -102,31 +102,10 @@ const checkoutPlanGridStyle: CheckoutPlanGridCssVariables = {
 const checkoutFormStepScrollClassName =
   'flex-1 overflow-x-hidden overflow-y-auto bg-white md:bg-[var(--checkout-page-bg)] scrollbar-hide';
 
-const BOTTOM_FLOAT_HEIGHT = 72;
-const SUMMARY_ANCHOR_THRESHOLD = 0.1;
-
-function getScrollTopToRevealAnchor(
-  body: HTMLElement,
-  anchor: HTMLElement,
-  threshold = SUMMARY_ANCHOR_THRESHOLD,
-  bottomInset = 0,
-) {
+function getScrollTopToAlignAnchorTop(body: HTMLElement, anchor: HTMLElement) {
   const bodyRect = body.getBoundingClientRect();
   const anchorRect = anchor.getBoundingClientRect();
-  const minVisible = anchorRect.height * threshold;
-  const effectiveBodyBottom = bodyRect.bottom - bottomInset;
-
-  const visibleHeight = Math.max(
-    0,
-    Math.min(anchorRect.bottom, effectiveBodyBottom) - Math.max(anchorRect.top, bodyRect.top),
-  );
-
-  if (visibleHeight >= minVisible) return body.scrollTop;
-
-  const intersectionDelta = anchorRect.bottom - bodyRect.top - minVisible;
-  const bottomInsetDelta = anchorRect.bottom - effectiveBodyBottom;
-
-  return body.scrollTop + Math.max(intersectionDelta, bottomInsetDelta, 0);
+  return body.scrollTop + (anchorRect.top - bodyRect.top);
 }
 
 function phoneDigitsFromInitial(initialPhone?: string): string {
@@ -212,6 +191,7 @@ export function CheckoutPage({
   }, []);
 
   const rightRef = useRef<HTMLDivElement>(null);
+  const planTariffAnchorRef = useRef<HTMLDivElement>(null);
   const todayTotalRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const resultBodyRef = useRef<HTMLDivElement>(null);
@@ -485,18 +465,13 @@ export function CheckoutPage({
     setMenuOpen(false);
 
     const body = bodyRef.current;
-    const anchor = todayTotalRef.current ?? rightRef.current;
+    const anchor = planTariffAnchorRef.current ?? rightRef.current;
 
     if (!body || !anchor) return;
 
-    const targetScrollTop = getScrollTopToRevealAnchor(
-      body,
-      anchor,
-      SUMMARY_ANCHOR_THRESHOLD,
-      BOTTOM_FLOAT_HEIGHT,
-    );
+    const targetScrollTop = getScrollTopToAlignAnchorTop(body, anchor);
 
-    body.scrollTo({ top: targetScrollTop, behavior: 'smooth' });
+    body.scrollTo({ top: Math.max(0, targetScrollTop), behavior: 'smooth' });
   };
 
   const handleContinueFromPlan = () => {
@@ -843,6 +818,7 @@ export function CheckoutPage({
                   phone={phone}
                   isPhoneVerified={isAuthComplete}
                   onResetPhone={handleResetPhone}
+                  planTariffAnchorRef={planTariffAnchorRef}
                   todayTotalAnchorRef={todayTotalRef}
                   appliedPromoCode={appliedPromoCode}
                   onAppliedPromoCodeChange={setAppliedPromoCode}

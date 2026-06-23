@@ -147,6 +147,7 @@ export function OrderSummary({
   isPhoneVerified = false,
   onResetPhone,
   pricingTable = DEFAULT_CHECKOUT_PRICING,
+  planTariffAnchorRef,
   todayTotalAnchorRef,
   appliedPromoCode = '',
   onAppliedPromoCodeChange,
@@ -166,6 +167,7 @@ export function OrderSummary({
   isPhoneVerified?: boolean;
   onResetPhone?: () => void;
   pricingTable?: CheckoutPricingTable;
+  planTariffAnchorRef?: RefObject<HTMLDivElement | null>;
   todayTotalAnchorRef?: RefObject<HTMLDivElement | null>;
   appliedPromoCode?: string;
   onAppliedPromoCodeChange?: (code: string) => void;
@@ -268,7 +270,7 @@ export function OrderSummary({
       <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none max-md:pb-[length:var(--checkout-plan-column-pb-mobile)]" style={orderSummaryStyle}>
         <div className="rounded-[16px] bg-[var(--order-summary-bg)] pt-[28px] pb-[28px] max-md:pb-[16px]">
           <div className="flex flex-col">
-            <div className={orderSummarySectionPx}>
+            <div ref={planTariffAnchorRef} className={orderSummarySectionPx}>
               <PlanTariffSummary title={getPlanTariffTitle(plan)} chips={planTariffChips} />
             </div>
 
