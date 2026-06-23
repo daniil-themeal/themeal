@@ -8,7 +8,7 @@ import { Icon, Logo, Stars, Social } from '../icons';
 import { HeroStats } from '../HeroStats';
 
 /* ---------------- Compare benefits ---------------- */
-function Benefits({ t, onOrder }) {
+function Benefits({ t, onQuizClick }) {
   return (
     createElement('section', { className:'section section--cream', id:'benefits' },
       createElement('div', { className:'wrap' },
@@ -44,7 +44,7 @@ function Benefits({ t, onOrder }) {
         ),
         createElement('div', { className:'center reveal' },
           createElement('p', { className:'lead', style:{ marginBottom:24 } }, t.benefits.bottom),
-          createElement('button', { className:'btn btn-secondary btn-lg benefits-cta', onClick:onOrder }, t.benefits.cta, createElement(Icon.clock,{size:20})))
+          createElement('button', { className:'btn btn-secondary btn-lg benefits-cta', onClick:onQuizClick }, t.benefits.cta, createElement(Icon.clock,{size:20})))
       )
     )
   );

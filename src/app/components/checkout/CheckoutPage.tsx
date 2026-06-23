@@ -59,6 +59,13 @@ function resolveInitialCheckoutState(step: CheckoutStep): {
   return { flowStep: step, resultOverlay: null, shouldOpenAuthModal: false };
 }
 
+type CheckoutInitialSelection = {
+  plan?: Plan;
+  days?: DayOption;
+  duration?: Duration;
+  persons?: number;
+};
+
 type CheckoutPageProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -67,6 +74,7 @@ type CheckoutPageProps = {
   initialPhone?: string;
   initialIsVerified?: boolean;
   sessionIsVerified?: boolean;
+  initialSelection?: CheckoutInitialSelection;
   onSessionUpdate?: (session: PhoneSession) => void;
   onResetPhone?: () => void;
 };
@@ -137,6 +145,7 @@ export function CheckoutPage({
   initialPhone,
   initialIsVerified = false,
   sessionIsVerified = false,
+  initialSelection,
   onSessionUpdate,
   onResetPhone,
 }: CheckoutPageProps) {
@@ -270,6 +279,13 @@ export function CheckoutPage({
       setMenuOpen(false);
       setSummaryVisible(flowStep === 'plan');
 
+      if (initialSelection) {
+        if (initialSelection.plan) setPlan(initialSelection.plan);
+        if (initialSelection.days) setDays(initialSelection.days);
+        if (initialSelection.duration) setDuration(initialSelection.duration);
+        if (initialSelection.persons) setPersons(initialSelection.persons);
+      }
+
       setAuthModalOpen(
         !initialIsVerified &&
           !sessionIsVerified &&
@@ -305,7 +321,7 @@ export function CheckoutPage({
     return () => {
       document.body.style.overflow = '';
     };
-  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified, sessionIsVerified, resetCloseState, clearSmsVerifyTimer]);
+  }, [isOpen, initialCheckoutStep, initialDeliveryStep, initialPhone, initialIsVerified, sessionIsVerified, initialSelection, resetCloseState, clearSmsVerifyTimer]);
 
   useEffect(() => {
     if (!isOpen || !isAuthComplete) return;

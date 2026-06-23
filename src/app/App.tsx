@@ -1,7 +1,8 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 import LandingStasPage from './landing-stas/LandingStasPage';
 import { CheckoutPage } from './components/checkout/CheckoutPage';
+import type { DayOption, Duration, Plan } from './data/checkoutPricing';
 import DesignSystemDemo from './components/DesignSystemDemo';
 import PrivacyPolicyPage from './legal/PrivacyPolicyPage';
 import TermsAndConditionsPage from './legal/TermsAndConditionsPage';
@@ -14,6 +15,8 @@ import {
 } from './phoneSession';
 import { PhoneAuthProvider, usePhoneAuth } from './phoneAuth/PhoneAuthProvider';
 
+const QuizModal = lazy(() => import('./components/quiz/QuizModal'));
+
 type InitialCheckoutStep =
   | 'plan'
   | 'verification'
@@ -22,6 +25,13 @@ type InitialCheckoutStep =
   | 'success'
   | 'failed';
 type InitialDeliveryStep = 'address' | 'details';
+
+type CheckoutInitialSelection = {
+  plan?: Plan;
+  days?: DayOption;
+  duration?: Duration;
+  persons?: number;
+};
 
 function resumeCheckoutStep(session: PhoneSession): InitialCheckoutStep {
   if (!session.isVerified) {
@@ -50,6 +60,7 @@ function HomePage() {
   } = usePhoneAuth();
 
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [quizOpen, setQuizOpen] = useState(false);
   const [designSystemOpen, setDesignSystemOpen] = useState(false);
   const [initialCheckoutStep, setInitialCheckoutStep] =
     useState<InitialCheckoutStep>('plan');
@@ -57,6 +68,8 @@ function HomePage() {
     useState<InitialDeliveryStep>('address');
   const [checkoutInitialPhone, setCheckoutInitialPhone] = useState<string | undefined>();
   const [initialIsVerified, setInitialIsVerified] = useState(false);
+  const [checkoutInitialSelection, setCheckoutInitialSelection] =
+    useState<CheckoutInitialSelection | undefined>();
 
   const handleCheckoutSessionUpdate = useCallback(
     (session: PhoneSession) => {
@@ -95,11 +108,13 @@ function HomePage() {
       deliveryStep: InitialDeliveryStep,
       phone?: string,
       isVerified = false,
+      selection?: CheckoutInitialSelection,
     ) => {
       setCheckoutInitialPhone(phone);
       setInitialCheckoutStep(step);
       setInitialDeliveryStep(deliveryStep);
       setInitialIsVerified(isVerified);
+      setCheckoutInitialSelection(selection);
       setCheckoutOpen(true);
     },
     [],
@@ -130,6 +145,43 @@ function HomePage() {
     openCheckoutAt('plan', 'address');
   }, [openCheckoutAt, openCheckoutResume, phoneSession]);
 
+  const openQuiz = useCallback(() => {
+    setQuizOpen(true);
+  }, []);
+
+  const closeQuiz = useCallback(() => {
+    setQuizOpen(false);
+  }, []);
+
+  const handleQuizSeePlan = useCallback(
+    (selection: CheckoutInitialSelection, phone: string) => {
+      setQuizOpen(false);
+
+      const isVerified = Boolean(phone);
+      if (isVerified) {
+        const next = mergePhoneSession(phoneSession, {
+          phone,
+          isVerified: true,
+          checkoutStep: 'plan',
+          deliveryStep: 'address',
+        });
+        handleSessionUpdate(next);
+      }
+
+      openCheckoutAt('plan', 'address', phone || undefined, isVerified, {
+        plan: selection.plan,
+        days: selection.days,
+        duration: selection.duration,
+        persons: selection.persons,
+      });
+    },
+    [handleSessionUpdate, openCheckoutAt, phoneSession],
+  );
+
+  const handleQuizWhatsAppFirst = useCallback(() => {
+    setQuizOpen(false);
+  }, []);
+
   const resetPhoneAndCheckout = useCallback(
     (options?: { closeCheckout?: boolean }) => {
       resetPhoneSession();
@@ -138,6 +190,7 @@ function HomePage() {
       }
       setInitialIsVerified(false);
       setCheckoutInitialPhone(undefined);
+      setCheckoutInitialSelection(undefined);
       setInitialCheckoutStep('plan');
       setInitialDeliveryStep('address');
     },
@@ -145,8 +198,8 @@ function HomePage() {
   );
 
   useEffect(() => {
-    setAuthModalSuppressed(checkoutOpen);
-  }, [checkoutOpen, setAuthModalSuppressed]);
+    setAuthModalSuppressed(checkoutOpen || quizOpen);
+  }, [checkoutOpen, quizOpen, setAuthModalSuppressed]);
 
   const closeCheckout = () => {
     setCheckoutOpen(false);
@@ -168,6 +221,7 @@ function HomePage() {
     <>
       <LandingStasPage
         onOrderClick={openCheckout}
+        onQuizClick={openQuiz}
         onPhoneSubmit={handleLeadPhoneSubmit}
         onContinueClick={openCheckoutResume}
         onResumeVerification={handleResumeVerification}
@@ -175,10 +229,22 @@ function HomePage() {
         onSignInClick={openSignIn}
         onDesignSystemClick={openDesignSystem}
         checkoutOpen={checkoutOpen}
+        quizOpen={quizOpen}
         isPhoneVerified={isPhoneVerified}
         verifiedPhone={verifiedPhone}
         pendingPhone={pendingPhone}
       />
+
+      {quizOpen ? (
+        <Suspense fallback={null}>
+          <QuizModal
+            open={quizOpen}
+            onClose={closeQuiz}
+            onSeePlan={handleQuizSeePlan}
+            onWhatsAppFirst={handleQuizWhatsAppFirst}
+          />
+        </Suspense>
+      ) : null}
 
       <CheckoutPage
         isOpen={checkoutOpen}
@@ -187,6 +253,7 @@ function HomePage() {
         initialDeliveryStep={initialDeliveryStep}
         initialPhone={checkoutInitialPhone}
         initialIsVerified={initialIsVerified}
+        initialSelection={checkoutInitialSelection}
         sessionIsVerified={phoneSession?.isVerified ?? false}
         onSessionUpdate={handleCheckoutSessionUpdate}
         onResetPhone={() => resetPhoneAndCheckout({ closeCheckout: false })}

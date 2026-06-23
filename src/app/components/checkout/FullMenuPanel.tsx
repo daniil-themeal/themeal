@@ -50,6 +50,8 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Se
 
 const MENU_DAYS_COUNT = testMenuDays.length;
 const MOUSE_DRAG_CLICK_THRESHOLD = 6;
+const FULL_MENU_DISCLAIMER =
+  "Actual menu may vary; you'll see your final menu after ordering.";
 const FULL_MENU_SURVEY_URL = 'https://survey.survicate.com/581878889e53a60e/?p=anonymous';
 const fullMenuDisclaimerClassName =
   'font-sans text-[length:var(--full-menu-day-meta-font-size)] font-normal leading-[140%] whitespace-normal break-words text-[var(--full-menu-disclaimer-text)]';
@@ -659,15 +661,17 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                 <div className="flex w-full min-w-0 gap-[length:var(--full-menu-meal-gap)]">
                   <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
                   <p className={`min-w-0 flex-1 px-[4px] pt-[4px] pb-[16px] ${fullMenuDisclaimerClassName}`}>
-                    Menu doesn&apos;t fit your taste?{' '}
+                    {FULL_MENU_DISCLAIMER}{' '}
+                    Not a fit?{' '}
                     <a
                       href={FULL_MENU_SURVEY_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="break-words underline underline-offset-2 text-[var(--full-menu-active)] transition-colors hover:text-[var(--full-menu-active-muted)]"
                     >
-                      Take a quick survey and tell us what you&apos;d like.
+                      Take a quick survey
                     </a>
+                    .
                   </p>
                   <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
                 </div>

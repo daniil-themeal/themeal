@@ -27,6 +27,7 @@ import './styles/landing-stas.css';
 
 type LandingStasPageProps = {
   onOrderClick: () => void;
+  onQuizClick: () => void;
   onPhoneSubmit: (phone: string) => void;
   onContinueClick: () => void;
   onResumeVerification?: () => void;
@@ -34,6 +35,7 @@ type LandingStasPageProps = {
   onDesignSystemClick?: () => void;
   onSignInClick?: () => void;
   checkoutOpen?: boolean;
+  quizOpen?: boolean;
   isPhoneVerified?: boolean;
   verifiedPhone?: string;
   pendingPhone?: string;
@@ -41,6 +43,7 @@ type LandingStasPageProps = {
 
 export default function LandingStasPage({
   onOrderClick,
+  onQuizClick,
   onPhoneSubmit,
   onContinueClick,
   onResumeVerification,
@@ -48,6 +51,7 @@ export default function LandingStasPage({
   onDesignSystemClick,
   onSignInClick,
   checkoutOpen = false,
+  quizOpen = false,
   isPhoneVerified = false,
   verifiedPhone,
   pendingPhone,
@@ -93,14 +97,14 @@ export default function LandingStasPage({
         />
         <Customers t={t} />
         <Fresh t={t} />
-        <Benefits t={t} onOrder={onOrderClick} />
+        <Benefits t={t} onQuizClick={onQuizClick} />
         <Delivery t={t} onOrder={onOrderClick} />
         <FAQ t={t} />
         <FinalOffer t={t} onOrder={onOrderClick} />
       </main>
       <Footer t={t} />
-      <OrderFab t={t} onOrderClick={onOrderClick} hidden={checkoutOpen} />
-      <ScrollToTopFab hidden={checkoutOpen} />
+      <OrderFab t={t} onOrderClick={onOrderClick} hidden={checkoutOpen || quizOpen} />
+      <ScrollToTopFab hidden={checkoutOpen || quizOpen} />
       <DevToolsOverlays />
     </div>
   );
