@@ -1,6 +1,5 @@
 import { Slider } from '../ui/slider';
-import { QUIZ_SLIDER_CLASSNAME } from './quizTokens';
-
+import { QUIZ_SLIDER_CLASSNAME, QUIZ_SLIDER_LABELS_CLASSNAME } from './quizTokens';
 type QuizValueSliderProps = {
   label: string;
   caption?: string;
@@ -19,15 +18,17 @@ export function QuizValueSlider({
   onChange,
 }: QuizValueSliderProps) {
   return (
-    <div className="flex flex-col gap-[12px]">
-      {caption ? (
-        <p className="text-center font-sans text-[length:var(--quiz-caption-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
-          {caption}
+    <div className="flex flex-col gap-[8px]">
+      <div className={QUIZ_SLIDER_LABELS_CLASSNAME}>
+        {caption ? (
+          <p className="text-center font-sans text-[length:var(--quiz-caption-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
+            {caption}
+          </p>
+        ) : null}
+        <p className="text-center font-sans text-[length:var(--quiz-slider-value-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
+          {label}
         </p>
-      ) : null}
-      <p className="text-center font-sans text-[20px] font-bold leading-[130%] text-[var(--quiz-text)]">
-        {label}
-      </p>
+      </div>
       <Slider
         min={min}
         max={max}

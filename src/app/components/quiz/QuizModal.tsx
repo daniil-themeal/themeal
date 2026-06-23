@@ -17,12 +17,16 @@ import { QuizValueSlider } from './QuizValueSlider';
 import { toCheckoutSelection } from './quizCalculations';
 import type { QuizCheckoutSelection, QuizFreeDays, QuizPain, QuizPeople } from './quizTypes';
 import {
+  QUIZ_FOOTER_ACTIONS_CLASSNAME,
+  QUIZ_MODAL_BODY_CLASSNAME,
+  QUIZ_MODAL_FOOTER_CLASSNAME,
+  QUIZ_MODAL_SCROLL_CLASSNAME,
   QUIZ_MODAL_SHELL_INNER_CLASSNAME,
   QUIZ_MODAL_SHELL_PANEL_CLASSNAME,
   QUIZ_MODAL_SHELL_ROOT_CLASSNAME,
   QUIZ_SECTION_PB_CLASSNAME,
   QUIZ_SECTION_PT_CLASSNAME,
-  QUIZ_SECTION_PX_CLASSNAME,
+  QUIZ_STEP_BODY_CLASSNAME,
   quizTokensStyle,
 } from './quizTokens';
 import { useQuizState } from './useQuizState';
@@ -95,10 +99,10 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
   const leadFlowPhase =
     phase.kind === 'result' ? 'offer' : phase.kind === 'sms' ? 'sms' : 'success';
 
-  const footer =
+  const footerActions =
     showQuestionFooter || showBackOnlyFooter
       ? (
-          <div className={`flex w-full gap-[12px] ${QUIZ_SECTION_PX_CLASSNAME} pt-0 pb-[length:var(--checkout-card-padding)]`}>
+          <>
             {canGoBack ? (
               <Button
                 type="button"
@@ -123,7 +127,7 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
                 Next
               </Button>
             ) : null}
-          </div>
+          </>
         )
       : null;
 
@@ -153,18 +157,19 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
             closeAriaLabel="Close quiz"
           />
 
-          <div className="flex flex-1 flex-col bg-[var(--quiz-modal-bg)] sm:flex-none">
-            <div
-              className={[
-                'flex flex-col gap-[24px]',
-                QUIZ_SECTION_PT_CLASSNAME,
-                footer ? '' : QUIZ_SECTION_PB_CLASSNAME,
-              ]
-                .filter(Boolean)
-                .join(' ')}
-            >
+          <div className={QUIZ_MODAL_BODY_CLASSNAME}>
+            <div className={QUIZ_MODAL_SCROLL_CLASSNAME}>
+              <div
+                className={[
+                  'flex flex-col gap-[24px]',
+                  QUIZ_SECTION_PT_CLASSNAME,
+                  footerActions ? '' : QUIZ_SECTION_PB_CLASSNAME,
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
         {phase.kind === 'question' && phase.step === 1 ? (
-          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
+          <div className={QUIZ_STEP_BODY_CLASSNAME}>
             <QuizStepHeader
               step={progressStep}
               {...devStepSelectProps}
@@ -192,7 +197,7 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 2 ? (
-          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
+          <div className={QUIZ_STEP_BODY_CLASSNAME}>
             <QuizStepHeader
               step={progressStep}
               {...devStepSelectProps}
@@ -213,7 +218,7 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 3 ? (
-          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
+          <div className={QUIZ_STEP_BODY_CLASSNAME}>
             <QuizStepHeader
               step={progressStep}
               {...devStepSelectProps}
@@ -234,7 +239,7 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 4 ? (
-          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
+          <div className={QUIZ_STEP_BODY_CLASSNAME}>
             <QuizStepHeader
               step={progressStep}
               {...devStepSelectProps}
@@ -255,7 +260,7 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 5 ? (
-          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
+          <div className={QUIZ_STEP_BODY_CLASSNAME}>
             <QuizStepHeader
               step={progressStep}
               {...devStepSelectProps}
@@ -283,7 +288,7 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 6 ? (
-          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
+          <div className={QUIZ_STEP_BODY_CLASSNAME}>
             <QuizStepHeader
               step={progressStep}
               {...devStepSelectProps}
@@ -326,7 +331,7 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 7 ? (
-          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
+          <div className={QUIZ_STEP_BODY_CLASSNAME}>
             <QuizStepHeader
               step={progressStep}
               {...devStepSelectProps}
@@ -376,9 +381,14 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
             onWhatsAppFirst={handleWhatsAppFirst}
           />
         ) : null}
+              </div>
             </div>
 
-            {footer}
+            {footerActions ? (
+              <div className={QUIZ_MODAL_FOOTER_CLASSNAME}>
+                <div className={QUIZ_FOOTER_ACTIONS_CLASSNAME}>{footerActions}</div>
+              </div>
+            ) : null}
           </div>
         </div>
       )}

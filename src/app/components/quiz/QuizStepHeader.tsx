@@ -86,7 +86,7 @@ export function QuizStepHeader({
 
       <div
         className={[
-          'flex min-w-0 flex-col gap-[16px]',
+          'flex min-w-0 flex-col gap-[7px]',
           children ? 'mb-[16px]' : '',
         ]
           .filter(Boolean)
@@ -94,7 +94,7 @@ export function QuizStepHeader({
       >
         <div
           className={[
-            'flex items-start gap-[12px]',
+            'flex items-center gap-[12px]',
             isTitleCentered ? 'justify-center' : '',
           ]
             .filter(Boolean)
@@ -105,7 +105,7 @@ export function QuizStepHeader({
               'font-sans text-[length:var(--quiz-title-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]',
               isTitleCentered
                 ? 'w-full text-center'
-                : 'min-w-0 flex-1 flex flex-wrap items-center gap-x-[4px] gap-y-[8px] pt-[4px]',
+                : 'min-w-0 flex-1 flex flex-wrap items-center gap-x-[4px] gap-y-[8px]',
             ].join(' ')}
           >
             {title}

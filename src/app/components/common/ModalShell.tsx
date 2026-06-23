@@ -21,6 +21,8 @@ type ModalShellProps = {
   panelStyle?: CSSProperties;
   /** Bottom sheet only: keep panel on the bottom edge at all breakpoints. */
   sheetVerticalAlign?: 'bottom' | 'center-on-sm' | 'center-on-md';
+  /** Fullscreen only: vertical alignment when panel is taller than the viewport. */
+  fullscreenVerticalAlign?: 'center' | 'start';
   disableOverlayClick?: boolean;
   pointerEventsNoneWhenClosing?: boolean;
   onEscape?: () => boolean;
@@ -92,6 +94,7 @@ export function ModalShell({
   panelClassName = '',
   panelStyle,
   sheetVerticalAlign = 'center-on-md',
+  fullscreenVerticalAlign = 'center',
   disableOverlayClick = false,
   pointerEventsNoneWhenClosing = true,
   onEscape,
@@ -162,7 +165,16 @@ export function ModalShell({
           onClick={disableOverlayClick ? undefined : requestClose}
         />
 
-        <div className="relative z-[1] flex min-h-0 flex-1 flex-col sm:pointer-events-auto sm:min-h-full sm:flex sm:items-center sm:justify-center">
+        <div
+          className={[
+            'relative z-[1] flex min-h-0 flex-1 flex-col sm:pointer-events-auto sm:min-h-full sm:flex sm:items-center',
+            fullscreenVerticalAlign === 'start'
+              ? 'sm:justify-start'
+              : 'sm:[justify-content:safe_center]',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
           <div
             className={['min-h-0 flex-1 overflow-y-auto scrollbar-hide sm:flex-none', panelClasses]
               .filter(Boolean)

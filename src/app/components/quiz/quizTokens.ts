@@ -6,9 +6,11 @@ import { typographyRoleStyle } from '../common/typographyTokens';
 import {
   CHECKOUT_CARD_PADDING_CLAMP,
   CHECKOUT_FONT_CLAMP_12_14,
+  CHECKOUT_FONT_CLAMP_16_20,
   CHECKOUT_FONT_CLAMP_20_25,
   CHECKOUT_FONT_CLAMP_32_40,
   MEAL_DETAIL_CONTENT_PADDING_CLAMP,
+  QUIZ_STEP_BODY_GAP_CLAMP,
 } from '../checkout/checkoutSpacing';
 
 export const QUIZ_MODAL_SHELL_ROOT_CLASSNAME =
@@ -18,10 +20,36 @@ export const QUIZ_MODAL_SHELL_PANEL_CLASSNAME =
   'w-full bg-[var(--quiz-modal-bg)] sm:max-w-[520px] sm:overflow-hidden sm:rounded-[20px] sm:shadow-2xl';
 
 export const QUIZ_MODAL_SHELL_INNER_CLASSNAME =
-  'flex min-h-full flex-col bg-[var(--quiz-modal-bg)] sm:min-h-0 sm:overflow-hidden sm:rounded-[20px]';
+  'flex h-full min-h-0 flex-col overflow-hidden bg-[var(--quiz-modal-bg)] sm:h-auto sm:min-h-full sm:overflow-hidden sm:rounded-[20px]';
+
+export const QUIZ_MODAL_BODY_CLASSNAME =
+  'flex min-h-0 flex-1 flex-col bg-[var(--quiz-modal-bg)] sm:flex-none';
+
+export const QUIZ_MODAL_SCROLL_CLASSNAME =
+  'min-h-0 flex-1 overflow-y-auto scrollbar-hide sm:flex-none sm:overflow-visible';
 
 export const QUIZ_SECTION_PX_CLASSNAME =
   'px-[length:var(--checkout-card-padding)] sm:px-[length:var(--meal-detail-content-p)]';
+
+export const QUIZ_MODAL_FOOTER_CLASSNAME = [
+  'shrink-0 border-t border-[var(--quiz-border)] bg-[var(--quiz-modal-bg)]',
+  'pt-[12px] pb-[length:var(--checkout-card-padding)]',
+  QUIZ_SECTION_PX_CLASSNAME,
+  'sm:border-t-0 sm:pt-0',
+].join(' ');
+
+export const QUIZ_FOOTER_ACTIONS_CLASSNAME = 'flex w-full gap-[12px]';
+
+export const QUIZ_MOBILE_STICKY_ACTIONS_CLASSNAME = [
+  'flex flex-col gap-[12px]',
+  'max-sm:sticky max-sm:bottom-0 max-sm:z-[1] max-sm:bg-[var(--quiz-modal-bg)] max-sm:pt-[12px]',
+].join(' ');
+
+export const QUIZ_STEP_BODY_CLASSNAME = [
+  'flex flex-col gap-[length:var(--quiz-step-body-gap)]',
+  QUIZ_SECTION_PX_CLASSNAME,
+  'pb-[40px]',
+].join(' ');
 
 export const QUIZ_SECTION_PT_CLASSNAME =
   'pt-[length:var(--checkout-card-padding)] sm:pt-[length:var(--meal-detail-content-p)]';
@@ -46,10 +74,12 @@ export type QuizTokensCssVariables = CSSProperties & {
   '--quiz-slider-range': string;
   '--quiz-slider-thumb-border': string;
   '--quiz-title-font-size': string;
+  '--quiz-slider-value-font-size': string;
   '--quiz-body-font-size': string;
   '--quiz-caption-font-size': string;
   '--quiz-option-font-size': string;
   '--quiz-card-padding': string;
+  '--quiz-step-body-gap': string;
   '--quiz-danger': string;
   '--sms-code-text': string;
   '--sms-code-muted': string;
@@ -84,14 +114,16 @@ export const quizTokensStyle: QuizTokensCssVariables = {
   '--quiz-card-hover-border': COLOR_TOKENS.primary[200],
   '--quiz-progress-track': COLOR_TOKENS.primary[100],
   '--quiz-progress-fill': COLOR_TOKENS.primary[500],
-  '--quiz-slider-track': COLOR_TOKENS.neutral[100],
-  '--quiz-slider-range': COLOR_TOKENS.primary[500],
+  '--quiz-slider-track': COLOR_TOKENS.neutral[50],
+  '--quiz-slider-range': COLOR_TOKENS.primary[100],
   '--quiz-slider-thumb-border': COLOR_TOKENS.primary[500],
   '--quiz-title-font-size': CHECKOUT_FONT_CLAMP_20_25,
+  '--quiz-slider-value-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--quiz-body-font-size': FONT_SIZE_TOKENS[16],
   '--quiz-caption-font-size': CHECKOUT_FONT_CLAMP_12_14,
   '--quiz-option-font-size': FONT_SIZE_TOKENS[16],
   '--quiz-card-padding': '20px',
+  '--quiz-step-body-gap': QUIZ_STEP_BODY_GAP_CLAMP,
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
   '--meal-detail-content-p': MEAL_DETAIL_CONTENT_PADDING_CLAMP,
   '--quiz-danger': COLOR_TOKENS.danger[500],
@@ -144,24 +176,45 @@ export const QUIZ_METRIC_VARIANTS: Record<QuizMetricVariant, QuizMetricVariantSt
   },
 };
 
+export const QUIZ_SLIDER_LABELS_CLASSNAME = 'flex flex-col items-center gap-[12px]';
+
 export const QUIZ_SLIDER_CLASSNAME = [
-  'h-[32px] min-h-[32px] items-center',
-  '[&_[data-slot=slider-track]]:h-[32px]',
-  '[&_[data-slot=slider-track]]:min-h-[32px]',
-  '[&_[data-slot=slider-track]]:rounded-full',
-  '[&_[data-slot=slider-track]]:bg-[var(--quiz-border)]',
-  '[&_[data-slot=slider-range]]:h-full',
+  'h-[24px] min-h-[24px] cursor-pointer items-center',
+  '[&_[data-slot=slider-track]]:relative',
+  '[&_[data-slot=slider-track]]:h-[24px]',
+  '[&_[data-slot=slider-track]]:min-h-[24px]',
+  '[&_[data-slot=slider-track]]:cursor-pointer',
+  '[&_[data-slot=slider-track]]:bg-transparent',
+  '[&_[data-slot=slider-track]]:before:absolute',
+  '[&_[data-slot=slider-track]]:before:inset-x-0',
+  '[&_[data-slot=slider-track]]:before:top-1/2',
+  '[&_[data-slot=slider-track]]:before:h-[8px]',
+  '[&_[data-slot=slider-track]]:before:-translate-y-1/2',
+  '[&_[data-slot=slider-track]]:before:rounded-full',
+  '[&_[data-slot=slider-track]]:before:bg-[var(--quiz-slider-track)]',
+  '[&_[data-slot=slider-track]]:before:content-[""]',
+  '[&_[data-slot=slider-range]]:absolute',
+  '[&_[data-slot=slider-range]]:top-1/2',
+  '[&_[data-slot=slider-range]]:h-[8px]',
+  '[&_[data-slot=slider-range]]:-translate-y-1/2',
   '[&_[data-slot=slider-range]]:rounded-full',
   '[&_[data-slot=slider-range]]:bg-[var(--quiz-slider-range)]',
   '[&_[data-slot=slider-thumb]]:relative',
-  '[&_[data-slot=slider-thumb]]:size-[20px]',
+  '[&_[data-slot=slider-thumb]]:cursor-pointer',
+  '[&_[data-slot=slider-thumb]]:h-[16px]',
+  '[&_[data-slot=slider-thumb]]:w-[32px]',
+  '[&_[data-slot=slider-thumb]]:shrink-0',
+  '[&_[data-slot=slider-thumb]]:rounded-full',
   '[&_[data-slot=slider-thumb]]:border-[length:2px]',
   '[&_[data-slot=slider-thumb]]:border-[var(--quiz-slider-thumb-border)]',
-  '[&_[data-slot=slider-thumb]]:bg-white',
+  '[&_[data-slot=slider-thumb]]:bg-[var(--quiz-slider-thumb-border)]',
   '[&_[data-slot=slider-thumb]]:shadow-[0_2px_8px_rgba(154,56,239,0.2)]',
+  '[&_[data-slot=slider-thumb]]:ring-transparent',
   '[&_[data-slot=slider-thumb]]:transition-transform',
-  '[&_[data-slot=slider-thumb]]:hover:scale-[1.08]',
-  '[&_[data-slot=slider-thumb]]:focus-visible:scale-[1.08]',
+  '[&_[data-slot=slider-thumb]]:hover:scale-[1.12]',
+  '[&_[data-slot=slider-thumb]]:hover:ring-4',
+  '[&_[data-slot=slider-thumb]]:hover:ring-[var(--quiz-border)]',
+  '[&_[data-slot=slider-thumb]]:focus-visible:scale-[1.12]',
   '[&_[data-slot=slider-thumb]]:focus-visible:ring-4',
   '[&_[data-slot=slider-thumb]]:focus-visible:ring-[var(--quiz-card-hover-border)]',
   '[&_[data-slot=slider-thumb]]:after:absolute',

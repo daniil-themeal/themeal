@@ -15,7 +15,7 @@ import {
 } from '../checkout/smsCodeValidation';
 import { QuizStepHeader } from './QuizStepHeader';
 import { QuizWhatsAppTitle } from './QuizWhatsAppTitle';
-import { QUIZ_SECTION_PX_CLASSNAME } from './quizTokens';
+import { QUIZ_MOBILE_STICKY_ACTIONS_CLASSNAME, QUIZ_SECTION_PX_CLASSNAME } from './quizTokens';
 
 type QuizLeadPhase = 'offer' | 'sms' | 'success';
 
@@ -105,7 +105,7 @@ export function QuizLeadFlow({
           </p>
         </div>
 
-        <div className="flex flex-col gap-[12px]">
+        <div className={QUIZ_MOBILE_STICKY_ACTIONS_CLASSNAME}>
           <Button type="button" variant="primary" size="medium" fullWidth onClick={onSeePlan}>
             See my plan
           </Button>
@@ -177,7 +177,7 @@ export function QuizLeadFlow({
       className={[
         embedded ? 'flex flex-col gap-[16px]' : 'flex flex-col gap-[20px]',
         QUIZ_SECTION_PX_CLASSNAME,
-        embedded ? 'border-t border-[var(--quiz-border)] pt-[20px] pb-[20px]' : '',
+        embedded ? 'border-t border-[var(--quiz-border)] pt-[20px] pb-[32px]' : '',
       ]
         .filter(Boolean)
         .join(' ')}
@@ -199,13 +199,15 @@ export function QuizLeadFlow({
         placeholder="50 123 4567"
       />
 
-      <Button type="button" variant="primary" size="medium" fullWidth onClick={handlePhoneSubmit}>
-        Get my menu
-      </Button>
+      <div className={QUIZ_MOBILE_STICKY_ACTIONS_CLASSNAME}>
+        <Button type="button" variant="primary" size="medium" fullWidth onClick={handlePhoneSubmit}>
+          Get my menu
+        </Button>
 
-      <p className="text-center font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
-        We&apos;ll send a verification code via SMS.
-      </p>
+        <p className="text-center font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
+          We&apos;ll send a verification code via SMS.
+        </p>
+      </div>
     </div>
   );
 }

@@ -68,9 +68,9 @@ export function QuizResultView({ answers, result }: QuizResultViewProps) {
       <div className={QUIZ_SECTION_PX_CLASSNAME}>
         <p className="text-center font-sans text-[length:var(--quiz-caption-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
           Where it comes from: Groceries{' '}
-          <span className="font-bold text-[var(--quiz-text)]">{mCook}</span> · Delivery{' '}
-          <span className="font-bold text-[var(--quiz-text)]">{mOrder}</span> · Dining out{' '}
-          <span className="font-bold text-[var(--quiz-text)]">{mRest} AED</span>
+          <span className="font-bold">{mCook}</span> · Delivery{' '}
+          <span className="font-bold">{mOrder}</span> · Dining out{' '}
+          <span className="font-bold">AED {mRest}</span>
         </p>
       </div>
 
