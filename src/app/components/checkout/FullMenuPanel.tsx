@@ -113,7 +113,7 @@ export const fullMenuPanelStyle: FullMenuPanelCssVariables = {
   '--full-menu-border': COLOR_TOKENS.neutral[100],
   '--full-menu-title': COLOR_TOKENS.neutral[900],
   '--full-menu-muted': COLOR_TOKENS.neutral[500],
-  '--full-menu-disclaimer-text': COLOR_TOKENS.neutral[600],
+  '--full-menu-disclaimer-text': COLOR_TOKENS.neutral[700],
   '--full-menu-active': COLOR_TOKENS.primary[500],
   '--full-menu-active-soft': COLOR_TOKENS.primary[50],
   '--full-menu-active-muted': COLOR_TOKENS.primary[400],
