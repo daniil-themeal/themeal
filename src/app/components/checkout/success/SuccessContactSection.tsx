@@ -109,15 +109,16 @@ export function SuccessContactSection({ showFollowUs = true }: SuccessContactSec
   return (
     <>
       <section className={`flex w-full flex-col items-center gap-[20px] ${CHECKOUT_STEP_SECTION_PX}`}>
-        <p
+        <div
           className={[
             TEXT_TRIM_CLASS_NAME,
-            'max-w-[400px] text-center font-sans text-[20px] font-normal leading-[130%] tracking-[-0.4px]',
+            'flex max-w-[400px] flex-col text-center font-sans text-[20px] font-normal leading-[130%] tracking-[-0.4px]',
           ].join(' ')}
           style={{ color: COLOR_TOKENS.neutral[900] }}
         >
-          For any questions, feel free to contact us. We&apos;ll be happy to assist you!
-        </p>
+          <p>For any questions, feel free to contact us.</p>
+          <p>We&apos;ll be happy to assist you!</p>
+        </div>
 
         <div className="flex items-center gap-[16px]">
           <ContactIconButton label="WhatsApp" href={socialLinks.whatsapp}>

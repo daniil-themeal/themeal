@@ -95,6 +95,10 @@ export function QuizModal({ open, onClose, onSeePlan }: QuizModalProps) {
   const leadFlowPhase =
     phase.kind === 'result' ? 'offer' : phase.kind === 'sms' ? 'sms' : 'success';
 
+  const showResultContent =
+    result &&
+    (phase.kind === 'result' || phase.kind === 'sms' || phase.kind === 'success');
+
   const footerActions =
     showQuestionFooter || showBackOnlyFooter
       ? (
@@ -157,7 +161,7 @@ export function QuizModal({ open, onClose, onSeePlan }: QuizModalProps) {
             <div className={QUIZ_MODAL_SCROLL_CLASSNAME}>
               <div
                 className={[
-                  'flex flex-col gap-[24px]',
+                  'flex flex-col gap-[32px]',
                   QUIZ_SECTION_PT_CLASSNAME,
                   footerActions ? '' : QUIZ_SECTION_PB_CLASSNAME,
                 ]
@@ -359,14 +363,12 @@ export function QuizModal({ open, onClose, onSeePlan }: QuizModalProps) {
           </div>
         ) : null}
 
-        {phase.kind === 'result' && result ? (
-          <QuizResultView result={result} />
-        ) : null}
+        {showResultContent ? <QuizResultView result={result} /> : null}
 
         {isLeadFlowActive ? (
           <QuizLeadFlow
             phase={leadFlowPhase}
-            embedded={phase.kind === 'result'}
+            embedded
             onPhaseChange={(p) => {
               if (p === 'sms') setPhase({ kind: 'sms' });
               else if (p === 'success') setPhase({ kind: 'success' });

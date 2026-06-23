@@ -123,7 +123,7 @@ const LOGO_LEAF_PATHS = [
 ];
 
 type LogoProps = {
-  height?: number;
+  height?: number | string;
   tone?: string;
   color?: string;
   accent?: string;
@@ -131,12 +131,21 @@ type LogoProps = {
 };
 
 const Logo = ({ height = 26, tone = 'yellow', color, accent, style }: LogoProps = {}) => {
+  const logoStyle: CSSProperties = {
+    height,
+    width: 'auto',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    flexShrink: 0,
+    ...style,
+  };
+
   if (color == null && accent == null) {
     return createElement('img', {
       src: `/landing-stas/assets/logo_${tone}.svg`,
       alt: 'theMeal',
       dir: 'ltr',
-      style: { height, width: 'auto', display: 'inline-block', verticalAlign: 'middle', ...style },
+      style: logoStyle,
     });
   }
 
@@ -149,11 +158,11 @@ const Logo = ({ height = 26, tone = 'yellow', color, accent, style }: LogoProps 
       xmlns: 'http://www.w3.org/2000/svg',
       viewBox: '0 0 94 30',
       height,
-      width: (height * 94) / 30,
+      width: typeof height === 'number' ? (height * 94) / 30 : undefined,
       fill: 'none',
       role: 'img',
       'aria-label': 'theMeal',
-      style: { display: 'inline-block', verticalAlign: 'middle', flexShrink: 0, ...style },
+      style: typeof height === 'number' ? logoStyle : { ...logoStyle, aspectRatio: '94 / 30' },
     },
     LOGO_TEXT_PATHS.map((d, i) => createElement('path', { key: `t${i}`, d, fill: textColor })),
     LOGO_LEAF_PATHS.map((d, i) => createElement('path', { key: `l${i}`, d, fill: leafColor })),

@@ -1,7 +1,7 @@
 import type { QuizCalculationResult } from './quizTypes';
 import { formatQuizNumber } from './quizFormat';
+import { QuizStepHeader } from './QuizStepHeader';
 import { QUIZ_METRIC_VARIANTS, QUIZ_SECTION_PX_CLASSNAME, type QuizMetricVariant } from './quizTokens';
-
 type QuizResultViewProps = {
   result: QuizCalculationResult;
 };
@@ -38,16 +38,13 @@ export function QuizResultView({ result }: QuizResultViewProps) {
   const upsell = `2 months at once: ${formatQuizNumber(plan2moPM)} AED/mo (save ${formatQuizNumber(upsellSave)} more).`;
 
   return (
-    <div className="flex flex-col gap-[20px]">
-      <div className={QUIZ_SECTION_PX_CLASSNAME}>
+    <div className="flex flex-col gap-[32px]">
+      <div className={`${QUIZ_SECTION_PX_CLASSNAME} flex flex-col gap-[16px]`}>
         <div className="grid grid-cols-3 gap-[8px]">
           <Metric variant="money" label="YOU SPEND NOW" value={`${formatQuizNumber(money)} AED/mo`} />
           <Metric variant="time" label="TIME IT TAKES" value={`${timeWk} h/week`} />
           <Metric variant="meals" label="MEALS/WEEK" value={String(mealsWk)} />
         </div>
-      </div>
-
-      <div className={QUIZ_SECTION_PX_CLASSNAME}>
         <p className="text-center font-sans text-[length:var(--quiz-caption-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
           Groceries{' '}
           <span className="font-bold">{formatQuizNumber(mCook)}</span> · Delivery{' '}
@@ -57,18 +54,10 @@ export function QuizResultView({ result }: QuizResultViewProps) {
       </div>
 
       <div className={QUIZ_SECTION_PX_CLASSNAME}>
-        <div className="flex flex-col gap-[8px]">
-          <h3 className="font-sans text-[length:var(--quiz-title-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
-            {heading}
-          </h3>
-          <p className="font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-text)]">
-            {body}
-          </p>
-        </div>
+        <QuizStepHeader title={heading} subtitle={body} titleSubtitleGap="lead" />
       </div>
-
       <div className={QUIZ_SECTION_PX_CLASSNAME}>
-        <p className="rounded-[12px] border border-[var(--quiz-border)] px-[12px] py-[12px] font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
+        <p className="rounded-[12px] border border-[var(--quiz-border)] px-[12px] py-[12px] font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--neutral-900)]">
           {upsell}
         </p>
       </div>
@@ -94,12 +83,15 @@ function Metric({
     >
       <span
         className="font-sans text-[10px] font-bold uppercase tracking-[0.08em]"
-        style={{ color: styles.labelColor }}
+        style={{ color: styles.labelColor, opacity: styles.labelOpacity }}
       >
         {label}
       </span>
       <span
-        className="font-sans text-[length:var(--quiz-body-font-size)] font-bold leading-[130%]"
+        className={[
+          'font-sans text-[length:var(--quiz-body-font-size)] leading-[130%]',
+          styles.valueFontWeightClass,
+        ].join(' ')}
         style={{ color: styles.valueColor }}
       >
         {value}

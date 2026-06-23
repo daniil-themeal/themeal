@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import type { DayOption, Duration } from '../../data/checkoutPricing';
 import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
@@ -13,7 +15,6 @@ import { CHECKOUT_FONT_CLAMP_25_31 } from './checkoutSpacing';
 import type { PaymentResultTab } from './PaymentResultHeader';
 import { PaymentResultHeader } from './PaymentResultHeader';
 import { MealCalendar } from './MealCalendar';
-import { getDeliveryDaysLabel } from './mealCalendarUtils';
 import {
   SuccessContactSection,
 } from './success/SuccessContactSection';
@@ -36,7 +37,7 @@ type SuccessRule = {
   iconBg: string;
   iconKey: SuccessRuleIconKey;
   title: string;
-  description: string;
+  description: ReactNode;
 };
 
 const SUCCESS_RULES: SuccessRule[] = [
@@ -44,14 +45,14 @@ const SUCCESS_RULES: SuccessRule[] = [
     iconBg: COLOR_TOKENS.warning[500],
     iconKey: 'calendar',
     title: 'Fixed Delivery Days',
-    description: '',
+    description: 'Deliveries are on Wednesdays and Sundays only — days cannot be changed',
   },
   {
     iconBg: COLOR_TOKENS.secondary[400],
     iconKey: 'pause',
     title: 'Delivery Pause',
     description:
-      'You can pause for 1–2 weeks for free (depending on the length of your plan). The price of longer pause is 90 AED',
+      'You can pause for 1-2 weeks for free (depending on the length of your plan). The price of longer pause is 90 AED',
   },
   {
     iconBg: COLOR_TOKENS.orange[500],
@@ -64,8 +65,12 @@ const SUCCESS_RULES: SuccessRule[] = [
     iconBg: COLOR_TOKENS.primary[400],
     iconKey: 'clock',
     title: 'Order Changes Deadline',
-    description:
-      'You can only reschedule at least 3 days in advance, and update the delivery time or address at least 2 days before',
+    description: (
+      <>
+        You can only reschedule at least <span className="font-bold">3 days in advance</span>, and update
+        the delivery time or address at least <span className="font-bold">2 days before</span>
+      </>
+    ),
   },
   {
     iconBg: COLOR_TOKENS.blue[400],
@@ -142,17 +147,6 @@ export function PaymentSuccessScreen({
   onTabChange,
   onGoToMain,
 }: PaymentSuccessScreenProps) {
-  const successRules = SUCCESS_RULES.map((rule) => {
-    if (rule.title !== 'Fixed Delivery Days') {
-      return rule;
-    }
-
-    return {
-      ...rule,
-      description: `Deliveries are on ${getDeliveryDaysLabel(days)} only — days cannot be changed`,
-    };
-  });
-
   return (
     <div
       className={CHECKOUT_STEP_PAGE_LAYOUT.page}
@@ -212,11 +206,11 @@ export function PaymentSuccessScreen({
               ].join(' ')}
               style={{ color: COLOR_TOKENS.neutral[800] }}
             >
-              Please, read our rules
+              Please read our rules
             </h2>
 
             <div className="flex w-full flex-col gap-[24px]">
-              {successRules.map((rule) => (
+              {SUCCESS_RULES.map((rule) => (
                 <SuccessRuleRow key={rule.title} {...rule} />
               ))}
             </div>

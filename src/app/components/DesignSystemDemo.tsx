@@ -35,6 +35,7 @@ import {
   XIcon,
   LogOutIcon,
 } from './common/icons';
+import { InfoIcon } from './common/icons/feather/InfoIcon';
 import type { IconSize } from './common/icons/iconSize';
 import { FEATHER_ICON_CATALOG_ENTRIES } from './common/icons/feather/iconCatalog';
 import { iconColorClassName, iconColorStyle } from './common/iconColorTokens';
@@ -69,6 +70,7 @@ import { PlanTariffSummary } from './common/PlanTariffSummary';
 import { getPlanTariffChips, getPlanTariffTitle } from './common/planTariffSummaryUtils';
 import { TextArea, TEXT_AREA_STATES } from './common/TextArea';
 import { TextInput, TEXT_INPUT_STATES } from './common/TextInput';
+import { Tooltip } from './common/Tooltip';
 import {
   PAYMENT_METHOD_BRAND_ICON_IDS,
   PAYMENT_METHOD_CARD_ICON_FILE_NAMES,
@@ -86,6 +88,8 @@ import {
   PaymentMethodIcon,
 } from './common/icons/PaymentMethodIcons';
 import { CheckoutHeader } from './checkout/CheckoutHeader';
+import { QuizValueSlider } from './quiz/QuizValueSlider';
+import { quizTokensStyle } from './quiz/quizTokens';
 
 type DesignSystemDemoProps = {
   onClose: () => void;
@@ -122,6 +126,7 @@ type DemoAnchorId =
   | 'radio'
   | 'divider'
   | 'dropdown'
+  | 'quiz-value-slider'
   | 'plan-tariff-summary'
   | 'delivery-address-card'
   | 'payment-method-selector'
@@ -131,7 +136,8 @@ type DemoAnchorId =
   | 'icon-button-variants'
   | 'icon-button-soft'
   | 'icon-button-sizes'
-  | 'badge-variants';
+  | 'badge-variants'
+  | 'tooltip';
 
 type DemoNavigationItem = {
   id: PageSectionId;
@@ -194,6 +200,7 @@ const demoNavigationItems: DemoNavigationItem[] = [
       { id: 'payment-method-selector', label: 'Payment method selector' },
       { id: 'text-area', label: 'TextArea' },
       { id: 'dropdown', label: 'Dropdown' },
+      { id: 'quiz-value-slider', label: 'QuizValueSlider' },
       { id: 'checkbox', label: 'Checkbox' },
       { id: 'radio', label: 'Radio' },
       { id: 'divider', label: 'Divider' },
@@ -224,6 +231,7 @@ const demoNavigationItems: DemoNavigationItem[] = [
     label: 'Indicators',
     children: [
       { id: 'badge-variants', label: 'Badge variants' },
+      { id: 'tooltip', label: 'Tooltip' },
     ],
   },
 ];
@@ -789,6 +797,10 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
   const [demoPhoneError, setDemoPhoneError] = useState<string | undefined>();
   const [demoSelectedDate, setDemoSelectedDate] = useState(() => new Date(2026, 5, 14));
   const [iconCatalogQuery, setIconCatalogQuery] = useState('');
+  const [demoQuizFreqCook, setDemoQuizFreqCook] = useState(7);
+  const [demoQuizCostCook, setDemoQuizCostCook] = useState(15);
+  const [demoQuizCostOrder, setDemoQuizCostOrder] = useState(45);
+  const [demoQuizCostRest, setDemoQuizCostRest] = useState(60);
   const filteredFeatherIconCatalog = useMemo(() => {
     const query = iconCatalogQuery.trim().toLowerCase();
 
@@ -1591,6 +1603,64 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           </DemoCard>
 
           <DemoCard
+            id="quiz-value-slider"
+            title="QuizValueSlider"
+            description="Quiz step slider with value label above the track. 8px track, 32×16 pill thumb, primary fill. Optional caption for cost questions. Step is always 1."
+          >
+            <div
+              className="mx-auto flex w-full max-w-[520px] flex-col gap-[24px] rounded-[16px] border border-[var(--demo-card-border)] bg-[var(--demo-card-soft-bg)] p-[24px]"
+              style={quizTokensStyle}
+            >
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>frequency</CodeLabel>
+                </DemoSubheading>
+
+                <QuizValueSlider
+                  label={`${demoQuizFreqCook} times/week`}
+                  value={demoQuizFreqCook}
+                  min={0}
+                  max={28}
+                  onChange={setDemoQuizFreqCook}
+                />
+              </div>
+
+              <div className="flex flex-col gap-[20px]">
+                <DemoSubheading>
+                  <CodeLabel>meal cost</CodeLabel>
+                </DemoSubheading>
+
+                <QuizValueSlider
+                  caption="Groceries for one home-cooked meal"
+                  label={`${demoQuizCostCook} AED`}
+                  value={demoQuizCostCook}
+                  min={6}
+                  max={30}
+                  onChange={setDemoQuizCostCook}
+                />
+
+                <QuizValueSlider
+                  caption="One delivery order"
+                  label={`${demoQuizCostOrder} AED`}
+                  value={demoQuizCostOrder}
+                  min={25}
+                  max={150}
+                  onChange={setDemoQuizCostOrder}
+                />
+
+                <QuizValueSlider
+                  caption="One cafe / restaurant visit"
+                  label={`${demoQuizCostRest} AED`}
+                  value={demoQuizCostRest}
+                  min={20}
+                  max={200}
+                  onChange={setDemoQuizCostRest}
+                />
+              </div>
+            </div>
+          </DemoCard>
+
+          <DemoCard
             id="checkbox"
             title="Checkbox"
             description="Sizes: small (16×16, 12px label, 4px gap) and medium (20×20, 16px label, 8px gap, default)."
@@ -2238,6 +2308,49 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                   <Badge variant={variant} />
                 </div>
               ))}
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="tooltip"
+            title="Tooltip"
+            description="Contextual hint on tap/click. Neutral 900 background, 12px semibold text, 8px radius, arrow, max width 280px. Opens on trigger click and closes on outside click or Escape."
+          >
+            <div className="flex flex-col gap-[24px]">
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>info trigger</CodeLabel>
+                </DemoSubheading>
+
+                <Tooltip
+                  content="Heads up — this total is an estimate. Certain promo codes are verified once you sign in."
+                  side="top"
+                >
+                  <IconButton
+                    type="button"
+                    ghost
+                    size="small"
+                    aria-label="About estimate"
+                    icon={<InfoIcon size={20} />}
+                  />
+                </Tooltip>
+              </div>
+
+              <div className="flex flex-col gap-[12px]">
+                <DemoSubheading>
+                  <CodeLabel>side</CodeLabel>
+                </DemoSubheading>
+
+                <div className="flex flex-wrap items-center gap-[16px]">
+                  {(['top', 'right', 'bottom', 'left'] as const).map((side) => (
+                    <Tooltip key={side} content={`Tooltip on ${side}`} side={side}>
+                      <Button type="button" size="small" variant="neutral">
+                        {side}
+                      </Button>
+                    </Tooltip>
+                  ))}
+                </div>
+              </div>
             </div>
           </DemoCard>
         </PageSection>

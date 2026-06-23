@@ -1,10 +1,12 @@
 // @ts-nocheck
 import { createElement, Fragment, useState, useEffect, useRef } from 'react';
 import { SiteLangSwitcher } from '../SiteLangSwitcher';
+import { HeaderNav } from '../HeaderNav';
 import { SiteNavBurgerButton, SiteNavDrawer } from '../SiteNavDrawer';
 import { Icon, Logo, Stars, Social } from '../icons';
 import { HeroStats } from '../HeroStats';
 import { HeroPrice } from '../HeroPrice';
+import { ACCENT_CARD_VARIANTS, ACCENT_CARD_VARIANT_ORDER } from '../../../components/common/accentCardTokens';
 
 /* ---------------- Header (scroll + cursor reveal — Bender) ---------------- */
 function Header({
@@ -34,7 +36,19 @@ function Header({
   const visible = shown || hovered;
   const onDark = true;
   const txt = solid ? 'rgba(255,255,255,.82)' : 'rgba(255,255,255,.85)';
-  const links = [['#menu', t.nav.menu], ['#delivery', t.nav.delivery], ['#qa', t.nav.qa]];
+  const navLinks = [
+    { href: '#menu', label: t.nav.menu },
+    { href: '#delivery', label: t.nav.delivery },
+    { href: '#qa', label: t.nav.qa },
+  ];
+  if (onDesignSystemClick) {
+    navLinks.push({
+      href: '#',
+      label: t.nav.designSystem,
+      className: 'navlink--design-system',
+      onClick: (e) => { e.preventDefault(); onDesignSystemClick(); },
+    });
+  }
 
   return (
     createElement('div', { style:{ position:'fixed', insetInline:0, top:0, zIndex:50, pointerEvents:'none' } },
@@ -60,26 +74,12 @@ function Header({
             createElement(Logo, { tone: 'yellow' })
           )
         ),
-        createElement('nav', { className:'row hdr-nav', style:{ fontWeight:600, color:txt } },
-          links.map(([h, l]) => createElement('a', {
-            key:h, href:h, className:'navlink',
-            style:{ color:txt, transition:'color .15s' },
-            onMouseEnter:(e)=>e.currentTarget.style.color = onDark ? '#fff' : 'var(--brand)',
-            onMouseLeave:(e)=>e.currentTarget.style.color = txt,
-          }, l)),
-          onDesignSystemClick ? createElement('a', {
-            key:'design-system',
-            href:'#',
-            className:'navlink navlink--design-system',
-            style:{ color:txt, transition:'color .15s' },
-            onClick:(e)=>{ e.preventDefault(); onDesignSystemClick(); },
-            onMouseEnter:(e)=>e.currentTarget.style.color = onDark ? '#fff' : 'var(--brand)',
-            onMouseLeave:(e)=>e.currentTarget.style.color = txt,
-          },
-            createElement('span', { className:'navlink__full' }, t.nav.designSystem),
-            createElement('span', { className:'navlink__short' }, 'DS'),
-          ) : null
-        ),
+        createElement(HeaderNav, {
+          links: navLinks,
+          textColor: txt,
+          onDark,
+          navigationLabel: t.siteNav.navigation,
+        }),
         createElement('div', { className:'row hdr-actions' },
           createElement(SiteLangSwitcher),
           createElement(SiteNavBurgerButton, {
@@ -521,8 +521,6 @@ function HowIllu({ i }) {
 }
 
 function HowItWorks({ t }) {
-  const cardBg = ['#FDF3FF', '#F6FBEF', 'rgba(245, 247, 255, 1)'];
-  const stepColors = ['var(--brand)', 'var(--green)', 'var(--plum-700)'];
   return (
     createElement('section', { className:'section section--white', id:'how' },
       createElement('div', { className:'wrap' },
@@ -532,15 +530,18 @@ function HowItWorks({ t }) {
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.how.title)
         ),
         createElement('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:16 } },
-          t.how.steps.map((s,i)=>createElement('div', { key:i, className:`card reveal how-step-card--${i}`, 'data-d':String(i+1), style:{ overflow:'hidden', background:cardBg[i], borderRadius:'50px', color:'rgba(42, 34, 48, 1)' } },
+          t.how.steps.map((s,i)=>{
+            const accentCard = ACCENT_CARD_VARIANTS[ACCENT_CARD_VARIANT_ORDER[i]];
+            return createElement('div', { key:i, className:`card reveal how-step-card--${i}`, 'data-d':String(i+1), style:{ overflow:'hidden', background:accentCard.background, borderRadius:'50px', color:'rgba(42, 34, 48, 1)' } },
             createElement('div', { style:{ position:'relative', aspectRatio:'5/4', overflow:'hidden', display:'grid', placeItems:'center' } },
-              createElement('span', { className:'mono', style:{ position:'static', fontSize:'12px', fontWeight:500, color:stepColors[i], opacity: i === 2 ? 1 : 0.7, marginInline:0, paddingInline:32, width:'100%' } }, s.n),
+              createElement('span', { className:'mono', style:{ position:'static', fontSize:'12px', fontWeight:500, color:accentCard.labelColor, opacity: accentCard.labelOpacity, marginInline:0, paddingInline:32, width:'100%' } }, s.n),
               createElement(HowIllu, { i })
             ),
             createElement('div', { style:{ padding:'var(--space-24) var(--space-32) 36px' } },
               createElement('h3', { className:'h3', style:{ margin:'0 0 var(--space-16)', color:'var(--ink)' } }, s.t),
               createElement('p', { style:{ margin:0, color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.5 } }, s.d))
-          ))
+          );
+          })
         )
         )
       )

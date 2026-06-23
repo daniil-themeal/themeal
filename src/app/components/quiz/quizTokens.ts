@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 
+import { ACCENT_CARD_CREAM_SHADOW, ACCENT_CARD_VARIANTS } from '../common/accentCardTokens';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { typographyRoleStyle } from '../common/typographyTokens';
@@ -42,8 +43,16 @@ export const QUIZ_FOOTER_ACTIONS_CLASSNAME = 'flex w-full gap-[12px]';
 
 export const QUIZ_MOBILE_STICKY_ACTIONS_CLASSNAME = [
   'flex flex-col gap-[12px]',
-  'max-sm:sticky max-sm:bottom-0 max-sm:z-[1] max-sm:bg-[var(--quiz-modal-bg)] max-sm:pt-[12px]',
+  'max-sm:sticky max-sm:bottom-0 max-sm:z-[1] max-sm:bg-[var(--quiz-modal-bg)] max-sm:pt-[12px] max-sm:pb-[16px]',
 ].join(' ');
+
+export const QUIZ_LEAD_EMBEDDED_SHELL_CLASSNAME = [
+  'flex flex-col gap-[24px]',
+  QUIZ_SECTION_PX_CLASSNAME,
+  'border-t border-[var(--quiz-border)] pt-[28px] pb-0',
+].join(' ');
+
+export const QUIZ_LEAD_EMBEDDED_BODY_CLASSNAME = 'flex flex-col gap-[12px] pb-[20px]';
 
 export const QUIZ_STEP_BODY_CLASSNAME = [
   'flex flex-col gap-[length:var(--quiz-step-body-gap)]',
@@ -152,27 +161,27 @@ export type QuizMetricVariantStyle = {
   background: string;
   boxShadow: string;
   labelColor: string;
+  labelOpacity: number;
   valueColor: string;
+  valueFontWeightClass: 'font-bold' | 'font-semibold';
 };
 
 export const QUIZ_METRIC_VARIANTS: Record<QuizMetricVariant, QuizMetricVariantStyle> = {
   money: {
     background: COLOR_TOKENS.cream[75],
-    boxShadow: '0 2px 4px rgba(42,34,48,.06), 0 8px 24px rgba(42,34,48,.08)',
+    boxShadow: ACCENT_CARD_CREAM_SHADOW,
     labelColor: COLOR_TOKENS.cream[500],
-    valueColor: COLOR_TOKENS.cream[900],
+    labelOpacity: 1,
+    valueColor: COLOR_TOKENS.cream[600],
+    valueFontWeightClass: 'font-semibold',
   },
   time: {
-    background: '#F6FBEF',
-    boxShadow: '0 2px 4px rgba(91,174,39,.08), 0 8px 24px rgba(91,174,39,.10)',
-    labelColor: COLOR_TOKENS.success[700],
-    valueColor: COLOR_TOKENS.cream[900],
+    ...ACCENT_CARD_VARIANTS.green,
+    valueFontWeightClass: 'font-bold',
   },
   meals: {
-    background: '#FDF3FF',
-    boxShadow: '0 2px 4px rgba(154,56,239,.08), 0 8px 24px rgba(154,56,239,.10)',
-    labelColor: COLOR_TOKENS.primary[600],
-    valueColor: COLOR_TOKENS.primary[700],
+    ...ACCENT_CARD_VARIANTS.brand,
+    valueFontWeightClass: 'font-bold',
   },
 };
 

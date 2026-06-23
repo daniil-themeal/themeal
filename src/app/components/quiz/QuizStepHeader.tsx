@@ -9,6 +9,7 @@ type QuizStepHeaderProps = {
   step?: number | null;
   onStepSelect?: (step: QuizStepId) => void;
   titleAlign?: 'start' | 'center';
+  titleSubtitleGap?: 'default' | 'lead';
   icon?: ReactNode;
   children?: ReactNode;
 };
@@ -70,10 +71,13 @@ export function QuizStepHeader({
   step,
   onStepSelect,
   titleAlign = 'start',
+  titleSubtitleGap = 'default',
   icon,
   children,
 }: QuizStepHeaderProps) {
   const isTitleCentered = titleAlign === 'center';
+  const titleBlockGapClassName =
+    titleSubtitleGap === 'lead' ? 'gap-[12px]' : 'gap-[7px]';
 
   return (
     <div className="flex flex-col gap-[12px]">
@@ -87,7 +91,8 @@ export function QuizStepHeader({
 
       <div
         className={[
-          'flex min-w-0 flex-col gap-[7px]',
+          'flex min-w-0 flex-col',
+          titleBlockGapClassName,
           children ? 'mb-[16px]' : '',
         ]
           .filter(Boolean)
