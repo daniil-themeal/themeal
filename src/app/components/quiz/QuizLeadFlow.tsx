@@ -89,13 +89,13 @@ export function QuizLeadFlow({
     return (
       <div className={['flex flex-col gap-[20px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
         <QuizStepHeader
-          title="Ready to see your plan?"
-          subtitle="We've already put it together with your numbers — nothing to re-enter, just take a look."
+          title="You're all set"
+          subtitle="We'll reach out on WhatsApp a bit later. In the meantime, take a look at the menu — your plan's already set up with your numbers."
         />
 
         <div className={QUIZ_MOBILE_STICKY_ACTIONS_CLASSNAME}>
           <Button type="button" variant="primary" size="medium" fullWidth onClick={onSeePlan}>
-            See my plan
+            Explore the menu
           </Button>
         </div>
       </div>
@@ -169,7 +169,7 @@ export function QuizLeadFlow({
     >
       <QuizStepHeader
         title={<QuizWhatsAppTitle text="Talk it through on WhatsApp" />}
-        subtitle="We'll bring your numbers into the chat for context and help you find the right fit. Ask anything — no spam, no commitment."
+        subtitle="We'll bring your numbers in and help you find the right fit. No spam."
       />
 
       <PhoneInput
@@ -186,7 +186,7 @@ export function QuizLeadFlow({
 
       <div className={QUIZ_MOBILE_STICKY_ACTIONS_CLASSNAME}>
         <Button type="button" variant="primary" size="medium" fullWidth onClick={handlePhoneSubmit}>
-          Get my menu
+          Continue on WhatsApp
         </Button>
 
         <p className="text-center font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">

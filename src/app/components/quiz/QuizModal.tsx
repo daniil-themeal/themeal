@@ -358,7 +358,7 @@ export function QuizModal({ open, onClose, onSeePlan }: QuizModalProps) {
         ) : null}
 
         {phase.kind === 'result' && result ? (
-          <QuizResultView answers={answers} result={result} />
+          <QuizResultView result={result} />
         ) : null}
 
         {isLeadFlowActive ? (

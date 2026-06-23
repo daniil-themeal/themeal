@@ -287,7 +287,7 @@ export function DeliveryDetailsScreen({
             )}
           >
             <Button type="button" variant="primary" size="medium" fullWidth onClick={handleContinue}>
-              Continue
+              Continue to payment
             </Button>
           </div>
         </div>
