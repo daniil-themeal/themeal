@@ -103,7 +103,7 @@ export default function LandingStasPage({
         <FinalOffer t={t} onOrder={onOrderClick} />
       </main>
       <Footer t={t} />
-      <OrderFab t={t} onOrderClick={onOrderClick} hidden={checkoutOpen || quizOpen} />
+      <OrderFab t={t} onOrderClick={onOrderClick} onQuizClick={onQuizClick} hidden={checkoutOpen || quizOpen} />
       <ScrollToTopFab hidden={checkoutOpen || quizOpen} />
       <DevToolsOverlays />
     </div>

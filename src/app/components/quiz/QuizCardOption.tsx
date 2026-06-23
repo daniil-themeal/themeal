@@ -1,5 +1,3 @@
-import { cn } from '../ui/utils';
-
 type QuizCardOptionProps = {
   label: string;
   selected: boolean;
@@ -11,13 +9,22 @@ export function QuizCardOption({ label, selected, onSelect }: QuizCardOptionProp
     <button
       type="button"
       onClick={onSelect}
-      className={cn(
-        'border-input bg-card text-card-foreground min-h-[52px] w-full rounded-xl border px-4 py-3 text-left text-base font-semibold transition-colors',
-        'hover:bg-accent hover:text-accent-foreground',
-        selected && 'border-primary bg-primary/5 ring-primary ring-2 ring-offset-2',
-      )}
+      className={[
+        'w-full cursor-pointer rounded-[16px] border border-solid text-left transition-colors duration-150',
+        !selected && 'hover:border-[var(--quiz-card-hover-border)]',
+        selected
+          ? 'border-[var(--quiz-card-selected-border)] bg-[var(--quiz-card-selected-bg)]'
+          : 'border-transparent bg-[var(--quiz-card-bg)]',
+      ].join(' ')}
     >
-      {label}
+      <span
+        className={[
+          'block p-[var(--quiz-card-padding)] font-sans text-[length:var(--quiz-option-font-size)] font-bold leading-[130%]',
+          selected ? 'text-[var(--quiz-active)]' : 'text-[var(--quiz-text)]',
+        ].join(' ')}
+      >
+        {label}
+      </span>
     </button>
   );
 }

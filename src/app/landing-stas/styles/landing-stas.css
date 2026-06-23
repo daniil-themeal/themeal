@@ -716,7 +716,7 @@ body {
   z-index:60;
   display:flex;
   align-items:center;
-  gap:0;
+  gap:12px;
   transition:gap .3s var(--ease);
 }
 .order-fab-group :is(button, a) {
@@ -724,6 +724,26 @@ body {
 }
 .order-fab-group--order-visible {
   gap:12px;
+}
+.order-fab-quiz {
+  display:flex;
+  width:48px;
+  height:48px;
+  flex-shrink:0;
+  align-items:center;
+  justify-content:center;
+  border:none;
+  border-radius:50%;
+  background:var(--pink);
+  color:#fff;
+  box-shadow:var(--shadow-pink);
+  cursor:pointer;
+  transition:transform .15s var(--ease), box-shadow .15s var(--ease), background .15s var(--ease);
+}
+.order-fab-quiz:hover {
+  transform:translateY(-2px);
+  background:var(--pink-600);
+  box-shadow:var(--shadow-pink);
 }
 .order-fab-order-wrap {
   display:grid;

@@ -1,4 +1,5 @@
 import { Slider } from '../ui/slider';
+import { QUIZ_SLIDER_CLASSNAME } from './quizTokens';
 
 type QuizValueSliderProps = {
   label: string;
@@ -18,10 +19,12 @@ export function QuizValueSlider({
   onChange,
 }: QuizValueSliderProps) {
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-baseline justify-between gap-2">
-        <p className="text-foreground text-sm font-semibold">{label}</p>
-        <p className="text-foreground shrink-0 text-sm font-bold">
+    <div className="flex flex-col gap-[12px]">
+      <div className="flex items-baseline justify-between gap-[8px]">
+        <p className="font-sans text-[length:var(--quiz-body-font-size)] font-semibold leading-[140%] text-[var(--quiz-text)]">
+          {label}
+        </p>
+        <p className="shrink-0 font-sans text-[length:var(--quiz-body-font-size)] font-bold leading-[140%] text-[var(--quiz-active)]">
           {value}
           {unit ? ` ${unit}` : ''}
         </p>
@@ -32,7 +35,7 @@ export function QuizValueSlider({
         step={1}
         value={[value]}
         onValueChange={(v) => onChange(v[0] ?? min)}
-        className="py-2"
+        className={['py-[8px]', QUIZ_SLIDER_CLASSNAME].join(' ')}
       />
     </div>
   );

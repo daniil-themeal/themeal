@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { Button } from '../common/Button';
 import { PhoneInput } from '../common/PhoneInput';
 import { SmsCodeInput } from '../common/SmsCodeInput';
 import {
@@ -12,7 +13,6 @@ import {
   SMS_CODE_ERROR,
   SMS_CODE_SUCCESS_HOLD_MS,
 } from '../checkout/smsCodeValidation';
-import { Button } from '../ui/button';
 import { QuizStepHeader } from './QuizStepHeader';
 
 type QuizLeadPhase = 'offer' | 'sms' | 'success';
@@ -85,25 +85,27 @@ export function QuizLeadFlow({
 
   if (phase === 'success') {
     return (
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-[20px]">
         <QuizStepHeader
           title="Your menu is on its way to WhatsApp"
           subtitle="The full menu with photos will arrive in a couple of minutes. Take a look whenever it suits you — no rush."
         />
 
-        <div className="bg-muted/50 flex flex-col gap-2 rounded-xl p-4">
-          <p className="text-foreground text-base font-bold">Ready to see your plan?</p>
-          <p className="text-muted-foreground text-sm leading-relaxed">
+        <div className="flex flex-col gap-[8px] rounded-[16px] bg-[var(--quiz-surface)] p-[16px]">
+          <p className="font-sans text-[length:var(--quiz-option-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
+            Ready to see your plan?
+          </p>
+          <p className="font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
             We&apos;ve already put it together with your numbers — nothing to re-enter, just take a
             look.
           </p>
         </div>
 
-        <div className="flex flex-col gap-3">
-          <Button type="button" size="lg" className="w-full" onClick={onSeePlan}>
+        <div className="flex flex-col gap-[12px]">
+          <Button type="button" variant="primary" size="medium" fullWidth onClick={onSeePlan}>
             See my plan
           </Button>
-          <Button type="button" variant="outline" size="lg" className="w-full" onClick={onWhatsAppFirst}>
+          <Button type="button" variant="neutral" outline size="medium" fullWidth onClick={onWhatsAppFirst}>
             I&apos;ll check WhatsApp first
           </Button>
         </div>
@@ -115,7 +117,7 @@ export function QuizLeadFlow({
     const formattedPhone = formatUaePhoneInput(phone.replace(/\D/g, '').slice(-9));
 
     return (
-      <div className="flex flex-col gap-5">
+      <div className="flex flex-col gap-[20px]">
         <QuizStepHeader title="Enter verification code" />
 
         <SmsCodeInput
@@ -133,30 +135,32 @@ export function QuizLeadFlow({
         />
 
         {smsError ? (
-          <p className="text-destructive text-center text-sm font-semibold">{smsError}</p>
+          <p className="text-center font-sans text-[length:var(--quiz-body-font-size)] font-semibold leading-[140%] text-[var(--quiz-danger)]">
+            {smsError}
+          </p>
         ) : null}
 
-        <div className="flex flex-col gap-3 text-center text-sm">
-          <p className="text-muted-foreground">
+        <div className="flex flex-col gap-[12px] text-center font-sans text-[length:var(--quiz-body-font-size)] leading-[140%]">
+          <p className="text-[var(--quiz-muted)]">
             <button
               type="button"
               disabled={isVerifying}
-              className="text-foreground font-bold disabled:opacity-60"
+              className="cursor-pointer font-bold text-[var(--quiz-text)] disabled:opacity-60"
             >
               Send again
             </button>{' '}
             the code after 60 seconds
           </p>
-          <p className="text-muted-foreground">
+          <p className="text-[var(--quiz-muted)]">
             <button
               type="button"
               disabled={isVerifying}
               onClick={() => onPhaseChange('offer')}
-              className="text-foreground font-bold disabled:opacity-60"
+              className="cursor-pointer font-bold text-[var(--quiz-text)] disabled:opacity-60"
             >
               Change number
             </button>{' '}
-            <span className="text-foreground font-bold">{formattedPhone}</span>
+            <span className="font-bold text-[var(--quiz-text)]">{formattedPhone}</span>
           </p>
         </div>
       </div>
@@ -164,7 +168,7 @@ export function QuizLeadFlow({
   }
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-[20px]">
       <QuizStepHeader
         title="Get this week's menu on WhatsApp?"
         subtitle="We'll send the full menu with photos and match a plan to your numbers. No spam, no commitment."
@@ -181,11 +185,11 @@ export function QuizLeadFlow({
         placeholder="50 123 4567"
       />
 
-      <Button type="button" size="lg" className="w-full" onClick={handlePhoneSubmit}>
+      <Button type="button" variant="primary" size="medium" fullWidth onClick={handlePhoneSubmit}>
         Get my menu
       </Button>
 
-      <p className="text-muted-foreground text-center text-sm">
+      <p className="text-center font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
         We&apos;ll send a verification code via SMS.
       </p>
     </div>

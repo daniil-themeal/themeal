@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react';
 
-import { Progress } from '../ui/progress';
-
 type QuizStepHeaderProps = {
   title: string;
   subtitle?: string;
@@ -11,24 +9,35 @@ type QuizStepHeaderProps = {
 
 export function QuizStepHeader({ title, subtitle, step, icon }: QuizStepHeaderProps) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-[12px]">
       {step !== null && step !== undefined ? (
-        <div className="flex flex-col gap-2">
-          <p className="text-muted-foreground text-xs font-medium">Step {step} of 7</p>
-          <Progress value={(step / 7) * 100} className="h-1.5" />
+        <div className="flex flex-col gap-[8px]">
+          <p className="font-sans text-[length:var(--quiz-caption-font-size)] font-semibold leading-[140%] text-[var(--quiz-muted)]">
+            Step {step} of 7
+          </p>
+          <div className="h-[6px] w-full overflow-hidden rounded-full bg-[var(--quiz-progress-track)]">
+            <div
+              className="h-full rounded-full bg-[var(--quiz-progress-fill)] transition-[width] duration-200"
+              style={{ width: `${(step / 7) * 100}%` }}
+            />
+          </div>
         </div>
       ) : null}
 
-      <div className="flex items-start gap-3">
+      <div className="flex items-start gap-[12px]">
         {icon ? (
-          <span className="bg-muted text-foreground flex size-10 shrink-0 items-center justify-center rounded-lg">
+          <span className="flex size-[40px] shrink-0 items-center justify-center rounded-[12px] bg-[var(--quiz-surface)] text-[var(--quiz-active)]">
             {icon}
           </span>
         ) : null}
         <div className="min-w-0 flex-1">
-          <h2 className="text-foreground text-lg font-bold leading-snug sm:text-xl">{title}</h2>
+          <h2 className="font-sans text-[length:var(--quiz-title-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
+            {title}
+          </h2>
           {subtitle ? (
-            <p className="text-muted-foreground mt-1 text-sm leading-relaxed">{subtitle}</p>
+            <p className="mt-[4px] font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
+              {subtitle}
+            </p>
           ) : null}
         </div>
       </div>

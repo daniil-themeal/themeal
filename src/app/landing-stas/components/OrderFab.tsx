@@ -34,10 +34,11 @@ function OrderFabWhatsAppIcon() {
 type OrderFabProps = {
   t: MealContentEn;
   onOrderClick: () => void;
+  onQuizClick: () => void;
   hidden?: boolean;
 };
 
-export function OrderFab({ t, onOrderClick, hidden }: OrderFabProps) {
+export function OrderFab({ t, onOrderClick, onQuizClick, hidden }: OrderFabProps) {
   const [showOrder, setShowOrder] = useState(false);
 
   useEffect(() => {
@@ -60,6 +61,15 @@ export function OrderFab({ t, onOrderClick, hidden }: OrderFabProps) {
       >
         <OrderFabWhatsAppIcon />
       </a>
+
+      <button
+        type="button"
+        onClick={onQuizClick}
+        aria-label={t.benefits.cta}
+        className="order-fab-quiz"
+      >
+        <Icon.clock size={24} />
+      </button>
 
       <div className="order-fab-order-wrap">
         <div className="order-fab-order-clip">

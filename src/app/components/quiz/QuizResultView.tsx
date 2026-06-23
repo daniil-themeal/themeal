@@ -55,24 +55,30 @@ export function QuizResultView({ answers, result }: QuizResultViewProps) {
   const upsell = `Go for 2 months at once — ${plan2moPM} AED/mo instead of ${planMonth} (save another ${planMonth - plan2moPM} AED/mo, ${plan2moPeriod} AED for the period).`;
 
   return (
-    <div className="flex flex-col gap-5">
-      <div className="grid grid-cols-3 gap-2">
+    <div className="flex flex-col gap-[20px]">
+      <div className="grid grid-cols-3 gap-[8px]">
         <Metric label="You spend now" value={`${money} AED/mo`} />
         <Metric label="Time it takes" value={`${timeWk} h/week`} />
         <Metric label="Meals per week" value={String(mealsWk)} />
       </div>
 
-      <p className="text-muted-foreground text-center text-xs leading-relaxed">
+      <p className="text-center font-sans text-[length:var(--quiz-caption-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
         Where it comes from: groceries {mCook} · delivery {mOrder} · dining out {mRest} AED
       </p>
 
-      <div className="bg-muted/50 flex flex-col gap-2 rounded-xl p-4">
-        <h3 className="text-foreground text-base font-bold leading-snug">{heading}</h3>
-        <p className="text-muted-foreground text-sm font-medium">{sub}</p>
-        <p className="text-foreground text-sm leading-relaxed">{body}</p>
+      <div className="flex flex-col gap-[8px] rounded-[16px] bg-[var(--quiz-surface)] p-[16px]">
+        <h3 className="font-sans text-[length:var(--quiz-option-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
+          {heading}
+        </h3>
+        <p className="font-sans text-[length:var(--quiz-body-font-size)] font-semibold leading-[140%] text-[var(--quiz-muted)]">
+          {sub}
+        </p>
+        <p className="font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-text)]">
+          {body}
+        </p>
       </div>
 
-      <p className="text-muted-foreground border-border rounded-lg border px-3 py-3 text-sm leading-relaxed">
+      <p className="rounded-[12px] border border-[var(--quiz-border)] px-[12px] py-[12px] font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
         {upsell}
       </p>
     </div>
@@ -81,11 +87,13 @@ export function QuizResultView({ answers, result }: QuizResultViewProps) {
 
 function Metric({ label, value }: { label: string; value: string }) {
   return (
-    <div className="bg-card border-border flex flex-col gap-1 rounded-lg border p-3 text-center">
-      <span className="text-muted-foreground text-[10px] font-semibold uppercase tracking-wide">
+    <div className="flex flex-col gap-[4px] rounded-[12px] border border-[var(--quiz-border)] bg-[var(--quiz-card-bg)] p-[12px] text-center">
+      <span className="font-sans text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--quiz-muted)]">
         {label}
       </span>
-      <span className="text-foreground text-sm font-bold leading-tight">{value}</span>
+      <span className="font-sans text-[length:var(--quiz-body-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
+        {value}
+      </span>
     </div>
   );
 }
