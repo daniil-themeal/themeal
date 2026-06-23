@@ -256,7 +256,7 @@ export function PhoneAuthProvider({ children }: PhoneAuthProviderProps) {
         isVerifying={leadIsSmsVerifying}
         onCodeChange={handleLeadSmsCodeChange}
         onCodeComplete={handleLeadSmsCodeComplete}
-        onSkip={handleLeadAuthModalSkip}
+        onSkip={import.meta.env.DEV ? handleLeadAuthModalSkip : undefined}
       />
     </PhoneAuthContext.Provider>
   );

@@ -770,6 +770,17 @@ export function CheckoutPage({
 
   if (!isOpen) return null;
 
+  const devStepSelectProps = import.meta.env.DEV ? { onStepSelect: handleStepSelect } : {};
+  const devAuthProps = import.meta.env.DEV
+    ? {
+        authDevMode: (devSkipAuth ? 'skip' : 'required') as CheckoutAuthDevMode,
+        onAuthDevModeChange: handleDevAuthModeChange,
+      }
+    : {};
+  const devResultSelectProps = import.meta.env.DEV
+    ? { onResultSelect: handleResultTabChange }
+    : {};
+
   return (
     <div
       className={[
@@ -789,11 +800,10 @@ export function CheckoutPage({
         step={headerStep}
         onBack={handleBack}
         onClose={requestClose}
-        onStepSelect={handleStepSelect}
         onLogoClick={() => scrollBodyToTop('smooth')}
-        onResultSelect={handleResultTabChange}
-        authDevMode={devSkipAuth ? 'skip' : 'required'}
-        onAuthDevModeChange={handleDevAuthModeChange}
+        {...devStepSelectProps}
+        {...devAuthProps}
+        {...devResultSelectProps}
       />
 
       {!resultOverlay && checkoutStep === 'plan' ? (
@@ -933,7 +943,7 @@ export function CheckoutPage({
         isVerifying={isSmsVerifying}
         onCodeChange={handleSmsCodeChange}
         onCodeComplete={handleSmsCodeComplete}
-        onSkip={handleAuthModalSkip}
+        onSkip={import.meta.env.DEV ? handleAuthModalSkip : undefined}
       />
 
       {resultOverlay ? (

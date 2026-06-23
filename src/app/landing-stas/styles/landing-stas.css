@@ -1161,6 +1161,11 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
 .navlink__short {
   display: none;
 }
+.hdr-wrap {
+  width: 100%;
+  padding-inline: var(--checkout-card-padding);
+  box-sizing: border-box;
+}
 .hdr-row {
   gap: 24px;
 }

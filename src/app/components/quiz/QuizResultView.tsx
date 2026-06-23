@@ -70,7 +70,7 @@ export function QuizResultView({ answers, result }: QuizResultViewProps) {
           Where it comes from: Groceries{' '}
           <span className="font-bold">{mCook}</span> · Delivery{' '}
           <span className="font-bold">{mOrder}</span> · Dining out{' '}
-          <span className="font-bold">AED {mRest}</span>
+          <span className="font-bold">AED{'\u00A0'}{mRest}</span>
         </p>
       </div>
 

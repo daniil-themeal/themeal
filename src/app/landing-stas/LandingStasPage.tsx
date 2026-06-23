@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { mealContentEn } from './content/mealContentEn';
+import { landingLayoutStyle } from './landingLayoutTokens';
 import { useScrollReveal } from './useScrollReveal';
 import { OrderFab } from './components/OrderFab';
 import { ScrollToTopFab } from './components/ScrollToTopFab';
@@ -68,7 +69,7 @@ export default function LandingStasPage({
   const shared = { t, onOrder: onOrderClick };
 
   return (
-    <div className="landing-stas min-h-screen w-full">
+    <div className="landing-stas min-h-screen w-full" style={landingLayoutStyle}>
       <Header
         {...shared}
         dark
@@ -105,7 +106,7 @@ export default function LandingStasPage({
       <Footer t={t} />
       <OrderFab t={t} onOrderClick={onOrderClick} onQuizClick={onQuizClick} hidden={checkoutOpen || quizOpen} />
       <ScrollToTopFab hidden={checkoutOpen || quizOpen} />
-      <DevToolsOverlays />
+      {import.meta.env.DEV ? <DevToolsOverlays /> : null}
     </div>
   );
 }

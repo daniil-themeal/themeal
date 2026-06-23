@@ -25,7 +25,6 @@ type QuizLeadFlowProps = {
   onPhaseChange: (phase: QuizLeadPhase) => void;
   onSmsVerified: (phone: string) => void;
   onSeePlan: () => void;
-  onWhatsAppFirst: () => void;
 };
 
 export function QuizLeadFlow({
@@ -34,7 +33,6 @@ export function QuizLeadFlow({
   onPhaseChange,
   onSmsVerified,
   onSeePlan,
-  onWhatsAppFirst,
 }: QuizLeadFlowProps) {
   const [smsCode, setSmsCode] = useState('');
   const [phone, setPhone] = useState('');
@@ -91,26 +89,13 @@ export function QuizLeadFlow({
     return (
       <div className={['flex flex-col gap-[20px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
         <QuizStepHeader
-          title="Your menu is on its way to WhatsApp"
-          subtitle="The full menu with photos will arrive in a couple of minutes. Take a look whenever it suits you — no rush."
+          title="Ready to see your plan?"
+          subtitle="We've already put it together with your numbers — nothing to re-enter, just take a look."
         />
-
-        <div className="flex flex-col gap-[8px] rounded-[16px] bg-[var(--quiz-surface)] p-[16px]">
-          <p className="font-sans text-[length:var(--quiz-option-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
-            Ready to see your plan?
-          </p>
-          <p className="font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
-            We&apos;ve already put it together with your numbers — nothing to re-enter, just take a
-            look.
-          </p>
-        </div>
 
         <div className={QUIZ_MOBILE_STICKY_ACTIONS_CLASSNAME}>
           <Button type="button" variant="primary" size="medium" fullWidth onClick={onSeePlan}>
             See my plan
-          </Button>
-          <Button type="button" variant="neutral" outline size="medium" fullWidth onClick={onWhatsAppFirst}>
-            I&apos;ll check WhatsApp first
           </Button>
         </div>
       </div>

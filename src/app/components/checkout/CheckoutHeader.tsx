@@ -88,6 +88,8 @@ function Stepper({
   current: number;
   onStepSelect?: (step: CheckoutHeaderStep) => void;
 }) {
+  const isDevStepSelect = import.meta.env.DEV && Boolean(onStepSelect);
+
   return (
     <div className="flex h-full items-center justify-center gap-0 px-[0px] sm:px-[8px] md:px-[16px]">
       {steps.map((step, index) => {
@@ -143,10 +145,10 @@ function Stepper({
 
         return (
           <div key={step} className="flex h-full items-center">
-            {onStepSelect ? (
+            {isDevStepSelect ? (
               <button
                 type="button"
-                onClick={() => onStepSelect(headerStep)}
+                onClick={() => onStepSelect?.(headerStep)}
                 className="flex h-full cursor-pointer items-center rounded-[6px] px-[4px] transition-opacity hover:opacity-80 sm:px-[8px]"
                 aria-label={`Switch to ${step} step`}
               >
@@ -259,7 +261,7 @@ export function CheckoutHeader({
           ) : (
             <div className="flex h-full min-w-0 items-center justify-center">
               <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
-              {onAuthDevModeChange ? (
+              {import.meta.env.DEV && onAuthDevModeChange ? (
                 <div className="flex items-center">
                   <div className="mx-[8px] h-px w-[12px] bg-[var(--checkout-header-border)]" />
                   <CheckoutAuthDevTabs

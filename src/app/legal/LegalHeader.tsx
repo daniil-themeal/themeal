@@ -51,7 +51,7 @@ export function LegalHeader({ t }: LegalHeaderProps) {
           transform: visible ? 'translateY(0)' : 'translateY(-105%)',
         }}
       >
-        <div className="wrap row hdr-row" style={{ height: 'var(--hdr-h)', justifyContent: 'space-between' }}>
+        <div className="hdr-wrap row hdr-row" style={{ height: 'var(--hdr-h)', justifyContent: 'space-between' }}>
           <Link to="/" className="row hdr-logo logo-top-link" aria-label="Back to home">
             <span className="hover-lift">
               <Logo tone="yellow" />

@@ -27,7 +27,9 @@ export function PaymentResultHeader({
         <div aria-hidden />
 
         <div className="flex items-center justify-center">
-          <PaymentResultTabs activeTab={activeTab} onTabChange={onTabChange} />
+          {import.meta.env.DEV ? (
+            <PaymentResultTabs activeTab={activeTab} onTabChange={onTabChange} />
+          ) : null}
         </div>
 
         <button

@@ -35,7 +35,6 @@ type QuizModalProps = {
   open: boolean;
   onClose: () => void;
   onSeePlan: (selection: QuizCheckoutSelection, phone: string) => void;
-  onWhatsAppFirst: () => void;
 };
 
 function MealsTotalHint({ total }: { total: number }) {
@@ -52,7 +51,7 @@ function MealsTotalHint({ total }: { total: number }) {
   );
 }
 
-export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizModalProps) {
+export function QuizModal({ open, onClose, onSeePlan }: QuizModalProps) {
   const {
     answers,
     updateAnswers,
@@ -81,11 +80,6 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
     if (!result) return;
     onSeePlan(toCheckoutSelection(answers, result), verifiedPhone);
   }, [answers, result, onSeePlan, verifiedPhone]);
-
-  const handleWhatsAppFirst = useCallback(() => {
-    onWhatsAppFirst();
-    onClose();
-  }, [onClose, onWhatsAppFirst]);
 
   const mealsTotal = answers.freqCook + answers.freqOrder + answers.freqRest;
 
@@ -378,7 +372,6 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
             }}
             onSmsVerified={setVerifiedPhone}
             onSeePlan={handleSeePlan}
-            onWhatsAppFirst={handleWhatsAppFirst}
           />
         ) : null}
               </div>

@@ -59,7 +59,7 @@ function Header({
           boxShadow: solid ? 'inset 0 -1px 0 rgba(255,255,255,.1)' : 'none',
         }
       },
-      createElement('div', { className:'wrap row hdr-row', style:{ height:64, justifyContent:'space-between' } },
+      createElement('div', { className:'hdr-wrap row hdr-row', style:{ height:64, justifyContent:'space-between' } },
         createElement('a', { href:'#top', className:'row hdr-logo logo-top-link', 'aria-label':'Back to top' },
           createElement('span', { className:'hover-lift' },
             createElement(Logo, { tone: 'yellow' })

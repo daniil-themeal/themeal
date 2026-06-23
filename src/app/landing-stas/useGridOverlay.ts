@@ -155,7 +155,7 @@ function onKeyDown(event: KeyboardEvent) {
 let keyboardAttached = false;
 
 function attachKeyboard() {
-  if (keyboardAttached || typeof window === 'undefined') return;
+  if (!import.meta.env.DEV || keyboardAttached || typeof window === 'undefined') return;
   keyboardAttached = true;
   window.addEventListener('keydown', onKeyDown);
 }

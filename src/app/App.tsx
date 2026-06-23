@@ -178,10 +178,6 @@ function HomePage() {
     [handleSessionUpdate, openCheckoutAt, phoneSession],
   );
 
-  const handleQuizWhatsAppFirst = useCallback(() => {
-    setQuizOpen(false);
-  }, []);
-
   const resetPhoneAndCheckout = useCallback(
     (options?: { closeCheckout?: boolean }) => {
       resetPhoneSession();
@@ -227,7 +223,7 @@ function HomePage() {
         onResumeVerification={handleResumeVerification}
         onResetPhone={() => resetPhoneAndCheckout()}
         onSignInClick={openSignIn}
-        onDesignSystemClick={openDesignSystem}
+        onDesignSystemClick={import.meta.env.DEV ? openDesignSystem : undefined}
         checkoutOpen={checkoutOpen}
         quizOpen={quizOpen}
         isPhoneVerified={isPhoneVerified}
@@ -241,7 +237,6 @@ function HomePage() {
             open={quizOpen}
             onClose={closeQuiz}
             onSeePlan={handleQuizSeePlan}
-            onWhatsAppFirst={handleQuizWhatsAppFirst}
           />
         </Suspense>
       ) : null}

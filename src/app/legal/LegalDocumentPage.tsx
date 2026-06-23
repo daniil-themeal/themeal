@@ -12,6 +12,7 @@ import {
 } from './parseLegalContentBlocks';
 import { LEGAL_ROUTES } from './routes';
 import { legalText, legalTypographyVars } from './legalTypography';
+import { landingLayoutStyle } from '../landing-stas/landingLayoutTokens';
 import '../landing-stas/styles/landing-stas.css';
 import './legal-page.css';
 
@@ -124,7 +125,7 @@ export function LegalDocumentPage({ document, current }: LegalDocumentPageProps)
   return (
     <div
       className="landing-stas legal-page min-h-screen w-full font-sans"
-      style={legalTypographyVars}
+      style={{ ...legalTypographyVars, ...landingLayoutStyle }}
     >
       <LegalHeader t={t} />
 
