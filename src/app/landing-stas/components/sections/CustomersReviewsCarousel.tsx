@@ -5,7 +5,7 @@
  * with CustomersReviewsCarousel from this file.
  */
 import { createElement, Fragment, useState, useEffect, useRef, useMemo } from 'react';
-import { ModalShell } from '../../../components/common/ModalShell';
+import { Modal, ModalCloseOverlay } from '../../../components/common/Modal';
 import { Z_INDEX_TOKENS } from '../../../components/common/zIndexTokens';
 import { Icon, Stars, Social } from '../icons';
 /* ---------------- Customers (horizontal carousel + modal) ---------------- */
@@ -216,24 +216,25 @@ function ReviewCard({ review, compact = true, onOpen }) {
 function ReviewDetailModal({ review, onClose }) {
   if (!review) return null;
 
-  return createElement(ModalShell, {
+  return createElement(Modal, {
     isOpen: true,
     onClose,
-    variant: 'bottom-sheet',
+    ariaLabel: `Review by ${review.n}`,
+    showHeader: false,
     zIndex: Z_INDEX_TOKENS.modal,
     panelClassName: 'review-modal-panel w-full rounded-t-[24px] bg-white shadow-[0_-16px_48px_rgba(34,10,56,0.18)] md:mx-[20px] md:max-w-[560px] md:rounded-[var(--r-2xl)] md:shadow-2xl',
-  }, (requestClose) => createElement('div', {
-    className:'review-modal__content',
-    role:'dialog',
-    'aria-modal':true,
-    'aria-label': `Review by ${review.n}`,
-  },
-    createElement('button', {
-      type:'button',
-      className:'review-modal__close',
-      'aria-label':'Close review',
-      onClick: requestClose,
-    }, createElement(Icon.x, { size:20 })),
+    innerClassName: 'review-modal__content',
+    bodyClassName: 'relative flex min-h-0 flex-1 flex-col',
+  }, (requestClose) => createElement(Fragment, null,
+    createElement(ModalCloseOverlay, {
+      onClose: requestClose,
+      'aria-label': 'Close review',
+      closeColors: {
+        '--circular-close-bg': 'var(--cream)',
+        '--circular-close-bg-hover': 'var(--brand-soft)',
+      },
+      iconClassName: 'text-[var(--plum-700)]',
+    }),
     createElement('article', {
       className:`reviews-card${
         isVideoReview(review) ? ' reviews-card--video' : ''

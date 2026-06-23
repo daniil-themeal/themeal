@@ -4,9 +4,8 @@ import { Link } from 'react-router';
 
 import { Button } from '../common/Button';
 import { InputButtonRow } from '../common/InputButtonRow';
+import { ModalHeader } from '../common/Modal';
 import { SmsCodeInput } from '../common/SmsCodeInput';
-import { XIcon } from '../common/icons';
-import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import {
@@ -46,8 +45,6 @@ type SmsCodeScreenCssVariables = CSSProperties & {
   '--full-menu-bg': string;
   '--full-menu-border': string;
   '--full-menu-title': string;
-  '--full-menu-close-bg': string;
-  '--full-menu-close-bg-hover': string;
   '--full-menu-heading-font-size': string;
   '--sms-code-page-bg': string;
   '--sms-code-text': string;
@@ -75,8 +72,6 @@ const smsCodeScreenStyle: SmsCodeScreenCssVariables = {
   '--full-menu-bg': COLOR_TOKENS.base.white,
   '--full-menu-border': COLOR_TOKENS.neutral[100],
   '--full-menu-title': COLOR_TOKENS.neutral[900],
-  '--full-menu-close-bg': COLOR_TOKENS.neutral[50],
-  '--full-menu-close-bg-hover': COLOR_TOKENS.neutral[75],
   '--full-menu-heading-font-size': CHECKOUT_FONT_CLAMP_20_25,
   '--sms-code-page-bg': COLOR_TOKENS.base.cream,
   '--sms-code-text': COLOR_TOKENS.neutral[900],
@@ -194,7 +189,7 @@ export function SmsCodeScreen({
 
   const codeSectionMt = isModal ? (showModalHeader ? '' : 'mt-[24px]') : 'mt-[32px]';
   const phoneSectionMt = isModal ? (showModalHeader ? '' : 'mt-[24px]') : 'mt-[32px]';
-  const codeActionsMt = isModal ? 'mt-[40px]' : 'mt-[56px]';
+  const codeActionsMt = isModal ? 'mt-[32px]' : 'mt-[56px]';
   const codeActionTextClassName =
     'text-center font-sans text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-muted)]';
   const smsCodeAutoFocusDelay =
@@ -203,24 +198,17 @@ export function SmsCodeScreen({
   return (
     <div className={rootClassName} style={smsCodeScreenStyle}>
       {showModalHeader ? (
-        <div className="flex h-[56px] shrink-0 items-center gap-[8px] border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
-          <p className="min-w-0 flex-1 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] sm:pl-[20px]">
-            {screenTitle}
-          </p>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
-            aria-label="Close"
-          >
-            <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--full-menu-close-bg)] transition-colors duration-150 group-hover:bg-[var(--full-menu-close-bg-hover)]">
-              <span className={iconColorClassName.emphasis} style={iconColorStyle.emphasis}>
-                <XIcon size={16} />
-              </span>
-            </span>
-          </button>
-        </div>
+        <ModalHeader
+          title={screenTitle}
+          onClose={onClose}
+          className="border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]"
+          titleClassName="text-[var(--full-menu-title)]"
+          style={{
+            '--modal-border': smsCodeScreenStyle['--full-menu-border'],
+            '--modal-bg': smsCodeScreenStyle['--full-menu-bg'],
+            '--modal-title': smsCodeScreenStyle['--full-menu-title'],
+          } as CSSProperties}
+        />
       ) : null}
 
       <div className={containerClassName}>

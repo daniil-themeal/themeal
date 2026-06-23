@@ -1,12 +1,10 @@
-import { useEffect, useMemo, useState } from 'react';
-import { createPortal } from 'react-dom';
-import type { CSSProperties, FormEvent } from 'react';
+import { useEffect, useMemo, useState, type FormEvent } from 'react';
+import type { CSSProperties } from 'react';
 
 import { Button } from '../common/Button';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
-import { XIcon } from '../common/icons';
-import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
+import { Modal } from '../common/Modal';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import {
   CHECKOUT_CARD_PADDING_CLAMP,
@@ -14,11 +12,9 @@ import {
   MEAL_DETAIL_CONTENT_PADDING_CLAMP,
 } from './checkoutSpacing';
 import {
-  CHECKOUT_AUTH_MODAL_INNER_CLASSNAME,
   CHECKOUT_AUTH_MODAL_PANEL_CLASSNAME,
   CHECKOUT_ROOT_CLASSNAME,
 } from './checkoutModalShellTokens';
-import { ModalShell } from '../common/ModalShell';
 import { TextInput } from '../common/TextInput';
 
 type OutOfAreaContactNoticeProps = {
@@ -37,8 +33,6 @@ type OutOfAreaContactCssVariables = CSSProperties & {
   '--out-of-area-text': string;
   '--out-of-area-muted': string;
   '--out-of-area-border': string;
-  '--out-of-area-close-bg': string;
-  '--out-of-area-close-bg-hover': string;
   '--out-of-area-notice-font-size': string;
   '--out-of-area-title-font-size': string;
   '--out-of-area-heading-font-size': string;
@@ -53,8 +47,6 @@ const outOfAreaContactStyle: OutOfAreaContactCssVariables = {
   '--out-of-area-text': COLOR_TOKENS.neutral[900],
   '--out-of-area-muted': COLOR_TOKENS.neutral[500],
   '--out-of-area-border': COLOR_TOKENS.neutral[100],
-  '--out-of-area-close-bg': COLOR_TOKENS.neutral[50],
-  '--out-of-area-close-bg-hover': COLOR_TOKENS.neutral[75],
   '--out-of-area-notice-font-size': FONT_SIZE_TOKENS[16],
   '--out-of-area-title-font-size': CHECKOUT_FONT_CLAMP_18_20,
   '--out-of-area-heading-font-size': CHECKOUT_FONT_CLAMP_18_20,
@@ -116,83 +108,59 @@ export function OutOfAreaContactForm({ isOpen, onClose }: OutOfAreaContactFormPr
     if (!canSubmit) return;
   };
 
-  return createPortal(
-    <ModalShell
+  return (
+    <Modal
       isOpen={isOpen}
       onClose={onClose}
-      variant="bottom-sheet"
+      ariaLabel="Contact us"
+      title="Contact us"
+      titleId="contact-me-modal-title"
       zIndex={Z_INDEX_TOKENS.modal}
       rootClassName={CHECKOUT_ROOT_CLASSNAME}
       panelClassName={CHECKOUT_AUTH_MODAL_PANEL_CLASSNAME}
+      bodyClassName="flex flex-col p-[length:var(--checkout-card-padding)] md:p-[length:var(--meal-detail-content-p)]"
+      style={{
+        ...outOfAreaContactStyle,
+        '--modal-bg': outOfAreaContactStyle['--out-of-area-card-bg'],
+        '--modal-border': outOfAreaContactStyle['--out-of-area-border'],
+        '--modal-title': outOfAreaContactStyle['--out-of-area-text'],
+      }}
     >
-      {(requestClose) => (
-        <div
-          style={outOfAreaContactStyle}
-          className={CHECKOUT_AUTH_MODAL_INNER_CLASSNAME}
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="contact-me-modal-title"
-        >
-          <div className="flex h-[56px] shrink-0 items-center gap-[8px] border-b border-[var(--out-of-area-border)] bg-[var(--out-of-area-card-bg)] rounded-t-[20px]">
-            <p
-              id="contact-me-modal-title"
-              className="min-w-0 flex-1 pl-[16px] font-sans text-[length:var(--out-of-area-heading-font-size)] font-bold leading-[130%] text-[var(--out-of-area-text)] md:pl-[20px]"
-            >
-              Contact us
-            </p>
+      <>
+        <p className="font-sans text-[length:var(--out-of-area-title-font-size)] font-medium leading-[140%] text-[var(--out-of-area-muted)]">
+          Leave your contact information and we will decide where to send your order.
+        </p>
 
-            <button
-              type="button"
-              onClick={requestClose}
-              className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
-              aria-label="Close"
-            >
-              <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--out-of-area-close-bg)] transition-colors duration-150 group-hover:bg-[var(--out-of-area-close-bg-hover)]">
-                <span className={iconColorClassName.emphasis} style={iconColorStyle.emphasis}>
-                  <XIcon size={16} />
-                </span>
-              </span>
-            </button>
-          </div>
+        <form className="mt-[24px] flex flex-col gap-[20px]" onSubmit={handleSubmit}>
+          <TextInput
+            id="out-of-area-contact-name"
+            label="Your name"
+            value={contactName}
+            onChange={(event) => setContactName(event.target.value)}
+            placeholder="Type your name"
+          />
 
-          <div className="flex flex-col p-[length:var(--checkout-card-padding)] md:p-[length:var(--meal-detail-content-p)]">
-            <p className="font-sans text-[length:var(--out-of-area-title-font-size)] font-medium leading-[140%] text-[var(--out-of-area-muted)]">
-              Leave your contact information and we will decide where to send your order.
-            </p>
+          <TextInput
+            id="out-of-area-contact-email"
+            type="email"
+            label="E-mail"
+            value={contactEmail}
+            onChange={(event) => setContactEmail(event.target.value)}
+            placeholder="Type your e-mail"
+          />
 
-            <form className="mt-[24px] flex flex-col gap-[20px]" onSubmit={handleSubmit}>
-              <TextInput
-                id="out-of-area-contact-name"
-                label="Your name"
-                value={contactName}
-                onChange={(event) => setContactName(event.target.value)}
-                placeholder="Type your name"
-              />
-
-              <TextInput
-                id="out-of-area-contact-email"
-                type="email"
-                label="E-mail"
-                value={contactEmail}
-                onChange={(event) => setContactEmail(event.target.value)}
-                placeholder="Type your e-mail"
-              />
-
-              <Button
-                type="submit"
-                variant="primary"
-                size="medium"
-                fullWidth
-                disabled={!canSubmit}
-                className="mt-[4px]"
-              >
-                Send
-              </Button>
-            </form>
-          </div>
-        </div>
-      )}
-    </ModalShell>,
-    document.body,
+          <Button
+            type="submit"
+            variant="primary"
+            size="medium"
+            fullWidth
+            disabled={!canSubmit}
+            className="mt-[4px]"
+          >
+            Send
+          </Button>
+        </form>
+      </>
+    </Modal>
   );
 }

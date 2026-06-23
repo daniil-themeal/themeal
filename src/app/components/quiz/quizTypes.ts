@@ -20,6 +20,8 @@ export type QuizAnswers = {
 
 export type QuizStepId = 1 | 2 | 3 | 4 | 5 | 6 | 7;
 
+export const QUIZ_TOTAL_STEPS = 7 as const;
+
 export type QuizFlowPhase =
   | { kind: 'question'; step: QuizStepId }
   | { kind: 'result' }

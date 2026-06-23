@@ -1,7 +1,6 @@
-import { createPortal } from 'react-dom';
 import type { CSSProperties } from 'react';
 
-import { ModalShell } from '../common/ModalShell';
+import { Modal } from '../common/Modal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import {
@@ -40,39 +39,34 @@ export function CheckoutAuthModal({
   onCodeComplete,
   onSkip,
 }: CheckoutAuthModalProps) {
-  return createPortal(
-    <ModalShell
+  return (
+    <Modal
       isOpen={isOpen}
       onClose={onClose}
-      variant="bottom-sheet"
+      ariaLabel="Sign in to continue"
+      showHeader={false}
+      bodyWrapper={false}
       sheetVerticalAlign="center-on-sm"
       zIndex={Z_INDEX_TOKENS.modal}
       rootClassName={CHECKOUT_ROOT_CLASSNAME}
       panelClassName={CHECKOUT_AUTH_MODAL_PANEL_CLASSNAME}
+      innerClassName={CHECKOUT_AUTH_MODAL_INNER_CLASSNAME}
+      style={authModalStyle}
     >
       {(requestClose) => (
-        <div
-          style={authModalStyle}
-          className={CHECKOUT_AUTH_MODAL_INNER_CLASSNAME}
-          role="dialog"
-          aria-modal="true"
-          aria-label="Sign in to continue"
-        >
-          <SmsCodeScreen
-            layout="modal"
-            onClose={requestClose}
-            phone={phone}
-            onPhoneChange={onPhoneChange}
-            onPhoneContinue={onPhoneContinue}
-            error={error}
-            isVerifying={isVerifying}
-            onCodeChange={onCodeChange}
-            onCodeComplete={onCodeComplete}
-            onSkip={onSkip}
-          />
-        </div>
+        <SmsCodeScreen
+          layout="modal"
+          onClose={requestClose}
+          phone={phone}
+          onPhoneChange={onPhoneChange}
+          onPhoneContinue={onPhoneContinue}
+          error={error}
+          isVerifying={isVerifying}
+          onCodeChange={onCodeChange}
+          onCodeComplete={onCodeComplete}
+          onSkip={onSkip}
+        />
       )}
-    </ModalShell>,
-    document.body,
+    </Modal>
   );
 }

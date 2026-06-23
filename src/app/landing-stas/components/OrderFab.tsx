@@ -52,6 +52,15 @@ export function OrderFab({ t, onOrderClick, onQuizClick, hidden }: OrderFabProps
 
   return createPortal(
     <div className={`order-fab-group${showOrder ? ' order-fab-group--order-visible' : ''}`}>
+      <button
+        type="button"
+        onClick={onQuizClick}
+        aria-label={t.benefits.cta}
+        className="order-fab-quiz"
+      >
+        <Icon.clock size={24} />
+      </button>
+
       <a
         href={socialLinks.whatsapp}
         target="_blank"
@@ -61,15 +70,6 @@ export function OrderFab({ t, onOrderClick, onQuizClick, hidden }: OrderFabProps
       >
         <OrderFabWhatsAppIcon />
       </a>
-
-      <button
-        type="button"
-        onClick={onQuizClick}
-        aria-label={t.benefits.cta}
-        className="order-fab-quiz"
-      >
-        <Icon.clock size={24} />
-      </button>
 
       <div className="order-fab-order-wrap">
         <div className="order-fab-order-clip">

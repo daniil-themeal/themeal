@@ -20,6 +20,8 @@ export const CIRCULAR_CLOSE_BUTTON_STYLES: CircularCloseButtonCssVariables = {
 type CircularCloseButtonProps = {
   'aria-label': string;
   className?: string;
+  circleClassName?: string;
+  iconClassName?: string;
   iconSize?: IconSize;
   iconTone?: IconColorTokenName;
   style?: CSSProperties;
@@ -30,6 +32,8 @@ export function CircularCloseButton({
   onMouseDown,
   'aria-label': ariaLabel,
   className = '',
+  circleClassName = '',
+  iconClassName,
   iconSize = 16,
   iconTone = 'emphasis',
   style,
@@ -44,7 +48,7 @@ export function CircularCloseButton({
       disabled={disabled}
       aria-label={ariaLabel}
       className={[
-        'group flex shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0',
+        'group flex size-[length:var(--circular-close-hit-area,56px)] shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0',
         className,
       ]
         .filter(Boolean)
@@ -56,11 +60,15 @@ export function CircularCloseButton({
           'flex size-[length:var(--circular-close-size)] items-center justify-center rounded-full',
           'bg-[var(--circular-close-bg)] transition-colors duration-150 group-hover:bg-[var(--circular-close-bg-hover)]',
           disabled ? 'opacity-40' : '',
+          circleClassName,
         ]
           .filter(Boolean)
           .join(' ')}
       >
-        <span className={iconColorClassName[iconTone]} style={iconColorStyle[iconTone]}>
+        <span
+          className={iconClassName ?? iconColorClassName[iconTone]}
+          style={iconClassName ? undefined : iconColorStyle[iconTone]}
+        >
           <XIcon size={iconSize} />
         </span>
       </span>

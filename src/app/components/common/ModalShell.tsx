@@ -128,7 +128,7 @@ export function ModalShell({
   const overlayAnimationClassName = isClosing ? 'modal-overlay-exit' : 'modal-overlay-enter';
   const panelClasses = [animationClassName, panelClassName].filter(Boolean).join(' ');
   const overlayClasses = [
-    'absolute inset-0 bg-black/40',
+    'pointer-events-none absolute inset-0 z-0 bg-black/40',
     overlayAnimationClassName,
     overlayClassName,
   ]
@@ -191,7 +191,7 @@ export function ModalShell({
       >
         <div className="min-h-full sm:flex sm:items-center sm:justify-center">
           <div
-            className={panelClasses}
+            className={[panelClasses, 'relative z-[1]'].filter(Boolean).join(' ')}
             style={panelStyle}
             onClick={(event) => event.stopPropagation()}
             onAnimationEnd={handlePanelAnimationEnd}
@@ -220,14 +220,12 @@ export function ModalShell({
         .join(' ')}
       style={{ zIndex }}
       {...{ [SPACING_ROOT_ATTR]: '' }}
+      onClick={disableOverlayClick ? undefined : requestClose}
     >
-      <div
-        className={overlayClasses}
-        onClick={disableOverlayClick ? undefined : requestClose}
-      />
+      <div className={overlayClasses} />
 
       <div
-        className={panelClasses}
+        className={[panelClasses, 'pointer-events-auto relative z-10'].filter(Boolean).join(' ')}
         style={panelStyle}
         onClick={(event) => event.stopPropagation()}
         onAnimationEnd={handlePanelAnimationEnd}

@@ -69,17 +69,11 @@ export function FullMenuModal({
       overlayClassName={mealDetailOpen ? 'pointer-events-none opacity-0' : ''}
 
       panelClassName={[
-
         'relative flex max-h-[88svh] w-full flex-col overflow-hidden rounded-t-[20px] bg-white shadow-2xl transition-opacity duration-150',
-
         'md:mx-[24px] md:w-[length:var(--full-menu-modal-width)] md:max-w-[calc(100vw-48px)] md:max-h-[85vh] md:rounded-[20px]',
-
-        mealDetailOpen ? 'invisible opacity-0' : '',
-
+        mealDetailOpen ? 'pointer-events-none invisible opacity-0' : '',
       ]
-
         .filter(Boolean)
-
         .join(' ')}
 
       onEscape={() => panelRef.current?.closeMealDetail() ?? false}

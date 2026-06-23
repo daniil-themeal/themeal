@@ -17,8 +17,8 @@ import {
   MEAL_DETAIL_MODAL_MAX_WIDTH_CLAMP,
 } from './checkoutSpacing';
 import { ModalShell } from '../common/ModalShell';
+import { ModalCloseOverlay } from '../common/Modal';
 import { Z_INDEX_TOKENS } from '../common/zIndexTokens';
-import { XIcon } from '../common/icons';
 
 type MealDetailModalCssVariables = CSSProperties & {
   '--cream': string;
@@ -27,8 +27,6 @@ type MealDetailModalCssVariables = CSSProperties & {
   '--meal-detail-border': string;
   '--meal-detail-text': string;
   '--meal-detail-divider': string;
-  '--meal-detail-close-bg': string;
-  '--meal-detail-close-bg-hover': string;
   '--meal-detail-close-icon': string;
   '--meal-detail-title-font-size': string;
   '--meal-detail-body-font-size': string;
@@ -45,8 +43,6 @@ const mealDetailModalStyle: MealDetailModalCssVariables = {
   '--meal-detail-border': COLOR_TOKENS.neutral[100],
   '--meal-detail-text': COLOR_TOKENS.neutral[900],
   '--meal-detail-divider': COLOR_TOKENS.neutral[500],
-  '--meal-detail-close-bg': COLOR_TOKENS.cream[75],
-  '--meal-detail-close-bg-hover': COLOR_TOKENS.cream[100],
   '--meal-detail-close-icon': COLOR_TOKENS.cream[600],
   '--meal-detail-title-font-size': CHECKOUT_FONT_CLAMP_28_32,
   '--meal-detail-body-font-size': FONT_SIZE_TOKENS[16],
@@ -96,16 +92,15 @@ export function MealDetailModal({
       {(requestClose) => (
         <div style={mealDetailModalStyle} className={CHECKOUT_MODAL_SHELL_INNER_CLASSNAME}>
           <div className="relative flex shrink-0 items-center justify-center bg-[var(--cream)] pt-[length:var(--meal-detail-image-pt)] pb-[length:var(--meal-detail-image-pb)] sm:rounded-t-[20px]">
-            <button
-              type="button"
-              onClick={requestClose}
-              className="group absolute top-0 right-0 z-10 flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
+            <ModalCloseOverlay
+              onClose={requestClose}
               aria-label="Close"
-            >
-              <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--meal-detail-close-bg)] text-[var(--meal-detail-close-icon)] transition-colors duration-150 group-hover:bg-[var(--meal-detail-close-bg-hover)]">
-                <XIcon size={16} />
-              </span>
-            </button>
+              closeColors={{
+                '--circular-close-bg': COLOR_TOKENS.cream[75],
+                '--circular-close-bg-hover': COLOR_TOKENS.cream[100],
+              }}
+              iconClassName="text-[var(--meal-detail-close-icon)]"
+            />
 
             <div className="h-[223px] w-[310px] overflow-hidden">
               <img

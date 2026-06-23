@@ -92,7 +92,7 @@ export const MEAL_DETAIL_MODAL_MAX_WIDTH_CLAMP =
   'clamp(480px, calc(480px + (100vw - 48rem) * 80 / 448), 560px)';
 
 export const MEAL_DETAIL_CONTENT_PADDING_CLAMP =
-  'clamp(32px, calc(32px + (100vw - 20rem) * 8 / 448), 40px)';
+  'clamp(32px, calc(32px + (100vw - 20rem) * 8 / 448), 32px)';
 
 export const MEAL_DETAIL_MODAL_BODY_PADDING_CLAMP =
   'clamp(24px, calc(24px + (100vw - 20rem) * 8 / 448), 32px)';
@@ -100,7 +100,7 @@ export const MEAL_DETAIL_MODAL_BODY_PADDING_CLAMP =
 export const MEAL_DETAIL_IMAGE_PADDING_CLAMP = MEAL_DETAIL_CONTENT_PADDING_CLAMP;
 
 export const MEAL_DETAIL_IMAGE_PADDING_TOP_CLAMP =
-  'clamp(40px, calc(40px + (100vw - 20rem) * 8 / 448), 48px)';
+  'clamp(32px, calc(32px + (100vw - 20rem) * 16 / 448), 48px)';
 
 export const MEAL_DETAIL_IMAGE_PADDING_BOTTOM_CLAMP =
   'clamp(24px, calc(24px + (100vw - 20rem) * 8 / 448), 32px)';

@@ -1,5 +1,5 @@
 import { Slider } from '../ui/slider';
-import { QUIZ_SLIDER_CLASSNAME } from './quizTokens';
+import { QUIZ_SLIDER_CLASSNAME, QUIZ_SLIDER_PILL_CLASSNAME } from './quizTokens';
 
 type QuizValueSliderProps = {
   label: string;
@@ -29,14 +29,16 @@ export function QuizValueSlider({
           {unit ? ` ${unit}` : ''}
         </p>
       </div>
-      <Slider
-        min={min}
-        max={max}
-        step={1}
-        value={[value]}
-        onValueChange={(v) => onChange(v[0] ?? min)}
-        className={['py-[8px]', QUIZ_SLIDER_CLASSNAME].join(' ')}
-      />
+      <div className={QUIZ_SLIDER_PILL_CLASSNAME}>
+        <Slider
+          min={min}
+          max={max}
+          step={1}
+          value={[value]}
+          onValueChange={(v) => onChange(v[0] ?? min)}
+          className={QUIZ_SLIDER_CLASSNAME}
+        />
+      </div>
     </div>
   );
 }

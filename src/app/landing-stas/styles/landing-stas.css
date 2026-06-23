@@ -2191,26 +2191,6 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
   padding:clamp(24px, 4vw, 36px);
   padding-top:clamp(20px, 3vw, 28px);
 }
-.review-modal__close {
-  position:absolute;
-  top:16px;
-  right:16px;
-  width:40px;
-  height:40px;
-  border:none;
-  border-radius:50%;
-  background:var(--cream);
-  color:var(--plum-700);
-  display:grid;
-  place-items:center;
-  cursor:pointer;
-  transition:background .2s var(--ease);
-  z-index:2;
-}
-.review-modal__close:hover,
-.review-modal__close:focus-visible {
-  background:var(--brand-soft);
-}
 .review-modal-panel .reviews-card--modal {
   box-shadow:none;
   min-height:0;

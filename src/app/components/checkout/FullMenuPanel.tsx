@@ -38,9 +38,8 @@ import {
 } from './checkoutStepPageLayoutTokens';
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
 import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
+import { ModalHeader } from '../common/Modal';
 import { SPACING_CONTENT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
-import { XIcon } from '../common/icons';
-import { iconColorClassName, iconColorStyle } from '../common/iconColorTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { MealDetailModal } from './MealDetailModal';
 import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
@@ -84,8 +83,6 @@ export type FullMenuPanelCssVariables = CSSProperties & {
   '--full-menu-active': string;
   '--full-menu-active-soft': string;
   '--full-menu-active-muted': string;
-  '--full-menu-close-bg': string;
-  '--full-menu-close-bg-hover': string;
   '--full-menu-heading-font-size': string;
   '--full-menu-day-date-font-size': string;
   '--full-menu-day-meta-font-size': string;
@@ -119,8 +116,6 @@ export const fullMenuPanelStyle: FullMenuPanelCssVariables = {
   '--full-menu-active': COLOR_TOKENS.primary[500],
   '--full-menu-active-soft': COLOR_TOKENS.primary[50],
   '--full-menu-active-muted': COLOR_TOKENS.primary[400],
-  '--full-menu-close-bg': COLOR_TOKENS.neutral[50],
-  '--full-menu-close-bg-hover': COLOR_TOKENS.neutral[75],
   '--full-menu-heading-font-size': CHECKOUT_FONT_CLAMP_20_25,
   '--full-menu-day-date-font-size': CHECKOUT_FONT_CLAMP_14_16,
   '--full-menu-day-meta-font-size': FONT_SIZE_TOKENS[12],
@@ -443,26 +438,18 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
         </style>
 
         {isModal ? (
-          <div className="flex h-[56px] shrink-0 items-center gap-[8px] border-b border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]">
-            <p className="min-w-0 flex-1 pl-[16px] font-sans text-[length:var(--full-menu-heading-font-size)] font-bold leading-[130%] text-[var(--full-menu-title)] md:pl-[20px]">
-              Full menu
-            </p>
-
-            {onRequestClose ? (
-              <button
-                type="button"
-                onClick={onRequestClose}
-                className="group flex size-[56px] shrink-0 cursor-pointer items-center justify-center"
-                aria-label="Close"
-              >
-                <span className="flex size-[36px] items-center justify-center rounded-full bg-[var(--full-menu-close-bg)] transition-colors duration-150 group-hover:bg-[var(--full-menu-close-bg-hover)]">
-                  <span className={iconColorClassName.emphasis} style={iconColorStyle.emphasis}>
-                    <XIcon size={16} />
-                  </span>
-                </span>
-              </button>
-            ) : null}
-          </div>
+          <ModalHeader
+            title="Full menu"
+            onClose={onRequestClose}
+            showClose={Boolean(onRequestClose)}
+            className="border-[var(--full-menu-border)] bg-[var(--full-menu-bg)]"
+            titleClassName="text-[var(--full-menu-title)]"
+            style={{
+              '--modal-border': fullMenuPanelStyle['--full-menu-border'],
+              '--modal-bg': fullMenuPanelStyle['--full-menu-bg'],
+              '--modal-title': fullMenuPanelStyle['--full-menu-title'],
+            } as CSSProperties}
+          />
         ) : null}
 
         <div className="shrink-0 px-[8px] pt-[12px] pb-0">
