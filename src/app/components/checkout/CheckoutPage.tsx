@@ -102,10 +102,16 @@ const checkoutPlanGridStyle: CheckoutPlanGridCssVariables = {
 const checkoutFormStepScrollClassName =
   'flex-1 overflow-x-hidden overflow-y-auto bg-white md:bg-[var(--checkout-page-bg)] scrollbar-hide';
 
-function getScrollTopToAlignAnchorTop(body: HTMLElement, anchor: HTMLElement) {
+const SCROLL_TO_SUMMARY_OFFSET_PX = 12;
+
+function getScrollTopToAlignAnchorTop(
+  body: HTMLElement,
+  anchor: HTMLElement,
+  offsetTop = 0,
+) {
   const bodyRect = body.getBoundingClientRect();
   const anchorRect = anchor.getBoundingClientRect();
-  return body.scrollTop + (anchorRect.top - bodyRect.top);
+  return body.scrollTop + (anchorRect.top - bodyRect.top) - offsetTop;
 }
 
 function phoneDigitsFromInitial(initialPhone?: string): string {
@@ -469,7 +475,11 @@ export function CheckoutPage({
 
     if (!body || !anchor) return;
 
-    const targetScrollTop = getScrollTopToAlignAnchorTop(body, anchor);
+    const targetScrollTop = getScrollTopToAlignAnchorTop(
+      body,
+      anchor,
+      SCROLL_TO_SUMMARY_OFFSET_PX,
+    );
 
     body.scrollTo({ top: Math.max(0, targetScrollTop), behavior: 'smooth' });
   };
