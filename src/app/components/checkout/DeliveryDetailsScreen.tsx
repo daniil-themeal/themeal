@@ -28,6 +28,7 @@ import {
 } from './deliveryValidation';
 import { MealCalendar } from './MealCalendar';
 import { getUpcomingDeliveryDates } from './mealCalendarUtils';
+import { DeliverySkipButton } from './DeliverySkipButton';
 
 const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
 
@@ -80,6 +81,7 @@ type DeliveryDetailsScreenProps = {
   extraMealDayKeys: string[];
   onExtraMealDayKeysChange: (keys: string[]) => void;
   onContinue?: () => void;
+  onSkip?: () => void;
 };
 
 export function DeliveryDetailsScreen({
@@ -94,6 +96,7 @@ export function DeliveryDetailsScreen({
   extraMealDayKeys,
   onExtraMealDayKeysChange,
   onContinue,
+  onSkip,
 }: DeliveryDetailsScreenProps) {
   const [fieldErrors, setFieldErrors] = useState<DeliveryDetailsFieldErrors>({});
   const deliveryDates = useMemo(() => getUpcomingDeliveryDates(60, days), [days]);
@@ -109,6 +112,11 @@ export function DeliveryDetailsScreen({
       delete next[field];
       return next;
     });
+  };
+
+  const handleSkip = () => {
+    setFieldErrors({});
+    onSkip?.();
   };
 
   const handleContinue = () => {
@@ -289,6 +297,8 @@ export function DeliveryDetailsScreen({
             <Button type="button" variant="primary" size="medium" fullWidth onClick={handleContinue}>
               Continue to payment
             </Button>
+
+            {onSkip ? <DeliverySkipButton onSkip={handleSkip} className="mt-[16px]" /> : null}
           </div>
         </div>
       </div>

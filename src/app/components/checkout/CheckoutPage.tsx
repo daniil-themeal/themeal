@@ -14,8 +14,10 @@ import { CheckoutAuthModal } from './CheckoutAuthModal';
 import type { CheckoutAuthDevMode } from './CheckoutAuthDevTabs';
 import { DeliveryAddressScreen } from './DeliveryAddressScreen';
 import { DeliveryDetailsScreen } from './DeliveryDetailsScreen';
-import { createInitialDeliveryDetails } from './deliveryDetailsTypes';
+import { createInitialDeliveryDetails, deserializeDeliveryDetails, serializeDeliveryDetails } from './deliveryDetailsTypes';
 import type { DeliveryDetailsData } from './deliveryDetailsTypes';
+import { buildCheckoutOrderPayload } from './checkoutOrderTypes';
+import { submitCheckoutOrder } from '../../api/checkoutIntegrations';
 import { PaymentScreen } from './PaymentScreen';
 import { PaymentFailedScreen } from './PaymentFailedScreen';
 import type { PaymentResultTab } from './PaymentResultHeader';
@@ -37,6 +39,7 @@ import { isValidTestSmsCode, SMS_CODE_ERROR, SMS_CODE_SUCCESS_HOLD_MS } from './
 import { usePlanStepScrollChaining } from './usePlanStepScrollChaining';
 import { CHECKOUT_ROOT_CLASSNAME } from './checkoutModalShellTokens';
 import { getUpcomingDeliveryDates, isSameDay } from './mealCalendarUtils';
+import { getSampleDeliveryAddress, getSampleDeliveryDetailsFill } from './deliverySampleData';
 import './checkout.css';
 
 type CheckoutUiStep = 'plan' | 'delivery' | 'payment';
@@ -238,10 +241,11 @@ export function CheckoutPage({
           checkoutStep: patch.checkoutStep ?? checkoutStep,
           deliveryStep: patch.deliveryStep ?? deliveryStep,
           selectedAddressId: patch.selectedAddressId ?? selectedAddress?.id,
+          deliveryDetails: patch.deliveryDetails ?? serializeDeliveryDetails(deliveryDetails),
         }),
       );
     },
-    [checkoutStep, deliveryStep, isSessionVerified, onSessionUpdate, phone],
+    [checkoutStep, deliveryDetails, deliveryStep, isSessionVerified, onSessionUpdate, phone, selectedAddress?.id],
   );
 
   useEffect(() => {
@@ -267,6 +271,11 @@ export function CheckoutPage({
       setResultOverlay(nextState.resultOverlay);
       const restoredAddress = restoreAddressFromSession(session);
       setSelectedAddress(restoredAddress);
+      setDeliveryDetails(
+        session?.deliveryDetails
+          ? deserializeDeliveryDetails(session.deliveryDetails)
+          : createInitialDeliveryDetails(),
+      );
       setDeliveryStep(
         initialDeliveryStep === 'details' && restoredAddress
           ? 'details'
@@ -608,7 +617,29 @@ export function CheckoutPage({
     scrollBodyToTop();
   };
 
+  const handleDeliveryAddressSkip = useCallback(() => {
+    const address = getSampleDeliveryAddress();
+    setSelectedAddress(address);
+    persistSession({ selectedAddressId: address.id });
+  }, [persistSession]);
+
   const handlePay = () => {
+    const normalizedPhone = normalizeUaePhone(phone) ?? '';
+    void submitCheckoutOrder(
+      buildCheckoutOrderPayload({
+        phone: normalizedPhone,
+        plan,
+        days,
+        duration,
+        persons,
+        ingredients,
+        lightMealOption,
+        extraMealDayKeys,
+        selectedAddress,
+        deliveryDetails,
+        promoCode: appliedPromoCode,
+      }),
+    );
     setResultOverlay('success');
     scrollResultToTop();
   };
@@ -630,11 +661,32 @@ export function CheckoutPage({
   };
 
   const handleDeliveryDetailsChange = (patch: Partial<DeliveryDetailsData>) => {
-    setDeliveryDetails((current) => ({ ...current, ...patch }));
+    setDeliveryDetails((current) => {
+      const next = { ...current, ...patch };
+
+      if (onSessionUpdate) {
+        onSessionUpdate(
+          mergePhoneSession(loadPhoneSession(), {
+            phone: normalizeUaePhone(phone) ?? '',
+            isVerified: isSessionVerified,
+            checkoutStep,
+            deliveryStep,
+            selectedAddressId: selectedAddress?.id,
+            deliveryDetails: serializeDeliveryDetails(next),
+          }),
+        );
+      }
+
+      return next;
+    });
 
     if ('selectedDate' in patch) {
       setExtraMealDayKeys([]);
     }
+  };
+
+  const handleDeliveryDetailsSkip = () => {
+    handleDeliveryDetailsChange(getSampleDeliveryDetailsFill(days));
   };
 
   const handleExtraMealDayKeysChange = (keys: string[]) => {
@@ -894,6 +946,7 @@ export function CheckoutPage({
             selectedAddress={selectedAddress}
             onSelectedAddressChange={handleSelectedAddressChange}
             onContinue={handleAddressContinue}
+            onSkip={handleDeliveryAddressSkip}
           />
         </div>
       ) : !resultOverlay && checkoutStep === 'delivery' && deliveryStep === 'details' ? (
@@ -910,6 +963,7 @@ export function CheckoutPage({
             extraMealDayKeys={extraMealDayKeys}
             onExtraMealDayKeysChange={handleExtraMealDayKeysChange}
             onContinue={handleDeliveryDetailsContinue}
+            onSkip={handleDeliveryDetailsSkip}
           />
         </div>
       ) : !resultOverlay && checkoutStep === 'payment' ? (

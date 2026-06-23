@@ -34,6 +34,7 @@ import {
   OutOfAreaContactForm,
   OutOfAreaContactNotice,
 } from './OutOfAreaContactForm';
+import { DeliverySkipButton } from './DeliverySkipButton';
 import {
   MAP_CANVAS_HEIGHT,
   MAP_CANVAS_WIDTH,
@@ -58,6 +59,7 @@ type DeliveryAddressScreenProps = {
   selectedAddress: TestAddress | null;
   onSelectedAddressChange: (address: TestAddress | null) => void;
   onContinue?: () => void;
+  onSkip?: () => void;
 };
 
 type DeliveryAddressScreenCssVariables = CSSProperties & {
@@ -654,6 +656,7 @@ export function DeliveryAddressScreen({
   selectedAddress,
   onSelectedAddressChange,
   onContinue,
+  onSkip,
 }: DeliveryAddressScreenProps) {
   const [addressQuery, setAddressQuery] = useState(selectedAddress?.title ?? '');
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
@@ -1056,6 +1059,8 @@ export function DeliveryAddressScreen({
             {renderSuggestions()}
           </div>
         ) : null}
+
+        {onSkip ? <DeliverySkipButton onSkip={onSkip} className="px-[32px] pb-[24px]" /> : null}
       </div>
 
       <div className="flex h-full min-h-full flex-col md:hidden">
@@ -1131,6 +1136,8 @@ export function DeliveryAddressScreen({
                   Continue
                 </Button>
               </div>
+
+              {onSkip ? <DeliverySkipButton onSkip={onSkip} className="mt-[16px]" /> : null}
             </div>
           </div>
         )}

@@ -1,3 +1,5 @@
+import type { SerializedDeliveryDetails } from './components/checkout/deliveryDetailsTypes';
+
 export type PhoneSessionCheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment';
 export type PhoneSessionDeliveryStep = 'address' | 'details';
 
@@ -7,6 +9,7 @@ export type PhoneSession = {
   checkoutStep?: PhoneSessionCheckoutStep;
   deliveryStep?: PhoneSessionDeliveryStep;
   selectedAddressId?: string;
+  deliveryDetails?: SerializedDeliveryDetails;
 };
 
 const STORAGE_KEY = 'themeal_phone_session';
@@ -17,6 +20,22 @@ function isCheckoutStep(value: unknown): value is PhoneSessionCheckoutStep {
 
 function isDeliveryStep(value: unknown): value is PhoneSessionDeliveryStep {
   return value === 'address' || value === 'details';
+}
+
+function isSerializedDeliveryDetails(value: unknown): value is SerializedDeliveryDetails {
+  if (!value || typeof value !== 'object') return false;
+
+  const details = value as Partial<SerializedDeliveryDetails>;
+
+  return (
+    typeof details.apartment === 'string' &&
+    typeof details.instructions === 'string' &&
+    typeof details.fullName === 'string' &&
+    typeof details.email === 'string' &&
+    typeof details.leaveAtDoor === 'boolean' &&
+    typeof details.selectedTimeSlot === 'string' &&
+    typeof details.selectedDate === 'string'
+  );
 }
 
 export function loadPhoneSession(): PhoneSession | null {
@@ -44,6 +63,9 @@ export function loadPhoneSession(): PhoneSession | null {
     }
     if (typeof parsed.selectedAddressId === 'string') {
       session.selectedAddressId = parsed.selectedAddressId;
+    }
+    if (isSerializedDeliveryDetails(parsed.deliveryDetails)) {
+      session.deliveryDetails = parsed.deliveryDetails;
     }
 
     return session;
@@ -82,5 +104,6 @@ export function mergePhoneSession(
     checkoutStep: patch.checkoutStep ?? current?.checkoutStep,
     deliveryStep: patch.deliveryStep ?? current?.deliveryStep,
     selectedAddressId: patch.selectedAddressId ?? current?.selectedAddressId,
+    deliveryDetails: patch.deliveryDetails ?? current?.deliveryDetails,
   };
 }

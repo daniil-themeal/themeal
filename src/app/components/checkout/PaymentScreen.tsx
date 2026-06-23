@@ -252,9 +252,9 @@ export function PaymentScreen({
     ];
 
     items.push({
-      id: 'leave-at-door',
+      id: 'handover',
       icon: <PackageIcon size={16} />,
-      title: 'Leave the box at the door',
+      title: deliveryDetails.leaveAtDoor ? 'Leave the box at the door' : 'Hand it over',
     });
 
     items.push({
@@ -273,6 +273,7 @@ export function PaymentScreen({
     addressLines,
     deliveryDetails.fullName,
     deliveryDetails.instructions,
+    deliveryDetails.leaveAtDoor,
     deliveryDetails.selectedDate,
     deliveryDetails.selectedTimeSlot,
   ]);
