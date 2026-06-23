@@ -102,6 +102,7 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
         ...style,
       }}
       className={[
+        'ds-icon-button',
         ICON_BUTTON_VISUAL_CLASS_NAME,
         'shrink-0',
         ICON_BUTTON_SIZE_CLASS_NAMES[size],

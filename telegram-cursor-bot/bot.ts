@@ -138,7 +138,7 @@ function loadSettings(): Settings {
     cloudRepoUrl: env("CLOUD_REPO_URL", "https://github.com/daniil-themeal/themeal.git"),
     cloudRepoRef: env("CLOUD_REPO_REF", "feature/next"),
     model: env("CURSOR_MODEL", "composer-2.5"),
-    vercelUrl: env("VERCEL_URL", "https://landing-20-05-test.vercel.app"),
+    vercelUrl: env("VERCEL_URL", "https://themeal-test.vercel.app"),
     vercelDeployHook: env("VERCEL_DEPLOY_HOOK"),
     openaiApiKey: env("OPENAI_API_KEY"),
     groqApiKey: env("GROQ_API_KEY"),

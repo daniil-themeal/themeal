@@ -155,7 +155,7 @@ function Footer({ t, lang, setLang }) {
   const links = [[t.nav.menu,'/#menu'], [t.nav.delivery,'/#delivery'], [t.nav.qa,'/#qa'], [t.footer.privacy,'/privacy-policy'], [t.footer.terms,'/terms-and-conditions']];
   const socials = landingFooterSocials;
   return (
-    createElement('footer', { style:{ position:'relative', zIndex:10, background:'var(--plum-950)', color:'rgba(255,255,255,.7)', paddingBlock:'var(--space-64) var(--space-40)' } },
+    createElement('footer', { className:'site-footer' },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'footer-grid' },
           createElement('div', { className:'stack footer-brand' },
@@ -189,7 +189,7 @@ function Footer({ t, lang, setLang }) {
             }, supportEmail))
         )
       ),
-      createElement('div', { className:'wrap', style:{ marginTop:40, paddingTop:24, borderTop:'1px solid rgba(255,255,255,.12)' } },
+      createElement('div', { className:'wrap site-footer__legal' },
         createElement('p', { style:{ margin:0, fontSize:'var(--fs-12)', lineHeight:1.6, color:'rgba(255,255,255,.45)' } }, t.footer.legal))
     )
   );

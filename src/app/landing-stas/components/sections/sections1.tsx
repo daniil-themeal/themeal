@@ -407,7 +407,7 @@ function Compare({ t }) {
           createElement('div', { className:'card reveal compare-card--solutions', 'data-d':'1', style:{ padding:'24px 32px 32px', background:'linear-gradient(155deg, #6E34A2 0%, #4C1F77 100%)', color:'#fff', position:'relative', overflow:'hidden' } },
             createElement('div', { className:'compare-card-head compare-card-head--solutions' },
               createElement('span', { className:'compare-card-head__badge' }, t.compare.bestShort, ' 🔥'),
-              createElement(Logo, { height: 24, color: '#fff', accent: '#fff' })),
+              createElement(Logo, { height: 23, color: '#fff', accent: '#fff' })),
             createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:16 } },
               t.compare.solutions.map((s,i)=>createElement('li', { key:i, className:'row', style:{ gap:14, width:'100%', alignItems:'center', color:'rgba(255,255,255,.85)', fontWeight:600, fontSize:'var(--fs-16)' } },
                 createElement(CompareIcon, { src:s.icon }),

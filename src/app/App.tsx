@@ -5,6 +5,7 @@ import { CheckoutPage } from './components/checkout/CheckoutPage';
 import DesignSystemDemo from './components/DesignSystemDemo';
 import PrivacyPolicyPage from './legal/PrivacyPolicyPage';
 import TermsAndConditionsPage from './legal/TermsAndConditionsPage';
+import NotFoundPage from './NotFoundPage';
 import { LEGAL_ROUTES } from './legal/routes';
 import {
   loadPhoneSession,
@@ -201,6 +202,7 @@ export default function App() {
         <Route path="/" element={<HomePage />} />
         <Route path={LEGAL_ROUTES.privacy} element={<PrivacyPolicyPage />} />
         <Route path={LEGAL_ROUTES.terms} element={<TermsAndConditionsPage />} />
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </PhoneAuthProvider>
   );

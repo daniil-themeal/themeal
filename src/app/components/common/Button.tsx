@@ -405,6 +405,7 @@ export function Button({
         ...style,
       }}
       className={[
+        'ds-button',
         baseClassName,
         BUTTON_SIZE_CLASS_NAMES[size],
         fullWidth ? 'w-full' : '',

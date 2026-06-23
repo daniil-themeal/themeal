@@ -25,7 +25,7 @@ services:
       - key: CURSOR_MODEL
         value: composer-2.5
       - key: VERCEL_URL
-        value: https://landing-20-05-test.vercel.app
+        value: https://themeal-test.vercel.app
       - key: TASK_OWNER_ID
         value: "113321584"
       - key: WHISPER_PROVIDER
