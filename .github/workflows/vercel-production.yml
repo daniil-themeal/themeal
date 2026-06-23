@@ -1,7 +1,9 @@
 name: Vercel Production Deploy
 
-# Production branch on Vercel: feature/next (see project Environments → Production).
-# Deploy hook must target feature/next — secret VERCEL_DEPLOY_HOOK = feature-next-prod hook.
+# Production branch: feature/next
+# Primary URL: https://themeal-test.vercel.app
+# Requires secrets: VERCEL_TOKEN (classic PAT from vercel.com/account/tokens)
+# Optional fallback: VERCEL_DEPLOY_HOOK (does not update themeal-test.vercel.app alias)
 
 on:
   push:
@@ -9,15 +11,47 @@ on:
       - feature/next
     paths-ignore:
       - "telegram-cursor-bot/**"
-      - ".github/**"
       - "**/*.md"
   workflow_dispatch:
+
+concurrency:
+  group: vercel-production
+  cancel-in-progress: true
+
+env:
+  VERCEL_ORG_ID: team_AlqriTEuyhlz8P3p4qB67aXf
+  VERCEL_PROJECT_ID: prj_LXGOYOeCYiMySNhErpNhR9jfK1Lz
+  PRODUCTION_DOMAIN: themeal-test.vercel.app
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Vercel production deploy (feature/next)
-        run: curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install Vercel CLI
+        run: npm install -g vercel@latest
+
+      - name: Deploy to Vercel production
+        if: ${{ secrets.VERCEL_TOKEN != '' }}
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+        run: |
+          set -euo pipefail
+          DEPLOY_URL=$(vercel deploy --prod --yes --token "$VERCEL_TOKEN" | tee /dev/stderr | grep -Eo 'https://[^ ]+\.vercel\.app' | tail -1)
+          echo "Deployed: $DEPLOY_URL"
+          vercel alias set "$DEPLOY_URL" "$PRODUCTION_DOMAIN" --token "$VERCEL_TOKEN" --scope dlebedev-8832s-projects
+          echo "Aliased $PRODUCTION_DOMAIN -> $DEPLOY_URL"
+
+      - name: Trigger deploy hook (fallback)
+        if: ${{ secrets.VERCEL_TOKEN == '' }}
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          curl -fsS -X POST "$VERCEL_DEPLOY_HOOK"
+          echo "::warning::VERCEL_TOKEN is not set. Deploy hook triggered, but $PRODUCTION_DOMAIN may stay on an older deployment until aliased manually."
