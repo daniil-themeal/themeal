@@ -11,12 +11,12 @@ import {
 } from '../checkout/checkoutSpacing';
 
 export const QUIZ_MODAL_PANEL_CLASSNAME = [
-  'relative flex w-full max-w-none flex-col overflow-hidden rounded-t-[20px] bg-[var(--quiz-modal-bg)] pb-[env(safe-area-inset-bottom)] shadow-2xl max-h-[min(90dvh,720px)]',
-  'sm:mx-[24px] sm:max-w-[480px] sm:rounded-[20px]',
+  'relative flex w-full max-w-none flex-col overflow-hidden rounded-t-[20px] bg-[var(--quiz-modal-bg)] pb-[env(safe-area-inset-bottom)] shadow-2xl',
+  'sm:mx-[24px] sm:max-w-[520px] sm:rounded-[20px]',
 ].join(' ');
 
 export const QUIZ_MODAL_INNER_CLASSNAME =
-  'flex min-h-0 max-h-full flex-col overflow-hidden bg-[var(--quiz-modal-bg)] sm:rounded-[20px]';
+  'flex flex-col bg-[var(--quiz-modal-bg)] sm:rounded-[20px] !max-h-none';
 
 export type QuizTokensCssVariables = CSSProperties & {
   '--quiz-modal-bg': string;
@@ -69,13 +69,39 @@ export const quizTokensStyle: QuizTokensCssVariables = {
   '--quiz-danger': COLOR_TOKENS.danger[500],
 };
 
-export const QUIZ_SLIDER_PILL_CLASSNAME = [
-  'rounded-full bg-[var(--quiz-surface)] px-[16px] py-[12px]',
-].join(' ');
+export type QuizMetricVariant = 'money' | 'time' | 'meals';
+
+export type QuizMetricVariantStyle = {
+  background: string;
+  boxShadow: string;
+  labelColor: string;
+  valueColor: string;
+};
+
+export const QUIZ_METRIC_VARIANTS: Record<QuizMetricVariant, QuizMetricVariantStyle> = {
+  money: {
+    background: COLOR_TOKENS.cream[75],
+    boxShadow: '0 2px 4px rgba(42,34,48,.06), 0 8px 24px rgba(42,34,48,.08)',
+    labelColor: COLOR_TOKENS.cream[500],
+    valueColor: COLOR_TOKENS.cream[900],
+  },
+  time: {
+    background: '#F6FBEF',
+    boxShadow: '0 2px 4px rgba(91,174,39,.08), 0 8px 24px rgba(91,174,39,.10)',
+    labelColor: COLOR_TOKENS.success[700],
+    valueColor: COLOR_TOKENS.cream[900],
+  },
+  meals: {
+    background: '#FDF3FF',
+    boxShadow: '0 2px 4px rgba(154,56,239,.08), 0 8px 24px rgba(154,56,239,.10)',
+    labelColor: COLOR_TOKENS.primary[600],
+    valueColor: COLOR_TOKENS.primary[700],
+  },
+};
 
 export const QUIZ_SLIDER_CLASSNAME = [
-  'min-h-[44px] items-center',
-  '[&_[data-slot=slider-track]]:h-[6px]',
+  'h-[44px] min-h-[44px] items-center',
+  '[&_[data-slot=slider-track]]:h-full',
   '[&_[data-slot=slider-track]]:rounded-full',
   '[&_[data-slot=slider-track]]:bg-[var(--quiz-border)]',
   '[&_[data-slot=slider-range]]:rounded-full',

@@ -1,4 +1,5 @@
 import type { QuizAnswers, QuizCalculationResult, QuizPain } from './quizTypes';
+import { QUIZ_METRIC_VARIANTS, type QuizMetricVariant } from './quizTokens';
 
 const PAIN_LINES: Record<QuizPain, string> = {
   variety: 'And a new menu every week — no more "same thing again".',
@@ -57,22 +58,24 @@ export function QuizResultView({ answers, result }: QuizResultViewProps) {
   return (
     <div className="flex flex-col gap-[20px]">
       <div className="grid grid-cols-3 gap-[8px]">
-        <Metric label="You spend now" value={`${money} AED/mo`} />
-        <Metric label="Time it takes" value={`${timeWk} h/week`} />
-        <Metric label="Meals per week" value={String(mealsWk)} />
+        <Metric variant="money" label="You spend now" value={`${money} AED/mo`} />
+        <Metric variant="time" label="Time it takes" value={`${timeWk} h/week`} />
+        <Metric variant="meals" label="Meals per week" value={String(mealsWk)} />
       </div>
 
       <p className="text-center font-sans text-[length:var(--quiz-caption-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
         Where it comes from: groceries {mCook} · delivery {mOrder} · dining out {mRest} AED
       </p>
 
-      <div className="flex flex-col gap-[8px] rounded-[16px] bg-[var(--quiz-surface)] p-[16px]">
-        <h3 className="font-sans text-[length:var(--quiz-option-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
-          {heading}
-        </h3>
-        <p className="font-sans text-[length:var(--quiz-body-font-size)] font-semibold leading-[140%] text-[var(--quiz-muted)]">
-          {sub}
-        </p>
+      <div className="flex flex-col gap-[16px] rounded-[16px] bg-[var(--quiz-surface)] p-[16px]">
+        <div className="flex flex-col gap-[8px]">
+          <h3 className="font-sans text-[length:var(--quiz-title-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
+            {heading}
+          </h3>
+          <p className="font-sans text-[length:var(--quiz-body-font-size)] font-semibold leading-[140%] text-[var(--quiz-muted)]">
+            {sub}
+          </p>
+        </div>
         <p className="font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-text)]">
           {body}
         </p>
@@ -85,13 +88,32 @@ export function QuizResultView({ answers, result }: QuizResultViewProps) {
   );
 }
 
-function Metric({ label, value }: { label: string; value: string }) {
+function Metric({
+  variant,
+  label,
+  value,
+}: {
+  variant: QuizMetricVariant;
+  label: string;
+  value: string;
+}) {
+  const styles = QUIZ_METRIC_VARIANTS[variant];
+
   return (
-    <div className="flex flex-col gap-[4px] rounded-[12px] border border-[var(--quiz-border)] bg-[var(--quiz-card-bg)] p-[12px] text-center">
-      <span className="font-sans text-[10px] font-bold uppercase tracking-[0.08em] text-[var(--quiz-muted)]">
+    <div
+      className="flex min-h-[72px] flex-col items-center justify-center gap-[6px] rounded-[12px] p-[14px] text-center"
+      style={{ background: styles.background, boxShadow: styles.boxShadow }}
+    >
+      <span
+        className="font-sans text-[10px] font-bold uppercase tracking-[0.08em]"
+        style={{ color: styles.labelColor }}
+      >
         {label}
       </span>
-      <span className="font-sans text-[length:var(--quiz-body-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
+      <span
+        className="font-sans text-[length:var(--quiz-body-font-size)] font-bold leading-[130%]"
+        style={{ color: styles.valueColor }}
+      >
         {value}
       </span>
     </div>

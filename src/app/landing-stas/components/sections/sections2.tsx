@@ -403,7 +403,7 @@ function LeadTitleWhatsAppIcon() {
 
 function leadTitleWordSpans(title) {
   const words = title.split(/\s+/);
-  return words.map((word, i) => {
+  const spans = words.map((word, i) => {
     if (word === 'WhatsApp') {
       return createElement('span', {
         key: `wa-${i}`,
@@ -415,6 +415,17 @@ function leadTitleWordSpans(title) {
     }
     return createElement('span', { key: i }, word);
   });
+  if (!words.includes('WhatsApp')) {
+    spans.push(
+      createElement('span', {
+        key: 'wa-icon',
+        className: 'lead-title-wa',
+      },
+        createElement(LeadTitleWhatsAppIcon),
+      ),
+    );
+  }
+  return spans;
 }
 
 function normalizedToDisplayPhone(normalized) {

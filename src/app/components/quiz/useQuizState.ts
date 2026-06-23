@@ -35,7 +35,6 @@ export function useQuizState() {
     }
 
     if (phase.kind === 'result') {
-      setPhase({ kind: 'lead' });
       return;
     }
 
@@ -56,13 +55,8 @@ export function useQuizState() {
       return;
     }
 
-    if (phase.kind === 'lead') {
-      setPhase({ kind: 'result' });
-      return;
-    }
-
     if (phase.kind === 'sms') {
-      setPhase({ kind: 'lead' });
+      setPhase({ kind: 'result' });
     }
   }, [phase]);
 
@@ -84,7 +78,6 @@ export function useQuizState() {
   const canGoBack =
     phase.kind === 'question' && phase.step > 1 ||
     phase.kind === 'result' ||
-    phase.kind === 'lead' ||
     phase.kind === 'sms';
 
   return {

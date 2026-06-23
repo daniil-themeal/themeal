@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { QUIZ_TOTAL_STEPS } from './quizTypes';
 
 type QuizStepHeaderProps = {
-  title: string;
+  title: ReactNode;
   subtitle?: string;
   step?: number | null;
   icon?: ReactNode;
@@ -47,9 +47,16 @@ export function QuizStepHeader({ title, subtitle, step, icon, children }: QuizSt
         <QuizProgressSegments step={step} totalSteps={QUIZ_TOTAL_STEPS} />
       ) : null}
 
-      <div className="mb-[16px] flex min-w-0 flex-col gap-[16px]">
+      <div
+        className={[
+          'flex min-w-0 flex-col gap-[16px]',
+          children ? 'mb-[16px]' : '',
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
         <div className="flex items-start gap-[12px]">
-          <h2 className="min-w-0 flex-1 pt-[4px] font-sans text-[length:var(--quiz-title-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
+          <h2 className="min-w-0 flex-1 flex flex-wrap items-center gap-x-[4px] gap-y-[8px] pt-[4px] font-sans text-[length:var(--quiz-title-font-size)] font-bold leading-[130%] text-[var(--quiz-text)]">
             {title}
           </h2>
           {icon ? (

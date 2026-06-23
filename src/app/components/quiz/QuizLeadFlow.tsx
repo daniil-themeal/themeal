@@ -14,11 +14,13 @@ import {
   SMS_CODE_SUCCESS_HOLD_MS,
 } from '../checkout/smsCodeValidation';
 import { QuizStepHeader } from './QuizStepHeader';
+import { QuizWhatsAppTitle } from './QuizWhatsAppTitle';
 
 type QuizLeadPhase = 'offer' | 'sms' | 'success';
 
 type QuizLeadFlowProps = {
   phase: QuizLeadPhase;
+  embedded?: boolean;
   onPhaseChange: (phase: QuizLeadPhase) => void;
   onSmsVerified: (phone: string) => void;
   onSeePlan: () => void;
@@ -27,6 +29,7 @@ type QuizLeadFlowProps = {
 
 export function QuizLeadFlow({
   phase,
+  embedded = false,
   onPhaseChange,
   onSmsVerified,
   onSeePlan,
@@ -168,10 +171,10 @@ export function QuizLeadFlow({
   }
 
   return (
-    <div className="flex flex-col gap-[20px]">
+    <div className={embedded ? 'flex flex-col gap-[16px]' : 'flex flex-col gap-[20px]'}>
       <QuizStepHeader
-        title="Get this week's menu on WhatsApp?"
-        subtitle="We'll send the full menu with photos and match a plan to your numbers. No spam, no commitment."
+        title={<QuizWhatsAppTitle text="Talk it through on WhatsApp" />}
+        subtitle="We'll bring your numbers into the chat for context and help you find the right fit. Ask anything — no spam, no commitment."
       />
 
       <PhoneInput

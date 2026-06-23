@@ -25,8 +25,6 @@ type QuizModalProps = {
   onWhatsAppFirst: () => void;
 };
 
-type LeadSubPhase = 'offer' | 'sms' | 'success';
-
 function MealsTotalHint({ total }: { total: number }) {
   let hint = '';
   if (total > 28) hint = '— that\'s a lot, double-check';
@@ -55,13 +53,11 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
     reset,
   } = useQuizState();
 
-  const [leadPhase, setLeadPhase] = useState<LeadSubPhase>('offer');
   const [verifiedPhone, setVerifiedPhone] = useState('');
 
   useEffect(() => {
     if (!open) {
       reset();
-      setLeadPhase('offer');
       setVerifiedPhone('');
     }
   }, [open, reset]);
@@ -78,11 +74,18 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
 
   const mealsTotal = answers.freqCook + answers.freqOrder + answers.freqRest;
 
-  const showNavFooter = phase.kind === 'question' || phase.kind === 'result';
-  const showLeadBackOnly = phase.kind === 'lead' && leadPhase === 'offer';
+  const showQuestionFooter = phase.kind === 'question';
+  const showBackOnlyFooter = phase.kind === 'result' || phase.kind === 'sms';
+  const isLeadFlowActive =
+    (phase.kind === 'result' && Boolean(result)) ||
+    phase.kind === 'sms' ||
+    phase.kind === 'success';
+
+  const leadFlowPhase =
+    phase.kind === 'result' ? 'offer' : phase.kind === 'sms' ? 'sms' : 'success';
 
   const footer =
-    showNavFooter || showLeadBackOnly
+    showQuestionFooter || showBackOnlyFooter
       ? (
           <div className="flex w-full gap-[12px] px-[length:var(--checkout-card-padding)] py-[length:var(--checkout-card-padding)] sm:px-[length:var(--meal-detail-content-p)]">
             {canGoBack ? (
@@ -90,22 +93,15 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
                 Back
               </Button>
             ) : null}
-            {showNavFooter ? (
+            {showQuestionFooter ? (
               <Button
                 type="button"
                 variant="primary"
                 size="medium"
                 className="flex-1"
-                onClick={() => {
-                  if (phase.kind === 'result') {
-                    setPhase({ kind: 'lead' });
-                    setLeadPhase('offer');
-                  } else {
-                    goNext();
-                  }
-                }}
+                onClick={goNext}
               >
-                {phase.kind === 'result' ? 'Continue' : 'Next'}
+                Next
               </Button>
             ) : null}
           </div>
@@ -121,15 +117,16 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
       subtitle="Compare your real food spend with TheMeal"
       closeAriaLabel="Close quiz"
       sheetVerticalAlign="center-on-sm"
+      bodyWrapper={false}
+      rootClassName="overflow-y-auto scrollbar-hide"
       zIndex={Z_INDEX_TOKENS.modal}
       panelClassName={QUIZ_MODAL_PANEL_CLASSNAME}
       innerClassName={QUIZ_MODAL_INNER_CLASSNAME}
-      bodyClassName="p-[length:var(--checkout-card-padding)] sm:p-[length:var(--meal-detail-content-p)]"
       footer={footer}
       footerClassName="border-t-0"
       style={quizTokensStyle}
     >
-      <div className="flex flex-col gap-[16px]">
+      <div className="flex flex-col gap-[16px] p-[length:var(--checkout-card-padding)] pb-0 sm:p-[length:var(--meal-detail-content-p)] sm:pb-0">
         {phase.kind === 'question' && phase.step === 1 ? (
           <div className="flex flex-col gap-[16px]">
             <QuizStepHeader
@@ -322,14 +319,14 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
           <QuizResultView answers={answers} result={result} />
         ) : null}
 
-        {phase.kind === 'lead' || phase.kind === 'sms' || phase.kind === 'success' ? (
+        {isLeadFlowActive ? (
           <QuizLeadFlow
-            phase={phase.kind === 'sms' ? 'sms' : phase.kind === 'success' ? 'success' : leadPhase}
+            phase={leadFlowPhase}
+            embedded={phase.kind === 'result'}
             onPhaseChange={(p) => {
-              setLeadPhase(p);
               if (p === 'sms') setPhase({ kind: 'sms' });
               else if (p === 'success') setPhase({ kind: 'success' });
-              else setPhase({ kind: 'lead' });
+              else setPhase({ kind: 'result' });
             }}
             onSmsVerified={setVerifiedPhone}
             onSeePlan={handleSeePlan}
