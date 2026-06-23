@@ -10,7 +10,8 @@
     "icons:generate": "node scripts/generate-feather-icon-components.mjs",
     "favicon:generate": "node scripts/generate-favicon.mjs",
     "reviews:import": "node scripts/import-testimonials.mjs",
-    "prebuild": "node scripts/import-testimonials.mjs"
+    "prebuild": "node scripts/import-testimonials.mjs",
+    "test": "vitest run"
   },
   "dependencies": {
     "@emotion/react": "11.14.0",
@@ -75,6 +76,7 @@
     "sharp": "^0.34.5",
     "tailwindcss": "4.1.12",
     "vite": "6.3.5",
+    "vitest": "^3.2.4",
     "vite-plugin-image-optimizer": "^2.0.3"
   },
   "peerDependencies": {

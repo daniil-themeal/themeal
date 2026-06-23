@@ -22,7 +22,6 @@ type SiteNavDrawerProps = {
   isPhoneVerified?: boolean;
   verifiedPhone?: string;
   pendingPhone?: string;
-  onSignInClick?: () => void;
   onResetPhone?: () => void;
   onResumeVerification?: () => void;
   onOrderClick?: () => void;
@@ -45,7 +44,6 @@ export function SiteNavDrawer({
   isPhoneVerified = false,
   verifiedPhone,
   pendingPhone,
-  onSignInClick,
   onResetPhone,
   onResumeVerification,
   onOrderClick,
@@ -134,43 +132,34 @@ export function SiteNavDrawer({
                 </a>
               </div>
             </div>
-            <div className="site-nav-drawer__account-actions">
-              {isPhoneVerified ? (
-                <button
-                  type="button"
-                  className="site-nav-drawer__action-btn"
-                  onClick={() => {
-                    onResetPhone?.();
-                    close();
-                  }}
-                >
-                  <LogOutIcon size={16} />
-                  {t.siteNav.signOut}
-                </button>
-              ) : pendingPhone ? (
-                <button
-                  type="button"
-                  className="site-nav-drawer__action-btn site-nav-drawer__action-btn--primary"
-                  onClick={() => {
-                    onResumeVerification?.();
-                    close();
-                  }}
-                >
-                  {t.siteNav.continueVerification}
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  className="site-nav-drawer__action-btn site-nav-drawer__action-btn--primary"
-                  onClick={() => {
-                    onSignInClick?.();
-                    close();
-                  }}
-                >
-                  {t.nav.signin}
-                </button>
-              )}
-            </div>
+            {isPhoneVerified || pendingPhone ? (
+              <div className="site-nav-drawer__account-actions">
+                {isPhoneVerified ? (
+                  <button
+                    type="button"
+                    className="site-nav-drawer__action-btn"
+                    onClick={() => {
+                      onResetPhone?.();
+                      close();
+                    }}
+                  >
+                    <LogOutIcon size={16} />
+                    {t.siteNav.signOut}
+                  </button>
+                ) : (
+                  <button
+                    type="button"
+                    className="site-nav-drawer__action-btn site-nav-drawer__action-btn--primary"
+                    onClick={() => {
+                      onResumeVerification?.();
+                      close();
+                    }}
+                  >
+                    {t.siteNav.continueVerification}
+                  </button>
+                )}
+              </div>
+            ) : null}
           </section>
 
           <section className="site-nav-drawer__section">

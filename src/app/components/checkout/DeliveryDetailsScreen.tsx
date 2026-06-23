@@ -31,6 +31,9 @@ import { getUpcomingDeliveryDates } from './mealCalendarUtils';
 
 const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
 
+/** Temporarily hidden — set to true to re-enable add-meal-day controls on the calendar. */
+const ENABLE_ADD_MEAL_DAYS = false;
+
 const deliveryDetailsPageStyle = {
   ...CHECKOUT_STEP_PAGE_VARS,
   '--checkout-section-gap': CHECKOUT_DELIVERY_SECTION_GAP_CLAMP,
@@ -93,7 +96,7 @@ export function DeliveryDetailsScreen({
   onContinue,
 }: DeliveryDetailsScreenProps) {
   const [fieldErrors, setFieldErrors] = useState<DeliveryDetailsFieldErrors>({});
-  const deliveryDates = useMemo(() => getUpcomingDeliveryDates(60), []);
+  const deliveryDates = useMemo(() => getUpcomingDeliveryDates(60, days), [days]);
 
   const addressTitle = selectedAddress?.title ?? 'Delivery address';
   const addressSub = selectedAddress?.subtitle ?? 'Select your delivery address';
@@ -208,23 +211,33 @@ export function DeliveryDetailsScreen({
             selectedDate={deliveryDetails.selectedDate}
             onSelectedDateChange={(selectedDate) => onDeliveryDetailsChange({ selectedDate })}
             availableDates={deliveryDates}
-            enableAddMealDays
-            plan={plan}
-            persons={persons}
-            extraMealDayKeys={new Set(extraMealDayKeys)}
-            onMealDayKeysChange={({ keysToAdd, keysToRemove }) => {
-              const next = new Set(extraMealDayKeys);
+            {...(ENABLE_ADD_MEAL_DAYS
+              ? {
+                  enableAddMealDays: true,
+                  plan,
+                  persons,
+                  extraMealDayKeys: new Set(extraMealDayKeys),
+                  onMealDayKeysChange: ({
+                    keysToAdd,
+                    keysToRemove,
+                  }: {
+                    keysToAdd: string[];
+                    keysToRemove: string[];
+                  }) => {
+                    const next = new Set(extraMealDayKeys);
 
-              for (const key of keysToAdd) {
-                next.add(key);
-              }
+                    for (const key of keysToAdd) {
+                      next.add(key);
+                    }
 
-              for (const key of keysToRemove) {
-                next.delete(key);
-              }
+                    for (const key of keysToRemove) {
+                      next.delete(key);
+                    }
 
-              onExtraMealDayKeysChange([...next]);
-            }}
+                    onExtraMealDayKeysChange([...next]);
+                  },
+                }
+              : {})}
           />
 
           <Divider color={COLOR_TOKENS.neutral[75]} className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
@@ -259,7 +272,7 @@ export function DeliveryDetailsScreen({
                   id="leave-at-door"
                   checked={deliveryDetails.leaveAtDoor}
                   onChange={(leaveAtDoor) => onDeliveryDetailsChange({ leaveAtDoor })}
-                  label="Leave the bag at the door"
+                  label="Leave the box at the door"
                 />
               </div>
             </div>

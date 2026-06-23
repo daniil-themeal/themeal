@@ -26,7 +26,6 @@ type TabbyPromoLoadState = 'loading' | 'ready' | 'failed';
 
 type TabbyPromoWidgetProps = {
   price: number;
-  pricePerMonth?: number | null;
   source?: TabbyPromoSource;
   className?: string;
   style?: CSSProperties;
@@ -362,7 +361,6 @@ function TabbyOfficialPromo({
 
 export function TabbyPromoWidget({
   price,
-  pricePerMonth = null,
   source = 'cart',
   className = '',
   style,
@@ -403,7 +401,7 @@ export function TabbyPromoWidget({
     return (
       <>
         <TabbyPromoShell shellVariant="outline" onOpen={handleOpenModal}>
-          <TabbyPromoFallback price={price} pricePerMonth={pricePerMonth} />
+          <TabbyPromoFallback price={price} />
         </TabbyPromoShell>
 
         <TabbyPromoModal
@@ -430,7 +428,7 @@ export function TabbyPromoWidget({
         ariaBusy={isLoading}
       >
         {useFallback ? (
-          <TabbyPromoFallback price={price} pricePerMonth={pricePerMonth} />
+          <TabbyPromoFallback price={price} />
         ) : (
           <div className={`relative ${isLoading ? 'min-h-[48px]' : ''}`}>
             {isLoading ? (

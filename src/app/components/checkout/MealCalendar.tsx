@@ -21,6 +21,7 @@ import {
   getMealDayRadiusClassName,
   getSubscriptionDays,
   getUpcomingDeliveryDates,
+  getDeliveryDaysLabel,
   isAddableMealDayCell,
   isDatePillVisibleInContainer,
   isDeliveryDay,
@@ -99,7 +100,7 @@ function CalendarCell({
   const [isManagePopoverOpen, setIsManagePopoverOpen] = useState(false);
 
   const inPeriod = isInPeriod(date, startDate, endDate);
-  const deliveryDay = inPeriod && isDeliveryDay(date);
+  const deliveryDay = inPeriod && isDeliveryDay(date, dayOption);
   const mealDay = isSubscriptionMealDay({
     date,
     startDate,
@@ -414,7 +415,7 @@ function MealCalendarInteractiveView({
   availableDates,
   withinDays = 60,
   title = 'Choose the preferred first delivery date',
-  subtitle = 'We deliver Wednesdays and Sundays — pick your start date',
+  subtitle,
   className = '',
   enableAddMealDays = false,
   plan,
@@ -422,9 +423,12 @@ function MealCalendarInteractiveView({
   extraMealDayKeys,
   onMealDayKeysChange,
 }: MealCalendarInteractiveProps) {
+  const resolvedSubtitle =
+    subtitle ?? `We deliver ${getDeliveryDaysLabel(dayOption)} — pick your start date`;
+
   const deliveryDates = useMemo(
-    () => availableDates ?? getUpcomingDeliveryDates(withinDays),
-    [availableDates, withinDays],
+    () => availableDates ?? getUpcomingDeliveryDates(withinDays, dayOption),
+    [availableDates, withinDays, dayOption],
   );
 
   const datePillsScrollRef = useRef<HTMLDivElement>(null);
@@ -497,7 +501,7 @@ function MealCalendarInteractiveView({
             `flex w-full min-w-0 flex-col ${CHECKOUT_STEP_SECTION_PX}`,
           )}
         >
-          <FormSectionHeading title={title} subtitle={subtitle} />
+          <FormSectionHeading title={title} subtitle={resolvedSubtitle} />
         </div>
       ) : null}
 

@@ -97,20 +97,24 @@ export function TabbyPromoModal({ isOpen, onClose, price }: TabbyPromoModalProps
     <ModalShell
       isOpen
       onClose={onClose}
-      variant="fullscreen"
+      variant="bottom-sheet"
+      sheetVerticalAlign="center-on-sm"
       zIndex={Z_INDEX_TOKENS.modal}
-      rootClassName={`${CHECKOUT_ROOT_CLASSNAME} bg-white pb-[env(safe-area-inset-bottom)] sm:p-[24px]`}
-      panelClassName="w-full bg-white sm:max-w-[clamp(480px,calc(480px+(100vw-48rem)*80/448),560px)] sm:overflow-hidden sm:rounded-[20px] sm:shadow-2xl"
+      rootClassName={CHECKOUT_ROOT_CLASSNAME}
+      panelClassName={[
+        'relative flex h-[100dvh] max-h-[100dvh] w-full flex-col overflow-hidden bg-white shadow-2xl',
+        'sm:mx-[24px] sm:h-auto sm:max-h-[92svh] sm:max-w-[clamp(480px,calc(480px+(100vw-48rem)*80/448),560px)] sm:rounded-[20px]',
+      ].join(' ')}
     >
       {(requestClose) => (
         <div
           style={tabbyModalStyle}
-          className="flex flex-col bg-white sm:overflow-hidden sm:rounded-[20px]"
+          className="flex min-h-0 flex-1 flex-col overflow-hidden bg-white max-sm:rounded-none sm:rounded-[20px]"
           role="dialog"
           aria-modal="true"
           aria-label="Tabby payment options"
         >
-          <div className="relative flex h-[56px] shrink-0 items-center justify-end bg-white sm:rounded-t-[20px]">
+          <div className="relative flex h-[56px] shrink-0 items-center justify-end bg-white max-sm:rounded-none sm:rounded-t-[20px]">
             <button
               type="button"
               onClick={requestClose}
@@ -125,7 +129,7 @@ export function TabbyPromoModal({ isOpen, onClose, price }: TabbyPromoModalProps
             </button>
           </div>
 
-          <div className="overflow-hidden">
+          <div className="min-h-0 flex-1 overflow-y-auto scrollbar-hide">
             <iframe
               key={popupUrl}
               src={popupUrl}

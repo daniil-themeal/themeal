@@ -153,7 +153,7 @@ export function ModalShell({
       >
         <div
           className={[
-            'absolute inset-0 hidden bg-black/40 sm:block',
+            'fixed inset-0 hidden bg-black/40 sm:block',
             overlayAnimationClassName,
             overlayClassName,
           ]

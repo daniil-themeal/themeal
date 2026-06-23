@@ -13,6 +13,7 @@ import { CHECKOUT_FONT_CLAMP_25_31 } from './checkoutSpacing';
 import type { PaymentResultTab } from './PaymentResultHeader';
 import { PaymentResultHeader } from './PaymentResultHeader';
 import { MealCalendar } from './MealCalendar';
+import { getDeliveryDaysLabel } from './mealCalendarUtils';
 import {
   SuccessContactSection,
 } from './success/SuccessContactSection';
@@ -43,7 +44,7 @@ const SUCCESS_RULES: SuccessRule[] = [
     iconBg: COLOR_TOKENS.warning[500],
     iconKey: 'calendar',
     title: 'Fixed Delivery Days',
-    description: 'Deliveries are on Wednesdays and Sundays only — days cannot be changed',
+    description: '',
   },
   {
     iconBg: COLOR_TOKENS.secondary[400],
@@ -141,6 +142,17 @@ export function PaymentSuccessScreen({
   onTabChange,
   onGoToMain,
 }: PaymentSuccessScreenProps) {
+  const successRules = SUCCESS_RULES.map((rule) => {
+    if (rule.title !== 'Fixed Delivery Days') {
+      return rule;
+    }
+
+    return {
+      ...rule,
+      description: `Deliveries are on ${getDeliveryDaysLabel(days)} only — days cannot be changed`,
+    };
+  });
+
   return (
     <div
       className={CHECKOUT_STEP_PAGE_LAYOUT.page}
@@ -204,7 +216,7 @@ export function PaymentSuccessScreen({
             </h2>
 
             <div className="flex w-full flex-col gap-[24px]">
-              {SUCCESS_RULES.map((rule) => (
+              {successRules.map((rule) => (
                 <SuccessRuleRow key={rule.title} {...rule} />
               ))}
             </div>

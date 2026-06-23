@@ -11,7 +11,7 @@ export type DeliveryDetailsData = {
 };
 
 export function createInitialDeliveryDetails(): DeliveryDetailsData {
-  const deliveryDates = getUpcomingDeliveryDates(60);
+  const deliveryDates = getUpcomingDeliveryDates(60, 'weekdays');
 
   return {
     apartment: '',

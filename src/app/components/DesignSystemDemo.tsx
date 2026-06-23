@@ -1260,7 +1260,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           >
             <FormSectionHeading
               title="Choose the preferred first delivery date"
-              subtitle="We deliver Wednesdays and Sundays — pick your start date"
+              subtitle="We deliver Mondays and Thursdays — pick your start date"
             />
           </DemoCard>
 

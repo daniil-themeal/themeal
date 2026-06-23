@@ -41,7 +41,7 @@ import { ChevronDownIcon, MinusIcon, PlusIcon } from '../common/icons';
 import { TabbyPromoWidget } from './TabbyPromoWidget';
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
 import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
-import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_FONT_CLAMP_16_20, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP, CHECKOUT_SECTION_GAP_CLAMP } from './checkoutSpacing';
+import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_FONT_CLAMP_16_20, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_MOBILE_CLAMP, CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP, CHECKOUT_SECTION_GAP_CLAMP } from './checkoutSpacing';
 import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
 
 function getMaxScrollLeft(element: HTMLElement) {
@@ -89,6 +89,7 @@ function waitForNextFrame(): Promise<void> {
 type OrderSummaryCssVariables = CSSProperties & {
   '--checkout-card-padding': string;
   '--checkout-plan-column-pb': string;
+  '--checkout-plan-column-pb-mobile': string;
   '--checkout-scroll-edge-fade-width': string;
   '--order-summary-bg': string;
   '--order-summary-text': string;
@@ -107,6 +108,7 @@ type OrderSummaryCssVariables = CSSProperties & {
 const orderSummaryStyle: OrderSummaryCssVariables = {
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
   '--checkout-plan-column-pb': CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
+  '--checkout-plan-column-pb-mobile': CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_MOBILE_CLAMP,
   '--checkout-scroll-edge-fade-width': CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
   '--order-summary-bg': COLOR_TOKENS.base.white,
   '--order-summary-text': COLOR_TOKENS.neutral[900],
@@ -263,8 +265,8 @@ export function OrderSummary({
 
   return (
     <>
-      <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none max-md:pb-[length:var(--checkout-plan-column-pb)]" style={orderSummaryStyle}>
-        <div className="rounded-[16px] bg-[var(--order-summary-bg)] py-[28px]">
+      <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none max-md:pb-[length:var(--checkout-plan-column-pb-mobile)]" style={orderSummaryStyle}>
+        <div className="rounded-[16px] bg-[var(--order-summary-bg)] pt-[28px] pb-[28px] max-md:pb-[16px]">
           <div className="flex flex-col">
             <div className={orderSummarySectionPx}>
               <PlanTariffSummary title={getPlanTariffTitle(plan)} chips={planTariffChips} />
@@ -463,7 +465,6 @@ export function OrderSummary({
             <div className={['mt-[length:var(--order-summary-section-gap)] scroll-mb-[72px]', orderSummarySectionPx].join(' ')}>
               <TabbyPromoWidget
                 price={finalPeriodPrice}
-                pricePerMonth={orderPricing.pricePerMonth}
                 source="cart"
               />
             </div>

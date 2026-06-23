@@ -238,7 +238,7 @@ export function CheckoutPromoCode({
 
   const activateButtonClassName =
     variant === 'summary'
-      ? 'w-auto shrink-0'
+      ? 'w-full min-w-0 sm:w-auto sm:shrink-0'
       : 'w-full min-w-0 @[400px]:w-auto @[400px]:shrink-0';
 
   const activateAction = (

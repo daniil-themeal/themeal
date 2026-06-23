@@ -11,7 +11,6 @@ const INSTALLMENT_COUNT = 4;
 
 type TabbyPromoFallbackProps = {
   price: number;
-  pricePerMonth?: number | null;
 };
 
 function TabbyLogo() {
@@ -34,16 +33,15 @@ function TabbyLogo() {
   );
 }
 
-export function TabbyPromoFallback({ price, pricePerMonth = null }: TabbyPromoFallbackProps) {
+export function TabbyPromoFallback({ price }: TabbyPromoFallbackProps) {
   const installmentAmount = price / INSTALLMENT_COUNT;
-  const monthlyAmount = pricePerMonth ?? installmentAmount;
 
   if (price <= 0) return null;
 
   return (
     <div className="flex items-center gap-[12px]">
       <p className="flex-[1_0_0] font-sans text-[length:var(--order-summary-small-font-size)] font-normal leading-[150%] text-[var(--order-summary-muted)]">
-        As low as <strong>{formatTabbyPrice(monthlyAmount)}/month</strong> or 4 interest-free payments.{' '}
+        As low as <strong>{formatTabbyPrice(installmentAmount)}/month</strong> or 4 interest-free payments.{' '}
         <strong>More options</strong>
       </p>
       <TabbyLogo />

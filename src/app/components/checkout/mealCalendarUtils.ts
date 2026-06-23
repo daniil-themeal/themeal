@@ -6,8 +6,44 @@ export { MONTH_ABBR };
 
 export const WEEKDAY_SHORT = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] as const;
 
+export const MONDAY = 1;
+export const THURSDAY = 4;
 export const SATURDAY = 6;
 export const SUNDAY = 0;
+
+type MealBlock = {
+  deliveryWeekday: number;
+  daysCount: number;
+  startOffset?: number;
+};
+
+const MEAL_BLOCKS_BY_DAY_OPTION: Record<DayOption, MealBlock[]> = {
+  weekdays: [
+    { deliveryWeekday: MONDAY, daysCount: 3 },
+    { deliveryWeekday: THURSDAY, daysCount: 2 },
+  ],
+  'weekdays+sat': [
+    { deliveryWeekday: MONDAY, daysCount: 3 },
+    { deliveryWeekday: THURSDAY, daysCount: 3 },
+  ],
+  full: [
+    { deliveryWeekday: MONDAY, daysCount: 3 },
+    { deliveryWeekday: THURSDAY, daysCount: 3 },
+    { deliveryWeekday: SATURDAY, daysCount: 1, startOffset: 1 },
+  ],
+};
+
+function normalizeDate(date: Date): Date {
+  const normalized = new Date(date);
+  normalized.setHours(0, 0, 0, 0);
+  return normalized;
+}
+
+function getMealBlockForDelivery(deliveryWeekday: number, dayOption: DayOption): MealBlock | undefined {
+  return MEAL_BLOCKS_BY_DAY_OPTION[dayOption].find(
+    (block) => block.deliveryWeekday === deliveryWeekday,
+  );
+}
 
 // DatePill: w-[56px] + gap-[8px]
 const DATE_PILL_SCROLL_STEP = 64;
@@ -101,17 +137,28 @@ export function getMealDayKey(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-export function getUpcomingDeliveryDates(withinDays = 60): Date[] {
+export function getDeliveryDaysLabel(dayOption: DayOption): string {
+  if (dayOption === 'full') {
+    return 'Mondays, Thursdays, and Saturdays';
+  }
+
+  return 'Mondays and Thursdays';
+}
+
+export function getUpcomingDeliveryDates(
+  withinDays = 60,
+  dayOption: DayOption = 'weekdays',
+): Date[] {
   const dates: Date[] = [];
-  const start = addDays(new Date(), 2);
-  start.setHours(0, 0, 0, 0);
+  const start = normalizeDate(addDays(new Date(), 2));
 
   const end = addDays(start, withinDays);
   const cursor = new Date(start);
 
   while (cursor < end) {
-    const dayOfWeek = cursor.getDay();
-    if (dayOfWeek === 3 || dayOfWeek === 0) dates.push(new Date(cursor));
+    if (isDeliveryDay(cursor, dayOption)) {
+      dates.push(new Date(cursor));
+    }
     cursor.setDate(cursor.getDate() + 1);
   }
 
@@ -152,18 +199,59 @@ export function isInPeriod(date: Date, start: Date, end: Date): boolean {
   return date >= start && date < end;
 }
 
-export function isMealDay(date: Date, days: DayOption): boolean {
+export function isDeliveryDay(date: Date, dayOption: DayOption): boolean {
   const dayOfWeek = date.getDay();
 
-  if (days === 'weekdays') return dayOfWeek >= 1 && dayOfWeek <= 5;
-  if (days === 'weekdays+sat') return dayOfWeek >= 1 && dayOfWeek <= 6;
+  if (dayOfWeek === MONDAY || dayOfWeek === THURSDAY) {
+    return true;
+  }
 
-  return true;
+  return dayOption === 'full' && dayOfWeek === SATURDAY;
 }
 
-export function isDeliveryDay(date: Date): boolean {
-  const dayOfWeek = date.getDay();
-  return dayOfWeek === 3 || dayOfWeek === 0;
+export function isDefaultMealDay({
+  date,
+  startDate,
+  endDate,
+  dayOption,
+}: {
+  date: Date;
+  startDate: Date;
+  endDate: Date;
+  dayOption: DayOption;
+}): boolean {
+  if (!isInPeriod(date, startDate, endDate)) {
+    return false;
+  }
+
+  const normalizedStart = normalizeDate(startDate);
+  const cursor = new Date(normalizedStart);
+  const periodEnd = normalizeDate(endDate);
+
+  while (cursor < periodEnd) {
+    if (isDeliveryDay(cursor, dayOption) && cursor >= normalizedStart) {
+      const block = getMealBlockForDelivery(cursor.getDay(), dayOption);
+
+      if (block) {
+        const startOffset = block.startOffset ?? 0;
+
+        for (let offset = startOffset; offset < startOffset + block.daysCount; offset += 1) {
+          const mealDate = addDays(cursor, offset);
+
+          if (
+            isSameDay(date, mealDate) &&
+            isInPeriod(mealDate, startDate, endDate)
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return false;
 }
 
 export function isSubscriptionMealDay({
@@ -180,7 +268,7 @@ export function isSubscriptionMealDay({
   extraMealDayKeys?: ReadonlySet<string>;
 }) {
   if (!isInPeriod(date, startDate, endDate)) return false;
-  if (isMealDay(date, dayOption)) return true;
+  if (isDefaultMealDay({ date, startDate, endDate, dayOption })) return true;
 
   return extraMealDayKeys?.has(getMealDayKey(date)) ?? false;
 }
@@ -205,14 +293,15 @@ export function isAddableMealDayCell({
 }
 
 export function getAddableWeekdays(dayOption: DayOption): number[] {
-  const weekdays: number[] = [];
-
-  for (let dayOfWeek = 0; dayOfWeek <= 6; dayOfWeek += 1) {
-    const probe = new Date(2024, 0, 7 + dayOfWeek);
-    if (!isMealDay(probe, dayOption)) weekdays.push(dayOfWeek);
+  if (dayOption === 'weekdays') {
+    return [SATURDAY, SUNDAY];
   }
 
-  return weekdays;
+  if (dayOption === 'weekdays+sat') {
+    return [SUNDAY];
+  }
+
+  return [];
 }
 
 export function getWeeklyExtraMealDayKeys({
@@ -235,7 +324,7 @@ export function getWeeklyExtraMealDayKeys({
     if (
       dayOfWeek === targetWeekday &&
       isInPeriod(cursor, startDate, endDate) &&
-      !isMealDay(cursor, dayOption)
+      !isDefaultMealDay({ date: cursor, startDate, endDate, dayOption })
     ) {
       keys.push(getMealDayKey(cursor));
     }
@@ -314,7 +403,7 @@ export function isRemovableExtraMealDayCell({
 }) {
   return (
     isInPeriod(date, startDate, endDate) &&
-    !isMealDay(date, dayOption) &&
+    !isDefaultMealDay({ date, startDate, endDate, dayOption }) &&
     (extraMealDayKeys?.has(getMealDayKey(date)) ?? false)
   );
 }
@@ -342,7 +431,7 @@ export function getWeeklyRemovableExtraMealDayKeysForWeekday({
     if (
       dayOfWeek === targetWeekday &&
       isInPeriod(cursor, startDate, endDate) &&
-      !isMealDay(cursor, dayOption) &&
+      !isDefaultMealDay({ date: cursor, startDate, endDate, dayOption }) &&
       extraMealDayKeys.has(key)
     ) {
       keys.push(key);
@@ -382,7 +471,7 @@ export function getWeeklyRemovableExtraMealDayKeys({
     if (
       targetWeekdays.includes(dayOfWeek) &&
       isInPeriod(cursor, startDate, endDate) &&
-      !isMealDay(cursor, dayOption) &&
+      !isDefaultMealDay({ date: cursor, startDate, endDate, dayOption }) &&
       extraMealDayKeys.has(key)
     ) {
       keys.push(key);

@@ -15,7 +15,6 @@ function Header({
   isPhoneVerified,
   verifiedPhone,
   pendingPhone,
-  onSignInClick,
   onResetPhone,
   onResumeVerification,
 }) {
@@ -101,7 +100,6 @@ function Header({
         isPhoneVerified,
         verifiedPhone,
         pendingPhone,
-        onSignInClick,
         onResetPhone,
         onResumeVerification,
         onOrderClick: onOrder,

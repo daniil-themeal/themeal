@@ -35,6 +35,10 @@ export const CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP =
 export const CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP =
   'clamp(72px, calc(72px + (100vw - 48rem) * 48 / 448), 120px)';
 
+/** Order summary in single-column layout — bottom inset below card to screen edge. */
+export const CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_MOBILE_CLAMP =
+  'clamp(40px, calc(40px + (100vw - 20rem) * 8 / 448), 48px)';
+
 export const FULL_MENU_MEAL_CARD_WIDTH_CLAMP =
   'clamp(150px, calc(150px + (100vw - 20rem) * 45 / 448), 195px)';
 

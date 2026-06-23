@@ -19,7 +19,6 @@ export function LegalHeader({ t }: LegalHeaderProps) {
     isPhoneVerified,
     verifiedPhone,
     pendingPhone,
-    openSignIn,
     resetPhoneSession,
     handleResumeVerification,
   } = usePhoneAuth();
@@ -74,7 +73,6 @@ export function LegalHeader({ t }: LegalHeaderProps) {
         isPhoneVerified={isPhoneVerified}
         verifiedPhone={verifiedPhone}
         pendingPhone={pendingPhone}
-        onSignInClick={openSignIn}
         onResetPhone={() => resetPhoneSession()}
         onResumeVerification={handleResumeVerification}
       />

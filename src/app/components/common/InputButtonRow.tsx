@@ -67,10 +67,10 @@ export function InputButtonRow({
   const isFixedRow = layoutMode === 'row';
   const rowAlignClassName = isFixedRow
     ? align === 'start'
-      ? 'items-start'
+      ? 'sm:items-start'
       : align === 'center'
-        ? 'items-center'
-        : 'items-end'
+        ? 'sm:items-center'
+        : 'sm:items-end'
     : align === 'start'
       ? rowLayout.itemsStart
       : align === 'center'
@@ -85,11 +85,11 @@ export function InputButtonRow({
     .join(' ');
   const actionWrapperClassName = isFixedRow
     ? [
-        'w-auto shrink-0',
+        'w-full sm:w-auto sm:shrink-0',
         align === 'start'
-          ? 'self-start'
+          ? 'sm:self-start'
           : align === 'center'
-            ? 'flex items-center h-[48px] self-center'
+            ? 'flex items-center sm:h-[48px] sm:self-center'
             : '',
         actionClassName,
       ]
@@ -107,7 +107,7 @@ export function InputButtonRow({
         .filter(Boolean)
         .join(' ');
   const rowClassName = isFixedRow
-    ? ['flex w-full flex-row gap-[12px]', rowAlignClassName].join(' ')
+    ? ['flex w-full flex-col gap-[12px] sm:flex-row', rowAlignClassName].join(' ')
     : ['flex w-full flex-col gap-[12px]', rowLayout.flexRow, rowAlignClassName].join(' ');
 
   return (

@@ -36,6 +36,7 @@ import { formatUaePhoneInput, normalizeUaePhone } from './phoneValidation';
 import { isValidTestSmsCode, SMS_CODE_ERROR, SMS_CODE_SUCCESS_HOLD_MS } from './smsCodeValidation';
 import { usePlanStepScrollChaining } from './usePlanStepScrollChaining';
 import { CHECKOUT_ROOT_CLASSNAME } from './checkoutModalShellTokens';
+import { getUpcomingDeliveryDates, isSameDay } from './mealCalendarUtils';
 import './checkout.css';
 
 type CheckoutUiStep = 'plan' | 'delivery' | 'payment';
@@ -335,6 +336,18 @@ export function CheckoutPage({
   useEffect(() => {
     setExtraMealDayKeys([]);
   }, [days, duration]);
+
+  useEffect(() => {
+    const dates = getUpcomingDeliveryDates(60, days);
+
+    if (dates.length === 0) {
+      return;
+    }
+
+    if (!dates.some((date) => isSameDay(date, deliveryDetails.selectedDate))) {
+      setDeliveryDetails((current) => ({ ...current, selectedDate: dates[0] }));
+    }
+  }, [days, deliveryDetails.selectedDate]);
 
   useEffect(() => {
     if (!isOpen || checkoutStep !== 'plan') return;
