@@ -535,21 +535,22 @@ export function CheckoutPage({
     setIsPhoneVerified(true);
     setMenuOpen(false);
 
+    const nextDeliveryStep = resolveDeliveryStep(selectedAddress);
     setCheckoutStep('delivery');
-    setDeliveryStep('address');
+    setDeliveryStep(nextDeliveryStep);
 
     const normalized = normalizeUaePhone(phone);
     persistSession(
       {
         phone: normalized ?? phone,
         checkoutStep: 'delivery',
-        deliveryStep: 'address',
+        deliveryStep: nextDeliveryStep,
         isVerified: true,
       },
       true,
     );
     scrollBodyToTop();
-  }, [persistSession, phone, scrollBodyToTop]);
+  }, [persistSession, phone, scrollBodyToTop, selectedAddress]);
 
   const handleSmsCodeComplete = useCallback((code: string) => {
     if (isSmsVerifying) return;
@@ -699,9 +700,14 @@ export function CheckoutPage({
     }
 
     if (checkoutStep === 'delivery') {
+      const nextDeliveryStep = resolveDeliveryStep(selectedAddress);
+
       if (deliveryStep === 'details') {
-        setDeliveryStep('address');
-        persistSession({ deliveryStep: 'address' });
+        setCheckoutStep('plan');
+        setMenuOpen(false);
+        setSummaryVisible(true);
+        setDeliveryStep(nextDeliveryStep);
+        persistSession({ checkoutStep: 'plan', deliveryStep: nextDeliveryStep });
         scrollBodyToTop();
         return;
       }
@@ -710,8 +716,8 @@ export function CheckoutPage({
         setCheckoutStep('plan');
         setMenuOpen(false);
         setSummaryVisible(true);
-        setDeliveryStep('address');
-        persistSession({ checkoutStep: 'plan', deliveryStep: 'address' });
+        setDeliveryStep(nextDeliveryStep);
+        persistSession({ checkoutStep: 'plan', deliveryStep: nextDeliveryStep });
         scrollBodyToTop();
         return;
       }
@@ -719,7 +725,7 @@ export function CheckoutPage({
       setCheckoutStep('plan');
       setMenuOpen(false);
       setSummaryVisible(true);
-      setDeliveryStep('address');
+      setDeliveryStep(nextDeliveryStep);
       openAuthModal();
       scrollBodyToTop();
       return;

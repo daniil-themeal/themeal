@@ -70,6 +70,11 @@ export function useQuizState() {
     setResult(null);
   }, []);
 
+  const goToStep = useCallback((step: QuizStepId) => {
+    setResult(null);
+    setPhase({ kind: 'question', step });
+  }, []);
+
   const progressStep = useMemo(() => {
     if (phase.kind === 'question') return phase.step;
     return null;
@@ -90,6 +95,7 @@ export function useQuizState() {
     canGoBack,
     goNext,
     goBack,
+    goToStep,
     goToSuccess,
     reset,
   };

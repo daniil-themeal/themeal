@@ -15,6 +15,7 @@ import {
 } from '../checkout/smsCodeValidation';
 import { QuizStepHeader } from './QuizStepHeader';
 import { QuizWhatsAppTitle } from './QuizWhatsAppTitle';
+import { QUIZ_SECTION_PX_CLASSNAME } from './quizTokens';
 
 type QuizLeadPhase = 'offer' | 'sms' | 'success';
 
@@ -88,7 +89,7 @@ export function QuizLeadFlow({
 
   if (phase === 'success') {
     return (
-      <div className="flex flex-col gap-[20px]">
+      <div className={['flex flex-col gap-[20px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
         <QuizStepHeader
           title="Your menu is on its way to WhatsApp"
           subtitle="The full menu with photos will arrive in a couple of minutes. Take a look whenever it suits you — no rush."
@@ -120,8 +121,8 @@ export function QuizLeadFlow({
     const formattedPhone = formatUaePhoneInput(phone.replace(/\D/g, '').slice(-9));
 
     return (
-      <div className="flex flex-col gap-[20px]">
-        <QuizStepHeader title="Enter verification code" />
+      <div className={['flex flex-col gap-[20px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
+        <QuizStepHeader title="Enter verification code" titleAlign="center" />
 
         <SmsCodeInput
           value={smsCode}
@@ -135,35 +136,36 @@ export function QuizLeadFlow({
           disabled={isVerifying}
           autoFocus
           autoFocusDelay={200}
+          className="w-full gap-[8px] sm:gap-[12px]"
         />
 
         {smsError ? (
-          <p className="text-center font-sans text-[length:var(--quiz-body-font-size)] font-semibold leading-[140%] text-[var(--quiz-danger)]">
+          <p className="text-center font-sans text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-danger)]">
             {smsError}
           </p>
         ) : null}
 
-        <div className="flex flex-col gap-[12px] text-center font-sans text-[length:var(--quiz-body-font-size)] leading-[140%]">
-          <p className="text-[var(--quiz-muted)]">
+        <div className="flex flex-col gap-[12px] text-center font-sans text-[length:var(--sms-code-body-font-size)] font-semibold leading-[140%] text-[var(--sms-code-muted)]">
+          <p>
             <button
               type="button"
               disabled={isVerifying}
-              className="cursor-pointer font-bold text-[var(--quiz-text)] disabled:opacity-60"
+              className="cursor-pointer font-bold text-[var(--sms-code-primary)] disabled:cursor-not-allowed disabled:opacity-60"
             >
               Send again
             </button>{' '}
             the code after 60 seconds
           </p>
-          <p className="text-[var(--quiz-muted)]">
+          <p>
             <button
               type="button"
               disabled={isVerifying}
               onClick={() => onPhaseChange('offer')}
-              className="cursor-pointer font-bold text-[var(--quiz-text)] disabled:opacity-60"
+              className="cursor-pointer font-bold text-[var(--sms-code-primary)] disabled:cursor-not-allowed disabled:opacity-60"
             >
               Change number
             </button>{' '}
-            <span className="font-bold text-[var(--quiz-text)]">{formattedPhone}</span>
+            <span className="font-bold text-[var(--sms-code-text)]">{formattedPhone}</span>
           </p>
         </div>
       </div>
@@ -171,7 +173,15 @@ export function QuizLeadFlow({
   }
 
   return (
-    <div className={embedded ? 'flex flex-col gap-[16px]' : 'flex flex-col gap-[20px]'}>
+    <div
+      className={[
+        embedded ? 'flex flex-col gap-[16px]' : 'flex flex-col gap-[20px]',
+        QUIZ_SECTION_PX_CLASSNAME,
+        embedded ? 'border-t border-[var(--quiz-border)] pt-[20px]' : '',
+      ]
+        .filter(Boolean)
+        .join(' ')}
+    >
       <QuizStepHeader
         title={<QuizWhatsAppTitle text="Talk it through on WhatsApp" />}
         subtitle="We'll bring your numbers into the chat for context and help you find the right fit. Ask anything — no spam, no commitment."
@@ -179,6 +189,7 @@ export function QuizLeadFlow({
 
       <PhoneInput
         id="quiz-lead-phone"
+        inheritTokens
         value={phone}
         onChange={(v) => {
           setPhone(formatUaePhoneInput(v));

@@ -14,6 +14,10 @@ import type { QuizCheckoutSelection, QuizFreeDays, QuizPain, QuizPeople } from '
 import {
   QUIZ_MODAL_INNER_CLASSNAME,
   QUIZ_MODAL_PANEL_CLASSNAME,
+  QUIZ_MODAL_ROOT_CLASSNAME,
+  QUIZ_SECTION_PB_CLASSNAME,
+  QUIZ_SECTION_PT_CLASSNAME,
+  QUIZ_SECTION_PX_CLASSNAME,
   quizTokensStyle,
 } from './quizTokens';
 import { useQuizState } from './useQuizState';
@@ -31,7 +35,7 @@ function MealsTotalHint({ total }: { total: number }) {
   else if (total < 7) hint = '— what about the rest?';
 
   return (
-    <p className="font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
+    <p className="text-center font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
       Total meals per week:{' '}
       <span className="font-bold text-[var(--quiz-text)]">{total}</span>
       {hint ? <span>{hint}</span> : null}
@@ -50,10 +54,12 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
     canGoBack,
     goNext,
     goBack,
+    goToStep,
     reset,
   } = useQuizState();
 
   const [verifiedPhone, setVerifiedPhone] = useState('');
+  const devStepSelectProps = import.meta.env.DEV ? { onStepSelect: goToStep } : {};
 
   useEffect(() => {
     if (!open) {
@@ -87,7 +93,7 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
   const footer =
     showQuestionFooter || showBackOnlyFooter
       ? (
-          <div className="flex w-full gap-[12px] px-[length:var(--checkout-card-padding)] py-[length:var(--checkout-card-padding)] sm:px-[length:var(--meal-detail-content-p)]">
+          <div className={`flex w-full gap-[12px] ${QUIZ_SECTION_PX_CLASSNAME} pt-0 pb-[length:var(--checkout-card-padding)]`}>
             {canGoBack ? (
               <Button type="button" variant="neutral" outline size="medium" className="min-w-[88px]" onClick={goBack}>
                 Back
@@ -116,9 +122,9 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
       title="Real spend test"
       subtitle="Compare your real food spend with TheMeal"
       closeAriaLabel="Close quiz"
-      sheetVerticalAlign="center-on-sm"
+      variant="centered-scroll"
       bodyWrapper={false}
-      rootClassName="overflow-y-auto scrollbar-hide"
+      rootClassName={QUIZ_MODAL_ROOT_CLASSNAME}
       zIndex={Z_INDEX_TOKENS.modal}
       panelClassName={QUIZ_MODAL_PANEL_CLASSNAME}
       innerClassName={QUIZ_MODAL_INNER_CLASSNAME}
@@ -126,11 +132,18 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
       footerClassName="border-t-0"
       style={quizTokensStyle}
     >
-      <div className="flex flex-col gap-[16px] p-[length:var(--checkout-card-padding)] pb-0 sm:p-[length:var(--meal-detail-content-p)] sm:pb-0">
+      <div
+        className={[
+          'flex flex-col gap-[24px]',
+          QUIZ_SECTION_PT_CLASSNAME,
+          QUIZ_SECTION_PB_CLASSNAME,
+        ].join(' ')}
+      >
         {phase.kind === 'question' && phase.step === 1 ? (
-          <div className="flex flex-col gap-[16px]">
+          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
             <QuizStepHeader
               step={progressStep}
+              {...devStepSelectProps}
               title="How many people usually eat at home?"
               subtitle="We'll count the spend for everyone who eats with you"
             />
@@ -155,9 +168,10 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 2 ? (
-          <div className="flex flex-col gap-[16px]">
+          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
             <QuizStepHeader
               step={progressStep}
+              {...devStepSelectProps}
               title="How many times a week do you cook at home?"
               subtitle="Breakfasts, lunches, dinners — anything you cook yourself"
               icon={<ChefHat className="size-5" />}
@@ -175,9 +189,10 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 3 ? (
-          <div className="flex flex-col gap-[16px]">
+          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
             <QuizStepHeader
               step={progressStep}
+              {...devStepSelectProps}
               title="How many times a week do you order delivery?"
               subtitle="Talabat, Deliveroo, Noon and the like"
               icon={<Bike className="size-5" />}
@@ -195,9 +210,10 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 4 ? (
-          <div className="flex flex-col gap-[16px]">
+          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
             <QuizStepHeader
               step={progressStep}
+              {...devStepSelectProps}
               title="How many times a week do you eat out at a cafe or restaurant?"
               subtitle="Any meal away from home"
               icon={<Store className="size-5" />}
@@ -215,9 +231,10 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 5 ? (
-          <div className="flex flex-col gap-[16px]">
+          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
             <QuizStepHeader
               step={progressStep}
+              {...devStepSelectProps}
               title="What do you want to free yourself from cooking?"
               subtitle="We'll match how many days the plan should cover"
             />
@@ -242,40 +259,41 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 6 ? (
-          <div className="flex flex-col gap-[16px]">
+          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
             <QuizStepHeader
               step={progressStep}
+              {...devStepSelectProps}
               title="Roughly how much does one such meal cost?"
               subtitle="Adjust to your reality — these are your numbers, not ours"
             />
             <div className="flex flex-col gap-[20px]">
               {answers.freqCook > 0 ? (
                 <QuizValueSlider
-                  label="Groceries for one home-cooked meal"
+                  caption="Groceries for one home-cooked meal"
+                  label={`${answers.costCook} AED`}
                   value={answers.costCook}
                   min={6}
                   max={30}
-                  unit="AED"
                   onChange={(v) => updateAnswers({ costCook: v })}
                 />
               ) : null}
               {answers.freqOrder > 0 ? (
                 <QuizValueSlider
-                  label="One delivery order"
+                  caption="One delivery order"
+                  label={`${answers.costOrder} AED`}
                   value={answers.costOrder}
                   min={25}
                   max={150}
-                  unit="AED"
                   onChange={(v) => updateAnswers({ costOrder: v })}
                 />
               ) : null}
               {answers.freqRest > 0 ? (
                 <QuizValueSlider
-                  label="One cafe / restaurant visit"
+                  caption="One cafe / restaurant visit"
+                  label={`${answers.costRest} AED`}
                   value={answers.costRest}
                   min={25}
                   max={200}
-                  unit="AED"
                   onChange={(v) => updateAnswers({ costRest: v })}
                 />
               ) : null}
@@ -284,9 +302,10 @@ export function QuizModal({ open, onClose, onSeePlan, onWhatsAppFirst }: QuizMod
         ) : null}
 
         {phase.kind === 'question' && phase.step === 7 ? (
-          <div className="flex flex-col gap-[16px]">
+          <div className={['flex flex-col gap-[16px]', QUIZ_SECTION_PX_CLASSNAME].join(' ')}>
             <QuizStepHeader
               step={progressStep}
+              {...devStepSelectProps}
               title="What bothers you most about all this?"
               subtitle="We'll show the result that matters most to you"
             />

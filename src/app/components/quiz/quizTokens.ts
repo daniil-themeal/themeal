@@ -7,6 +7,7 @@ import {
   CHECKOUT_CARD_PADDING_CLAMP,
   CHECKOUT_FONT_CLAMP_12_14,
   CHECKOUT_FONT_CLAMP_20_25,
+  CHECKOUT_FONT_CLAMP_32_40,
   MEAL_DETAIL_CONTENT_PADDING_CLAMP,
 } from '../checkout/checkoutSpacing';
 
@@ -15,8 +16,19 @@ export const QUIZ_MODAL_PANEL_CLASSNAME = [
   'sm:mx-[24px] sm:max-w-[520px] sm:rounded-[20px]',
 ].join(' ');
 
+export const QUIZ_MODAL_ROOT_CLASSNAME = 'bg-black/40 py-[16px] sm:py-[24px]';
+
 export const QUIZ_MODAL_INNER_CLASSNAME =
-  'flex flex-col bg-[var(--quiz-modal-bg)] sm:rounded-[20px] !max-h-none';
+  'flex flex-col overflow-hidden bg-[var(--quiz-modal-bg)] sm:rounded-[20px] !max-h-none';
+
+export const QUIZ_SECTION_PX_CLASSNAME =
+  'px-[length:var(--checkout-card-padding)] sm:px-[length:var(--meal-detail-content-p)]';
+
+export const QUIZ_SECTION_PT_CLASSNAME =
+  'pt-[length:var(--checkout-card-padding)] sm:pt-[length:var(--meal-detail-content-p)]';
+
+export const QUIZ_SECTION_PB_CLASSNAME =
+  'pb-[length:var(--checkout-card-padding)] sm:pb-[length:var(--meal-detail-content-p)]';
 
 export type QuizTokensCssVariables = CSSProperties & {
   '--quiz-modal-bg': string;
@@ -40,6 +52,23 @@ export type QuizTokensCssVariables = CSSProperties & {
   '--quiz-option-font-size': string;
   '--quiz-card-padding': string;
   '--quiz-danger': string;
+  '--sms-code-text': string;
+  '--sms-code-muted': string;
+  '--sms-code-primary': string;
+  '--sms-code-danger': string;
+  '--sms-code-digit-bg': string;
+  '--sms-code-digit-active-bg': string;
+  '--sms-code-digit-success-bg': string;
+  '--sms-code-digit-success-text': string;
+  '--sms-code-digit-font-size': string;
+  '--sms-code-body-font-size': string;
+  '--phone-input-bg': string;
+  '--phone-input-border': string;
+  '--phone-input-focus-border': string;
+  '--phone-input-text': string;
+  '--phone-input-placeholder': string;
+  '--phone-input-error': string;
+  '--phone-input-font-size': string;
 };
 
 export const quizTokensStyle: QuizTokensCssVariables = {
@@ -67,6 +96,23 @@ export const quizTokensStyle: QuizTokensCssVariables = {
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
   '--meal-detail-content-p': MEAL_DETAIL_CONTENT_PADDING_CLAMP,
   '--quiz-danger': COLOR_TOKENS.danger[500],
+  '--sms-code-text': COLOR_TOKENS.neutral[900],
+  '--sms-code-muted': COLOR_TOKENS.neutral[500],
+  '--sms-code-primary': COLOR_TOKENS.primary[500],
+  '--sms-code-danger': COLOR_TOKENS.danger[500],
+  '--sms-code-digit-bg': COLOR_TOKENS.neutral[50],
+  '--sms-code-digit-active-bg': COLOR_TOKENS.neutral[75],
+  '--sms-code-digit-success-bg': COLOR_TOKENS.primary[500],
+  '--sms-code-digit-success-text': COLOR_TOKENS.base.white,
+  '--sms-code-digit-font-size': CHECKOUT_FONT_CLAMP_32_40,
+  '--sms-code-body-font-size': FONT_SIZE_TOKENS[16],
+  '--phone-input-bg': COLOR_TOKENS.neutral[50],
+  '--phone-input-border': COLOR_TOKENS.neutral[100],
+  '--phone-input-focus-border': COLOR_TOKENS.neutral[300],
+  '--phone-input-text': COLOR_TOKENS.neutral[900],
+  '--phone-input-placeholder': COLOR_TOKENS.neutral[300],
+  '--phone-input-error': COLOR_TOKENS.danger[400],
+  '--phone-input-font-size': FONT_SIZE_TOKENS[20],
 };
 
 export type QuizMetricVariant = 'money' | 'time' | 'meals';

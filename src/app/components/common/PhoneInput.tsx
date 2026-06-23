@@ -32,6 +32,8 @@ type PhoneInputProps = {
   invalid?: boolean;
   placeholder?: string;
   className?: string;
+  style?: CSSProperties;
+  inheritTokens?: boolean;
 };
 
 export function PhoneInput({
@@ -42,12 +44,18 @@ export function PhoneInput({
   invalid = false,
   placeholder = 'Type your phone',
   className = '',
+  style,
+  inheritTokens = false,
 }: PhoneInputProps) {
   const hasError = Boolean(error) || invalid;
   const descriptionId = id && error ? `${id}-error` : undefined;
+  const wrapperStyle = inheritTokens ? style : { ...phoneInputStyle, ...style };
 
   return (
-    <div className={['flex flex-col gap-[8px]', className].filter(Boolean).join(' ')} style={phoneInputStyle}>
+    <div
+      className={['flex flex-col gap-[8px]', className].filter(Boolean).join(' ')}
+      style={wrapperStyle}
+    >
       <div className="flex items-center gap-[12px]">
         <div className="flex h-[48px] shrink-0 items-center overflow-hidden rounded-[8px] border border-[var(--phone-input-border)] bg-[var(--phone-input-bg)]">
           <div className="flex size-[48px] items-center justify-center">

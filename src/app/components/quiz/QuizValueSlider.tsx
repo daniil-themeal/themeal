@@ -3,32 +3,31 @@ import { QUIZ_SLIDER_CLASSNAME } from './quizTokens';
 
 type QuizValueSliderProps = {
   label: string;
+  caption?: string;
   value: number;
   min: number;
   max: number;
-  unit?: string;
   onChange: (value: number) => void;
 };
 
 export function QuizValueSlider({
   label,
+  caption,
   value,
   min,
   max,
-  unit,
   onChange,
 }: QuizValueSliderProps) {
   return (
     <div className="flex flex-col gap-[12px]">
-      <div className="flex items-baseline justify-between gap-[8px]">
-        <p className="font-sans text-[length:var(--quiz-body-font-size)] font-semibold leading-[140%] text-[var(--quiz-text)]">
-          {label}
+      {caption ? (
+        <p className="text-center font-sans text-[length:var(--quiz-caption-font-size)] font-medium leading-[140%] text-[var(--quiz-muted)]">
+          {caption}
         </p>
-        <p className="shrink-0 font-sans text-[length:var(--quiz-body-font-size)] font-bold leading-[140%] text-[var(--quiz-active)]">
-          {value}
-          {unit ? ` ${unit}` : ''}
-        </p>
-      </div>
+      ) : null}
+      <p className="text-center font-sans text-[20px] font-bold leading-[130%] text-[var(--quiz-text)]">
+        {label}
+      </p>
       <Slider
         min={min}
         max={max}
