@@ -110,14 +110,11 @@ export function SuccessContactSection({ showFollowUs = true }: SuccessContactSec
     <>
       <section className={`flex w-full flex-col items-center gap-[20px] ${CHECKOUT_STEP_SECTION_PX}`}>
         <div
-          className={[
-            TEXT_TRIM_CLASS_NAME,
-            'flex max-w-[400px] flex-col text-center font-sans text-[20px] font-normal leading-[130%] tracking-[-0.4px]',
-          ].join(' ')}
+          className="flex max-w-[400px] flex-col gap-[8px] text-center font-sans text-[20px] font-normal leading-[130%] tracking-[-0.4px]"
           style={{ color: COLOR_TOKENS.neutral[900] }}
         >
-          <p>For any questions, feel free to contact us.</p>
-          <p>We&apos;ll be happy to assist you!</p>
+          <p className={TEXT_TRIM_CLASS_NAME}>For any questions, feel free to contact us.</p>
+          <p className={TEXT_TRIM_CLASS_NAME}>We&apos;ll be happy to assist you!</p>
         </div>
 
         <div className="flex items-center gap-[16px]">

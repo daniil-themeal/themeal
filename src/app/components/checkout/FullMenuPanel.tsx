@@ -644,25 +644,23 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                 <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
               </div>
 
-              {isModal ? (
-                <div className="flex w-full min-w-0 gap-[length:var(--full-menu-meal-gap)]">
-                  <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
-                  <p className={`min-w-0 flex-1 px-[4px] pt-[4px] pb-[16px] ${fullMenuDisclaimerClassName}`}>
-                    {FULL_MENU_DISCLAIMER}{' '}
-                    Not a fit?{' '}
-                    <a
-                      href={FULL_MENU_SURVEY_URL}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="break-words underline underline-offset-2 text-[var(--full-menu-active)] transition-colors hover:text-[var(--full-menu-active-muted)]"
-                    >
-                      Take a quick survey
-                    </a>
-                    .
-                  </p>
-                  <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
-                </div>
-              ) : null}
+              <div className="flex w-full min-w-0 gap-[length:var(--full-menu-meal-gap)]">
+                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                <p className={`min-w-0 flex-1 px-[4px] pt-[4px] pb-[16px] ${fullMenuDisclaimerClassName}`}>
+                  {FULL_MENU_DISCLAIMER}{' '}
+                  Not a fit?{' '}
+                  <a
+                    href={FULL_MENU_SURVEY_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="break-words underline underline-offset-2 text-[var(--full-menu-active)] transition-colors hover:text-[var(--full-menu-active-muted)]"
+                  >
+                    Take a quick survey
+                  </a>
+                  .
+                </p>
+                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+              </div>
             </div>
 
             <CheckoutScrollEdgeFades

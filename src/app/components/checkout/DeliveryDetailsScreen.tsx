@@ -257,7 +257,7 @@ export function DeliveryDetailsScreen({
             )}
           >
             <div
-              className="flex flex-col gap-[24px] sm:flex-row sm:gap-[16px]"
+              className="flex flex-col gap-[24px] sm:flex-row"
               style={getFieldSizeStyle('large')}
             >
               <Dropdown
@@ -272,7 +272,7 @@ export function DeliveryDetailsScreen({
                 }}
                 error={fieldErrors.selectedTimeSlot}
                 placeholder="Select timeslot"
-                containerClassName="min-w-0 flex-1"
+                containerClassName="min-w-0 flex-1 sm:max-w-[240px] sm:flex-none"
               />
 
               <div className="flex shrink-0 items-center sm:mt-[22px] sm:h-[length:var(--field-height)]">

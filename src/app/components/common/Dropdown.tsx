@@ -72,7 +72,7 @@ function ChevronIcon({ size }: { size: number }) {
       viewBox="0 0 20 20"
       fill="none"
       aria-hidden
-      className="transition-transform duration-150 group-data-[state=open]:rotate-180"
+      className="transition-transform duration-150 origin-center group-data-[state=open]:rotate-180"
     >
       <path
         d="M5 7.5l5 5 5-5"
@@ -100,8 +100,8 @@ function CheckIcon({ size }: { size: number }) {
 }
 
 const iconSlotClassName = [
-  'flex w-[length:var(--field-icon-slot-width)] shrink-0 self-stretch items-center justify-center',
-  '[&>svg]:h-[length:var(--field-icon-size)] [&>svg]:w-[length:var(--field-icon-size)] [&>svg]:shrink-0',
+  'flex h-[length:var(--field-height)] w-[length:var(--field-icon-slot-width)] shrink-0 items-center justify-center',
+  '[&>svg]:h-[length:var(--field-icon-size)] [&>svg]:w-[length:var(--field-icon-size)] [&>svg]:shrink-0 [&>svg]:origin-center',
 ].join(' ');
 
 const MOBILE_MAX_WIDTH_MQ = '(max-width: 767px)';
@@ -152,7 +152,7 @@ function NativeSelectField({
   return (
     <div
       className={[
-        'relative flex w-full items-stretch rounded-[length:var(--field-border-radius)] border',
+        'flex h-[length:var(--field-height)] w-full items-stretch rounded-[length:var(--field-border-radius)] border',
         'border-[var(--dropdown-border)] bg-[var(--dropdown-bg)]',
         fieldClassName,
       ]
@@ -180,7 +180,6 @@ function NativeSelectField({
           leftIcon
             ? 'pr-[length:var(--field-horizontal-padding)]'
             : 'pl-[length:var(--field-horizontal-padding)]',
-          'pr-[length:var(--field-icon-slot-width)]',
           disabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer',
         ].join(' ')}
       >
@@ -195,7 +194,7 @@ function NativeSelectField({
       </select>
 
       <span
-        className={[iconSlotClassName, 'pointer-events-none absolute right-0 top-0'].join(' ')}
+        className={[iconSlotClassName, 'pointer-events-none'].join(' ')}
         style={{ color: 'var(--dropdown-icon)' }}
         aria-hidden
       >
@@ -227,7 +226,7 @@ function RadixSelectField({
         aria-describedby={descriptionId}
         aria-invalid={hasError || undefined}
         className={[
-          'group flex w-full items-stretch rounded-[length:var(--field-border-radius)] border outline-none',
+          'group flex h-[length:var(--field-height)] w-full items-stretch rounded-[length:var(--field-border-radius)] border outline-none',
           'border-[var(--dropdown-border)] bg-[var(--dropdown-bg)]',
           'transition-colors',
           'data-[state=open]:border-[var(--dropdown-open-border)]',

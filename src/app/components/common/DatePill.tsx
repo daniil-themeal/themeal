@@ -37,13 +37,15 @@ export const DatePill = forwardRef<HTMLButtonElement, DatePillProps>(function Da
   { date, selected = false, onClick, className = '' },
   ref,
 ) {
+  const textColor = selected ? COLOR_TOKENS.primary[500] : COLOR_TOKENS.neutral[900];
+
   return (
     <button
       ref={ref}
       type="button"
       onClick={onClick}
       className={[
-        'flex h-[64px] w-[56px] shrink-0 cursor-pointer flex-col items-center justify-center',
+        'flex h-[64px] w-[56px] shrink-0 cursor-pointer flex-col items-center justify-center gap-[4px]',
         'border border-[length:1px] border-[var(--date-pill-border)] bg-[var(--date-pill-bg)]',
         'transition-colors',
         'hover:enabled:border-[var(--date-pill-border-hover)] hover:enabled:bg-[var(--date-pill-bg-hover)]',
@@ -57,14 +59,14 @@ export const DatePill = forwardRef<HTMLButtonElement, DatePillProps>(function Da
       }}
     >
       <span
-        className="font-sans text-[18px] font-bold leading-none"
-        style={{ color: COLOR_TOKENS.neutral[900] }}
+        className="font-sans text-[20px] font-bold leading-none"
+        style={{ color: textColor }}
       >
         {date.getDate()}
       </span>
       <span
         className="mt-[4px] font-sans text-[12px] font-semibold leading-none"
-        style={{ color: COLOR_TOKENS.neutral[900] }}
+        style={{ color: textColor }}
       >
         {MONTH_ABBR[date.getMonth()]}
       </span>

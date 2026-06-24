@@ -25,7 +25,10 @@ type CircularCloseButtonProps = {
   iconSize?: IconSize;
   iconTone?: IconColorTokenName;
   style?: CSSProperties;
-} & Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick' | 'onMouseDown' | 'disabled' | 'type'>;
+} & Pick<
+  ButtonHTMLAttributes<HTMLButtonElement>,
+  'onClick' | 'onMouseDown' | 'disabled' | 'type' | 'tabIndex'
+>;
 
 export function CircularCloseButton({
   onClick,
@@ -39,6 +42,7 @@ export function CircularCloseButton({
   style,
   disabled,
   type = 'button',
+  tabIndex,
 }: CircularCloseButtonProps) {
   return (
     <button
@@ -46,6 +50,7 @@ export function CircularCloseButton({
       onClick={onClick}
       onMouseDown={onMouseDown}
       disabled={disabled}
+      tabIndex={tabIndex}
       aria-label={ariaLabel}
       className={[
         'group flex size-[length:var(--circular-close-hit-area,56px)] shrink-0 cursor-pointer items-center justify-center border-none bg-transparent p-0',

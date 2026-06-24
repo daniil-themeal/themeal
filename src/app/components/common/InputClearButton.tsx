@@ -39,6 +39,7 @@ export function InputClearButton({
     <CircularCloseButton
       onClick={onClick}
       onMouseDown={(event) => event.preventDefault()}
+      tabIndex={-1}
       aria-label={ariaLabel}
       iconTone="inline"
       style={inputClearButtonStyle}
