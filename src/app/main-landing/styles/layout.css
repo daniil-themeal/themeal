@@ -1,74 +1,57 @@
 /* ---- layout ---- */
-.section { padding-block:clamp(var(--space-64), 9vw, var(--space-128)); position:relative; }
+.section {
+  @apply relative;
+  padding-block: clamp(var(--space-64), 9vw, var(--space-128));
+}
 .wrap {
-  width:100%;
-  max-width:var(--maxw);
-  margin-inline:auto;
-  padding-inline:var(--gutter);
-  display:grid;
-  grid-template-columns:repeat(12, minmax(0, 1fr));
-  column-gap:var(--grid-gap);
+  @apply w-full mx-auto grid grid-cols-12;
+  max-width: var(--maxw);
+  padding-inline: var(--gutter);
+  column-gap: var(--grid-gap);
 }
-.wrap > * { grid-column:1 / -1; min-width:0; }
+.wrap > * { @apply col-span-full min-w-0; }
 .grid-12 {
-  display:grid;
-  grid-template-columns:repeat(12, minmax(0, 1fr));
-  column-gap:var(--grid-gap);
-  grid-column:1 / -1;
-  min-width:0;
+  @apply grid grid-cols-12 col-span-full min-w-0;
+  column-gap: var(--grid-gap);
 }
-.compare-cards > * { grid-column:span 6; }
-.benefits-cards > * { grid-column:span 4; }
-.grid-12.compare-cards {
-  gap: var(--space-16);
-  column-gap: var(--space-16);
-  row-gap: var(--space-16);
-}
-.benefits-cards {
-  gap:var(--space-16);
-}
+.compare-cards > * { @apply col-span-6; }
+.benefits-cards > * { @apply col-span-4; }
+.grid-12.compare-cards { @apply gap-4; }
+.benefits-cards { @apply gap-4; }
 @media (width < theme(--breakpoint-lg)) {
-  .benefits-cards > * { grid-column:1 / -1; }
+  .benefits-cards > * { @apply col-span-full; }
 }
 @media (width < theme(--breakpoint-sm)) {
   .main-landing .benefits-cta,
-  .main-landing .delivery-cta {
-    width: 100%;
-  }
-  .main-landing .delivery-cta {
-    align-self: stretch;
-  }
+  .main-landing .delivery-cta { @apply w-full; }
+  .main-landing .delivery-cta { @apply self-stretch; }
 }
 @media (width < theme(--breakpoint-md)) {
-  .compare-cards > * { grid-column:1 / -1; }
+  .compare-cards > * { @apply col-span-full; }
 }
 /* break out to full viewport width */
 .bleed-x {
-  width:100vw;
-  max-width:100vw;
-  margin-inline:calc(50% - 50vw);
-  box-sizing:border-box;
+  @apply w-screen box-border;
+  max-width: 100vw;
+  margin-inline: calc(50% - 50vw);
 }
 /* horizontal padding aligned with .wrap content (centered max-width + gutter) */
 .gutter-x {
-  padding-inline:max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
-  scroll-padding-inline:max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
+  padding-inline: max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
+  scroll-padding-inline: max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
 }
 .gutter-x::after {
-  content:'';
-  flex:0 0 max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
+  content: '';
+  flex: 0 0 max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
 }
 /* centered strip: symmetric spacers so tabs stay centered with gutter-x scroll */
-.gutter-x.gutter-x--center {
-  justify-content:center;
-}
+.gutter-x.gutter-x--center { @apply justify-center; }
 .gutter-x.gutter-x--center::before {
-  content:'';
-  flex:0 0 max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
+  content: '';
+  flex: 0 0 max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
 }
-.section--cream { background:var(--cream); }
-
-.section--cream2 { background:var(--cream-2); }
-.section--white { background:var(--surface); }
-.section--plum { background:var(--plum-700); color:#fff; }
-.section--yellow { background:var(--yellow); }
+.section--cream  { @apply bg-cream-50; }
+.section--cream2 { @apply bg-cream-75; }
+.section--white  { @apply bg-white; }
+.section--plum   { @apply bg-primary-900 text-white; }
+.section--yellow { @apply bg-brand-logo-yellow; }
