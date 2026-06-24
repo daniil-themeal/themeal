@@ -1,29 +1,37 @@
 /* ---- typography helpers ---- */
 .display {
-  font-weight:700; line-height:1.02; letter-spacing:-.025em;
-  font-size:clamp(var(--fs-32), 6.4vw, var(--fs-48));
+  @apply font-bold;
+  line-height: 1.02;
+  letter-spacing: -.025em;
+  font-size: clamp(var(--fs-32), 6.4vw, var(--fs-48));
 }
 .h2 {
-  font-weight:700;
-  line-height:var(--landing-h2-lh);
-  letter-spacing:var(--landing-h2-tracking);
-  font-size:var(--landing-h2-fs);
+  @apply font-bold;
+  line-height: var(--landing-h2-lh);
+  letter-spacing: var(--landing-h2-tracking);
+  font-size: var(--landing-h2-fs);
 }
-
-.h3 { font-weight:700; line-height:1.15; letter-spacing:-.01em; font-size:clamp(var(--fs-20), 2vw, var(--fs-25)); }
-.lead { font-size:clamp(var(--fs-16), 1.4vw, var(--fs-20)); line-height:1.55; color:var(--slate); font-weight:500; }
-
+.h3 {
+  @apply font-bold;
+  line-height: 1.15;
+  letter-spacing: -.01em;
+  font-size: clamp(var(--fs-20), 2vw, var(--fs-25));
+}
+.lead {
+  @apply text-cream-600 font-medium;
+  line-height: 1.55;
+  font-size: clamp(var(--fs-16), 1.4vw, var(--fs-20));
+}
 .eyebrow {
-  font-size:var(--fs-12); font-weight:700; letter-spacing:.16em; text-transform:uppercase;
-  color:var(--brand);
-  margin-bottom:var(--space-16);
+  @apply text-xs font-bold uppercase text-primary-500 mb-4;
+  letter-spacing: .16em;
 }
 .section-stack {
-  display:flex;
-  flex-direction:column;
-  gap:var(--section-intro-gap);
+  @apply flex flex-col;
+  gap: var(--section-intro-gap);
 }
-.section-intro {
-  margin:0;
+.section-intro { @apply m-0; }
+.mono {
+  font-family: var(--font);
+  font-variant-numeric: tabular-nums;
 }
-.mono { font-family:var(--font); font-variant-numeric:tabular-nums; }
