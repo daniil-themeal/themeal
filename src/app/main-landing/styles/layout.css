@@ -66,9 +66,12 @@
   content:'';
   flex:0 0 max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
 }
-.section--cream { background:var(--cream); }
-
-.section--cream2 { background:var(--cream-2); }
-.section--white { background:var(--surface); }
-.section--plum { background:var(--plum-700); color:#fff; }
-.section--yellow { background:var(--yellow); }
+/* Section background tones — bridged to DS color tokens via @apply.
+   The CSS aliases in base.css (--cream, --cream-2, --surface, --plum-700, --yellow)
+   still resolve to these same DS variables; using @apply keeps the source of truth
+   in one place (color-tokens.css / theme inline) and removes the indirection. */
+.section--cream { @apply bg-cream-50; }
+.section--cream2 { @apply bg-cream-75; }
+.section--white { @apply bg-base-white; }
+.section--plum { @apply bg-primary-900 text-white; }
+.section--yellow { @apply bg-brand-logo-yellow; }
