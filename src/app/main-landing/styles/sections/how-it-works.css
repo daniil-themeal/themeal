@@ -126,8 +126,10 @@
   }
 }
 
-/* ---- mobile: stack cards vertically with small icon on the left ---- */
-@media (width < theme(--breakpoint-sm)) {
+/* ---- mobile: stack cards vertically with small icon on the left ----
+   Use a fixed 640px cut-off so the horizontal layout activates *before*
+   the auto-fit grid collapses to a single oversized desktop card. */
+@media (width < 640px) {
   /* one card per row, slightly tighter gap */
   .main-landing #how .how-grid {
     grid-template-columns: 1fr !important;
