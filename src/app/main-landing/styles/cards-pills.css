@@ -1,12 +1,12 @@
 /* ---- pill / chip ---- */
 .chip {
-  @apply inline-flex items-center gap-2 px-4 py-2 text-sm font-semibold rounded-full;
+  display:inline-flex; align-items:center; gap:8px;
+  padding:8px 16px; border-radius:var(--r-pill);
+  font-size:var(--fs-14); font-weight:600;
 }
 
 /* ---- card ---- */
 .card {
-  @apply bg-white;
-  border-radius: var(--r-lg);
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow .2s var(--ease), transform .2s var(--ease);
+  background:#fff; border-radius:var(--r-lg); box-shadow:var(--shadow-sm);
+  transition:box-shadow .2s var(--ease), transform .2s var(--ease);
 }
