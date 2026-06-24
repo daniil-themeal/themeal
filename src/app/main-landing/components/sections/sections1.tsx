@@ -7,6 +7,7 @@ import { Icon, Logo, Stars, Social } from '../icons';
 import { HeroStats } from '../HeroStats';
 import { HeroPrice } from '../HeroPrice';
 import { ACCENT_CARD_VARIANTS, ACCENT_CARD_VARIANT_ORDER } from '../../../components/common/accentCardTokens';
+import { HowIllustration } from '../HowIllustrations';
 
 /* ---------------- Header (scroll + cursor reveal — Bender) ---------------- */
 function Header({
@@ -107,6 +108,12 @@ const HERO_TRAY_MEALS = [
   '/main-landing/assets/meals/meal-07.avif',
   '/main-landing/assets/meals/meal-09.avif',
   '/main-landing/assets/meals/meal-11.avif',
+  '/main-landing/assets/meals/meal-16.avif',
+  '/main-landing/assets/meals/meal-17.avif',
+  '/main-landing/assets/meals/meal-18.avif',
+  '/main-landing/assets/meals/meal-20.avif',
+  '/main-landing/assets/meals/meal-22.avif',
+  '/main-landing/assets/meals/meal-23.avif',
 ];
 
 const TRAY_BELT_AUTO_SPEED = 26; // px per second
@@ -459,28 +466,9 @@ function Compare({ t }) {
   );
 }
 
-/* ---------------- How it works (PNG illustrations) ---------------- */
-const HOW_ILLU_SOURCES = [
-  { src: '/main-landing/assets/how/we-cook.png', alt: 'We cook' },
-  { src: '/main-landing/assets/how/we-deliver.png', alt: 'We deliver' },
-  { src: '/main-landing/assets/how/you-eat.png', alt: 'You eat' },
-];
-
+/* ---------------- How it works (inline SVG illustrations) ---------------- */
 function HowIllu({ i }) {
-  const item = HOW_ILLU_SOURCES[i] ?? HOW_ILLU_SOURCES[0];
-  return createElement('img', {
-    src: item.src,
-    alt: item.alt,
-    loading: 'lazy',
-    decoding: 'async',
-    style: {
-      width: '72%',
-      maxWidth: 230,
-      height: 'auto',
-      display: 'block',
-      objectFit: 'contain',
-    },
-  });
+  return createElement(HowIllustration, { i });
 }
 
 function HowItWorks({ t }) {

@@ -18,9 +18,78 @@
 .main-landing #how .card.reveal.in:hover {
   transform:translateY(-4px);
 }
+
+/* ---- illustration animations (hover the whole card to trigger) ----
+ * SVG transforms need transform-box so transform-origin is relative to the
+ * group's own bounding box rather than the SVG viewport. */
+.main-landing #how .how-illu .pot-lid,
+.main-landing #how .how-illu .truck-body,
+.main-landing #how .how-illu .truck-wheel,
+.main-landing #how .how-illu .truck-pin,
+.main-landing #how .how-illu .fried-egg {
+  transform-box: fill-box;
+  transform-origin: center;
+}
+.main-landing #how .how-illu .pot-lid {
+  /* lid hinges off the rim that meets the pot body */
+  transform-origin: 50% 100%;
+}
+.main-landing #how .how-illu .truck-pin {
+  /* pin pivots around its tip */
+  transform-origin: 50% 100%;
+}
+
+/* card 1 — pot lid bobs up and down */
+.main-landing #how .how-step-card--0:hover .pot-lid {
+  animation: how-pot-lid-bob .9s ease-in-out infinite;
+}
+@keyframes how-pot-lid-bob {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-5px); }
+}
+
+/* card 2 — truck rolls: body bounces, wheels spin, map pin wiggles */
+.main-landing #how .how-step-card--1:hover .truck-body {
+  animation: how-truck-bounce .42s ease-in-out infinite;
+}
+.main-landing #how .how-step-card--1:hover .truck-wheel {
+  animation: how-truck-wheel-spin .7s linear infinite;
+}
+.main-landing #how .how-step-card--1:hover .truck-pin {
+  animation: how-truck-pin-wiggle .55s ease-in-out infinite;
+}
+@keyframes how-truck-bounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-2px); }
+}
+@keyframes how-truck-wheel-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes how-truck-pin-wiggle {
+  0%, 100% { transform: rotate(-9deg); }
+  50%      { transform: rotate(9deg); }
+}
+
+/* card 3 — fried egg jiggles in place */
+.main-landing #how .how-step-card--2:hover .fried-egg {
+  animation: how-egg-jiggle .55s ease-in-out infinite;
+}
+@keyframes how-egg-jiggle {
+  0%, 100% { transform: scale(1, 1)        rotate(0); }
+  25%      { transform: scale(1.06, 0.94)  rotate(-3deg); }
+  75%      { transform: scale(0.94, 1.06)  rotate(3deg); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .main-landing #delivery .delivery-feat-card:hover,
   .main-landing #qa .card:hover {
     transform:none;
+  }
+  .main-landing #how .how-step-card--0:hover .pot-lid,
+  .main-landing #how .how-step-card--1:hover .truck-body,
+  .main-landing #how .how-step-card--1:hover .truck-wheel,
+  .main-landing #how .how-step-card--1:hover .truck-pin,
+  .main-landing #how .how-step-card--2:hover .fried-egg {
+    animation: none;
   }
 }
