@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 
 import {
   addDays,
-  getDeliveryDaysLabel,
   getUpcomingDeliveryDates,
   isDefaultMealDay,
   isDeliveryDay,
@@ -51,17 +50,6 @@ describe('isDeliveryDay', () => {
   it('marks Saturday only for 7-day plans', () => {
     expect(isDeliveryDay(dateAt(2024, 0, 13), 'full')).toBe(true);
     expect(isDeliveryDay(dateAt(2024, 0, 13), 'weekdays')).toBe(false);
-  });
-});
-
-describe('getDeliveryDaysLabel', () => {
-  it('returns Mondays and Thursdays for 5/6-day plans', () => {
-    expect(getDeliveryDaysLabel('weekdays')).toBe('Mondays and Thursdays');
-    expect(getDeliveryDaysLabel('weekdays+sat')).toBe('Mondays and Thursdays');
-  });
-
-  it('includes Saturdays for 7-day plans', () => {
-    expect(getDeliveryDaysLabel('full')).toBe('Mondays, Thursdays, and Saturdays');
   });
 });
 

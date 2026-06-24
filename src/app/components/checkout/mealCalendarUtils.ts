@@ -137,14 +137,6 @@ export function getMealDayKey(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-export function getDeliveryDaysLabel(dayOption: DayOption): string {
-  if (dayOption === 'full') {
-    return 'Mondays, Thursdays, and Saturdays';
-  }
-
-  return 'Mondays and Thursdays';
-}
-
 export function getUpcomingDeliveryDates(
   withinDays = 60,
   _dayOption: DayOption = 'weekdays',

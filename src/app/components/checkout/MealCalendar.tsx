@@ -21,7 +21,6 @@ import {
   getMealDayRadiusClassName,
   getSubscriptionDays,
   getUpcomingDeliveryDates,
-  getDeliveryDaysLabel,
   isAddableMealDayCell,
   isDatePillVisibleInContainer,
   isDeliveryDay,
@@ -423,9 +422,6 @@ function MealCalendarInteractiveView({
   extraMealDayKeys,
   onMealDayKeysChange,
 }: MealCalendarInteractiveProps) {
-  const resolvedSubtitle =
-    subtitle ?? `We deliver ${getDeliveryDaysLabel(dayOption)} — pick your start date`;
-
   const deliveryDates = useMemo(
     () => availableDates ?? getUpcomingDeliveryDates(withinDays, dayOption),
     [availableDates, withinDays, dayOption],
@@ -501,7 +497,7 @@ function MealCalendarInteractiveView({
             `flex w-full min-w-0 flex-col ${CHECKOUT_STEP_SECTION_PX}`,
           )}
         >
-          <FormSectionHeading title={title} subtitle={resolvedSubtitle} />
+          <FormSectionHeading title={title} subtitle={subtitle} />
         </div>
       ) : null}
 

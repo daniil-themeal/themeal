@@ -1270,10 +1270,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
             title="FormSectionHeading"
             description="Section title with optional subtitle for checkout steps and calendar blocks."
           >
-            <FormSectionHeading
-              title="Choose the preferred first delivery date"
-              subtitle="We deliver Mondays and Thursdays — pick your start date"
-            />
+            <FormSectionHeading title="Choose the preferred first delivery date" />
           </DemoCard>
 
           <DemoCard
