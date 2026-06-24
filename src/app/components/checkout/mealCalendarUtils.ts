@@ -28,8 +28,8 @@ const MEAL_BLOCKS_BY_DAY_OPTION: Record<DayOption, MealBlock[]> = {
   ],
   full: [
     { deliveryWeekday: MONDAY, daysCount: 3 },
-    { deliveryWeekday: THURSDAY, daysCount: 3 },
-    { deliveryWeekday: SATURDAY, daysCount: 1, startOffset: 1 },
+    { deliveryWeekday: THURSDAY, daysCount: 2 },
+    { deliveryWeekday: SATURDAY, daysCount: 2 },
   ],
 };
 
@@ -147,7 +147,7 @@ export function getDeliveryDaysLabel(dayOption: DayOption): string {
 
 export function getUpcomingDeliveryDates(
   withinDays = 60,
-  dayOption: DayOption = 'weekdays',
+  _dayOption: DayOption = 'weekdays',
 ): Date[] {
   const dates: Date[] = [];
   const start = normalizeDate(addDays(new Date(), 2));
@@ -156,7 +156,9 @@ export function getUpcomingDeliveryDates(
   const cursor = new Date(start);
 
   while (cursor < end) {
-    if (isDeliveryDay(cursor, dayOption)) {
+    const dayOfWeek = cursor.getDay();
+
+    if (dayOfWeek === MONDAY || dayOfWeek === THURSDAY) {
       dates.push(new Date(cursor));
     }
     cursor.setDate(cursor.getDate() + 1);

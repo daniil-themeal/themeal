@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import {
   addDays,
   getDeliveryDaysLabel,
+  getUpcomingDeliveryDates,
   isDefaultMealDay,
   isDeliveryDay,
   MONDAY,
@@ -122,5 +123,66 @@ describe('isDefaultMealDay', () => {
         dayOption: 'weekdays',
       }),
     ).toBe(false);
+  });
+
+  it('covers all seven days for 7-day plan starting Thursday', () => {
+    const startDate = dateAt(2024, 0, 11);
+    const endDate = addDays(startDate, 7);
+    const mealDays = collectMealDays({ startDate, endDate, dayOption: 'full' });
+
+    expect(mealDays.length).toBe(7);
+    expect(mealDays.map((date) => date.getDay())).toEqual([
+      THURSDAY,
+      5,
+      SATURDAY,
+      0,
+      MONDAY,
+      2,
+      3,
+    ]);
+  });
+
+  it('starts the Saturday meal block on Saturday (not Sunday) for 7-day plan', () => {
+    const startDate = dateAt(2024, 0, 8);
+    const endDate = addDays(startDate, 7);
+
+    expect(
+      isDefaultMealDay({
+        date: dateAt(2024, 0, 13),
+        startDate,
+        endDate,
+        dayOption: 'full',
+      }),
+    ).toBe(true);
+    expect(
+      isDefaultMealDay({
+        date: dateAt(2024, 0, 14),
+        startDate,
+        endDate,
+        dayOption: 'full',
+      }),
+    ).toBe(true);
+  });
+});
+
+describe('getUpcomingDeliveryDates', () => {
+  it.each(['weekdays', 'weekdays+sat', 'full'] as const)(
+    'returns only Mondays and Thursdays for %s',
+    (dayOption) => {
+      const dates = getUpcomingDeliveryDates(60, dayOption);
+
+      expect(dates.length).toBeGreaterThan(0);
+
+      for (const date of dates) {
+        const dayOfWeek = date.getDay();
+        expect(dayOfWeek === MONDAY || dayOfWeek === THURSDAY).toBe(true);
+      }
+    },
+  );
+
+  it('does not include Saturdays even for the 7-day plan', () => {
+    const dates = getUpcomingDeliveryDates(60, 'full');
+
+    expect(dates.some((date) => date.getDay() === SATURDAY)).toBe(false);
   });
 });
