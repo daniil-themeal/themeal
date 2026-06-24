@@ -1,3 +1,7 @@
+/* Tailwind theme reference — required so theme(--breakpoint-xs) below resolves
+   for this file when it is imported via JS rather than the @import chain. */
+@reference "../../../styles/index.css";
+
 /*
  * Bulleted list with disc markers. We use margins (not flexbox) for vertical
  * rhythm on purpose: turning the <ul>/<li> into flex items blockifies the list
@@ -43,7 +47,7 @@
   margin-top: var(--legal-gap-xs, 8px);
 }
 
-@media (max-width: 479px) {
+@media (width < theme(--breakpoint-xs)) {
   .prose-list {
     padding-inline-start: 1.25rem;
   }
