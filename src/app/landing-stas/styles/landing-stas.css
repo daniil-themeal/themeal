@@ -2,9 +2,10 @@
    theMeal � redesign tokens & base (Landing Stas v4)
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&display=swap');
-
-/* ---- Fonts ---- */
+/* ---- Fonts ----
+   Quicksand is served from local .ttf files in public/landing-stas/assets/fonts/.
+   The global aliases ('Quicksand:Medium', etc.) live in src/styles/fonts.css and
+   load weights 500/600/700 from Google Fonts for the rest of the app. */
 @font-face { font-family:'Quicksand'; src:url('/landing-stas/assets/fonts/Quicksand-Light.ttf') format('truetype'); font-weight:300; font-display:swap; }
 @font-face { font-family:'Quicksand'; src:url('/landing-stas/assets/fonts/Quicksand-Regular.ttf') format('truetype'); font-weight:400; font-display:swap; }
 @font-face { font-family:'Quicksand'; src:url('/landing-stas/assets/fonts/Quicksand-Medium.ttf') format('truetype'); font-weight:500; font-display:swap; }
