@@ -1,4 +1,4 @@
-/* Text selection — matches landing-stas (.landing-stas ::selection) */
+/* Text selection — matches main-landing (.main-landing ::selection) */
 .checkout ::selection {
   background: #eadbfb;
   color: #371259;

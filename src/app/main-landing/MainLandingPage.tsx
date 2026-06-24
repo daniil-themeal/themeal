@@ -25,7 +25,7 @@ import {
   FinalOffer,
   Footer,
 } from './components/sections/sections3';
-import './styles/landing-stas.css';
+import './styles/index.css';
 
 type MainLandingPageProps = {
   onOrderClick: () => void;
@@ -70,7 +70,7 @@ export default function MainLandingPage({
   const shared = { t, onOrder: onOrderClick };
 
   return (
-    <div className="landing-stas min-h-screen w-full" style={landingLayoutStyle}>
+    <div className="main-landing min-h-screen w-full" style={landingLayoutStyle}>
       <Header
         {...shared}
         dark

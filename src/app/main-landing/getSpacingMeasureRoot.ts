@@ -50,7 +50,7 @@ export function getSpacingMeasureContext(): SpacingMeasureContext | null {
     };
   }
 
-  const landing = document.querySelector('.landing-stas') as HTMLElement | null;
+  const landing = document.querySelector('.main-landing') as HTMLElement | null;
   if (!landing) return null;
 
   return {

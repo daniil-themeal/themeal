@@ -2,12 +2,12 @@ import { useSyncExternalStore } from 'react';
 
 import { isDevToolsEnabled } from '../devToolsEnabled';
 
-const COLS_KEY = 'landing-stas-grid-cols';
-const ROWS_KEY = 'landing-stas-grid-rows';
-const SPACING_KEY = 'landing-stas-grid-spacing';
-const HORIZONTAL_SPACING_KEY = 'landing-stas-grid-h-spacing';
-const LEGACY_KEY = 'landing-stas-grid';
-const LABELS_KEY = 'landing-stas-dev-labels';
+const COLS_KEY = 'main-landing-grid-cols';
+const ROWS_KEY = 'main-landing-grid-rows';
+const SPACING_KEY = 'main-landing-grid-spacing';
+const HORIZONTAL_SPACING_KEY = 'main-landing-grid-h-spacing';
+const LEGACY_KEY = 'main-landing-grid';
+const LABELS_KEY = 'main-landing-dev-labels';
 
 export type GridState = { cols: boolean; rows: boolean; spacing: boolean; horizontalSpacing: boolean };
 
