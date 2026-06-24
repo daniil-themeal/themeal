@@ -14,7 +14,7 @@
 .btn-plum { background:var(--plum-700); color:#fff; }
 .btn-plum:hover { background:var(--plum-600); }
 .btn-ghost { background:transparent; color:var(--ink); box-shadow:inset 0 0 0 1.5px var(--ash-2); }
-.btn-ghost:hover { background:#fff; box-shadow:inset 0 0 0 1.5px var(--ash-2), var(--shadow-sm); }
+.btn-ghost:hover { background:#fff; box-shadow:inset 0 0 0 1.5px var(--ash-2), var(--shadow-landing-sm); }
 .btn-white { background:#fff; color:var(--plum-700); }
 .btn-white:hover { background:var(--cream); }
 .btn-primary { background:var(--brand); color:#fff; box-shadow:var(--shadow-brand); }

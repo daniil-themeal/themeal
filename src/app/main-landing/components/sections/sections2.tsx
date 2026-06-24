@@ -176,7 +176,7 @@ function Menu({ t, onOrder }) {
             padding:32px;
             border-radius:50px;
             background:#fff;
-            box-shadow:var(--shadow-sm);
+            box-shadow:var(--shadow-landing-sm);
             transition:box-shadow .2s var(--ease), transform .2s var(--ease);
             cursor:pointer;
           }
@@ -191,7 +191,7 @@ function Menu({ t, onOrder }) {
           }
           @media (min-width:641px) {
             .menucard-shell:hover {
-              box-shadow:var(--shadow-lg);
+              box-shadow:var(--shadow-landing-lg);
               transform:translateY(-3px);
             }
           }
@@ -326,7 +326,7 @@ function Fresh({ t }) {
         createElement('div', { className:'reveal', style:{ position:'relative' } },
           createElement('div', {
             style: {
-              position:'relative', borderRadius:'var(--r-2xl)', overflow:'hidden', boxShadow:'var(--shadow-lg)',
+              position:'relative', borderRadius:'var(--r-2xl)', overflow:'hidden', boxShadow:'var(--shadow-landing-lg)',
               aspectRatio:'4/5', background:'var(--cream-2)', touchAction:'pan-y',
             },
             onTouchStart: onCarouselTouchStart,
@@ -351,7 +351,7 @@ function Fresh({ t }) {
               shots.map((_,i)=>createElement('button', { key:i, 'aria-label':`${i+1}`, onClick:()=>{ setIdx(i); startAuto(); },
                 style:{ width:i===idx?22:8, height:8, borderRadius:'var(--r-pill)', background:i===idx?'var(--yellow)':'rgba(255,255,255,.55)', transition:'all .3s var(--ease)' } })))
           ),
-          createElement('div', { className:'row', style:{ position:'absolute', insetInlineEnd:-14, bottom:24, gap:10, background:'#fff', borderRadius:'var(--r-pill)', padding:'12px 18px', boxShadow:'var(--shadow-lg)', color:'var(--blue)', fontWeight:700, fontSize:'var(--fs-16)' } },
+          createElement('div', { className:'row', style:{ position:'absolute', insetInlineEnd:-14, bottom:24, gap:10, background:'#fff', borderRadius:'var(--r-pill)', padding:'12px 18px', boxShadow:'var(--shadow-landing-lg)', color:'var(--blue)', fontWeight:700, fontSize:'var(--fs-16)' } },
             createElement('span', { style:{ width:10, height:10, borderRadius:'50%', background:'var(--blue-bright)', boxShadow:'0 0 0 4px var(--blue-soft)' } }), t.fresh.badge)
         ),
         createElement('div', { className:'fresh-copy section-stack' },
@@ -501,7 +501,7 @@ function LeadCapture({
         createElement('div', { className:'reveal lead-card', style:{
           position:'relative', overflow:'hidden', borderRadius:'var(--r-2xl)',
           backgroundColor:'var(--card)',
-          boxShadow:'var(--shadow-md)', border:'none',
+          boxShadow:'var(--shadow-landing-md)', border:'none',
         } },
           createElement('div', { style:{ position:'absolute', top:-60, insetInlineEnd:-40, width:240, height:240, borderRadius:'50%', background:'radial-gradient(circle, rgba(154,56,239,.18), transparent 70%)', pointerEvents:'none' } }),
           createElement('div', { className:'lead-grid' },

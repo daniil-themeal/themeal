@@ -23,7 +23,7 @@ function Benefits({ t, onQuizClick }) {
             return createElement('div', { key:i, className:'card reveal', 'data-d':String(i+1), style:{
               padding:'var(--space-32) 28px var(--space-32)', display:'flex', flexDirection:'column', gap:'var(--space-40)',
               background: hot ? 'linear-gradient(155deg, #6E34A2 0%, #4C1F77 100%)' : '#fff', color: hot ? '#fff' : 'var(--ink)',
-              boxShadow: hot ? 'var(--shadow-lg)' : 'var(--shadow-sm)',
+              boxShadow: hot ? 'var(--shadow-landing-lg)' : 'var(--shadow-landing-sm)',
               position:'relative', overflow:'hidden',
             } },
               hot && createElement('span', { className:'chip', style:{ position:'absolute', top:16, insetInlineEnd:16, background:'var(--pink)', color:'#fff', fontWeight:700, fontSize:'var(--fs-12)', padding:'6px 12px', whiteSpace:'nowrap', lineHeight:1, letterSpacing:'.02em' } }, t.benefits.bestL),
@@ -104,7 +104,7 @@ function FAQ({ t }) {
             createElement('div', { className:'stack reveal', style:{ gap:12 } },
               group.map(([q,a],i)=>{
                 const o = open === i;
-                return createElement('div', { key:i, className:'card', style:{ background:'#fff', overflow:'hidden', boxShadow:o?'var(--shadow-md)':'var(--shadow-sm)' } },
+                return createElement('div', { key:i, className:'card', style:{ background:'#fff', overflow:'hidden', boxShadow:o?'var(--shadow-landing-md)':'var(--shadow-landing-sm)' } },
                   createElement('button', { onClick:()=>setOpen(o?-1:i), className:'row',
                     style:{ width:'100%', textAlign:'start', gap:16, justifyContent:'space-between', padding:'20px 24px', fontWeight:700, fontSize:'20px', color:'var(--ink)' } },
                     q,

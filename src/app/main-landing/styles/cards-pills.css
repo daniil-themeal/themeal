@@ -7,6 +7,6 @@
 
 /* ---- card ---- */
 .card {
-  background:#fff; border-radius:var(--r-lg); box-shadow:var(--shadow-sm);
+  background:#fff; border-radius:var(--r-lg); box-shadow:var(--shadow-landing-sm);
   transition:box-shadow .2s var(--ease), transform .2s var(--ease);
 }

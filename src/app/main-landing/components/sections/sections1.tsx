@@ -367,7 +367,7 @@ function CompareMark({ kind }) {
       color: isCheck ? 'var(--plum-800)' : '#fff',
       display: 'grid',
       placeItems: 'center',
-      boxShadow: isCheck ? 'none' : 'var(--shadow-sm)',
+      boxShadow: isCheck ? 'none' : 'var(--shadow-landing-sm)',
     },
   }, createElement(isCheck ? Icon.check : Icon.x, { size: isCheck ? compareMarkIcon : 15, sw: isCheck ? 2.4 : undefined }));
 }

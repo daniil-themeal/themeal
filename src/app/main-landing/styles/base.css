@@ -51,17 +51,25 @@
 
   --font:'Quicksand', sans-serif;
 
+  /* Bespoke landing radii. Tailwind defaults (rounded-lg .5rem=8px, rounded-xl
+     .75rem=12px, rounded-2xl 1rem=16px, rounded-3xl 1.5rem=24px) do not line up
+     with this scale, so these stay as-is and are used via var(--r-*). Only
+     --r-pill (999px) is interchangeable with Tailwind's rounded-full. */
   --r-sm:8px; --r-md:14px; --r-lg:20px; --r-xl:28px; --r-2xl:36px; --r-pill:999px;
 
-  --shadow-sm:0 2px 6px rgba(42,34,48,.04);
-  --shadow-md:0 2px 4px rgba(42,34,48,.05), 0 8px 24px rgba(42,34,48,.07);
+  /* Landing shadow scale. Renamed away from --shadow-sm/md/lg to avoid
+     collision with Tailwind's default shadow-sm/md/lg, which have different
+     values (Tailwind's are sharper neutral drops; landing's are softer and
+     warmer). */
+  --shadow-landing-sm:0 2px 6px rgba(42,34,48,.04);
+  --shadow-landing-md:0 2px 4px rgba(42,34,48,.05), 0 8px 24px rgba(42,34,48,.07);
+  --shadow-landing-lg:0 8px 18px rgba(42,34,48,.08), 0 24px 56px rgba(42,34,48,.12);
   --shadow-how-brand:0 2px 4px rgba(154,56,239,.08), 0 8px 24px rgba(154,56,239,.10);
   --shadow-how-green:0 2px 4px rgba(91,174,39,.08), 0 8px 24px rgba(91,174,39,.10);
   --shadow-how-plum:0 2px 4px rgba(65,24,100,.08), 0 8px 24px rgba(65,24,100,.10);
   --shadow-why-cream:0 2px 4px rgba(42,34,48,.06), 0 8px 24px rgba(42,34,48,.08);
   --shadow-why-solutions:0 2px 4px rgba(76,31,119,.18), 0 8px 24px rgba(154,56,239,.16);
-  --shadow-why-white:var(--shadow-sm);
-  --shadow-lg:0 8px 18px rgba(42,34,48,.08), 0 24px 56px rgba(42,34,48,.12);
+  --shadow-why-white:var(--shadow-landing-sm);
   --shadow-pink:0 6px 18px rgba(240,41,168,.30), 0 14px 40px rgba(240,41,168,.22);
   --shadow-primary:0 6px 18px rgba(154,56,239,.32), 0 14px 40px rgba(154,56,239,.24);
   --shadow-primary-hover:0 10px 26px rgba(154,56,239,.40), 0 20px 52px rgba(154,56,239,.28);
@@ -107,7 +115,12 @@ html:has(.main-landing) body {
   --fs-40: 40px;
   --fs-48: 48px;
 
-  /* SPACING_TOKENS � gap, padding, margin */
+  /* SPACING_TOKENS - gap, padding, margin.
+     Each value lines up 1:1 with Tailwind's spacing scale (1 step = 0.25rem
+     = 4px), so --space-N maps to Tailwind utility N/4 (e.g. --space-16 = p-4,
+     --space-32 = p-8, --space-64 = p-16). Inside @apply rules prefer the
+     Tailwind utility; in raw CSS keep var(--space-N) for the explicit pixel
+     anchor. */
   --space-4: 4px;
   --space-8: 8px;
   --space-12: 12px;
