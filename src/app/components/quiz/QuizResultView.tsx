@@ -53,10 +53,8 @@ export function QuizResultView({ result }: QuizResultViewProps) {
         </p>
       </div>
 
-      <div className={QUIZ_SECTION_PX_CLASSNAME}>
+      <div className={`${QUIZ_SECTION_PX_CLASSNAME} flex flex-col gap-[16px]`}>
         <QuizStepHeader title={heading} subtitle={body} titleSubtitleGap="lead" />
-      </div>
-      <div className={QUIZ_SECTION_PX_CLASSNAME}>
         <p className="rounded-[12px] border border-[var(--quiz-border)] px-[12px] py-[12px] font-sans text-[length:var(--quiz-body-font-size)] font-medium leading-[140%] text-[var(--neutral-900)]">
           {upsell}
         </p>

@@ -459,65 +459,28 @@ function Compare({ t }) {
   );
 }
 
-/* ---------------- How it works (themed SVG illustrations) ---------------- */
+/* ---------------- How it works (PNG illustrations) ---------------- */
+const HOW_ILLU_SOURCES = [
+  { src: '/landing-stas/assets/how/we-cook.png', alt: 'We cook' },
+  { src: '/landing-stas/assets/how/we-deliver.png', alt: 'We deliver' },
+  { src: '/landing-stas/assets/how/you-eat.png', alt: 'You eat' },
+];
+
 function HowIllu({ i }) {
-  const S = (props, ...kids) => createElement('svg', Object.assign({ viewBox:'0 0 220 168', width:'72%', style:{ maxWidth:230, overflow:'visible' }, 'aria-hidden':true }, props), ...kids);
-  const P = (d, o={}) => createElement('path', Object.assign({ d, fill:'none', strokeLinecap:'round', strokeLinejoin:'round' }, o));
-  const C = (cx,cy,r,o={}) => createElement('circle', Object.assign({ cx,cy,r }, o));
-  if (i === 0) { // We cook — pot + steam + flame
-    return S(null,
-      // steam
-      P('M92 44 q -9 -12 0 -24', { stroke:'var(--brand)', strokeWidth:5, opacity:.45 }),
-      P('M110 40 q -10 -13 0 -26', { stroke:'var(--brand)', strokeWidth:5, opacity:.55 }),
-      P('M128 44 q -9 -12 0 -24', { stroke:'var(--brand)', strokeWidth:5, opacity:.45 }),
-      // handles
-      P('M58 104 a14 14 0 0 0 -16 14', { stroke:'var(--plum-700)', strokeWidth:9 }),
-      P('M162 104 a14 14 0 0 1 16 14', { stroke:'var(--plum-700)', strokeWidth:9 }),
-      // body
-      createElement('rect', { x:60, y:86, width:100, height:60, rx:16, fill:'var(--plum-700)' }),
-      createElement('rect', { x:60, y:104, width:100, height:8, fill:'rgba(255,255,255,.12)' }),
-      // lid
-      createElement('ellipse', { cx:110, cy:84, rx:58, ry:13, fill:'var(--brand)' }),
-      C(110,70,7,{ fill:'var(--yellow)' }),
-      // flame
-      P('M110 150 c -10 -7 -10 -19 0 -26 c 3 7 7 7 7 14 a 7 7 0 0 1 -14 5 z', { fill:'var(--pink)', stroke:'none' })
-    );
-  }
-  if (i === 1) { // We deliver — van + route + pin
-    return S(null,
-      // route
-      P('M22 132 q 40 -28 80 -8 t 84 -34', { stroke:'var(--brand)', strokeWidth:4, strokeDasharray:'2 11', opacity:.5 }),
-      // pin
-      P('M176 36 c 13 0 22 10 22 22 c 0 14 -22 30 -22 30 s -22 -16 -22 -30 c 0 -12 9 -22 22 -22 z', { fill:'var(--green)', stroke:'none' }),
-      C(176,58,7,{ fill:'#fff' }),
-      // van body
-      createElement('rect', { x:30, y:96, width:86, height:42, rx:8, fill:'var(--plum-700)' }),
-      // cab
-      P('M116 104 h26 l20 18 v16 h-46 z', { fill:'var(--brand)', stroke:'none' }),
-      createElement('rect', { x:122, y:108, width:20, height:14, rx:3, fill:'rgba(255,255,255,.35)' }),
-      // box on side
-      createElement('rect', { x:44, y:104, width:26, height:26, rx:4, fill:'var(--yellow)' }),
-      P('M44 117 h26 M57 104 v26', { stroke:'rgba(0,0,0,.18)', strokeWidth:2 }),
-      // wheels
-      C(58,142,12,{ fill:'#2A2230' }), C(58,142,5,{ fill:'#fff' }),
-      C(140,142,12,{ fill:'#2A2230' }), C(140,142,5,{ fill:'#fff' })
-    );
-  }
-  return S(null, // You eat — plate + cutlery + steam + heart
-    // steam
-    P('M96 40 q -8 -11 0 -22', { stroke:'var(--brand)', strokeWidth:4.5, opacity:.4 }),
-    P('M124 40 q -8 -11 0 -22', { stroke:'var(--brand)', strokeWidth:4.5, opacity:.4 }),
-    // heart
-    P('M150 44 c 4 -7 16 -5 16 4 c 0 7 -10 13 -16 18 c -6 -5 -16 -11 -16 -18 c 0 -9 12 -11 16 -4 z', { fill:'var(--pink)', stroke:'none' }),
-    // plate
-    C(110,108,46,{ fill:'var(--plum-700)' }),
-    C(110,108,33,{ fill:'none', stroke:'rgba(255,255,255,.35)', strokeWidth:2 }),
-    C(110,108,18,{ fill:'var(--green-bright)' }),
-    // fork
-    P('M50 78 v60 M44 78 v16 a6 6 0 0 0 12 0 v-16', { stroke:'var(--plum-700)', strokeWidth:5 }),
-    // knife
-    P('M170 78 c 10 4 10 30 0 34 v26', { stroke:'var(--plum-700)', strokeWidth:5 })
-  );
+  const item = HOW_ILLU_SOURCES[i] ?? HOW_ILLU_SOURCES[0];
+  return createElement('img', {
+    src: item.src,
+    alt: item.alt,
+    loading: 'lazy',
+    decoding: 'async',
+    style: {
+      width: '72%',
+      maxWidth: 230,
+      height: 'auto',
+      display: 'block',
+      objectFit: 'contain',
+    },
+  });
 }
 
 function HowItWorks({ t }) {

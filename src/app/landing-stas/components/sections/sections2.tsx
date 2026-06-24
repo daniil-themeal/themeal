@@ -401,21 +401,38 @@ function LeadTitleWhatsAppIcon() {
   );
 }
 
-function leadTitleWordSpans(title) {
+const LEAD_TITLE_GLUE_ARTICLES = new Set(['a', 'an', 'the']);
+
+function leadTitleWordSpans(title, { appendIcon = true } = {}) {
   const words = title.split(/\s+/);
-  const spans = words.map((word, i) => {
-    if (word === 'WhatsApp') {
+  const groups = [];
+  for (let i = 0; i < words.length; i++) {
+    const word = words[i];
+    const next = words[i + 1];
+    if (
+      LEAD_TITLE_GLUE_ARTICLES.has(word.toLowerCase()) &&
+      next &&
+      next !== 'WhatsApp'
+    ) {
+      groups.push(`${word} ${next}`);
+      i++;
+    } else {
+      groups.push(word);
+    }
+  }
+  const spans = groups.map((group, i) => {
+    if (group === 'WhatsApp') {
       return createElement('span', {
         key: `wa-${i}`,
         className: 'lead-title-wa',
       },
-        createElement('span', null, word),
+        createElement('span', null, group),
         createElement(LeadTitleWhatsAppIcon),
       );
     }
-    return createElement('span', { key: i }, word);
+    return createElement('span', { key: i }, group);
   });
-  if (!words.includes('WhatsApp')) {
+  if (appendIcon && !groups.includes('WhatsApp')) {
     spans.push(
       createElement('span', {
         key: 'wa-icon',
@@ -491,10 +508,12 @@ function LeadCapture({
             createElement('div', { className:'stack lead-text', style:{ gap:'var(--space-20)' } },
               createElement('div', { className:'stack lead-copy', style:{ gap:'var(--space-12)' } },
                 createElement('h3', { className:'h3 row lead-title', style:{ margin:0, width:'100%' } },
-                  ...leadTitleWordSpans(l.title)),
-                createElement('p', { className:'lead', style:{ margin:0, width:'100%' } }, l.sub)),
-              createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'0 14px', height:32 } },
-                l.eyebrow),
+                  ...leadTitleWordSpans(isPhoneVerified ? l.verifiedTitle : l.title, { appendIcon: !isPhoneVerified })),
+                createElement('p', { className:'lead', style:{ margin:0, width:'100%' } }, isPhoneVerified ? l.verifiedSub : l.sub)),
+              isPhoneVerified
+                ? null
+                : createElement('span', { className:'chip', style:{ alignSelf:'flex-start', background:'rgba(154,56,239,.12)', color:'var(--brand)', fontWeight:700, fontSize:'var(--fs-12)', letterSpacing:'.04em', textTransform:'uppercase', padding:'0 14px', height:32 } },
+                    l.eyebrow),
             ),
 
             createElement('div', { className:'stack', style:{ gap:12 } },
@@ -507,7 +526,7 @@ function LeadCapture({
                           size: 'large',
                         })
                       : null,
-                    createElement('button', { type:'button', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 }, onClick: onContinue }, l.continueCta))
+                    createElement('button', { type:'button', className:'btn btn-primary lead-form-submit', style:{ minHeight:58 }, onClick: onContinue }, l.verifiedCta))
                 : pendingPhone
                   ? createElement(Fragment, null,
                       onResetPhone

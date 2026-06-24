@@ -91,7 +91,7 @@ export function QuizStepHeader({
 
       <div
         className={[
-          'flex min-w-0 flex-col',
+          'flex min-w-0 flex-col px-[4px]',
           titleBlockGapClassName,
           children ? 'mb-[16px]' : '',
         ]

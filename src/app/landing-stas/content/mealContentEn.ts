@@ -76,11 +76,6 @@ export const mealContentEn = {
     "costTitle": "Cost per meal",
     "compare": [
       {
-        "k": "theMeal",
-        "v": "From AED 14.9",
-        "hot": true
-      },
-      {
         "k": "Supermarket",
         "v": "AED 15–40"
       },
@@ -91,6 +86,11 @@ export const mealContentEn = {
       {
         "k": "Other plans",
         "v": "AED 30–60"
+      },
+      {
+        "k": "theMeal",
+        "v": "From AED 14.9",
+        "hot": true
       }
     ],
     "bestShort": "The best value in UAE"
@@ -437,6 +437,9 @@ export const mealContentEn = {
     "done": "Done! Check your WhatsApp",
     "doneSub": "We’ve sent your menu and offer.",
     "continueCta": "Continue",
+    "verifiedTitle": "You're all set",
+    "verifiedSub": "We'll reach out on WhatsApp a bit later. In the meantime, take a look at the menu — your plan's already set up with your numbers.",
+    "verifiedCta": "Explore the menu",
     "smsTitle": "Enter the code from SMS",
     "smsError": "Incorrect code. Try again.",
     "changeNumber": "Change number"

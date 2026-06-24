@@ -330,7 +330,7 @@ export function PaymentScreen({
 
           <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
-          <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap12} ${CHECKOUT_STEP_SECTION_PX}`}>
+          <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap16} ${CHECKOUT_STEP_SECTION_PX}`}>
             <SectionHeader title="Payment method" />
 
             <div className="flex flex-col gap-[8px]">
