@@ -2,6 +2,16 @@
 #how .eyebrow {
   margin-bottom: var(--space-24);
 }
+/* Mobile-only number label inside the text column is hidden by default */
+#how .how-step-num--mobile {
+  display: none;
+}
+/* vertically center the text block inside the card body */
+.main-landing #how .how-step-card .how-step-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 .main-landing #how .how-step-card--0 {
   box-shadow:var(--shadow-how-brand);
 }
@@ -26,7 +36,8 @@
 .main-landing #how .how-illu .truck-body,
 .main-landing #how .how-illu .truck-wheel,
 .main-landing #how .how-illu .truck-pin,
-.main-landing #how .how-illu .fried-egg {
+.main-landing #how .how-illu .fried-egg,
+.main-landing #how .how-illu .sausage {
   transform-box: fill-box;
   transform-origin: center;
 }
@@ -70,14 +81,33 @@
   50%      { transform: rotate(9deg); }
 }
 
-/* card 3 — fried egg jiggles in place */
+/* card 3 — fried egg jiggles in place; sausages sizzle on top */
 .main-landing #how .how-step-card--2:hover .fried-egg {
   animation: how-egg-jiggle .55s ease-in-out infinite;
+}
+.main-landing #how .how-step-card--2:hover .sausage--a {
+  animation: how-sausage-sizzle-a .5s ease-in-out infinite;
+}
+.main-landing #how .how-step-card--2:hover .sausage--b {
+  animation: how-sausage-sizzle-b .65s ease-in-out infinite;
+  animation-delay: .08s;
 }
 @keyframes how-egg-jiggle {
   0%, 100% { transform: scale(1, 1)        rotate(0); }
   25%      { transform: scale(1.06, 0.94)  rotate(-3deg); }
   75%      { transform: scale(0.94, 1.06)  rotate(3deg); }
+}
+@keyframes how-sausage-sizzle-a {
+  0%, 100% { transform: translate(0, 0)        rotate(0); }
+  25%      { transform: translate(-1px, -1px)  rotate(-4deg); }
+  50%      { transform: translate(0, -2px)     rotate(0); }
+  75%      { transform: translate(1px, -1px)   rotate(4deg); }
+}
+@keyframes how-sausage-sizzle-b {
+  0%, 100% { transform: translate(0, 0)       rotate(0); }
+  20%      { transform: translate(1px, 1px)   rotate(3deg); }
+  50%      { transform: translate(0, -1px)    rotate(0); }
+  80%      { transform: translate(-1px, 1px)  rotate(-3deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -89,7 +119,82 @@
   .main-landing #how .how-step-card--1:hover .truck-body,
   .main-landing #how .how-step-card--1:hover .truck-wheel,
   .main-landing #how .how-step-card--1:hover .truck-pin,
-  .main-landing #how .how-step-card--2:hover .fried-egg {
+  .main-landing #how .how-step-card--2:hover .fried-egg,
+  .main-landing #how .how-step-card--2:hover .sausage--a,
+  .main-landing #how .how-step-card--2:hover .sausage--b {
     animation: none;
+  }
+}
+
+/* ---- mobile: stack cards vertically with small icon on the left ---- */
+@media (width < theme(--breakpoint-sm)) {
+  /* one card per row, slightly tighter gap */
+  .main-landing #how .how-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+
+  /* card becomes a horizontal row */
+  .main-landing #how .how-step-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    border-radius: 28px !important;
+  }
+
+  /* shrink the illustration area to a small square on the left */
+  .main-landing #how .how-step-card .how-step-illu {
+    flex: 0 0 96px;
+    width: 96px;
+    height: 96px;
+    aspect-ratio: 1 !important;
+    padding: 12px;
+    align-self: center;
+  }
+
+  /* the in-illustration number overlay is noisy at small size – hide it,
+     and show the dedicated mobile number on the right of the title instead */
+  .main-landing #how .how-step-card .how-step-illu .how-step-num {
+    display: none;
+  }
+  .main-landing #how .how-step-card .how-step-num--mobile {
+    display: inline-block;
+    order: 2;
+    align-self: flex-start;
+    flex: 0 0 auto;
+    margin: 0;
+    letter-spacing: .04em;
+  }
+
+  /* SVG fills the small square nicely */
+  .main-landing #how .how-step-card .how-step-illu .how-illu {
+    width: 100% !important;
+    max-width: none !important;
+    height: 100%;
+  }
+
+  /* text takes the remaining space; trim padding for compact rows.
+     Switch body to a row so the step number sits opposite the title. */
+  .main-landing #how .how-step-card .how-step-body {
+    flex: 1 1 auto;
+    min-width: 0;
+    flex-direction: row !important;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 20px 16px 4px !important;
+  }
+  .main-landing #how .how-step-card .how-step-body .how-step-text {
+    order: 1;
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 12px !important;
+  }
+  .main-landing #how .how-step-card .how-step-body .h3 {
+    font-size: var(--fs-20);
+    line-height: 1.25;
+  }
+  .main-landing #how .how-step-card .how-step-body p {
+    font-size: var(--fs-14) !important;
+    line-height: 1.45 !important;
   }
 }

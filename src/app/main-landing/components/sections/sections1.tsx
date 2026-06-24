@@ -480,17 +480,19 @@ function HowItWorks({ t }) {
           createElement('div', { className:'eyebrow' }, t.how.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.how.title)
         ),
-        createElement('div', { style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:16 } },
+        createElement('div', { className:'how-grid', style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:16 } },
           t.how.steps.map((s,i)=>{
             const accentCard = ACCENT_CARD_VARIANTS[ACCENT_CARD_VARIANT_ORDER[i]];
-            return createElement('div', { key:i, className:`card reveal how-step-card--${i}`, 'data-d':String(i+1), style:{ overflow:'hidden', background:accentCard.background, borderRadius:'50px', color:'rgba(42, 34, 48, 1)' } },
-            createElement('div', { style:{ position:'relative', aspectRatio:'5/4', overflow:'hidden', display:'grid', placeItems:'center' } },
-              createElement('span', { className:'mono', style:{ position:'static', fontSize:'12px', fontWeight:500, color:accentCard.labelColor, opacity: accentCard.labelOpacity, marginInline:0, paddingInline:32, width:'100%' } }, s.n),
+            return createElement('div', { key:i, className:`card reveal how-step-card how-step-card--${i}`, 'data-d':String(i+1), style:{ overflow:'hidden', background:accentCard.background, borderRadius:'50px', color:'rgba(42, 34, 48, 1)' } },
+            createElement('div', { className:'how-step-illu', style:{ position:'relative', aspectRatio:'5/4', overflow:'hidden', display:'grid', placeItems:'center' } },
+              createElement('span', { className:'mono how-step-num', style:{ position:'static', fontSize:'12px', fontWeight:500, color:accentCard.labelColor, opacity: accentCard.labelOpacity, marginInline:0, paddingInline:32, width:'100%' } }, s.n),
               createElement(HowIllu, { i })
             ),
-            createElement('div', { style:{ padding:'var(--space-24) var(--space-32) 36px' } },
-              createElement('h3', { className:'h3', style:{ margin:'0 0 var(--space-16)', color:'var(--ink)' } }, s.t),
-              createElement('p', { style:{ margin:0, color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.5 } }, s.d))
+            createElement('div', { className:'how-step-body', style:{ padding:'var(--space-24) var(--space-32) 36px' } },
+              createElement('span', { className:'mono how-step-num how-step-num--mobile', style:{ fontSize:'12px', fontWeight:500, color:accentCard.labelColor, opacity: accentCard.labelOpacity } }, s.n),
+              createElement('div', { className:'how-step-text', style:{ display:'flex', flexDirection:'column', gap:'var(--space-16)' } },
+                createElement('h3', { className:'h3', style:{ margin:0, color:'var(--ink)' } }, s.t),
+                createElement('p', { style:{ margin:0, color:'var(--slate)', fontSize:'var(--fs-16)', lineHeight:1.5 } }, s.d)))
           );
           })
         )

@@ -147,11 +147,9 @@ function Menu({ t, onOrder }) {
         createElement('style', null, `
           .menu-head-intro {
             width:100%;
+            text-align:left;
           }
           .menu-eyebrow { margin-bottom:var(--space-24); }
-          @media (max-width: 640px) {
-            .menu-head-intro { text-align:center; }
-          }
           .menu-head {
             display:flex;
             flex-wrap:wrap;
@@ -360,7 +358,7 @@ function Fresh({ t }) {
             createElement('h2', { className:'h2 reveal', style:{ margin:0 } }, t.fresh.title),
           ),
           createElement('ul', { className:'stack', style:{ listStyle:'none', margin:0, padding:0, gap:'var(--space-24)' } },
-            t.fresh.items.map((it,i)=>createElement('li', { key:i, className:'row reveal', 'data-d':String((i%3)+1), style:{ gap:16, alignItems:'center' } },
+            t.fresh.items.map((it,i)=>createElement('li', { key:i, className:'row reveal fresh-item', 'data-d':String((i%3)+1), style:{ gap:16, alignItems:'center' } },
               createElement('span', { style:{ flex:'0 0 auto', width:44, height:44, borderRadius:'var(--r-md)', background:'var(--brand-soft)', color:'var(--brand)', display:'grid', placeItems:'center' } }, createElement(ic[i], { size:22 })),
               createElement('p', { style:{ margin:0, fontSize:'var(--fs-16)', color:'var(--slate)', fontWeight:600, lineHeight:1.45, paddingTop:0 } }, it)))
           )
