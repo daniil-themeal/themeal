@@ -32,7 +32,7 @@ import { COLOR_TOKENS } from '../common/colorTokens';
 import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_SELECTOR_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
 import { useEscapeLayer } from '../common/escapeStack';
 import { useModalShell } from '../common/ModalShell';
-import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
+import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../main-landing/getSpacingMeasureRoot';
 import { CHECKOUT_LAYER_Z_INDEX, Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { formatUaePhoneInput, normalizeUaePhone } from './phoneValidation';
 import { isValidTestSmsCode, SMS_CODE_ERROR, SMS_CODE_SUCCESS_HOLD_MS } from './smsCodeValidation';

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { landingFollowSocials, socialLinks } from '../../../config/socialLinks';
-import { Social } from '../../../landing-stas/components/icons';
+import { Social } from '../../../main-landing/components/icons';
 import { COLOR_TOKENS } from '../../common/colorTokens';
 import { TEXT_TRIM_CLASS_NAME } from '../../common/textTrimTokens';
 

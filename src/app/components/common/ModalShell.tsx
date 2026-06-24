@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react';
 
 import { useEscapeLayer } from './escapeStack';
-import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../landing-stas/getSpacingMeasureRoot';
+import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../main-landing/getSpacingMeasureRoot';
 import { Z_INDEX_TOKENS } from './zIndexTokens';
 
 export const MODAL_SHELL_EXIT_FALLBACK_MS = 260;

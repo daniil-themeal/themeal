@@ -27,7 +27,7 @@ import {
 } from './components/sections/sections3';
 import './styles/landing-stas.css';
 
-type LandingStasPageProps = {
+type MainLandingPageProps = {
   onOrderClick: () => void;
   onQuizClick: () => void;
   onPhoneSubmit: (phone: string) => void;
@@ -43,7 +43,7 @@ type LandingStasPageProps = {
   pendingPhone?: string;
 };
 
-export default function LandingStasPage({
+export default function MainLandingPage({
   onOrderClick,
   onQuizClick,
   onPhoneSubmit,
@@ -57,7 +57,7 @@ export default function LandingStasPage({
   isPhoneVerified = false,
   verifiedPhone,
   pendingPhone,
-}: LandingStasPageProps) {
+}: MainLandingPageProps) {
   const t = mealContentEn;
 
   useScrollReveal();

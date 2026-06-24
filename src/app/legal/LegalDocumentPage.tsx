@@ -2,8 +2,8 @@ import { Fragment, type ReactNode } from 'react';
 import { Link } from 'react-router';
 import { ProseList } from '../components/common/ProseList';
 import { PROSE_LIST_TOKENS } from '../components/common/proseListTokens';
-import { mealContentEn } from '../landing-stas/content/mealContentEn';
-import { Footer } from '../landing-stas/components/sections/sections3';
+import { mealContentEn } from '../main-landing/content/mealContentEn';
+import { Footer } from '../main-landing/components/sections/sections3';
 import { LegalHeader } from './LegalHeader';
 import {
   parseLabeledListItem,
@@ -12,8 +12,8 @@ import {
 } from './parseLegalContentBlocks';
 import { LEGAL_ROUTES } from './routes';
 import { legalText, legalTypographyVars } from './legalTypography';
-import { landingLayoutStyle } from '../landing-stas/landingLayoutTokens';
-import '../landing-stas/styles/landing-stas.css';
+import { landingLayoutStyle } from '../main-landing/landingLayoutTokens';
+import '../main-landing/styles/landing-stas.css';
 import './legal-page.css';
 
 type LegalSection = {

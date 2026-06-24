@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
-import { Logo } from '../landing-stas/components/icons';
-import { SiteLangSwitcher } from '../landing-stas/components/SiteLangSwitcher';
-import { SiteNavBurgerButton, SiteNavDrawer } from '../landing-stas/components/SiteNavDrawer';
-import type { mealContentEn } from '../landing-stas/content/mealContentEn';
+import { Logo } from '../main-landing/components/icons';
+import { SiteLangSwitcher } from '../main-landing/components/SiteLangSwitcher';
+import { SiteNavBurgerButton, SiteNavDrawer } from '../main-landing/components/SiteNavDrawer';
+import type { mealContentEn } from '../main-landing/content/mealContentEn';
 
 type LegalHeaderProps = {
   t: typeof mealContentEn;

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
-import LandingStasPage from './landing-stas/LandingStasPage';
+import MainLandingPage from './main-landing/MainLandingPage';
 import { CheckoutPage } from './components/checkout/CheckoutPage';
 import type { DayOption, Duration, Plan } from './data/checkoutPricing';
 import DesignSystemDemo from './components/DesignSystemDemo';
@@ -216,7 +216,7 @@ function HomePage() {
 
   return (
     <>
-      <LandingStasPage
+      <MainLandingPage
         onOrderClick={openCheckout}
         onQuizClick={openQuiz}
         onPhoneSubmit={handleLeadPhoneSubmit}

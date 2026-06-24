@@ -1,10 +1,10 @@
 import { useNavigate } from 'react-router';
 import { Button } from './components/common/Button';
-import { Footer } from './landing-stas/components/sections/sections3';
-import { mealContentEn } from './landing-stas/content/mealContentEn';
+import { Footer } from './main-landing/components/sections/sections3';
+import { mealContentEn } from './main-landing/content/mealContentEn';
 import { LegalHeader } from './legal/LegalHeader';
 import { legalText, legalTypographyVars } from './legal/legalTypography';
-import './landing-stas/styles/landing-stas.css';
+import './main-landing/styles/landing-stas.css';
 import './legal/legal-page.css';
 import './not-found-page.css';
 

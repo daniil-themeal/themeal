@@ -6,7 +6,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
 const outputPath = path.join(
   projectRoot,
-  'src/app/landing-stas/content/customersReviews.ts',
+  'src/app/main-landing/content/customersReviews.ts',
 );
 
 const EMBED_URL =
