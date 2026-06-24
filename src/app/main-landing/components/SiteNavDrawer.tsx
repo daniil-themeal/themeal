@@ -9,6 +9,7 @@ import {
 } from '../../components/ui/sheet';
 import { personalCabinetUrl, supportEmail } from '../../config/siteLinks';
 import { landingFooterSocials } from '../../config/socialLinks';
+import { isDevToolsEnabled, toggleDevToolsEnabled } from '../../devToolsEnabled';
 import { LEGAL_ROUTES } from '../../legal/routes';
 import type { MealContentEn } from '../content/mealContentEn';
 import { Social } from './icons';
@@ -135,6 +136,19 @@ export function SiteNavDrawer({
             <nav className="site-nav-drawer__links">
               {legalItems.map(renderNavLink)}
             </nav>
+          </section>
+
+          <section className="site-nav-drawer__section">
+            <button
+              type="button"
+              className="site-nav-drawer__link site-nav-drawer__link--dev"
+              onClick={() => {
+                toggleDevToolsEnabled();
+              }}
+            >
+              <span className="site-nav-drawer__dev-dot" aria-hidden data-on={isDevToolsEnabled ? 'true' : 'false'} />
+              {isDevToolsEnabled ? 'Disable dev tools' : 'Enable dev tools'}
+            </button>
           </section>
 
           <section className="site-nav-drawer__section">
