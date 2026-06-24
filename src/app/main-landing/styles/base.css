@@ -89,17 +89,23 @@
 /* Global resets are kept narrow: Tailwind preflight already sets box-sizing
    and body margin. The rules below scope smooth scrolling and horizontal
    overflow guarding to documents that actually mount the landing, so the
-   checkout, legal, and 404 routes are untouched. We intentionally do NOT
-   set `overflow-x: hidden` on <html>: doing so combined with body's own
-   `overflow-x: hidden` makes both elements scroll containers and the
-   browser reserves two vertical scrollbar gutters side by side. Horizontal
-   clipping lives on body and on `.main-landing` itself. */
+   checkout, legal, and 404 routes are untouched.
+
+   We use `overflow-x: clip` (not `hidden`) on body and `.main-landing`:
+   - `clip` is pure paint clipping; it does NOT create a scroll container
+     or force `overflow-y` to compute as `auto`.
+   - `hidden` would turn both <body> and `.main-landing` into vertical
+     scroll containers, producing duplicate scrollbar gutters and a
+     non-zero scrollWidth even for intentionally-bleeding decorative
+     elements (hero glow blobs, final-tray bleed).
+   Modern browsers (Chrome 90+, Firefox 81+, Safari 16+) all support
+   `overflow: clip`. */
 html:has(.main-landing) {
   scroll-behavior:smooth;
   scrollbar-gutter:stable;
 }
 html:has(.main-landing) body {
-  overflow-x:hidden;
+  overflow-x:clip;
 }
 .main-landing {
   -webkit-font-smoothing:antialiased;
@@ -158,7 +164,7 @@ html:has(.main-landing) body {
   background:var(--cream); color:var(--ink);
   font-family:var(--font); font-weight:500; line-height:1.5;
   font-size:var(--fs-16);
-  overflow-x:hidden;
+  overflow-x:clip;
 }
 @media (width >= theme(--breakpoint-md)) {
   .main-landing {
