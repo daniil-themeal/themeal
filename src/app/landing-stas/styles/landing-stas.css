@@ -77,16 +77,22 @@
   --ease:cubic-bezier(.22,.61,.36,1);
 }
 
-* { box-sizing:border-box; }
-html {
+/* Global resets are kept narrow: Tailwind preflight already sets box-sizing
+   and body margin. The rules below scope smooth scrolling and horizontal
+   overflow guarding to documents that actually mount the landing, so the
+   checkout, legal, and 404 routes are untouched. */
+html:has(.landing-stas) {
   scroll-behavior:smooth;
   scrollbar-gutter:stable;
+  overflow-x:hidden;
 }
-body {
-  margin:0; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+html:has(.landing-stas) body {
   overflow-x:hidden;
 }
 .landing-stas {
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+
   /* Design system font sizes � FONT_SIZE_TOKENS */
   --fs-12: 12px;
   --fs-14: 14px;
@@ -937,7 +943,7 @@ a.order-fab-wa:hover svg .order-fab-wa-bg {
 .reveal[data-d="4"]{ transition-delay:.28s; }
 @media (prefers-reduced-motion: reduce){
   .reveal { transform:none; transition:none; }
-  html { scroll-behavior:auto; }
+  html:has(.landing-stas) { scroll-behavior:auto; }
 }
 
 /* ---- RTL ---- */
