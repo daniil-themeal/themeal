@@ -13,40 +13,45 @@
 @font-face { font-family:'Quicksand'; src:url('/landing-stas/assets/fonts/Quicksand-Bold.ttf') format('truetype'); font-weight:700; font-display:swap; }
 
 :root {
-  /* plum scale */
-  --plum-950:#220A38;
-  --plum-900:#2E0F4A;
-  --plum-800:#371259;
-  --plum-700:#411864;   /* hero anchor (brand) */
-  --plum-600:#542080;
-  --brand:#9A38EF;      /* brand purple — design system primary/500 */
-  --brand-600:#8C33D9;  /* design system primary/600 */
-  --brand-soft:#F5EBFD;
-  --brand-soft-2:#EADBFB;
+  /* Landing-stas aliases over the design system tokens (src/styles/color-tokens.css).
+     Where a DS counterpart exists, we alias instead of duplicating the hex value.
+     Tokens without a DS equivalent keep their hex and are marked "local". */
+
+  /* plum scale — only --plum-700 maps to DS primary/900; the rest are local */
+  --plum-950:#220A38;                 /* local */
+  --plum-900:#2E0F4A;                 /* local */
+  --plum-800:#371259;                 /* local */
+  --plum-700:var(--primary-900);      /* hero anchor (brand) */
+  --plum-600:#542080;                 /* local */
+
+  /* brand */
+  --brand:var(--primary-500);
+  --brand-600:var(--primary-600);
+  --brand-soft:var(--primary-50);
+  --brand-soft-2:#EADBFB;             /* local — between primary-50 and primary-75 */
 
   /* accents */
-  --pink:#F029A8;
-  --pink-600:#D81F94;
-  --yellow:#FCDE02;
-  --yellow-2:#FFE944;
-  --yellow-soft:#FFF6C2;
-  --green:#5BAE27;
-  --green-bright:#7DD336;
-  --green-soft:#EAF7DC;
-  --blue:#5CC6EF;
-  --blue-bright:#7DD2F2;
-  --blue-soft:#DFF5FE;
-  --orange-500:#F06136; /* COLOR_TOKENS.orange[500] */
+  --pink:var(--secondary-500);
+  --pink-600:#D81F94;                 /* local — DS secondary-600 is #DA2599 */
+  --yellow:var(--brand-logo-yellow);
+  --yellow-2:#FFE944;                 /* local */
+  --yellow-soft:#FFF6C2;              /* local */
+  --green:#5BAE27;                    /* local — landing-specific green */
+  --green-bright:#7DD336;             /* local */
+  --green-soft:#EAF7DC;               /* local */
+  --blue:var(--blue-500);
+  --blue-bright:var(--blue-400);
+  --blue-soft:var(--blue-75);
 
-  /* neutrals (warm) */
-  --ink:#2A2230;
-  --slate:#4C4756;
-  --stone:#8A8694;
-  --ash:#ECE6DF;
-  --ash-2:#E0D8CE;
-  --cream:#FBF8F3;
-  --cream-2:#F4EEE5;
-  --surface:#FFFFFF;
+  /* neutrals (warm) — mapped to DS cream scale */
+  --ink:var(--cream-900);
+  --slate:var(--cream-600);
+  --stone:var(--cream-500);
+  --ash:var(--cream-100);
+  --ash-2:var(--cream-200);
+  --cream:var(--cream-50);
+  --cream-2:var(--cream-75);
+  --surface:var(--base-white);
 
   --font:'Quicksand', sans-serif;
 
