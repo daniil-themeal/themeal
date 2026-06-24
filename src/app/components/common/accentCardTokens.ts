@@ -9,7 +9,7 @@ export type AccentCardVariantStyle = {
   background: string;
   boxShadow: string;
   labelColor: string;
-  /** Matches landing #how step labels — 0.7 on brand/green, 1 on plum. */
+  /** Matches landing #how step labels — 0.7 across brand/green/plum. */
   labelOpacity: number;
   valueColor: string;
 };
@@ -37,8 +37,8 @@ export const ACCENT_CARD_VARIANTS: Record<AccentCardVariant, AccentCardVariantSt
   plum: {
     background: 'rgba(245, 247, 255, 1)',
     boxShadow: '0 2px 4px rgba(65,24,100,.08), 0 8px 24px rgba(65,24,100,.10)',
-    labelColor: COLOR_TOKENS.primary[900],
-    labelOpacity: 1,
+    labelColor: COLOR_TOKENS.info[500],
+    labelOpacity: 0.7,
     valueColor: COLOR_TOKENS.cream[900],
   },
 };
