@@ -59,7 +59,7 @@ function Delivery({ t, onOrder }) {
       createElement('span', { style:{ fontWeight:700, fontSize:'var(--fs-16)' } }, ti),
       createElement('span', { className:'delivery-feat-desc', style:{ fontSize:'var(--fs-14)' } }, de))));
   return createElement('section', { id:'delivery', className:'delivery-section', style:{ position:'relative', overflow:'hidden', display:'flex', alignItems:'center' } },
-    createElement('img', { src:'/landing-stas/assets/map.jpg', alt:'', 'aria-hidden':true, className:'delivery-bg' }),
+    createElement('img', { src:'/main-landing/assets/map.jpg', alt:'', 'aria-hidden':true, className:'delivery-bg' }),
     createElement('div', { className:'wrap', style:{ position:'relative', paddingBlock:'clamp(var(--space-64), 9vw, var(--space-128))' } },
       createElement('div', { className:'stack delivery-wrap', style:{ gap:20, width:'100%' } },
         createElement('div', { className:'delivery-eyebrow eyebrow reveal' }, t.delivery.eyebrow),
@@ -124,7 +124,7 @@ function FAQ({ t }) {
 
 /* ---------------- Final offer ---------------- */
 function FinalOffer({ t, onOrder }) {
-  const trays = ['/landing-stas/assets/meals/meal-02.avif','/landing-stas/assets/meals/meal-04.avif','/landing-stas/assets/meals/meal-06.avif','/landing-stas/assets/meals/meal-08.avif','/landing-stas/assets/meals/meal-10.avif','/landing-stas/assets/meals/meal-12.avif','/landing-stas/assets/meals/meal-14.avif'];
+  const trays = ['/main-landing/assets/meals/meal-02.avif','/main-landing/assets/meals/meal-04.avif','/main-landing/assets/meals/meal-06.avif','/main-landing/assets/meals/meal-08.avif','/main-landing/assets/meals/meal-10.avif','/main-landing/assets/meals/meal-12.avif','/main-landing/assets/meals/meal-14.avif'];
   const traySizes = [160,185,210,232,210,185,160];
   const trayOffsets = [90,46,16,0,16,46,90];
   const trayRotations = [-9,-6,-3,0,3,6,9];

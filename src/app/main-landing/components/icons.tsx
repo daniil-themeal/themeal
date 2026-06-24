@@ -142,7 +142,7 @@ const Logo = ({ height = 26, tone = 'yellow', color, accent, style }: LogoProps 
 
   if (color == null && accent == null) {
     return createElement('img', {
-      src: `/landing-stas/assets/logo_${tone}.svg`,
+      src: `/main-landing/assets/logo_${tone}.svg`,
       alt: 'theMeal',
       dir: 'ltr',
       style: logoStyle,

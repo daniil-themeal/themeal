@@ -60,16 +60,16 @@ export const mealContentEn = {
     "problemsTitle": "The daily grind",
     "solutionsTitle": "With theMeal",
     "problems": [
-      { "text": "Cooking every day", "icon": "/landing-stas/assets/compare/spiral-eyes.png" },
-      { "text": "High groceries & take-away bills", "icon": "/landing-stas/assets/compare/money-wings.png" },
-      { "text": "“Healthy eating” is confusing", "icon": "/landing-stas/assets/compare/exploding-head.png" },
-      { "text": "Eating too much fast food", "icon": "/landing-stas/assets/compare/french-fries.png" }
+      { "text": "Cooking every day", "icon": "/main-landing/assets/compare/spiral-eyes.png" },
+      { "text": "High groceries & take-away bills", "icon": "/main-landing/assets/compare/money-wings.png" },
+      { "text": "“Healthy eating” is confusing", "icon": "/main-landing/assets/compare/exploding-head.png" },
+      { "text": "Eating too much fast food", "icon": "/main-landing/assets/compare/french-fries.png" }
     ],
     "solutions": [
-      { "text": "No cooking — just heat & eat", "icon": "/landing-stas/assets/compare/savoring-food.png" },
-      { "text": "Balanced, ready-to-eat meals", "icon": "/landing-stas/assets/compare/balanced-meal.png" },
-      { "text": "Fridge always stocked", "icon": "/landing-stas/assets/compare/fridge.png" },
-      { "text": "Zero “what’s for dinner?” stress", "icon": "/landing-stas/assets/compare/lotus.png" }
+      { "text": "No cooking — just heat & eat", "icon": "/main-landing/assets/compare/savoring-food.png" },
+      { "text": "Balanced, ready-to-eat meals", "icon": "/main-landing/assets/compare/balanced-meal.png" },
+      { "text": "Fridge always stocked", "icon": "/main-landing/assets/compare/fridge.png" },
+      { "text": "Zero “what’s for dinner?” stress", "icon": "/main-landing/assets/compare/lotus.png" }
     ],
     "best": "The best value in UAE — from just 14.9 AED per meal",
     "perMeal": "per meal",

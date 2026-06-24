@@ -101,12 +101,12 @@ function Header({
 
 /* ---------------- TrayBelt: looping conveyor shaped as a fan ---------------- */
 const HERO_TRAY_MEALS = [
-  '/landing-stas/assets/meals/meal-01.avif',
-  '/landing-stas/assets/meals/meal-03.avif',
-  '/landing-stas/assets/meals/meal-05.avif',
-  '/landing-stas/assets/meals/meal-07.avif',
-  '/landing-stas/assets/meals/meal-09.avif',
-  '/landing-stas/assets/meals/meal-11.avif',
+  '/main-landing/assets/meals/meal-01.avif',
+  '/main-landing/assets/meals/meal-03.avif',
+  '/main-landing/assets/meals/meal-05.avif',
+  '/main-landing/assets/meals/meal-07.avif',
+  '/main-landing/assets/meals/meal-09.avif',
+  '/main-landing/assets/meals/meal-11.avif',
 ];
 
 const TRAY_BELT_AUTO_SPEED = 26; // px per second
@@ -461,9 +461,9 @@ function Compare({ t }) {
 
 /* ---------------- How it works (PNG illustrations) ---------------- */
 const HOW_ILLU_SOURCES = [
-  { src: '/landing-stas/assets/how/we-cook.png', alt: 'We cook' },
-  { src: '/landing-stas/assets/how/we-deliver.png', alt: 'We deliver' },
-  { src: '/landing-stas/assets/how/you-eat.png', alt: 'You eat' },
+  { src: '/main-landing/assets/how/we-cook.png', alt: 'We cook' },
+  { src: '/main-landing/assets/how/we-deliver.png', alt: 'We deliver' },
+  { src: '/main-landing/assets/how/you-eat.png', alt: 'You eat' },
 ];
 
 function HowIllu({ i }) {

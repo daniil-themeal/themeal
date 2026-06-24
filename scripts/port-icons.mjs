@@ -7,7 +7,7 @@ const src = fs.readFileSync(path.join(process.env.TEMP, 'themeal-v4-extract/TheM
 let out = src
   .replace(/^\/\*[\s\S]*?\*\/\s*/, '')
   .replace(/React\.createElement/g, 'createElement')
-  .replace(/src:`assets\//g, 'src:`/landing-stas/assets/')
+  .replace(/src:`assets\//g, 'src:`/main-landing/assets/')
   .replace(/window\.Icon = Icon; window\.Logo = Logo; window\.Stars = Stars;\s*/g, '')
   .replace(/window\.Social = Social;\s*/g, '');
 
@@ -18,5 +18,5 @@ ${out}
 export { Icon, Logo, Stars, Social };
 `;
 
-fs.writeFileSync(path.join(__dirname, '../src/app/landing-stas/components/icons.tsx'), out);
+fs.writeFileSync(path.join(__dirname, '../src/app/main-landing/components/icons.tsx'), out);
 console.log('icons done');

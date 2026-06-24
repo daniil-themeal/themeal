@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.join(__dirname, '..');
 const base = path.join(process.env.TEMP || '/tmp', 'themeal-v4-extract/TheMeal-v4-source/redesign4');
-const outDir = path.join(root, 'src/app/landing-stas/components/sections');
+const outDir = path.join(root, 'src/app/main-landing/components/sections');
 
 function transform(name, exports) {
   let src = fs.readFileSync(path.join(base, name), 'utf8');
@@ -17,10 +17,10 @@ function transform(name, exports) {
   src = src.replace(/React\.useEffect/g, 'useEffect');
   src = src.replace(/React\.useRef/g, 'useRef');
   src = src.replace(/React\.Fragment/g, 'Fragment');
-  src = src.replace(/src:`assets\//g, 'src:`/landing-stas/assets/');
-  src = src.replace(/'assets\//g, "'/landing-stas/assets/");
-  src = src.replace(/"assets\//g, '"/landing-stas/assets/');
-  src = src.replace(/url\('assets\//g, "url('/landing-stas/assets/");
+  src = src.replace(/src:`assets\//g, 'src:`/main-landing/assets/');
+  src = src.replace(/'assets\//g, "'/main-landing/assets/");
+  src = src.replace(/"assets\//g, '"/main-landing/assets/');
+  src = src.replace(/url\('assets\//g, "url('/main-landing/assets/");
 
   const header = `import { createElement, Fragment, useState, useEffect, useRef } from 'react';
 import { Icon, Logo, Stars, Social } from '../icons';

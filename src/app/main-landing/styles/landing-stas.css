@@ -9,14 +9,14 @@
 @reference "../../../styles/index.css";
 
 /* ---- Fonts ----
-   Quicksand is served from local .ttf files in public/landing-stas/assets/fonts/.
+   Quicksand is served from local .ttf files in public/main-landing/assets/fonts/.
    The global aliases ('Quicksand:Medium', etc.) live in src/styles/fonts.css and
    load weights 500/600/700 from Google Fonts for the rest of the app. */
-@font-face { font-family:'Quicksand'; src:url('/landing-stas/assets/fonts/Quicksand-Light.ttf') format('truetype'); font-weight:300; font-display:swap; }
-@font-face { font-family:'Quicksand'; src:url('/landing-stas/assets/fonts/Quicksand-Regular.ttf') format('truetype'); font-weight:400; font-display:swap; }
-@font-face { font-family:'Quicksand'; src:url('/landing-stas/assets/fonts/Quicksand-Medium.ttf') format('truetype'); font-weight:500; font-display:swap; }
-@font-face { font-family:'Quicksand'; src:url('/landing-stas/assets/fonts/Quicksand-SemiBold.ttf') format('truetype'); font-weight:600; font-display:swap; }
-@font-face { font-family:'Quicksand'; src:url('/landing-stas/assets/fonts/Quicksand-Bold.ttf') format('truetype'); font-weight:700; font-display:swap; }
+@font-face { font-family:'Quicksand'; src:url('/main-landing/assets/fonts/Quicksand-Light.ttf') format('truetype'); font-weight:300; font-display:swap; }
+@font-face { font-family:'Quicksand'; src:url('/main-landing/assets/fonts/Quicksand-Regular.ttf') format('truetype'); font-weight:400; font-display:swap; }
+@font-face { font-family:'Quicksand'; src:url('/main-landing/assets/fonts/Quicksand-Medium.ttf') format('truetype'); font-weight:500; font-display:swap; }
+@font-face { font-family:'Quicksand'; src:url('/main-landing/assets/fonts/Quicksand-SemiBold.ttf') format('truetype'); font-weight:600; font-display:swap; }
+@font-face { font-family:'Quicksand'; src:url('/main-landing/assets/fonts/Quicksand-Bold.ttf') format('truetype'); font-weight:700; font-display:swap; }
 
 :root {
   /* Landing-stas aliases over the design system tokens (src/styles/color-tokens.css).

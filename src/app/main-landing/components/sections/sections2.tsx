@@ -15,7 +15,7 @@ function Menu({ t, onOrder }) {
   const [day, setDay] = useState(0);
   const [slideDirection, setSlideDirection] = useState('left');
   const [selectedMeal, setSelectedMeal] = useState(null);
-  const imgs = ['/landing-stas/assets/img/p6.png','/landing-stas/assets/meals/meal_03.png','/landing-stas/assets/meals/meal_04.png','/landing-stas/assets/meals/meal_05.png'];
+  const imgs = ['/main-landing/assets/img/p6.png','/main-landing/assets/meals/meal_03.png','/main-landing/assets/meals/meal_04.png','/main-landing/assets/meals/meal_05.png'];
   const meals = t.menu.meals[dayKeys[day]];
   const dayTabsScroll = useHorizontalScroll();
   const menuGridScroll = useHorizontalScroll({ wheel: false, allowVerticalTouch: true });
@@ -279,11 +279,11 @@ function Customers({ t }) {
 function Fresh({ t }) {
   const ic = [Icon.snow, Icon.truck, Icon.shield, Icon.leaf];
   const shots = [
-    '/landing-stas/assets/gallery/g1.png',
-    '/landing-stas/assets/gallery/g2.png',
-    '/landing-stas/assets/gallery/g3.png',
-    '/landing-stas/assets/gallery/g4.png',
-    '/landing-stas/assets/gallery/g5.png',
+    '/main-landing/assets/gallery/g1.png',
+    '/main-landing/assets/gallery/g2.png',
+    '/main-landing/assets/gallery/g3.png',
+    '/main-landing/assets/gallery/g4.png',
+    '/main-landing/assets/gallery/g5.png',
   ];
   const [idx, setIdx] = useState(0);
   const timerRef = useRef(null);
