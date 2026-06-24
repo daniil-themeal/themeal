@@ -1,0 +1,32 @@
+/* ---- faq: split layout + edge-to-edge tab scroll (like menu) ---- */
+.faq-section { overflow:visible; }
+.faq-content {
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-24);
+}
+.faq-section .faq-tabs {
+  display:flex;
+  flex-wrap:nowrap;
+  align-items:center;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  gap:8px;
+  padding-bottom:4px;
+  margin-bottom:0;
+  cursor:grab;
+}
+.faq-section .faq-tabs:active { cursor:grabbing; }
+@media (width < theme(--breakpoint-sm)) {
+  .faq-section .faq-tabs.gutter-x--center {
+    justify-content:flex-start;
+  }
+  .faq-section .faq-tabs.gutter-x--center::before {
+    display:none;
+  }
+}
+
+.main-landing #qa .card:hover {
+  transform:translateY(-4px);
+}

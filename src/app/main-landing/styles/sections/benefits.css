@@ -1,0 +1,19 @@
+/* ---- benefits section ---- */
+.main-landing #benefits .wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--section-intro-gap);
+}
+.main-landing #benefits .card {
+  border-radius: 50px;
+}
+.main-landing #benefits .card.reveal.in {
+  transform:translateY(0);
+  transition:transform .2s var(--ease);
+}
+.main-landing #benefits .card.reveal.in:hover {
+  transform:translateY(-4px);
+}
+#benefits .eyebrow {
+  margin-bottom: var(--space-24);
+}

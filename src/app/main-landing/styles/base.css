@@ -1,0 +1,162 @@
+/* ---- Fonts ----
+   Quicksand is served from local .ttf files in public/main-landing/assets/fonts/.
+   The global aliases ('Quicksand:Medium', etc.) live in src/styles/fonts.css and
+   load weights 500/600/700 from Google Fonts for the rest of the app. */
+@font-face { font-family:'Quicksand'; src:url('/main-landing/assets/fonts/Quicksand-Light.ttf') format('truetype'); font-weight:300; font-display:swap; }
+@font-face { font-family:'Quicksand'; src:url('/main-landing/assets/fonts/Quicksand-Regular.ttf') format('truetype'); font-weight:400; font-display:swap; }
+@font-face { font-family:'Quicksand'; src:url('/main-landing/assets/fonts/Quicksand-Medium.ttf') format('truetype'); font-weight:500; font-display:swap; }
+@font-face { font-family:'Quicksand'; src:url('/main-landing/assets/fonts/Quicksand-SemiBold.ttf') format('truetype'); font-weight:600; font-display:swap; }
+@font-face { font-family:'Quicksand'; src:url('/main-landing/assets/fonts/Quicksand-Bold.ttf') format('truetype'); font-weight:700; font-display:swap; }
+
+:root {
+  /* Main-landing aliases over the design system tokens (src/styles/color-tokens.css).
+     Where a DS counterpart exists, we alias instead of duplicating the hex value.
+     Tokens without a DS equivalent keep their hex and are marked "local". */
+
+  /* plum scale — only --plum-700 maps to DS primary/900; the rest are local */
+  --plum-950:#220A38;                 /* local */
+  --plum-900:#2E0F4A;                 /* local */
+  --plum-800:#371259;                 /* local */
+  --plum-700:var(--primary-900);      /* hero anchor (brand) */
+  --plum-600:#542080;                 /* local */
+
+  /* brand */
+  --brand:var(--primary-500);
+  --brand-600:var(--primary-600);
+  --brand-soft:var(--primary-50);
+  --brand-soft-2:#EADBFB;             /* local — between primary-50 and primary-75 */
+
+  /* accents */
+  --pink:var(--secondary-500);
+  --pink-600:#D81F94;                 /* local — DS secondary-600 is #DA2599 */
+  --yellow:var(--brand-logo-yellow);
+  --yellow-2:#FFE944;                 /* local */
+  --yellow-soft:#FFF6C2;              /* local */
+  --green:#5BAE27;                    /* local — landing-specific green */
+  --green-bright:#7DD336;             /* local */
+  --green-soft:#EAF7DC;               /* local */
+  --blue:var(--blue-500);
+  --blue-bright:var(--blue-400);
+  --blue-soft:var(--blue-75);
+
+  /* neutrals (warm) — mapped to DS cream scale */
+  --ink:var(--cream-900);
+  --slate:var(--cream-600);
+  --stone:var(--cream-500);
+  --ash:var(--cream-100);
+  --ash-2:var(--cream-200);
+  --cream:var(--cream-50);
+  --cream-2:var(--cream-75);
+  --surface:var(--base-white);
+
+  --font:'Quicksand', sans-serif;
+
+  --r-sm:8px; --r-md:14px; --r-lg:20px; --r-xl:28px; --r-2xl:36px; --r-pill:999px;
+
+  --shadow-sm:0 2px 6px rgba(42,34,48,.04);
+  --shadow-md:0 2px 4px rgba(42,34,48,.05), 0 8px 24px rgba(42,34,48,.07);
+  --shadow-how-brand:0 2px 4px rgba(154,56,239,.08), 0 8px 24px rgba(154,56,239,.10);
+  --shadow-how-green:0 2px 4px rgba(91,174,39,.08), 0 8px 24px rgba(91,174,39,.10);
+  --shadow-how-plum:0 2px 4px rgba(65,24,100,.08), 0 8px 24px rgba(65,24,100,.10);
+  --shadow-why-cream:0 2px 4px rgba(42,34,48,.06), 0 8px 24px rgba(42,34,48,.08);
+  --shadow-why-solutions:0 2px 4px rgba(76,31,119,.18), 0 8px 24px rgba(154,56,239,.16);
+  --shadow-why-white:var(--shadow-sm);
+  --shadow-lg:0 8px 18px rgba(42,34,48,.08), 0 24px 56px rgba(42,34,48,.12);
+  --shadow-pink:0 6px 18px rgba(240,41,168,.30), 0 14px 40px rgba(240,41,168,.22);
+  --shadow-primary:0 6px 18px rgba(154,56,239,.32), 0 14px 40px rgba(154,56,239,.24);
+  --shadow-primary-hover:0 10px 26px rgba(154,56,239,.40), 0 20px 52px rgba(154,56,239,.28);
+  --shadow-brand:0 6px 18px rgba(154,56,239,.32), 0 14px 40px rgba(154,56,239,.24);
+  --shadow-brand-hover:0 10px 26px rgba(154,56,239,.40), 0 20px 52px rgba(154,56,239,.28);
+  --shadow-whatsapp:0 6px 18px rgba(37,211,102,.42), 0 14px 40px rgba(37,211,102,.34);
+  --shadow-whatsapp-hover:0 10px 26px rgba(37,211,102,.50), 0 20px 52px rgba(37,211,102,.38);
+  --shadow-secondary:0 4px 14px rgba(42,34,48,.10), 0 10px 28px rgba(42,34,48,.08);
+  --shadow-secondary-hover:0 8px 22px rgba(42,34,48,.14), 0 16px 40px rgba(42,34,48,.12);
+
+  --gutter:clamp(20px, 5vw, 80px);
+  --maxw:1280px;
+  --grid-gap:16px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+/* Global resets are kept narrow: Tailwind preflight already sets box-sizing
+   and body margin. The rules below scope smooth scrolling and horizontal
+   overflow guarding to documents that actually mount the landing, so the
+   checkout, legal, and 404 routes are untouched. */
+html:has(.main-landing) {
+  scroll-behavior:smooth;
+  scrollbar-gutter:stable;
+  overflow-x:hidden;
+}
+html:has(.main-landing) body {
+  overflow-x:hidden;
+}
+.main-landing {
+  -webkit-font-smoothing:antialiased;
+  text-rendering:optimizeLegibility;
+
+  /* Design system font sizes � FONT_SIZE_TOKENS */
+  --fs-12: 12px;
+  --fs-14: 14px;
+  --fs-16: 16px;
+  --fs-20: 20px;
+  --fs-25: 25px;
+  --fs-32: 32px;
+  --fs-40: 40px;
+  --fs-48: 48px;
+
+  /* SPACING_TOKENS � gap, padding, margin */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-80: 80px;
+  --space-96: 96px;
+  --space-112: 112px;
+  --space-128: 128px;
+
+  --section-intro-gap: clamp(var(--space-32), 8vw, var(--space-64));
+  --delivery-block-gap: clamp(var(--space-32), 8vw, var(--space-64));
+
+  --shadow-fab:0 4px 12px rgba(154,56,239,.28), 0 8px 24px rgba(154,56,239,.20);
+  --shadow-fab-hover:0 6px 16px rgba(154,56,239,.32), 0 10px 28px rgba(154,56,239,.22);
+
+  /* Legacy landing h1/h2 scale (src/styles/index.css) � stage 2/3 wire-up */
+  --landing-h1-fs: clamp(3.75rem, 5.291vw + 2.46rem, 5rem);
+  --landing-h1-lh: 1.3;
+  --landing-h1-tracking: -0.2rem;
+  --landing-h2-fs: calc(clamp(3rem, 3.175vw + 2.226rem, 3.75rem) * 0.9);
+  --landing-h2-lh: 1.2;
+  --landing-h2-tracking: -0.1rem;
+
+  /* header balance: logo SVG 94?30, profile btn 42?42 */
+  --hdr-logo-h: 26px;
+  --hdr-h: 64px;
+  --hdr-profile-btn: 42px;
+
+  background:var(--cream); color:var(--ink);
+  font-family:var(--font); font-weight:500; line-height:1.5;
+  font-size:var(--fs-16);
+  overflow-x:hidden;
+}
+@media (width >= theme(--breakpoint-md)) {
+  .main-landing {
+    --landing-h1-fs: clamp(5rem, 1.786vw + 4.143rem, 5.75rem);
+    --landing-h2-fs: calc(clamp(3.75rem, 2.976vw + 2.321rem, 5rem) * 0.9);
+    --landing-h2-tracking: -0.2rem;
+  }
+}
+.main-landing :where(button, input, textarea, select, optgroup) {
+  font-family:var(--font);
+}
+.main-landing img { display:block; max-width:100%; }
+.main-landing button { font-family:inherit; cursor:pointer; }
+.main-landing button:not(.ds-ghost-button):not(.ds-button):not(.ds-icon-button) { border:none; }
+.main-landing :where(button:not(.btn):not(.ds-ghost-button):not(.ds-button):not(.ds-icon-button)) { background:none; }
+.main-landing a { color:inherit; text-decoration:none; }
+.main-landing ::selection { background:var(--brand-soft-2); color:var(--plum-800); }

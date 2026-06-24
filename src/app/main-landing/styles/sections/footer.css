@@ -1,0 +1,90 @@
+/* ---- footer: stack columns on mobile ---- */
+.site-footer {
+  position: relative;
+  z-index: 10;
+  background: var(--plum-950);
+  color: rgba(255, 255, 255, 0.7);
+  padding-block: var(--space-40) var(--space-32);
+}
+.site-footer__legal {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+@media (width >= theme(--breakpoint-sm)) {
+  .site-footer {
+    padding-block: var(--space-64) var(--space-40);
+  }
+  .site-footer__legal {
+    margin-top: 40px;
+    padding-top: 24px;
+  }
+}
+.footer-grid {
+  display:grid;
+  grid-template-columns:minmax(240px,320px) 1fr;
+  gap:32px;
+  align-items:start;
+}
+@media (width < theme(--breakpoint-sm)) {
+  .footer-grid { grid-template-columns:1fr; gap:32px; }
+  .footer-brand {
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    max-width:none;
+    width:100%;
+    gap:var(--space-32);
+  }
+}
+.footer-brand {
+  gap:var(--space-20);
+  max-width:320px;
+  align-items:flex-start;
+  justify-content:center;
+}
+.footer-logo {
+  display:inline-flex;
+  align-items:center;
+}
+.logo-top-link {
+  opacity:.88;
+  transition:opacity .15s var(--ease);
+}
+.logo-top-link:hover {
+  opacity:1;
+}
+.logo-top-link .hover-lift {
+  display:inline-flex;
+  transition:transform .18s var(--ease);
+}
+.logo-top-link:hover .hover-lift {
+  transform:translateY(-2px);
+}
+.footer-social-link {
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  color:rgba(255,255,255,.8);
+  background:rgba(255,255,255,.08);
+  transition:transform .18s var(--ease), background .15s var(--ease), color .15s var(--ease);
+}
+.footer-social-link:hover {
+  transform:translateY(-2px);
+  background:var(--brand);
+  color:#fff;
+}
+.footer-email-link {
+  display: inline-block;
+  margin-top: 4px;
+  font-size: var(--fs-16);
+  font-weight: 600;
+  color: rgba(255,255,255,.75);
+  text-decoration: none;
+  transition: color .15s var(--ease);
+}
+.footer-email-link:hover {
+  color: #fff;
+}

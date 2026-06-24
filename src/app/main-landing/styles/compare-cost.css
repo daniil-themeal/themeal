@@ -1,0 +1,34 @@
+/* ---- compare cost grid ---- */
+.main-landing #why .compare-cost-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 14px;
+  row-gap: var(--space-20);
+  width: 100%;
+  height: fit-content;
+}
+@media (width >= theme(--breakpoint-md)) {
+  .main-landing #why .compare-cost-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+.main-landing #why .compare-cost-grid .stack {
+  gap: var(--space-12);
+  min-width: 0;
+  height: 100%;
+  padding-right: clamp(12px, 2vw, 22px);
+  border-top: none;
+  border-bottom: none;
+  border-left: none;
+}
+.main-landing #why .compare-cost-grid .stack:not(:last-child) {
+  border-right: 1px solid rgba(236, 230, 223, 1);
+}
+@media (width < theme(--breakpoint-md)) {
+  .main-landing #why .compare-cost-grid .stack:not(:last-child) {
+    border-right: none;
+  }
+  .main-landing #why .compare-cost-grid .stack:nth-child(odd) {
+    border-right: 1px solid rgba(236, 230, 223, 1);
+  }
+}

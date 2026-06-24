@@ -1,0 +1,264 @@
+/* ---- menu: horizontal scroll strips (day tabs + dish cards) ---- */
+@keyframes menuMealsSlideFromRight {
+  from {
+    opacity:0;
+    transform:translateX(36px);
+  }
+  to {
+    opacity:1;
+    transform:translateX(0);
+  }
+}
+@keyframes menuMealsSlideFromLeft {
+  from {
+    opacity:0;
+    transform:translateX(-36px);
+  }
+  to {
+    opacity:1;
+    transform:translateX(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-section .menu-grid.menu-grid--cards {
+    animation:none !important;
+  }
+}
+.menu-section { overflow:visible; }
+.menu-grid-wrap {
+  padding-block:8px 32px;
+  width:100%;
+  max-width:var(--maxw);
+  margin-inline:auto;
+  padding-inline:var(--gutter);
+  box-sizing:border-box;
+  overflow:visible;
+}
+.menu-grid-shell {
+  width:100%;
+  min-width:0;
+  overflow:visible;
+}
+.menu-grid-scroll {
+  width:100%;
+  min-width:0;
+  padding-block:var(--space-32);
+  margin-block:calc(var(--space-32) * -1);
+}
+.menu-section .menu-top-stack {
+  display:flex;
+  flex-direction:column;
+  gap:var(--section-intro-gap);
+  width:100%;
+}
+.menu-section .menu-body {
+  display:flex;
+  flex-direction:column;
+  gap:var(--space-24);
+  width:100%;
+}
+.menu-section .menu-days-wrap {
+  position:relative;
+  width:100%;
+  overflow:visible;
+  margin-bottom:0;
+}
+.menu-section .menu-days {
+  display:flex;
+  flex-wrap:nowrap;
+  width:100%;
+  max-width:100%;
+  min-width:0;
+  gap:0;
+  padding-bottom:0;
+  margin-bottom:0;
+}
+.menu-day-tab {
+  flex:0 0 auto;
+  height:48px;
+  padding:0 20px;
+  border-radius:var(--r-pill);
+  font-weight:600;
+  font-size:var(--fs-16);
+  color:var(--slate);
+  background:transparent;
+  border:1.5px solid transparent;
+  transition:background .18s var(--ease), border-color .18s var(--ease), color .18s var(--ease);
+  cursor:pointer;
+}
+.menu-day-tab:hover:not(.is-active) {
+  color:var(--brand);
+  background:var(--brand-soft);
+  border-color:var(--brand-soft-2);
+}
+.menu-day-tab.is-active:hover {
+  background:var(--brand-soft-2);
+}
+.menu-day-tab.is-active {
+  font-weight:700;
+  color:var(--brand);
+  background:var(--brand-soft);
+  border-color:var(--brand);
+}
+.menu-section .menu-grid.menu-grid--cards {
+  display:grid;
+  grid-template-columns:repeat(12, minmax(0, 1fr));
+  column-gap:var(--grid-gap);
+  align-items:stretch;
+  width:100%;
+  min-width:0;
+  overflow:visible;
+  padding-block:var(--space-8);
+  padding-inline:var(--space-8);
+  margin-inline:calc(var(--space-8) * -1);
+}
+.menu-section .menu-grid--cards > .menucard-shell {
+  grid-column:span 3;
+  min-width:0;
+}
+.menu-section .menucard-shell > .menucard {
+  flex:1;
+  width:100%;
+  min-height:0;
+}
+.menu-section .menucard-img {
+  -webkit-user-drag:none;
+  user-select:none;
+  pointer-events:none;
+}
+@media (width < theme(--breakpoint-lg)) {
+  .menu-section .menu-grid-wrap {
+    --menu-inline-gutter:max(var(--gutter), calc((100% - min(100%, var(--maxw))) / 2 + var(--gutter)));
+    position:relative;
+    max-width:none;
+    margin-inline:0;
+    padding-inline:0;
+  }
+  .menu-section .menu-grid-shell {
+    container-type:inline-size;
+    overflow-x:clip;
+    overflow-y:visible;
+    padding-block:var(--space-32);
+    margin-block:calc(var(--space-32) * -1);
+  }
+  .menu-section .menu-grid-scroll {
+    width:100%;
+    min-width:0;
+    overflow-x:auto;
+    overflow-y:visible;
+    scroll-padding-inline:var(--menu-inline-gutter);
+    -webkit-overflow-scrolling:touch;
+    touch-action:pan-x pan-y;
+    cursor:grab;
+    user-select:none;
+    padding-block:var(--space-16);
+    margin-block:calc(var(--space-16) * -1);
+  }
+  .menu-section .menu-grid-scroll:active { cursor:grabbing; }
+  .menu-section .menu-grid.menu-grid--cards {
+    display:flex;
+    flex-wrap:nowrap;
+    gap:var(--space-16);
+    width:max-content;
+    padding-block:var(--space-8);
+    padding-inline-start:var(--menu-inline-gutter);
+    padding-inline-end:0;
+    margin-inline:0;
+    box-sizing:border-box;
+  }
+  .menu-section .menu-grid--cards::after {
+    content:'';
+    flex:0 0 var(--menu-inline-gutter);
+  }
+  .menu-section .menu-grid--cards > .menucard-shell {
+    flex:0 0 min(280px, calc(100cqw - var(--menu-inline-gutter) - var(--grid-gap)));
+    grid-column:auto;
+  }
+  @media (width < theme(--breakpoint-sm)) {
+    .menu-section .menu-grid--cards > .menucard-shell {
+      flex:0 0 280px;
+      width:280px;
+      max-width:none;
+    }
+  }
+  /* edge fade: day tabs scroll full-bleed */
+  .menu-section .menu-days-wrap::before,
+  .menu-section .menu-days-wrap::after {
+    content:'';
+    position:absolute;
+    top:0;
+    bottom:0;
+    width:clamp(28px, 8vw, 56px);
+    z-index:2;
+    pointer-events:none;
+  }
+  .menu-section .menu-days-wrap::before {
+    inset-inline-start:0;
+    background:linear-gradient(to right, var(--cream) 20%, transparent);
+  }
+  .menu-section .menu-days-wrap::after {
+    inset-inline-end:0;
+    background:linear-gradient(to left, var(--cream) 20%, transparent);
+  }
+  /* edge fade: cards scroll full-bleed; gradient softens the clip */
+  .menu-section .menu-grid-wrap::before,
+  .menu-section .menu-grid-wrap::after {
+    content:'';
+    position:absolute;
+    top:12px;
+    bottom:40px;
+    width:clamp(28px, 8vw, 56px);
+    z-index:2;
+    pointer-events:none;
+  }
+  .menu-section .menu-grid-wrap::before {
+    inset-inline-start:0;
+    background:linear-gradient(to right, var(--cream) 20%, transparent);
+  }
+  .menu-section .menu-grid-wrap::after {
+    inset-inline-end:0;
+    background:linear-gradient(to left, var(--cream) 20%, transparent);
+  }
+}
+.menu-section .menu-head-text {
+  gap: var(--space-24);
+}
+.menu-section .menu-head-cta {
+  margin-top: 32px;
+}
+@media (width < theme(--breakpoint-sm)) {
+  .menu-section .menu-head {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+  .menu-section .menu-head-text {
+    flex: none;
+    width: 100%;
+    text-align: center;
+  }
+  .menu-section .menu-head-trusted {
+    text-align: left;
+    justify-content: flex-start;
+  }
+  .menu-section .menu-head-cta {
+    width: 100%;
+    margin-top: 0;
+  }
+}
+
+/* menu cards: keep shadows visible — override generic h-scroll overflow */
+.menu-section .menu-grid-scroll.h-scroll,
+.menu-section .menu-grid-scroll.h-scroll--pan-xy {
+  overflow-x:auto;
+  overflow-y:visible;
+}
+@media (width >= theme(--breakpoint-lg)) {
+  .menu-section .menu-grid-scroll.h-scroll,
+  .menu-section .menu-grid-scroll.h-scroll--pan-xy {
+    overflow:visible;
+    touch-action:auto;
+    user-select:auto;
+    cursor:default;
+  }
+}

@@ -1,0 +1,26 @@
+/* ---- how it works section ---- */
+#how .eyebrow {
+  margin-bottom: var(--space-24);
+}
+.main-landing #how .how-step-card--0 {
+  box-shadow:var(--shadow-how-brand);
+}
+.main-landing #how .how-step-card--1 {
+  box-shadow:var(--shadow-how-green);
+}
+.main-landing #how .how-step-card--2 {
+  box-shadow:var(--shadow-how-plum);
+}
+.main-landing #how .card.reveal.in {
+  transform:translateY(0);
+  transition:transform .2s var(--ease), box-shadow .2s var(--ease);
+}
+.main-landing #how .card.reveal.in:hover {
+  transform:translateY(-4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .main-landing #delivery .delivery-feat-card:hover,
+  .main-landing #qa .card:hover {
+    transform:none;
+  }
+}

@@ -1,0 +1,20 @@
+/* ---- compare section ---- */
+#why .eyebrow {
+  margin-bottom: var(--space-24);
+}
+.main-landing #why .compare-card--problems {
+  box-shadow:var(--shadow-why-cream);
+}
+.main-landing #why .compare-card--solutions {
+  box-shadow:var(--shadow-why-solutions);
+}
+.main-landing #why .compare-card--cost {
+  box-shadow:var(--shadow-why-white);
+}
+.main-landing #why .card.reveal.in {
+  transform:translateY(0);
+  transition:transform .2s var(--ease), box-shadow .2s var(--ease);
+}
+.main-landing #why .card.reveal.in:hover {
+  transform:translateY(-4px);
+}
