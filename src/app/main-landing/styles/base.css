@@ -81,11 +81,14 @@
 /* Global resets are kept narrow: Tailwind preflight already sets box-sizing
    and body margin. The rules below scope smooth scrolling and horizontal
    overflow guarding to documents that actually mount the landing, so the
-   checkout, legal, and 404 routes are untouched. */
+   checkout, legal, and 404 routes are untouched. We intentionally do NOT
+   set `overflow-x: hidden` on <html>: doing so combined with body's own
+   `overflow-x: hidden` makes both elements scroll containers and the
+   browser reserves two vertical scrollbar gutters side by side. Horizontal
+   clipping lives on body and on `.main-landing` itself. */
 html:has(.main-landing) {
   scroll-behavior:smooth;
   scrollbar-gutter:stable;
-  overflow-x:hidden;
 }
 html:has(.main-landing) body {
   overflow-x:hidden;
