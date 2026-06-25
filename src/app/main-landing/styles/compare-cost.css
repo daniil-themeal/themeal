@@ -22,13 +22,13 @@
   border-left: none;
 }
 .main-landing #why .compare-cost-grid .stack:not(:last-child) {
-  border-right: 1px solid rgba(236, 230, 223, 1);
+  border-right: 1px solid var(--neutral-100);
 }
 @media (width < theme(--breakpoint-md)) {
   .main-landing #why .compare-cost-grid .stack:not(:last-child) {
     border-right: none;
   }
   .main-landing #why .compare-cost-grid .stack:nth-child(odd) {
-    border-right: 1px solid rgba(236, 230, 223, 1);
+    border-right: 1px solid var(--neutral-100);
   }
 }

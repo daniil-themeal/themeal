@@ -23,14 +23,21 @@ import {
 } from './checkoutStepPageLayoutTokens';
 import type { DeliveryDetailsData } from './deliveryDetailsTypes';
 import {
+  getDeliveryEmailFieldError,
+  getDeliveryFieldError,
   validateDeliveryDetails,
   type DeliveryDetailsFieldErrors,
+  type DeliveryDetailsFieldKey,
 } from './deliveryValidation';
 import { MealCalendar } from './MealCalendar';
 import { getUpcomingDeliveryDates } from './mealCalendarUtils';
 import { DeliverySkipButton } from './DeliverySkipButton';
 
 const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
+
+type DeliveryTextField = 'apartment' | 'fullName' | 'email';
+
+const DELIVERY_TEXT_FIELDS: DeliveryTextField[] = ['apartment', 'fullName', 'email'];
 
 /** Temporarily hidden — set to true to re-enable add-meal-day controls on the calendar. */
 const ENABLE_ADD_MEAL_DAYS = false;
@@ -47,6 +54,24 @@ function getFirstDeliveryFieldErrorId(errors: DeliveryDetailsFieldErrors) {
   if (errors.selectedTimeSlot) return 'delivery-time-slot';
 
   return null;
+}
+
+function getDeliveryTextInputState({
+  field,
+  deliveryDetails,
+  touchedFields,
+  error,
+}: {
+  field: DeliveryTextField;
+  deliveryDetails: DeliveryDetailsData;
+  touchedFields: Set<DeliveryTextField>;
+  error?: string;
+}) {
+  if (error) return undefined;
+  if (!touchedFields.has(field)) return undefined;
+  if (!getDeliveryFieldError(field, deliveryDetails)) return 'success' as const;
+
+  return undefined;
 }
 
 function InfoBox() {
@@ -99,13 +124,23 @@ export function DeliveryDetailsScreen({
   onSkip,
 }: DeliveryDetailsScreenProps) {
   const [fieldErrors, setFieldErrors] = useState<DeliveryDetailsFieldErrors>({});
+  const [touchedFields, setTouchedFields] = useState<Set<DeliveryTextField>>(() => new Set());
+  const [submitAttempted, setSubmitAttempted] = useState(false);
   const deliveryDates = useMemo(() => getUpcomingDeliveryDates(60, days), [days]);
 
   const addressTitle = selectedAddress?.title ?? 'Delivery address';
   const addressSub = selectedAddress?.subtitle ?? 'Select your delivery address';
 
-  const clearFieldError = (field: keyof DeliveryDetailsFieldErrors) => {
+  const syncFieldError = (field: DeliveryDetailsFieldKey, details: DeliveryDetailsData) => {
+    const message = getDeliveryFieldError(field, details);
+
     setFieldErrors((current) => {
+      if (message) {
+        if (current[field] === message) return current;
+
+        return { ...current, [field]: message };
+      }
+
       if (!current[field]) return current;
 
       const next = { ...current };
@@ -114,12 +149,91 @@ export function DeliveryDetailsScreen({
     });
   };
 
+  const syncEmailFieldError = (email: string, requireValue = submitAttempted) => {
+    const message = getDeliveryEmailFieldError(email, { requireValue });
+
+    setFieldErrors((current) => {
+      if (message) {
+        if (current.email === message) return current;
+
+        return { ...current, email: message };
+      }
+
+      if (!current.email) return current;
+
+      const next = { ...current };
+      delete next.email;
+      return next;
+    });
+  };
+
+  const markFieldTouched = (field: DeliveryTextField) => {
+    setTouchedFields((current) => {
+      if (current.has(field)) return current;
+
+      const next = new Set(current);
+      next.add(field);
+      return next;
+    });
+  };
+
+  const markAllTextFieldsTouched = () => {
+    setTouchedFields(new Set(DELIVERY_TEXT_FIELDS));
+  };
+
+  const handleTextFieldChange = (field: DeliveryTextField, value: string) => {
+    onDeliveryDetailsChange({ [field]: value });
+
+    if (field === 'email') {
+      setFieldErrors((current) => {
+        if (!submitAttempted && !current.email) return current;
+
+        const message = getDeliveryEmailFieldError(value, { requireValue: submitAttempted });
+
+        if (message) {
+          if (current.email === message) return current;
+
+          return { ...current, email: message };
+        }
+
+        if (!current.email) return current;
+
+        const next = { ...current };
+        delete next.email;
+        return next;
+      });
+
+      return;
+    }
+
+    if (submitAttempted) {
+      syncFieldError(field, { ...deliveryDetails, [field]: value });
+    }
+  };
+
+  const handleTextFieldBlur = (field: DeliveryTextField) => {
+    markFieldTouched(field);
+
+    if (field === 'email') {
+      syncEmailFieldError(deliveryDetails.email);
+      return;
+    }
+
+    if (submitAttempted) {
+      syncFieldError(field, deliveryDetails);
+    }
+  };
+
   const handleSkip = () => {
     setFieldErrors({});
+    setSubmitAttempted(false);
     onSkip?.();
   };
 
   const handleContinue = () => {
+    markAllTextFieldsTouched();
+    setSubmitAttempted(true);
+
     const validation = validateDeliveryDetails(deliveryDetails);
 
     if (!validation.isValid) {
@@ -141,6 +255,7 @@ export function DeliveryDetailsScreen({
     }
 
     setFieldErrors({});
+    setSubmitAttempted(false);
     onContinue?.();
   };
 
@@ -168,10 +283,14 @@ export function DeliveryDetailsScreen({
               id="delivery-apartment"
               label="Apartment / villa number *"
               value={deliveryDetails.apartment}
-              onChange={(e) => {
-                onDeliveryDetailsChange({ apartment: e.target.value });
-                clearFieldError('apartment');
-              }}
+              onChange={(e) => handleTextFieldChange('apartment', e.target.value)}
+              onBlur={() => handleTextFieldBlur('apartment')}
+              state={getDeliveryTextInputState({
+                field: 'apartment',
+                deliveryDetails,
+                touchedFields,
+                error: fieldErrors.apartment,
+              })}
               error={fieldErrors.apartment}
               placeholder="67"
             />
@@ -189,10 +308,14 @@ export function DeliveryDetailsScreen({
               id="delivery-full-name"
               label="Full name *"
               value={deliveryDetails.fullName}
-              onChange={(e) => {
-                onDeliveryDetailsChange({ fullName: e.target.value });
-                clearFieldError('fullName');
-              }}
+              onChange={(e) => handleTextFieldChange('fullName', e.target.value)}
+              onBlur={() => handleTextFieldBlur('fullName')}
+              state={getDeliveryTextInputState({
+                field: 'fullName',
+                deliveryDetails,
+                touchedFields,
+                error: fieldErrors.fullName,
+              })}
               error={fieldErrors.fullName}
               placeholder="Ahmed"
             />
@@ -202,10 +325,14 @@ export function DeliveryDetailsScreen({
               label="E-mail *"
               type="email"
               value={deliveryDetails.email}
-              onChange={(e) => {
-                onDeliveryDetailsChange({ email: e.target.value });
-                clearFieldError('email');
-              }}
+              onChange={(e) => handleTextFieldChange('email', e.target.value)}
+              onBlur={() => handleTextFieldBlur('email')}
+              state={getDeliveryTextInputState({
+                field: 'email',
+                deliveryDetails,
+                touchedFields,
+                error: fieldErrors.email,
+              })}
               error={fieldErrors.email}
               placeholder="email@themeal.menu"
             />
@@ -267,8 +394,12 @@ export function DeliveryDetailsScreen({
                 options={TIME_SLOTS.map((slot) => ({ value: slot, label: slot }))}
                 value={deliveryDetails.selectedTimeSlot}
                 onChange={(selectedTimeSlot) => {
+                  const nextDetails = { ...deliveryDetails, selectedTimeSlot };
                   onDeliveryDetailsChange({ selectedTimeSlot });
-                  clearFieldError('selectedTimeSlot');
+
+                  if (submitAttempted) {
+                    syncFieldError('selectedTimeSlot', nextDetails);
+                  }
                 }}
                 error={fieldErrors.selectedTimeSlot}
                 placeholder="Select timeslot"

@@ -152,52 +152,6 @@ function Menu({ t, onOrder }) {
           .menu-head-title {
             width:100%;
           }
-          .menucard-shell {
-            min-width:0;
-            align-self:stretch;
-            display:flex;
-            flex-direction:column;
-            cursor:pointer;
-          }
-          .menucard {
-            display:flex;
-            flex-direction:column;
-            flex:1;
-            flex-shrink:0;
-            gap:24px;
-            min-height:0;
-            cursor:pointer;
-          }
-          .menucard-img {
-            object-fit:cover;
-          }
-          .menucard-body {
-            flex:1;
-            display:flex;
-            flex-direction:column;
-            min-height:0;
-            padding-inline:4px;
-          }
-          .menucard-meta {
-            margin:0 0 16px;
-            display:flex;
-            flex-wrap:nowrap;
-            align-items:center;
-            gap:0 0.35em;
-            font-size:var(--fs-14);
-            font-weight:500;
-            color:var(--stone);
-            line-height:1.4;
-            white-space:nowrap;
-          }
-          .menucard-title {
-            margin:4px 0 0;
-            flex:1;
-            font-weight:600;
-            font-size:var(--fs-20);
-            line-height:1.35;
-            color:var(--primary);
-          }
           .menu-note {
             display:flex;
             align-items:flex-start;

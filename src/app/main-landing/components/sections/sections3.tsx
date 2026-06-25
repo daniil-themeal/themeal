@@ -66,7 +66,7 @@ function Delivery({ t, onOrder }) {
           createElement('div', { className:'stack delivery-left' },
             createElement('h2', { className:'h2 reveal delivery-title' }, t.delivery.title),
             createElement('button', { className:'btn btn-primary btn-lg reveal delivery-cta', onClick:onOrder }, t.delivery.cta, createElement(Icon.arrow,{size:20,className:'flip'}))),
-          createElement('div', { className:'stack delivery-feats', style:{ gap:12 } }, featCards)))));
+          createElement('div', { className:'stack delivery-feats' }, featCards)))));
 }
 
 /* ---------------- FAQ ---------------- */

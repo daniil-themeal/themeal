@@ -1,5 +1,5 @@
 import { COLOR_TOKENS } from '../common/colorTokens';
-import { FIELD_CLEAR_CIRCLE_SIZE_PX } from '../common/fieldSizeTokens';
+import { CALENDAR_CELL_ACTION_CIRCLE_SIZE_PX } from '../common/fieldSizeTokens';
 import { MinusIcon, PlusIcon } from '../common/icons';
 
 type CalendarCellActionIconProps = {
@@ -23,8 +23,8 @@ export function CalendarCellActionIcon({ icon, tone = 'primary' }: CalendarCellA
     <span
       className="flex shrink-0 items-center justify-center rounded-full"
       style={{
-        width: FIELD_CLEAR_CIRCLE_SIZE_PX,
-        height: FIELD_CLEAR_CIRCLE_SIZE_PX,
+        width: CALENDAR_CELL_ACTION_CIRCLE_SIZE_PX,
+        height: CALENDAR_CELL_ACTION_CIRCLE_SIZE_PX,
         backgroundColor,
         color: iconColor,
       }}

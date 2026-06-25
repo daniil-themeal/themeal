@@ -3,6 +3,12 @@ import type { ChangeEvent, ComponentPropsWithoutRef, CSSProperties, ReactNode } 
 
 import { COLOR_TOKENS } from './colorTokens';
 import {
+  FIELD_CLEAR_ERROR_STYLES,
+  FIELD_CLEAR_NEUTRAL_STYLES,
+  FIELD_CLEAR_SUCCESS_STYLES,
+  type FieldClearCssVariables,
+} from './fieldClearTokens';
+import {
   FIELD_SIZE_CONFIG,
   getFieldSizeStyle,
   type FieldSize,
@@ -29,19 +35,21 @@ type TextAreaProps = {
   className?: string;
 } & Omit<ComponentPropsWithoutRef<'textarea'>, 'className'>;
 
-type TextAreaCssVariables = CSSProperties & {
-  '--text-area-bg': string;
-  '--text-area-border': string;
-  '--text-area-focus-border': string;
-  '--text-area-text': string;
-  '--text-area-placeholder': string;
-};
+type TextAreaCssVariables = CSSProperties &
+  FieldClearCssVariables & {
+    '--text-area-bg': string;
+    '--text-area-border': string;
+    '--text-area-focus-border': string;
+    '--text-area-text': string;
+    '--text-area-placeholder': string;
+  };
 
 const TEXT_AREA_LINE_HEIGHT_RATIO = 1.3;
 const TEXT_AREA_DEFAULT_ROWS = 4;
 
 const FIELD_STATE_STYLES: Record<TextAreaState, TextAreaCssVariables> = {
   default: {
+    ...FIELD_CLEAR_NEUTRAL_STYLES,
     '--text-area-bg': COLOR_TOKENS.neutral[50],
     '--text-area-border': 'transparent',
     '--text-area-focus-border': COLOR_TOKENS.neutral[300],
@@ -50,6 +58,7 @@ const FIELD_STATE_STYLES: Record<TextAreaState, TextAreaCssVariables> = {
   },
 
   focus: {
+    ...FIELD_CLEAR_NEUTRAL_STYLES,
     '--text-area-bg': COLOR_TOKENS.neutral[50],
     '--text-area-border': COLOR_TOKENS.neutral[300],
     '--text-area-focus-border': COLOR_TOKENS.neutral[300],
@@ -58,6 +67,7 @@ const FIELD_STATE_STYLES: Record<TextAreaState, TextAreaCssVariables> = {
   },
 
   success: {
+    ...FIELD_CLEAR_SUCCESS_STYLES,
     '--text-area-bg': COLOR_TOKENS.success[50],
     '--text-area-border': 'transparent',
     '--text-area-focus-border': COLOR_TOKENS.neutral[300],
@@ -66,9 +76,10 @@ const FIELD_STATE_STYLES: Record<TextAreaState, TextAreaCssVariables> = {
   },
 
   error: {
+    ...FIELD_CLEAR_ERROR_STYLES,
     '--text-area-bg': COLOR_TOKENS.danger[50],
     '--text-area-border': 'transparent',
-    '--text-area-focus-border': COLOR_TOKENS.neutral[300],
+    '--text-area-focus-border': COLOR_TOKENS.danger[200],
     '--text-area-text': COLOR_TOKENS.neutral[900],
     '--text-area-placeholder': COLOR_TOKENS.neutral[200],
   },

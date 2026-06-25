@@ -1,4 +1,9 @@
 /* ---- how it works section ---- */
+.main-landing .how-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: var(--space-20);
+}
 #how .eyebrow {
   margin-bottom: var(--space-24);
 }

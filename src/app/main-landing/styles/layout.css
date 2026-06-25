@@ -25,7 +25,7 @@
   row-gap: var(--space-16);
 }
 .benefits-cards {
-  gap:var(--space-16);
+  gap:var(--cards-grid-gap);
 }
 @media (width < theme(--breakpoint-lg)) {
   .benefits-cards > * { grid-column:1 / -1; }

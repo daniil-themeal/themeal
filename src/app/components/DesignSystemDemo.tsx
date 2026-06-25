@@ -1394,6 +1394,11 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                 state={state}
                 error={state === 'error' ? 'Please enter a valid value.' : undefined}
                 counter={state === 'error' ? '0/500' : undefined}
+                leftIcon={
+                  state === 'success' ? (
+                    <MapPinIcon size={24} />
+                  ) : undefined
+                }
               />
             ))}
 

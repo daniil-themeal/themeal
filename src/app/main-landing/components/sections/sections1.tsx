@@ -466,7 +466,7 @@ function HowItWorks({ t }) {
           createElement('div', { className:'eyebrow' }, t.how.eyebrow),
           createElement('h2', { className:'h2', style:{ margin:0 } }, t.how.title)
         ),
-        createElement('div', { className:'how-grid', style:{ display:'grid', gridTemplateColumns:'repeat(auto-fit,minmax(260px,1fr))', gap:16 } },
+        createElement('div', { className:'how-grid' },
           t.how.steps.map((s,i)=>{
             const accentCard = ACCENT_CARD_VARIANTS[ACCENT_CARD_VARIANT_ORDER[i]];
             return createElement('div', { key:i, className:`card reveal how-step-card how-step-card--${i}`, 'data-d':String(i+1), style:{ overflow:'hidden', background:accentCard.background, borderRadius:'50px', color:'rgba(42, 34, 48, 1)' } },

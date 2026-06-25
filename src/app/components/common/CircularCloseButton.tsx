@@ -2,7 +2,7 @@ import type { ButtonHTMLAttributes, CSSProperties } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
 import { XIcon } from './icons';
-import { iconColorClassName, iconColorStyle, type IconColorTokenName } from './iconColorTokens';
+import { iconColorStyle, type IconColorTokenName } from './iconColorTokens';
 import type { IconSize } from './icons/iconSize';
 
 type CircularCloseButtonCssVariables = CSSProperties & {
@@ -71,7 +71,10 @@ export function CircularCloseButton({
           .join(' ')}
       >
         <span
-          className={iconClassName ?? iconColorClassName[iconTone]}
+          className={
+            iconClassName ??
+            'text-[var(--circular-close-icon,var(--icon-color-inline))]'
+          }
           style={iconClassName ? undefined : iconColorStyle[iconTone]}
         >
           <XIcon size={iconSize} />

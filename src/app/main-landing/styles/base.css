@@ -144,6 +144,7 @@ html:has(.main-landing) body {
 
   --section-intro-gap: clamp(var(--space-32), 8vw, var(--space-64));
   --delivery-block-gap: clamp(var(--space-32), 8vw, var(--space-64));
+  --cards-grid-gap: var(--space-20);
 
   --shadow-fab:0 4px 12px rgba(154,56,239,.28), 0 8px 24px rgba(154,56,239,.20);
   --shadow-fab-hover:0 6px 16px rgba(154,56,239,.32), 0 10px 28px rgba(154,56,239,.22);

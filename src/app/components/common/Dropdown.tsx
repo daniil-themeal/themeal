@@ -5,6 +5,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { COLOR_TOKENS } from './colorTokens';
 import {
   FIELD_SIZE_CONFIG,
+  getFieldCheckIconSizePx,
   getFieldSizeStyle,
   type FieldSize,
 } from './fieldSizeTokens';
@@ -360,7 +361,7 @@ export function Dropdown({
   const descriptionId = id && (error || hint) ? `${id}-description` : undefined;
   const sizeConfig = FIELD_SIZE_CONFIG[size];
   const chevronSize = sizeConfig.iconSizePx;
-  const checkIconSize = Math.min(sizeConfig.iconSizePx, 20);
+  const checkIconSize = getFieldCheckIconSizePx(size);
   const isMaxMd = useMaxMdViewport();
   const useNativeSelect = nativeOnMobile && isMaxMd && !leftIcon;
 

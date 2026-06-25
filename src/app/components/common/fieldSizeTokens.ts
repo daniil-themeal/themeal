@@ -48,7 +48,9 @@ export const FIELD_SIZE_CONFIG: Record<FieldSize, FieldSizeConfig> = {
   },
 };
 
-export const FIELD_CLEAR_CIRCLE_SIZE_PX = 36;
+export const FIELD_CLEAR_CIRCLE_SIZE_PX = 24;
+export const FIELD_CLEAR_ICON_SIZE_PX = 12;
+export const CALENDAR_CELL_ACTION_CIRCLE_SIZE_PX = 36;
 
 function getFieldClearInset(heightPx: number) {
   return Math.max(0, (heightPx - FIELD_CLEAR_CIRCLE_SIZE_PX) / 2);
@@ -64,6 +66,7 @@ export type FieldSizeCssVariables = {
   '--field-icon-size': string;
   '--field-textarea-vertical-padding': string;
   '--field-clear-circle-size': string;
+  '--field-clear-icon-size': string;
   '--field-clear-inset': string;
   '--field-clear-slot-width': string;
 };
@@ -82,7 +85,12 @@ export function getFieldSizeStyle(size: FieldSize): FieldSizeCssVariables {
     '--field-icon-size': `${config.iconSizePx}px`,
     '--field-textarea-vertical-padding': `${config.textareaVerticalPaddingPx}px`,
     '--field-clear-circle-size': `${FIELD_CLEAR_CIRCLE_SIZE_PX}px`,
+    '--field-clear-icon-size': `${FIELD_CLEAR_ICON_SIZE_PX}px`,
     '--field-clear-inset': `${clearInsetPx}px`,
     '--field-clear-slot-width': `${FIELD_CLEAR_CIRCLE_SIZE_PX + clearInsetPx}px`,
   };
+}
+
+export function getFieldCheckIconSizePx(size: FieldSize): number {
+  return Math.min(FIELD_SIZE_CONFIG[size].iconSizePx, 20);
 }

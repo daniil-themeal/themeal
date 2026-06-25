@@ -91,30 +91,66 @@
 }
 .menu-section .menu-grid.menu-grid--cards {
   display:grid;
-  grid-template-columns:repeat(12, minmax(0, 1fr));
-  column-gap:var(--space-24);
-  row-gap:var(--grid-gap);
+  grid-template-columns:repeat(4, minmax(0, 1fr));
+  gap:var(--space-20);
   align-items:stretch;
   width:100%;
   min-width:0;
   overflow:visible;
 }
 .menu-section .menu-grid--cards > .menucard-shell {
-  grid-column:span 3;
   min-width:0;
   position:relative;
   z-index:0;
   overflow:visible;
+  display:flex;
+  flex-direction:column;
+  cursor:pointer;
+}
+.menu-section .menucard-shell > .menucard {
+  display:flex;
+  flex-direction:column;
+  flex:1;
+  flex-shrink:0;
+  gap:var(--space-24);
+  min-height:0;
+  min-width:0;
+  width:100%;
+  cursor:pointer;
+}
+.menu-section .menucard-body {
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  min-width:0;
+  padding-inline:4px;
+  overflow:hidden;
+}
+.menu-section .menucard-meta {
+  margin:0 0 var(--space-16);
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:0.35em;
+  font-size:var(--fs-14);
+  font-weight:500;
+  color:var(--stone);
+  line-height:1.4;
+}
+.menu-section .menucard-title {
+  margin:4px 0 0;
+  flex:1;
+  font-weight:600;
+  font-size:var(--fs-20);
+  line-height:1.35;
+  color:var(--primary);
+  overflow-wrap:break-word;
+  transition:color 200ms ease;
 }
 .menu-section .menucard-shell:hover,
 .menu-section .menucard-shell:focus-visible {
   z-index:10;
-}
-.menu-section .menucard-shell > .menucard {
-  flex:1;
-  width:100%;
-  min-height:0;
-  overflow:visible;
 }
 .menu-section .menucard-img-wrap {
   aspect-ratio:360/262;
@@ -123,13 +159,14 @@
   justify-content:center;
   width:100%;
   overflow:visible;
+  border-radius:8px;
 }
 .menu-section .menucard-img {
   -webkit-user-drag:none;
   user-select:none;
   pointer-events:none;
-  width:94.74%;
-  height:94.74%;
+  width:100%;
+  height:100%;
   object-fit:cover;
   border-radius:8px;
   transform-origin:center;
@@ -138,9 +175,6 @@
 .menu-section .menucard-shell:hover .menucard-img,
 .menu-section .menucard-shell:focus-visible .menucard-img {
   transform:scale(1.05);
-}
-.menu-section .menucard-title {
-  transition:color 200ms ease;
 }
 .menu-section .menucard-shell:hover .menucard-title,
 .menu-section .menucard-shell:focus-visible .menucard-title {
@@ -157,11 +191,7 @@
 }
 @media (width < theme(--breakpoint-lg)) {
   .menu-section .menu-grid.menu-grid--cards {
-    column-gap:var(--space-24);
-    row-gap:var(--space-16);
-  }
-  .menu-section .menu-grid--cards > .menucard-shell {
-    grid-column:span 6;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
   }
   /* edge fade: day tabs scroll full-bleed */
   .menu-section .menu-days-wrap::before,
@@ -190,8 +220,8 @@
   margin-top: 32px;
 }
 @media (width < theme(--breakpoint-sm)) {
-  .menu-section .menu-grid--cards > .menucard-shell {
-    grid-column:span 12;
+  .menu-section .menu-grid.menu-grid--cards {
+    grid-template-columns:minmax(0, 1fr);
   }
   .menu-section .menu-head {
     flex-direction: column;

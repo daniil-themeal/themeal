@@ -2,8 +2,16 @@ import { useState } from 'react';
 import type { ChangeEvent, ComponentPropsWithoutRef, CSSProperties, ReactNode } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
-import { getFieldSizeStyle, type FieldSize } from './fieldSizeTokens';
+import {
+  FIELD_CLEAR_ERROR_STYLES,
+  FIELD_CLEAR_NEUTRAL_STYLES,
+  FIELD_CLEAR_SUCCESS_STYLES,
+  type FieldClearCssVariables,
+} from './fieldClearTokens';
+import { getFieldCheckIconSizePx, getFieldSizeStyle, type FieldSize } from './fieldSizeTokens';
 import { FormLabel } from './FormLabel';
+import { CheckIcon } from './icons/feather/CheckIcon';
+import type { IconSize } from './icons/iconSize';
 import { InputClearButton } from './InputClearButton';
 import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
@@ -34,16 +42,18 @@ type TextInputProps = TextInputBaseProps &
   TextInputIconProps &
   Omit<ComponentPropsWithoutRef<'input'>, 'className'>;
 
-type TextInputCssVariables = CSSProperties & {
-  '--text-input-bg': string;
-  '--text-input-border': string;
-  '--text-input-focus-border': string;
-  '--text-input-text': string;
-  '--text-input-placeholder': string;
-};
+type TextInputCssVariables = CSSProperties &
+  FieldClearCssVariables & {
+    '--text-input-bg': string;
+    '--text-input-border': string;
+    '--text-input-focus-border': string;
+    '--text-input-text': string;
+    '--text-input-placeholder': string;
+  };
 
 const FIELD_STATE_STYLES: Record<TextInputState, TextInputCssVariables> = {
   default: {
+    ...FIELD_CLEAR_NEUTRAL_STYLES,
     '--text-input-bg': COLOR_TOKENS.neutral[50],
     '--text-input-border': 'transparent',
     '--text-input-focus-border': COLOR_TOKENS.neutral[300],
@@ -52,6 +62,7 @@ const FIELD_STATE_STYLES: Record<TextInputState, TextInputCssVariables> = {
   },
 
   focus: {
+    ...FIELD_CLEAR_NEUTRAL_STYLES,
     '--text-input-bg': COLOR_TOKENS.neutral[50],
     '--text-input-border': COLOR_TOKENS.neutral[300],
     '--text-input-focus-border': COLOR_TOKENS.neutral[300],
@@ -60,6 +71,7 @@ const FIELD_STATE_STYLES: Record<TextInputState, TextInputCssVariables> = {
   },
 
   success: {
+    ...FIELD_CLEAR_SUCCESS_STYLES,
     '--text-input-bg': COLOR_TOKENS.success[50],
     '--text-input-border': 'transparent',
     '--text-input-focus-border': COLOR_TOKENS.neutral[300],
@@ -68,9 +80,10 @@ const FIELD_STATE_STYLES: Record<TextInputState, TextInputCssVariables> = {
   },
 
   error: {
+    ...FIELD_CLEAR_ERROR_STYLES,
     '--text-input-bg': COLOR_TOKENS.danger[50],
     '--text-input-border': 'transparent',
-    '--text-input-focus-border': COLOR_TOKENS.neutral[300],
+    '--text-input-focus-border': COLOR_TOKENS.danger[200],
     '--text-input-text': COLOR_TOKENS.neutral[900],
     '--text-input-placeholder': COLOR_TOKENS.neutral[200],
   },
@@ -121,12 +134,24 @@ const iconSlotClassName = [
 function getFieldState({
   explicitState,
   hasError,
+  hasValue,
+  isFocused,
 }: {
   explicitState?: TextInputState;
   hasError: boolean;
+  hasValue: boolean;
+  isFocused: boolean;
 }) {
   if (hasError) {
     return 'error';
+  }
+
+  if (explicitState === 'success' && hasValue && !isFocused) {
+    return 'success';
+  }
+
+  if (explicitState === 'success' && isFocused) {
+    return 'default';
   }
 
   return explicitState ?? 'default';
@@ -170,14 +195,27 @@ export function TextInput({
 }: TextInputProps) {
   const [isFocused, setIsFocused] = useState(false);
   const hasError = Boolean(error);
-  const fieldState = getFieldState({ explicitState, hasError });
   const descriptionId = id && (error || hint) ? `${id}-description` : undefined;
   const showLabelRow = Boolean(label) || Boolean(counter);
   const stringValue = value == null ? '' : String(value);
   const hasValue = stringValue.length > 0;
+  const fieldState = getFieldState({
+    explicitState,
+    hasError,
+    hasValue,
+    isFocused,
+  });
   const isClearableType = type !== 'tel' && type !== 'password';
   const showClearButton =
     clearable && hasValue && !disabled && isClearableType && isFocused;
+  const showSuccessIcon =
+    explicitState === 'success' &&
+    hasValue &&
+    !isFocused &&
+    !disabled &&
+    !hasError &&
+    !rightIcon;
+  const successIconSize = getFieldCheckIconSizePx(size) as IconSize;
 
   const handleClear = () => {
     if (!onChange) return;
@@ -190,6 +228,8 @@ export function TextInput({
 
   const trailingSlot = showClearButton ? (
     <InputClearButton onClick={handleClear} />
+  ) : showSuccessIcon ? (
+    <CheckIcon size={successIconSize} />
   ) : (
     rightIcon
   );
@@ -270,6 +310,14 @@ export function TextInput({
 
         {showClearButton ? (
           <InputClearButton onClick={handleClear} />
+        ) : showSuccessIcon ? (
+          <span
+            className={iconSlotClassName}
+            style={{ color: COLOR_TOKENS.success[600] }}
+            aria-hidden
+          >
+            <CheckIcon size={successIconSize} />
+          </span>
         ) : rightIcon ? (
           <span
             className={iconSlotClassName}
