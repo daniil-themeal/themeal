@@ -35,7 +35,6 @@ import { getPromoCodeDiscount } from '../../config/promoCodes';
 import { MealDetailModal } from './MealDetailModal';
 import { CheckoutPromoCode } from './CheckoutPromoCode';
 import { ChevronDownIcon, MinusIcon, PlusIcon } from '../common/icons';
-import { TabbyPromoWidget } from './TabbyPromoWidget';
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
 import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
 import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_FONT_CLAMP_16_20, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_MOBILE_CLAMP, CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP, CHECKOUT_SECTION_GAP_CLAMP } from './checkoutSpacing';
@@ -466,13 +465,6 @@ export function OrderSummary({
               <Button type="button" variant="primary" size="medium" fullWidth onClick={onOrder}>
                 Continue to Delivery
               </Button>
-            </div>
-
-            <div className={['mt-[length:var(--order-summary-section-gap)] scroll-mb-[72px]', orderSummarySectionPx].join(' ')}>
-              <TabbyPromoWidget
-                price={finalPeriodPrice}
-                source="cart"
-              />
             </div>
           </div>
         </div>

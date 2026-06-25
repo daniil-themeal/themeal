@@ -7,6 +7,7 @@ import applePayColoredSvg from './icons/svg/payment-method/apple-pay-48x20-color
 import applePayMonoSvg from './icons/svg/payment-method/apple-pay-48x20-mono.svg?raw';
 import googlePayColoredSvg from './icons/svg/payment-method/google-pay-48x21-colored.svg?raw';
 import googlePayMonoSvg from './icons/svg/payment-method/google-pay-48x21-mono.svg?raw';
+import googlePayOnPrimarySvg from './icons/svg/payment-method/google-pay-48x21-on-primary.svg?raw';
 import tabbyColoredSvg from './icons/svg/payment-method/tabby-48x20-colored.svg?raw';
 import tabbyMonoSvg from './icons/svg/payment-method/tabby-48x20-mono.svg?raw';
 
@@ -109,7 +110,7 @@ export function getPaymentMethodRasterAsset(
   return PAYMENT_METHOD_RASTER_ASSETS[id];
 }
 
-export const PAYMENT_METHOD_SVG_VARIANTS = ['colored', 'mono'] as const;
+export const PAYMENT_METHOD_SVG_VARIANTS = ['colored', 'mono', 'on-primary'] as const;
 
 export type PaymentMethodSvgVariant =
   (typeof PAYMENT_METHOD_SVG_VARIANTS)[number];
@@ -148,7 +149,11 @@ export function getPaymentMethodSvgAsset(
   id: PaymentMethodSvgId,
   variant: PaymentMethodSvgVariant = 'colored',
 ) {
-  return PAYMENT_METHOD_SVG_ASSETS[id][variant];
+  if (id === 'google-pay' && variant === 'on-primary') {
+    return googlePayOnPrimarySvg;
+  }
+
+  return PAYMENT_METHOD_SVG_ASSETS[id][variant === 'on-primary' ? 'colored' : variant];
 }
 
 export function getPaymentMethodCardIconAsset(

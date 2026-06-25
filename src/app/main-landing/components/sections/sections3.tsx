@@ -6,8 +6,6 @@ import { landingFooterSocials } from '../../../config/socialLinks';
 import { supportEmail } from '../../../config/siteLinks';
 import { Icon, Logo, Stars, Social } from '../icons';
 import { HeroStats } from '../HeroStats';
-import { PaymentBrandLogo } from '../../../components/common/icons';
-
 /* ---------------- Compare benefits ---------------- */
 function Benefits({ t, onQuizClick }) {
   return (
@@ -136,14 +134,9 @@ function FinalOffer({ t, onOrder }) {
       createElement('h2', { className:'h2', style:{ margin:0, maxWidth:880, letterSpacing:'-0.05rem' } },
         t.final.pre, ' ', createElement('span', { style:{ color:'var(--yellow)' } }, t.final.hi)),
       createElement(HeroStats, { stats:t.hero.stats }),
-      createElement('button', { className:'btn btn-secondary btn-xl btn-cta-payments', onClick:onOrder, style:{ marginTop:4 } },
-        createElement('span', { className:'btn-cta-payments__label' },
-          t.final.cta,
-          createElement(Icon.arrow,{ size:22, className:'flip' })),
-        createElement('span', { className:'btn-cta-payments__logos' },
-          createElement(PaymentBrandLogo, { id:'apple-pay',  variant:'mono', height:20 }),
-          createElement(PaymentBrandLogo, { id:'google-pay', variant:'mono', height:20 }),
-          createElement(PaymentBrandLogo, { id:'tabby',      variant:'mono', height:20 })))),
+      createElement('button', { className:'btn btn-secondary btn-lg', onClick:onOrder, style:{ marginTop:4 } },
+        t.final.cta,
+        createElement(Icon.arrow,{ size:20, className:'flip' }))),
     createElement('div', { 'aria-hidden':true, style:{ position:'relative', zIndex:1, width:'100%', height:'clamp(160px,18vw,220px)', marginTop:'var(--space-16)', marginBottom:0 } },
       createElement('div', { dir:'ltr', style:{ position:'absolute', left:-18, right:-18, top:0, display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:'clamp(4px,.8vw,14px)' } },
         trays.map((src,i)=>createElement('img', {

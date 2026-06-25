@@ -1,4 +1,5 @@
 export const TABBY_PROMO_SCRIPT_URL = 'https://checkout.tabby.ai/tabby-promo.js';
+export const TABBY_CARD_SCRIPT_URL = 'https://checkout.tabby.ai/tabby-card.js';
 
 export type TabbyCurrency = 'AED' | 'SAR' | 'KWD';
 

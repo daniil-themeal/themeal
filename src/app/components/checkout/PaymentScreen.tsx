@@ -40,6 +40,8 @@ import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
 import { IconTextRow } from '../common/IconTextRow';
 import { ICON_TEXT_ROW_LAYOUT } from '../common/iconTextRowLayoutTokens';
 import { CheckoutPromoCode } from './CheckoutPromoCode';
+import { PaymentSubmitButton } from './PaymentSubmitButton';
+import { TabbyCheckoutCard } from './TabbyCheckoutCard';
 
 const SESSION_SECONDS = 8 * 60 + 59;
 
@@ -350,6 +352,8 @@ export function PaymentScreen({
                 />
               ))}
             </div>
+
+            <TabbyCheckoutCard price={finalPeriodPrice} visible={paymentMethod === 'tabby'} />
           </div>
 
           {isTrial ? null : (
@@ -401,9 +405,11 @@ export function PaymentScreen({
 
           <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardFooter} ${CHECKOUT_STEP_SECTION_PX}`}>
             <div className={CHECKOUT_STEP_PAGE_LAYOUT.cardSectionInner}>
-              <Button type="button" variant="primary" size="medium" fullWidth onClick={onPay}>
-                Pay AED {formatAed(finalPeriodPrice)}
-              </Button>
+              <PaymentSubmitButton
+                method={paymentMethod}
+                amount={finalPeriodPrice}
+                onPay={onPay}
+              />
 
               <p
                 className={[
