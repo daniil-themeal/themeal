@@ -24,6 +24,7 @@ import {
   CHECKOUT_SECTION_GAP_CLAMP,
 } from './checkoutSpacing';
 import { MealDetailModal } from './MealDetailModal';
+import { TabbyPromoWidget } from './TabbyPromoWidget';
 
 type TrialOrderSummaryCssVariables = CSSProperties & {
   '--checkout-card-padding': string;
@@ -357,6 +358,15 @@ export function TrialOrderSummary({
               <p className="text-center font-sans text-[length:var(--order-summary-small-font-size)] font-medium leading-[140%] text-[var(--order-summary-muted)]">
                 One-time order. No subscription.
               </p>
+            </div>
+
+            <div
+              className={[
+                'mt-[length:var(--order-summary-section-gap)] scroll-mb-[72px]',
+                trialOrderSummarySectionPx,
+              ].join(' ')}
+            >
+              <TabbyPromoWidget price={pricing.periodPrice} source="cart" />
             </div>
           </div>
         </div>
