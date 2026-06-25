@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import { socialLinks } from '../../config/socialLinks';
+import { isDevToolsEnabled } from '../../devToolsEnabled';
 import { Icon } from './icons';
 
 import type { MealContentEn } from './content/mealContentEn';
@@ -47,16 +48,20 @@ export function OrderFab({ t, onOrderClick, onQuizClick, onTrialClick, hidden }:
 
   if (hidden) return null;
 
+  const showPromoFabs = !isDevToolsEnabled;
+
   return createPortal(
     <div className={`order-fab-group${showOrder ? ' order-fab-group--order-visible' : ''}`}>
-      <button
-        type="button"
-        onClick={onQuizClick}
-        aria-label={t.benefits.cta}
-        className="order-fab-quiz"
-      >
-        <Icon.clock size={24} />
-      </button>
+      {showPromoFabs ? (
+        <button
+          type="button"
+          onClick={onQuizClick}
+          aria-label={t.benefits.cta}
+          className="order-fab-quiz"
+        >
+          <Icon.clock size={24} />
+        </button>
+      ) : null}
 
       <a
         href={socialLinks.whatsapp}
@@ -68,7 +73,7 @@ export function OrderFab({ t, onOrderClick, onQuizClick, onTrialClick, hidden }:
         <OrderFabWhatsAppIcon />
       </a>
 
-      {onTrialClick ? (
+      {onTrialClick && showPromoFabs ? (
         <button
           type="button"
           onClick={onTrialClick}
