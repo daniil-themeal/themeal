@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 
 
 
-import type { Plan } from '../../data/checkoutPricing';
+import type { Plan, DayOption, Duration } from '../../data/checkoutPricing';
 
 import type { LightMealOption } from '../../data/testMeals';
 
@@ -34,6 +34,12 @@ export function FullMenuModal({
 
   lightMealOption,
 
+  days = 'weekdays',
+
+  duration = 'monthly',
+
+  isTrial = false,
+
 }: {
 
   isOpen: boolean;
@@ -43,6 +49,12 @@ export function FullMenuModal({
   plan: Plan;
 
   lightMealOption: LightMealOption;
+
+  days?: DayOption;
+
+  duration?: Duration;
+
+  isTrial?: boolean;
 
 }) {
 
@@ -96,11 +108,17 @@ export function FullMenuModal({
 
             lightMealOption={lightMealOption}
 
+            days={days}
+
+            duration={duration}
+
             onRequestClose={requestClose}
 
             onMealDetailOpenChange={setMealDetailOpen}
 
             className="min-h-0 flex-1"
+
+            isTrial={isTrial}
 
           />
 

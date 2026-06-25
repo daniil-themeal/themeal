@@ -1,11 +1,14 @@
 import { COLOR_TOKENS } from './colorTokens';
-import paymentMethodApplePay48 from './icons/payment-method-apple-pay-48x48.png';
 import paymentMethodCard48 from './icons/payment-method-card-48x48.png';
 import paymentMethodCardPrimary48 from './icons/payment-method-card-primary-48x48.png';
-import paymentMethodGooglePay48 from './icons/payment-method-google-pay-48x48.png';
 import paymentMethodMastercard48 from './icons/payment-method-mastercard-48x48.png';
-import paymentMethodTabby48 from './icons/payment-method-tabby-48x48.png';
 import paymentMethodVisa48 from './icons/payment-method-visa-48x48.png';
+import applePayColoredSvg from './icons/svg/payment-method/apple-pay-48x20-colored.svg?raw';
+import applePayMonoSvg from './icons/svg/payment-method/apple-pay-48x20-mono.svg?raw';
+import googlePayColoredSvg from './icons/svg/payment-method/google-pay-48x21-colored.svg?raw';
+import googlePayMonoSvg from './icons/svg/payment-method/google-pay-48x21-mono.svg?raw';
+import tabbyColoredSvg from './icons/svg/payment-method/tabby-48x20-colored.svg?raw';
+import tabbyMonoSvg from './icons/svg/payment-method/tabby-48x20-mono.svg?raw';
 
 export const PAYMENT_METHOD_ICON_IDS = [
   'card',
@@ -79,25 +82,73 @@ export const PAYMENT_METHOD_ICON_FILE_NAMES: Record<
   string
 > = {
   card: 'payment-method-card-48x48.png',
-  'apple-pay': 'payment-method-apple-pay-48x48.png',
-  'google-pay': 'payment-method-google-pay-48x48.png',
-  tabby: 'payment-method-tabby-48x48.png',
+  'apple-pay': 'svg/payment-method/apple-pay-48x20-colored.svg',
+  'google-pay': 'svg/payment-method/google-pay-48x21-colored.svg',
+  tabby: 'svg/payment-method/tabby-48x20-colored.svg',
   visa: 'payment-method-visa-48x48.png',
   mastercard: 'payment-method-mastercard-48x48.png',
 };
 
-export const PAYMENT_METHOD_ICON_ASSETS: Record<PaymentMethodIconTokenId, string> =
-  {
-    card: paymentMethodCard48,
-    'apple-pay': paymentMethodApplePay48,
-    'google-pay': paymentMethodGooglePay48,
-    tabby: paymentMethodTabby48,
-    visa: paymentMethodVisa48,
-    mastercard: paymentMethodMastercard48,
-  };
+/**
+ * Raster-only assets that PaymentMethodIconTile still renders via <img>.
+ * Apple Pay / Google Pay / Tabby live as raw SVG strings in
+ * {@link PAYMENT_METHOD_SVG_ASSETS} and are rendered via PaymentBrandLogo.
+ */
+export const PAYMENT_METHOD_RASTER_ASSETS: Record<
+  Extract<PaymentMethodIconTokenId, 'card' | 'visa' | 'mastercard'>,
+  string
+> = {
+  card: paymentMethodCard48,
+  visa: paymentMethodVisa48,
+  mastercard: paymentMethodMastercard48,
+};
 
-export function getPaymentMethodIconAsset(id: PaymentMethodIconTokenId) {
-  return PAYMENT_METHOD_ICON_ASSETS[id];
+export function getPaymentMethodRasterAsset(
+  id: Extract<PaymentMethodIconTokenId, 'card' | 'visa' | 'mastercard'>,
+) {
+  return PAYMENT_METHOD_RASTER_ASSETS[id];
+}
+
+export const PAYMENT_METHOD_SVG_VARIANTS = ['colored', 'mono'] as const;
+
+export type PaymentMethodSvgVariant =
+  (typeof PAYMENT_METHOD_SVG_VARIANTS)[number];
+
+export const PAYMENT_METHOD_SVG_IDS = [
+  'apple-pay',
+  'google-pay',
+  'tabby',
+] as const;
+
+export type PaymentMethodSvgId = (typeof PAYMENT_METHOD_SVG_IDS)[number];
+
+/**
+ * Native artwork dimensions for each SVG payment-method logo. Used by
+ * PaymentBrandLogo to preserve aspect ratio when scaled to a target height.
+ */
+export const PAYMENT_METHOD_SVG_NATIVE_SIZE: Record<
+  PaymentMethodSvgId,
+  { width: number; height: number }
+> = {
+  'apple-pay': { width: 48, height: 20 },
+  'google-pay': { width: 48, height: 21 },
+  tabby: { width: 48, height: 20 },
+};
+
+export const PAYMENT_METHOD_SVG_ASSETS: Record<
+  PaymentMethodSvgId,
+  Record<PaymentMethodSvgVariant, string>
+> = {
+  'apple-pay': { colored: applePayColoredSvg, mono: applePayMonoSvg },
+  'google-pay': { colored: googlePayColoredSvg, mono: googlePayMonoSvg },
+  tabby: { colored: tabbyColoredSvg, mono: tabbyMonoSvg },
+};
+
+export function getPaymentMethodSvgAsset(
+  id: PaymentMethodSvgId,
+  variant: PaymentMethodSvgVariant = 'colored',
+) {
+  return PAYMENT_METHOD_SVG_ASSETS[id][variant];
 }
 
 export function getPaymentMethodCardIconAsset(

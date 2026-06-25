@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState, lazy, Suspense } from 'react';
-import { Route, Routes } from 'react-router';
+import { Route, Routes, useLocation, useNavigate } from 'react-router';
 import MainLandingPage from './main-landing/MainLandingPage';
 import { CheckoutPage } from './components/checkout/CheckoutPage';
 import type { DayOption, Duration, Plan } from './data/checkoutPricing';
@@ -47,6 +47,9 @@ function resumeCheckoutStep(session: PhoneSession): InitialCheckoutStep {
 }
 
 function HomePage() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const onTrialRoute = location.pathname === '/trial';
   const {
     phoneSession,
     isPhoneVerified,
@@ -61,6 +64,8 @@ function HomePage() {
   } = usePhoneAuth();
 
   const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [trialActive, setTrialActive] = useState(onTrialRoute);
+  const [cameFromTrial, setCameFromTrial] = useState(false);
   const [quizOpen, setQuizOpen] = useState(false);
   const [designSystemOpen, setDesignSystemOpen] = useState(false);
   const [initialCheckoutStep, setInitialCheckoutStep] =
@@ -198,9 +203,49 @@ function HomePage() {
     setAuthModalSuppressed(checkoutOpen || quizOpen);
   }, [checkoutOpen, quizOpen, setAuthModalSuppressed]);
 
+  useEffect(() => {
+    if (!onTrialRoute) return;
+    setTrialActive(true);
+    setCheckoutOpen((open) => {
+      if (open) return open;
+      openCheckoutAt('plan', 'address');
+      return open;
+    });
+  }, [onTrialRoute, openCheckoutAt]);
+
   const closeCheckout = () => {
     setCheckoutOpen(false);
+    setCameFromTrial(false);
+    if (onTrialRoute) {
+      setTrialActive(false);
+      navigate('/', { replace: true });
+    }
   };
+
+  const handleExitTrial = useCallback(() => {
+    setTrialActive(false);
+    setCameFromTrial(true);
+    if (onTrialRoute) {
+      navigate('/', { replace: true });
+    }
+  }, [navigate, onTrialRoute]);
+
+  const openTrial = useCallback(() => {
+    setTrialActive(true);
+    setCameFromTrial(false);
+    if (!onTrialRoute) {
+      navigate('/trial');
+    }
+    openCheckoutAt('plan', 'address');
+  }, [navigate, onTrialRoute, openCheckoutAt]);
+
+  const handleReturnToTrial = useCallback(() => {
+    setCameFromTrial(false);
+    setTrialActive(true);
+    if (!onTrialRoute) {
+      navigate('/trial');
+    }
+  }, [navigate, onTrialRoute]);
 
   const openDesignSystem = () => {
     setDesignSystemOpen(true);
@@ -219,6 +264,7 @@ function HomePage() {
       <MainLandingPage
         onOrderClick={openCheckout}
         onQuizClick={openQuiz}
+        onTrialClick={openTrial}
         onPhoneSubmit={handleLeadPhoneSubmit}
         onContinueClick={openCheckoutResume}
         onResumeVerification={handleResumeVerification}
@@ -253,6 +299,9 @@ function HomePage() {
         sessionIsVerified={phoneSession?.isVerified ?? false}
         onSessionUpdate={handleCheckoutSessionUpdate}
         onResetPhone={() => resetPhoneAndCheckout({ closeCheckout: false })}
+        isTrial={trialActive}
+        onExitTrial={handleExitTrial}
+        onReturnToTrial={cameFromTrial && !trialActive ? handleReturnToTrial : undefined}
       />
     </>
   );
@@ -263,6 +312,7 @@ export default function App() {
     <PhoneAuthProvider>
       <Routes>
         <Route path="/" element={<HomePage />} />
+        <Route path="/trial" element={<HomePage />} />
         <Route path={LEGAL_ROUTES.privacy} element={<PrivacyPolicyPage />} />
         <Route path={LEGAL_ROUTES.terms} element={<TermsAndConditionsPage />} />
         <Route path="*" element={<NotFoundPage />} />

@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 
+import { DEFAULT_CHECKOUT_PRICING } from '../../data/checkoutPricing';
 import {
   addDays,
+  collectDefaultMealDays,
+  getSubscriptionMealDates,
+  getSubscriptionMenuDays,
   getUpcomingDeliveryDates,
   isDefaultMealDay,
   isDeliveryDay,
@@ -14,29 +18,6 @@ function dateAt(year: number, month: number, day: number): Date {
   const date = new Date(year, month, day);
   date.setHours(0, 0, 0, 0);
   return date;
-}
-
-function collectMealDays({
-  startDate,
-  endDate,
-  dayOption,
-}: {
-  startDate: Date;
-  endDate: Date;
-  dayOption: 'weekdays' | 'weekdays+sat' | 'full';
-}): Date[] {
-  const mealDays: Date[] = [];
-  const cursor = new Date(startDate);
-
-  while (cursor < endDate) {
-    if (isDefaultMealDay({ date: cursor, startDate, endDate, dayOption })) {
-      mealDays.push(new Date(cursor));
-    }
-
-    cursor.setDate(cursor.getDate() + 1);
-  }
-
-  return mealDays;
 }
 
 describe('isDeliveryDay', () => {
@@ -57,7 +38,7 @@ describe('isDefaultMealDay', () => {
   it('covers Monday through Friday for 5-day plan starting Monday', () => {
     const startDate = dateAt(2024, 0, 8);
     const endDate = addDays(startDate, 7);
-    const mealDays = collectMealDays({ startDate, endDate, dayOption: 'weekdays' });
+    const mealDays = collectDefaultMealDays({ startDate, endDate, dayOption: 'weekdays' });
 
     expect(mealDays.map((date) => date.getDay())).toEqual([
       MONDAY,
@@ -71,7 +52,7 @@ describe('isDefaultMealDay', () => {
   it('covers Thursday through Wednesday for 5-day plan starting Thursday', () => {
     const startDate = dateAt(2024, 0, 11);
     const endDate = addDays(startDate, 7);
-    const mealDays = collectMealDays({ startDate, endDate, dayOption: 'weekdays' });
+    const mealDays = collectDefaultMealDays({ startDate, endDate, dayOption: 'weekdays' });
 
     expect(mealDays.map((date) => date.getDay())).toEqual([
       THURSDAY,
@@ -85,7 +66,7 @@ describe('isDefaultMealDay', () => {
   it('covers all seven days for 7-day plan starting Monday', () => {
     const startDate = dateAt(2024, 0, 8);
     const endDate = addDays(startDate, 7);
-    const mealDays = collectMealDays({ startDate, endDate, dayOption: 'full' });
+    const mealDays = collectDefaultMealDays({ startDate, endDate, dayOption: 'full' });
 
     expect(mealDays.length).toBe(7);
     expect(mealDays.map((date) => date.getDay())).toEqual([
@@ -116,7 +97,7 @@ describe('isDefaultMealDay', () => {
   it('covers all seven days for 7-day plan starting Thursday', () => {
     const startDate = dateAt(2024, 0, 11);
     const endDate = addDays(startDate, 7);
-    const mealDays = collectMealDays({ startDate, endDate, dayOption: 'full' });
+    const mealDays = collectDefaultMealDays({ startDate, endDate, dayOption: 'full' });
 
     expect(mealDays.length).toBe(7);
     expect(mealDays.map((date) => date.getDay())).toEqual([
@@ -172,5 +153,61 @@ describe('getUpcomingDeliveryDates', () => {
     const dates = getUpcomingDeliveryDates(60, 'full');
 
     expect(dates.some((date) => date.getDay() === SATURDAY)).toBe(false);
+  });
+});
+
+describe('getSubscriptionMealDates', () => {
+  const mondayStart = dateAt(2024, 0, 8);
+
+  it.each([
+    ['weekdays', 'weekly', 5],
+    ['weekdays+sat', 'weekly', 6],
+    ['full', 'weekly', 7],
+    ['weekdays', 'monthly', 20],
+    ['weekdays+sat', 'monthly', 24],
+    ['full', 'monthly', 28],
+    ['weekdays', '2months', 40],
+    ['weekdays+sat', '2months', 48],
+    ['full', '2months', 56],
+  ] as const)('returns %i meal days for %s / %s', (dayOption, duration, expectedCount) => {
+    const mealDates = getSubscriptionMealDates({
+      dayOption,
+      duration,
+      firstDeliveryDate: mondayStart,
+    });
+
+    expect(mealDates).toHaveLength(expectedCount);
+    expect(mealDates[0].getDay()).toBe(MONDAY);
+  });
+
+  it('matches paidDays from pricing table for base plan', () => {
+    for (const duration of ['weekly', 'monthly', '2months'] as const) {
+      for (const dayOption of ['weekdays', 'weekdays+sat', 'full'] as const) {
+        const mealDates = getSubscriptionMealDates({
+          dayOption,
+          duration,
+          firstDeliveryDate: mondayStart,
+        });
+        const paidDays = DEFAULT_CHECKOUT_PRICING[duration][dayOption].base.paidDays;
+
+        expect(mealDates).toHaveLength(paidDays);
+      }
+    }
+  });
+});
+
+describe('getSubscriptionMenuDays', () => {
+  it('uses real calendar dates as MenuDay.date', () => {
+    const startDate = dateAt(2024, 0, 8);
+    const menuDays = getSubscriptionMenuDays({
+      dayOption: 'weekdays',
+      duration: 'weekly',
+      firstDeliveryDate: startDate,
+    });
+
+    expect(menuDays).toHaveLength(5);
+    expect(menuDays[0].date).toBe('2024-01-08');
+    expect(menuDays[0].id).toBe('2024-01-08');
+    expect(menuDays[0].meals.length).toBeGreaterThan(0);
   });
 });

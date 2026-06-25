@@ -156,6 +156,30 @@ export function usePlanStepScrollChaining({
     const rightScroller = createSmoothScroller();
     const desktopMediaQuery = window.matchMedia(PLAN_DESKTOP_MEDIA_QUERY);
 
+    // #region agent log
+    const debugLog = (
+      location: string,
+      message: string,
+      data: Record<string, unknown>,
+      hypothesisId: string,
+    ) => {
+      fetch('http://127.0.0.1:7774/ingest/74a9562f-1e4a-456e-88d5-c6f7971d9185', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'dbfb70' },
+        body: JSON.stringify({
+          sessionId: 'dbfb70',
+          location,
+          message,
+          data,
+          timestamp: Date.now(),
+          hypothesisId,
+        }),
+      }).catch(() => {});
+    };
+    let lastBodyScrollTop = body.scrollTop;
+    let lastSmoothLogAt = 0;
+    // #endregion
+
     const isDesktop = () => desktopMediaQuery.matches;
     let isLayoutChanging = false;
     let layoutSettleTimer: number | null = null;
@@ -171,6 +195,19 @@ export function usePlanStepScrollChaining({
       isLayoutChanging = true;
       stopAllSmoothScrollers();
 
+      // #region agent log
+      debugLog(
+        'usePlanStepScrollChaining.ts:markLayoutChanging',
+        'layout changing – smooth scroll aborted',
+        {
+          bodyScrollTop: body.scrollTop,
+          bodyScrollHeight: body.scrollHeight,
+          rightScrollHeight: right.scrollHeight,
+        },
+        'H1',
+      );
+      // #endregion
+
       if (layoutSettleTimer !== null) {
         window.clearTimeout(layoutSettleTimer);
       }
@@ -178,13 +215,52 @@ export function usePlanStepScrollChaining({
       layoutSettleTimer = window.setTimeout(() => {
         isLayoutChanging = false;
         layoutSettleTimer = null;
+        // #region agent log
+        debugLog(
+          'usePlanStepScrollChaining.ts:layoutSettled',
+          'layout settled',
+          { bodyScrollTop: body.scrollTop },
+          'H1',
+        );
+        // #endregion
       }, LAYOUT_SETTLE_MS);
     };
 
     const applyBodyOverflowDelta = (delta: number): number => {
       if (delta > 0 && !canScrollDown(body)) return delta;
       if (delta < 0 && !canScrollUp(body)) return delta;
-      return applySmoothDelta(body, bodyScroller, delta, shouldAbortSmoothScroll);
+      if (isLayoutChanging) {
+        // #region agent log
+        debugLog(
+          'usePlanStepScrollChaining.ts:applyBodyOverflowDelta',
+          'body overflow delta aborted by layout lock',
+          { delta, bodyScrollTop: body.scrollTop },
+          'H1',
+        );
+        // #endregion
+        return delta;
+      }
+      const remaining = applySmoothDelta(body, bodyScroller, delta, shouldAbortSmoothScroll);
+      // #region agent log
+      if (remaining !== delta) {
+        const now = Date.now();
+        if (now - lastSmoothLogAt > 80) {
+          lastSmoothLogAt = now;
+          debugLog(
+            'usePlanStepScrollChaining.ts:applyBodyOverflowDelta',
+            'smooth scroll applied to body from right overflow',
+            {
+              delta,
+              remaining,
+              bodyScrollTop: body.scrollTop,
+              bodyTarget: bodyScroller.targetScrollTop,
+            },
+            'H2',
+          );
+        }
+      }
+      // #endregion
+      return remaining;
     };
 
     const handleRightWheel = (event: WheelEvent) => {
@@ -224,25 +300,130 @@ export function usePlanStepScrollChaining({
 
       if (!canScrollVertically(right)) return;
 
+      const scrollDown = canScrollDown(body);
+      const scrollUp = canScrollUp(body);
+      let branch = 'unknown';
+
       if (delta > 0) {
-        if (canScrollDown(body)) return;
+        if (scrollDown) {
+          branch = 'native-scroll-down';
+          // #region agent log
+          if (bodyScroller.isAnimating || bodyScroller.rafId !== null) {
+            debugLog(
+              'usePlanStepScrollChaining.ts:handleBodyWheel',
+              'native scroll while body smooth-scroller active',
+              {
+                branch,
+                delta,
+                bodyScrollTop: body.scrollTop,
+                bodyTarget: bodyScroller.targetScrollTop,
+                isAnimating: bodyScroller.isAnimating,
+              },
+              'H2',
+            );
+          }
+          // #endregion
+          return;
+        }
         if (!canScrollDown(right)) {
+          branch = 'prevent-at-bottom';
           event.preventDefault();
+          // #region agent log
+          debugLog(
+            'usePlanStepScrollChaining.ts:handleBodyWheel',
+            'wheel prevented at bottom edge',
+            { branch, delta, bodyScrollTop: body.scrollTop },
+            'H3',
+          );
+          // #endregion
           return;
         }
+        branch = 'redirect-to-right-down';
       } else {
-        if (canScrollUp(body)) return;
-        if (!canScrollUp(right)) {
-          event.preventDefault();
+        if (scrollUp) {
+          branch = 'native-scroll-up';
+          // #region agent log
+          if (bodyScroller.isAnimating || bodyScroller.rafId !== null) {
+            debugLog(
+              'usePlanStepScrollChaining.ts:handleBodyWheel',
+              'native scroll while body smooth-scroller active',
+              {
+                branch,
+                delta,
+                bodyScrollTop: body.scrollTop,
+                bodyTarget: bodyScroller.targetScrollTop,
+                isAnimating: bodyScroller.isAnimating,
+              },
+              'H2',
+            );
+          }
+          // #endregion
           return;
         }
+        if (!canScrollUp(right)) {
+          branch = 'prevent-at-top';
+          event.preventDefault();
+          // #region agent log
+          debugLog(
+            'usePlanStepScrollChaining.ts:handleBodyWheel',
+            'wheel prevented at top edge',
+            { branch, delta, bodyScrollTop: body.scrollTop },
+            'H3',
+          );
+          // #endregion
+          return;
+        }
+        branch = 'redirect-to-right-up';
       }
 
       applySmoothDelta(right, rightScroller, delta, shouldAbortSmoothScroll);
       event.preventDefault();
+      // #region agent log
+      debugLog(
+        'usePlanStepScrollChaining.ts:handleBodyWheel',
+        'wheel redirected to right column',
+        { branch, delta, bodyScrollTop: body.scrollTop },
+        'H3',
+      );
+      // #endregion
     };
 
-    const handleBodyScroll = () => syncScrollerTarget(body, bodyScroller);
+    const handleBodyScroll = () => {
+      // #region agent log
+      const scrollDelta = body.scrollTop - lastBodyScrollTop;
+      if (Math.abs(scrollDelta) > 0 && Math.abs(scrollDelta) < 8) {
+        debugLog(
+          'usePlanStepScrollChaining.ts:handleBodyScroll',
+          'small body scroll tick (possible jitter)',
+          {
+            scrollTop: body.scrollTop,
+            scrollDelta,
+            targetScrollTop: bodyScroller.targetScrollTop,
+            isAnimating: bodyScroller.isAnimating,
+            drift: Math.abs(body.scrollTop - bodyScroller.targetScrollTop),
+          },
+          'H4',
+        );
+      }
+      lastBodyScrollTop = body.scrollTop;
+      // #endregion
+      const driftBefore = Math.abs(body.scrollTop - bodyScroller.targetScrollTop);
+      syncScrollerTarget(body, bodyScroller);
+      // #region agent log
+      if (driftBefore > SCROLL_SYNC_DRIFT_THRESHOLD) {
+        debugLog(
+          'usePlanStepScrollChaining.ts:syncScrollerTarget',
+          'large drift resync on body',
+          {
+            scrollTop: body.scrollTop,
+            targetScrollTop: bodyScroller.targetScrollTop,
+            driftBefore,
+          },
+          'H4',
+        );
+      }
+      // #endregion
+    };
     const handleRightScroll = () => syncScrollerTarget(right, rightScroller);
 
     const handleScrollerLayoutChange = () => {

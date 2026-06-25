@@ -18,7 +18,6 @@ import { PlanTariffSummary } from '../common/PlanTariffSummary';
 import { TextLink } from '../common/TextLink';
 import {
   getMealsForPlan,
-  testMenuDays,
   type LightMealOption,
 } from '../../data/testMeals';
 import type { Meal as MealDetail } from '../../types/meal';
@@ -31,6 +30,7 @@ import {
   type Plan,
 } from '../../data/checkoutPricing';
 import { getCheckoutOrderPricing } from './mealCalendarAddDaysPricing';
+import { getSubscriptionMenuDays } from './mealCalendarUtils';
 import { getPromoCodeDiscount } from '../../config/promoCodes';
 import { MealDetailModal } from './MealDetailModal';
 import { CheckoutPromoCode } from './CheckoutPromoCode';
@@ -172,8 +172,14 @@ export function OrderSummary({
 }) {
   const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
   const [isMealsExpanded, setIsMealsExpanded] = useState(true);
+
+  const subscriptionMenuDays = useMemo(
+    () => getSubscriptionMenuDays({ dayOption: days, duration }),
+    [days, duration],
+  );
+
   const [visibleMeals, setVisibleMeals] = useState<MealDetail[]>(() =>
-    getMealsForPlan(testMenuDays[0], plan, lightMealOption),
+    getMealsForPlan(subscriptionMenuDays[0], plan, lightMealOption),
   );
 
   const dragStartXRef = useRef(0);
@@ -193,8 +199,8 @@ export function OrderSummary({
   const promoDiscount = appliedPromoCode ? getPromoCodeDiscount(appliedPromoCode) : null;
   const finalPeriodPrice = getFinalPeriodPrice(orderPricing.periodPrice, promoDiscount);
   const previewMeals = useMemo(
-    () => getMealsForPlan(testMenuDays[0], plan, lightMealOption),
-    [plan, lightMealOption],
+    () => getMealsForPlan(subscriptionMenuDays[0], plan, lightMealOption),
+    [subscriptionMenuDays, plan, lightMealOption],
   );
   const { showStartFade, showEndFade } = useHorizontalScrollEdgeFades(
     mealsScrollRef,

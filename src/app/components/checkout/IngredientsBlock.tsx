@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 
 import imgMeat from '../../../imports/CheckoutContainer-3/8e481e06f103e33b1c53332e73b7654c749ab79c.png';
 import imgShrimp from '../../../imports/CheckoutContainer-3/6264db5ca4b4084cd123428e1c871e85b6e699eb.png';
+import { Checkbox } from '../common/Checkbox';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
 import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
@@ -31,6 +32,8 @@ const ingredients = [
 type IngredientsBlockProps = {
   selected: string[];
   onToggle: (key: string) => void;
+  indicatorVariant?: 'circle' | 'square';
+  showImage?: boolean;
 };
 
 type IngredientsBlockCssVariables = CSSProperties & {
@@ -99,7 +102,12 @@ function Checkmark() {
   );
 }
 
-export const IngredientsBlock = memo(function IngredientsBlock({ selected, onToggle }: IngredientsBlockProps) {
+export const IngredientsBlock = memo(function IngredientsBlock({
+  selected,
+  onToggle,
+  indicatorVariant = 'circle',
+  showImage = true,
+}: IngredientsBlockProps) {
   return (
     <div
       className="flex w-full min-w-0 flex-col items-start gap-[20px]"
@@ -154,34 +162,46 @@ export const IngredientsBlock = memo(function IngredientsBlock({ selected, onTog
                 </div>
 
                 <div className="flex shrink-0 items-center gap-[16px]">
-                  <div className="relative size-[24px]">
-                    <img
-                      alt=""
-                      className="pointer-events-none absolute inset-0 size-full object-cover"
-                      src={item.img}
-                    />
-                    <div className="absolute inset-[0.87%]">
-                      <BanIcon />
+                  {showImage ? (
+                    <div className="relative size-[24px]">
+                      <img
+                        alt=""
+                        className="pointer-events-none absolute inset-0 size-full object-cover"
+                        src={item.img}
+                      />
+                      <div className="absolute inset-[0.87%]">
+                        <BanIcon />
+                      </div>
                     </div>
-                  </div>
+                  ) : null}
 
                   <div className="flex items-center">
-                    <div
-                      className={[
-                        'relative size-[20px] rounded-full transition-colors duration-150',
-                        checked
-                          ? 'bg-[var(--ingredients-active)]'
-                          : 'bg-[var(--ingredients-idle-check-bg)]',
-                      ].join(' ')}
-                    >
-                      {checked ? (
-                        <div className="absolute left-1/2 top-1/2 size-[16px] -translate-x-1/2 -translate-y-1/2 overflow-clip">
-                          <div className="absolute bottom-[29.17%] left-[16.67%] right-[16.67%] top-1/4">
-                            <Checkmark />
+                    {indicatorVariant === 'square' ? (
+                      <div className="pointer-events-none">
+                        <Checkbox
+                          checked={checked}
+                          onChange={() => undefined}
+                          size="medium"
+                        />
+                      </div>
+                    ) : (
+                      <div
+                        className={[
+                          'relative size-[20px] rounded-full transition-colors duration-150',
+                          checked
+                            ? 'bg-[var(--ingredients-active)]'
+                            : 'bg-[var(--ingredients-idle-check-bg)]',
+                        ].join(' ')}
+                      >
+                        {checked ? (
+                          <div className="absolute left-1/2 top-1/2 size-[16px] -translate-x-1/2 -translate-y-1/2 overflow-clip">
+                            <div className="absolute bottom-[29.17%] left-[16.67%] right-[16.67%] top-1/4">
+                              <Checkmark />
+                            </div>
                           </div>
-                        </div>
-                      ) : null}
-                    </div>
+                        ) : null}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>

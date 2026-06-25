@@ -1,12 +1,26 @@
 import {
+  PAYMENT_METHOD_ICON_LABELS,
+  PAYMENT_METHOD_SVG_IDS,
+  PAYMENT_METHOD_SVG_NATIVE_SIZE,
   getPaymentMethodCardIconAsset,
-  getPaymentMethodIconAsset,
   getPaymentMethodIconSizeClassName,
+  getPaymentMethodRasterAsset,
+  getPaymentMethodSvgAsset,
   type PaymentMethodBrandIconId,
   type PaymentMethodCardIconVariant,
   type PaymentMethodIconId,
   type PaymentMethodIconTokenId,
+  type PaymentMethodSvgId,
+  type PaymentMethodSvgVariant,
 } from '../paymentMethodIconTokens';
+
+const SVG_ID_SET = new Set<PaymentMethodIconTokenId>(PAYMENT_METHOD_SVG_IDS);
+
+function isPaymentMethodSvgId(
+  id: PaymentMethodIconTokenId,
+): id is PaymentMethodSvgId {
+  return SVG_ID_SET.has(id);
+}
 
 type PaymentMethodIconTileProps = {
   id: PaymentMethodIconTokenId;
@@ -15,17 +29,39 @@ type PaymentMethodIconTileProps = {
   className?: string;
 };
 
-/** Figma Property 1 tile — fixed 48×48 artboard, inserted as a whole. */
+/**
+ * Figma Property 1 tile — fixed 48×48 (or 32×32 brand-badge) artboard, inserted
+ * as a whole. Routes SVG brands (Apple Pay / Google Pay / Tabby) through
+ * inline raw markup so they stay crisp at any DPR and can be recolored via
+ * `currentColor` if a `mono` variant is requested elsewhere.
+ */
 function PaymentMethodIconTile({
   id,
   size = 'tile',
   cardVariant = 'neutral',
   className = '',
 }: PaymentMethodIconTileProps) {
+  if (isPaymentMethodSvgId(id)) {
+    const svg = getPaymentMethodSvgAsset(id, 'colored');
+    return (
+      <span
+        aria-hidden
+        className={[
+          getPaymentMethodIconSizeClassName(size),
+          'flex shrink-0 items-center justify-center [&>svg]:max-h-full [&>svg]:max-w-full',
+          className,
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        dangerouslySetInnerHTML={{ __html: svg }}
+      />
+    );
+  }
+
   const src =
     id === 'card'
       ? getPaymentMethodCardIconAsset(cardVariant)
-      : getPaymentMethodIconAsset(id);
+      : getPaymentMethodRasterAsset(id);
 
   return (
     <img
@@ -97,4 +133,43 @@ export function PaymentMethodBrandIcon({
   brand: PaymentMethodBrandIconId;
 }) {
   return <PaymentMethodIconTile id={brand} size="brand-badge" />;
+}
+
+type PaymentBrandLogoProps = {
+  id: PaymentMethodSvgId;
+  variant?: PaymentMethodSvgVariant;
+  /** Target height in px. Defaults to native artwork height. */
+  height?: number;
+  className?: string;
+};
+
+/**
+ * Inline SVG wordmark for a payment brand. Use this when you want the logo
+ * sized to a specific height (e.g. inside a CTA button) and, in the `mono`
+ * variant, recolored via the parent's `color`/`currentColor`.
+ */
+export function PaymentBrandLogo({
+  id,
+  variant = 'colored',
+  height,
+  className = '',
+}: PaymentBrandLogoProps) {
+  const svg = getPaymentMethodSvgAsset(id, variant);
+  const native = PAYMENT_METHOD_SVG_NATIVE_SIZE[id];
+  const h = height ?? native.height;
+  const w = (h * native.width) / native.height;
+  return (
+    <span
+      role="img"
+      aria-label={PAYMENT_METHOD_ICON_LABELS[id]}
+      className={[
+        'inline-flex shrink-0 [&>svg]:block [&>svg]:h-full [&>svg]:w-full',
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      style={{ width: `${w}px`, height: `${h}px` }}
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
+  );
 }

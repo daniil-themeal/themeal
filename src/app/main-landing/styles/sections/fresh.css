@@ -17,6 +17,21 @@
   }
 }
 
+.main-landing #fresh .fresh-item {
+  transition: transform .2s var(--ease);
+  will-change: transform;
+}
+.main-landing #fresh .fresh-item:hover {
+  transform: translateY(-4px);
+}
+@media (prefers-reduced-motion: reduce) {
+  .main-landing #fresh .fresh-item,
+  .main-landing #fresh .fresh-item:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
 /* ---- fresh carousel nav (bender-style arrows) ---- */
 #fresh .fresh-carousel-nav {
   position:absolute; top:0; bottom:0; width:72px;

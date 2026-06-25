@@ -9,6 +9,7 @@ export { DesignSystemIcon } from './DesignSystemIcon';
 export { PromoCodeIcon } from './PromoCodeIcon';
 export { RadioCheckIcon } from './RadioCheckIcon';
 export {
+  PaymentBrandLogo,
   PaymentMethodIcon,
   PaymentMethodBrandIcon,
   PaymentMethodCardIcon,

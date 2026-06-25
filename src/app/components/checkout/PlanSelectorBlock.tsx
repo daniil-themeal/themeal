@@ -8,6 +8,7 @@ import type { BadgeVariant } from '../common/Badge';
 import { Chip } from '../common/Chip';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
+import { TextLink } from '../common/TextLink';
 import { CHECKOUT_FONT_CLAMP_16_20 } from './checkoutSpacing';
 import { CheckoutSectionHeader } from './CheckoutSectionHeader';
 
@@ -283,18 +284,29 @@ export const PlanSelectorBlock = memo(function PlanSelectorBlock({
   onSelect,
   lightMealOption = 'lunch-dinner',
   onLightMealOptionChange = () => {},
+  onBackToTrial,
 }: {
   selected: Plan;
   onSelect: (plan: Plan) => void;
   lightMealOption?: LightMealOption;
   onLightMealOptionChange?: (option: LightMealOption) => void;
+  onBackToTrial?: () => void;
 }) {
   return (
     <div
       className="flex w-full min-w-0 flex-col items-start gap-[20px]"
       style={planSelectorBlockStyle}
     >
-      <CheckoutSectionHeader title="Choose your plan" />
+      <CheckoutSectionHeader
+        title="Choose your plan"
+        trailing={
+          onBackToTrial ? (
+            <TextLink size="14" onClick={onBackToTrial}>
+              Back to trial
+            </TextLink>
+          ) : undefined
+        }
+      />
 
       <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">
         {plans.map((plan) => (

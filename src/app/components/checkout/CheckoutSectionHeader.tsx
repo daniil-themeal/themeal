@@ -29,6 +29,7 @@ type CheckoutSectionHeaderProps = {
   subtitle?: ReactNode;
   gap?: 2 | 12;
   className?: string;
+  trailing?: ReactNode;
 };
 
 export function CheckoutSectionHeader({
@@ -36,6 +37,7 @@ export function CheckoutSectionHeader({
   subtitle,
   gap,
   className = '',
+  trailing,
 }: CheckoutSectionHeaderProps) {
   const gapClass =
     gap === 2
@@ -47,6 +49,8 @@ export function CheckoutSectionHeader({
   const titleClassName =
     'font-sans text-[length:var(--checkout-section-title-font-size)] font-bold leading-[130%] text-[var(--checkout-section-text)]';
 
+  const titleNode = <p className={titleClassName}>{title}</p>;
+
   return (
     <div
       className={[CHECKOUT_SECTION_HEADER_LAYOUT.wrapper, gapClass, className]
@@ -54,7 +58,14 @@ export function CheckoutSectionHeader({
         .join(' ')}
       style={checkoutSectionHeaderStyle}
     >
-      <p className={titleClassName}>{title}</p>
+      {trailing ? (
+        <div className="flex w-full items-center justify-between gap-[12px]">
+          {titleNode}
+          <div className="flex shrink-0 items-center">{trailing}</div>
+        </div>
+      ) : (
+        titleNode
+      )}
 
       {subtitle ? (
         <p className="font-sans text-[length:var(--checkout-section-subtitle-font-size)] font-medium leading-[130%] text-[var(--checkout-section-text)]">

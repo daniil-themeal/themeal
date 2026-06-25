@@ -2,14 +2,20 @@ import {
   forwardRef,
   useEffect,
   useImperativeHandle,
+  useMemo,
   useRef,
   useState,
   type CSSProperties,
 } from 'react';
 import { createPortal } from 'react-dom';
 
-import { getFullMenuMealSlots, testMenuDays, type LightMealOption } from '../../data/testMeals';
-import type { Plan } from '../../data/checkoutPricing';
+import {
+  getFullMenuMealSlots,
+  TRIAL_MEALS,
+  type LightMealOption,
+} from '../../data/testMeals';
+import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
+import type { MenuDay } from '../../types/meal';
 import type { Meal as MealDetail } from '../../types/meal';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { FONT_SIZE_TOKENS } from '../common/fontSizeTokens';
@@ -42,12 +48,16 @@ import { ModalHeader } from '../common/Modal';
 import { SPACING_CONTENT_ATTR } from '../../main-landing/getSpacingMeasureRoot';
 import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { MealDetailModal } from './MealDetailModal';
+import { getSubscriptionMenuDays } from './mealCalendarUtils';
 import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-const MENU_DAYS_COUNT = testMenuDays.length;
+const REFERENCE_DAY_COUNT = 14;
+const MOBILE_REF_TRACK_PERCENT = 280;
+const DESKTOP_REF_TRACK_PERCENT = 200;
+const DAY_PILL_GAP_PX = 8;
+const REFERENCE_GAP_TOTAL_PX = (REFERENCE_DAY_COUNT - 1) * DAY_PILL_GAP_PX;
 const MOUSE_DRAG_CLICK_THRESHOLD = 6;
 const FULL_MENU_DISCLAIMER =
   "Actual menu may vary; you'll see your final menu after ordering.";
@@ -60,6 +70,17 @@ type FullMenuPanelVariant = 'modal' | 'float';
 type FullMenuDayPillCssVariables = CSSProperties & {
   '--full-menu-day-bg': string;
   '--full-menu-day-bg-hover': string;
+};
+
+type FullMenuDayScrollCssVariables = CSSProperties & {
+  containerType: 'inline-size';
+  '--day-pill-w': string;
+  '--day-pill-w-md': string;
+};
+
+type FullMenuDayTrackCssVariables = CSSProperties & {
+  '--day-track-w': string;
+  '--day-track-w-md': string;
 };
 
 export const FULL_MENU_DAY_PILL_SELECTED_STYLE: FullMenuDayPillCssVariables = {
@@ -144,16 +165,16 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-function getMenuDays() {
-  return testMenuDays.map((menuDay, i) => {
-    const d = new Date(`${menuDay.date}T00:00:00`);
-    const dayIndex = d.getDay() === 0 ? 6 : d.getDay() - 1;
+function getMenuDayLabels(subscriptionMenuDays: MenuDay[]) {
+  return subscriptionMenuDays.map((menuDay, index) => {
+    const date = new Date(`${menuDay.date}T00:00:00`);
+    const dayIndex = date.getDay() === 0 ? 6 : date.getDay() - 1;
 
     return {
-      date: d.getDate(),
-      month: MONTH_NAMES[d.getMonth()],
+      date: date.getDate(),
+      month: MONTH_NAMES[date.getMonth()],
       day: DAY_NAMES[dayIndex],
-      absoluteDayIndex: i,
+      absoluteDayIndex: index,
       menuDayId: menuDay.id,
     };
   });
@@ -168,9 +189,12 @@ export type FullMenuPanelProps = {
   isActive: boolean;
   plan: Plan;
   lightMealOption: LightMealOption;
+  days?: DayOption;
+  duration?: Duration;
   onRequestClose?: () => void;
   onMealDetailOpenChange?: (open: boolean) => void;
   className?: string;
+  isTrial?: boolean;
 };
 
 export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>(function FullMenuPanel(
@@ -179,9 +203,12 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     isActive,
     plan,
     lightMealOption,
+    days = 'weekdays',
+    duration = 'monthly',
     onRequestClose,
     onMealDetailOpenChange,
     className = '',
+    isTrial = false,
   },
   ref,
 ) {
@@ -190,6 +217,30 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   const [isDraggingDays, setIsDraggingDays] = useState(false);
   const [isDraggingMeals, setIsDraggingMeals] = useState(false);
   const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
+
+  const subscriptionMenuDays = useMemo(
+    () => (isTrial ? [] : getSubscriptionMenuDays({ dayOption: days, duration })),
+    [days, duration, isTrial],
+  );
+  const menuDayLabels = useMemo(
+    () => getMenuDayLabels(subscriptionMenuDays),
+    [subscriptionMenuDays],
+  );
+  const menuDaysCount = menuDayLabels.length;
+  const dayScrollContainerStyle: FullMenuDayScrollCssVariables = {
+    containerType: 'inline-size',
+    '--day-pill-w': `calc((${MOBILE_REF_TRACK_PERCENT}cqw - ${REFERENCE_GAP_TOTAL_PX}px) / ${REFERENCE_DAY_COUNT})`,
+    '--day-pill-w-md': `calc((${DESKTOP_REF_TRACK_PERCENT}cqw - ${REFERENCE_GAP_TOTAL_PX}px) / ${REFERENCE_DAY_COUNT})`,
+  };
+  const dayTrackGapTotalPx = Math.max(0, menuDaysCount - 1) * DAY_PILL_GAP_PX;
+  const dayTrackStyle: FullMenuDayTrackCssVariables = {
+    '--day-track-w': `calc(${menuDaysCount} * var(--day-pill-w) + ${dayTrackGapTotalPx}px)`,
+    '--day-track-w-md': `calc(${menuDaysCount} * var(--day-pill-w-md) + ${dayTrackGapTotalPx}px)`,
+  };
+
+  useEffect(() => {
+    setSelectedDayIndex(0);
+  }, [days, duration, plan, lightMealOption, isTrial]);
 
   const dayRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const daysScrollRef = useRef<HTMLDivElement | null>(null);
@@ -204,17 +255,15 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   const suppressMealClickRef = useRef(false);
 
   const canGoPrev = selectedDayIndex > 0;
-  const canGoNext = selectedDayIndex < MENU_DAYS_COUNT - 1;
+  const canGoNext = menuDaysCount > 0 && selectedDayIndex < menuDaysCount - 1;
   const isModal = variant === 'modal';
 
-  const menuDays = getMenuDays();
-  const mealSlots = getFullMenuMealSlots(
-    testMenuDays[selectedDayIndex],
-    plan,
-    lightMealOption,
-  );
+  const selectedMenuDay = subscriptionMenuDays[selectedDayIndex];
+  const mealSlots = isTrial
+    ? TRIAL_MEALS.map((meal) => ({ meal, active: true }))
+    : getFullMenuMealSlots(selectedMenuDay, plan, lightMealOption);
   const activeMealCount = mealSlots.filter((slot) => slot.active).length;
-  const daysScrollFadeKey = `${isActive}-${MENU_DAYS_COUNT}`;
+  const daysScrollFadeKey = `${isActive}-${menuDaysCount}`;
   const { showStartFade: showDaysStartFade, showEndFade: showDaysEndFade } =
     useHorizontalScrollEdgeFades(daysScrollRef, daysScrollFadeKey, {
       alwaysVisibleWhenScrollable: true,
@@ -237,7 +286,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   };
 
   const selectDay = (dayIndex: number) => {
-    const nextDayIndex = clamp(dayIndex, 0, MENU_DAYS_COUNT - 1);
+    const nextDayIndex = clamp(dayIndex, 0, Math.max(0, menuDaysCount - 1));
 
     if (nextDayIndex === selectedDayIndex) return;
 
@@ -452,7 +501,10 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
           />
         ) : null}
 
-        <div className="shrink-0 px-[8px] pt-[12px] pb-0">
+        <div
+          className="shrink-0 px-[8px] pt-[12px] pb-0"
+          style={isTrial ? { display: 'none' } : undefined}
+        >
           <div className="flex w-full items-stretch" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
             <button
               type="button"
@@ -489,12 +541,16 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                 onMouseMove={handleDaysMouseMove}
                 onMouseUp={stopMouseDrag}
                 onMouseLeave={stopMouseDrag}
-                className={`min-w-0 touch-pan-x select-none overflow-x-auto overflow-y-hidden scrollbar-hide ${
+                className={`@container min-w-0 touch-pan-x select-none overflow-x-auto overflow-y-hidden scrollbar-hide ${
                   isDraggingDays ? 'cursor-grabbing' : 'cursor-default'
                 }`}
+                style={dayScrollContainerStyle}
               >
-                <div className="relative flex w-[280%] gap-[8px] md:w-[200%]">
-                  {menuDays.map((d) => {
+                <div
+                  className="relative flex w-[var(--day-track-w)] gap-[8px] md:w-[var(--day-track-w-md)]"
+                  style={dayTrackStyle}
+                >
+                  {menuDayLabels.map((d) => {
                     const active = d.absoluteDayIndex === selectedDayIndex;
 
                     return (
@@ -506,7 +562,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                         type="button"
                         onClick={() => handleDayClick(d.absoluteDayIndex)}
                         className={[
-                          'relative flex flex-[0_0_calc((100%-104px)/14)] cursor-pointer flex-col items-center justify-center gap-[6px]',
+                          'relative flex flex-[0_0_var(--day-pill-w)] cursor-pointer flex-col items-center justify-center gap-[6px] md:flex-[0_0_var(--day-pill-w-md)]',
                           'rounded-[8px] border border-solid bg-[var(--full-menu-day-bg)] py-[8px]',
                           'transition-colors duration-150',
                           'hover:enabled:bg-[var(--full-menu-day-bg-hover)]',
@@ -585,7 +641,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
           <div className="relative w-full">
             <div className={mealsBleedClassName}>
               <div
-                key={`${testMenuDays[selectedDayIndex]?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}
+                key={`${selectedMenuDay?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}
                 ref={mealsScrollRef}
                 onMouseDown={handleMealsMouseDown}
                 onMouseMove={handleMealsMouseMove}

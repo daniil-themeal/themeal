@@ -85,35 +85,24 @@ function hexToRgba(hex: string, alpha: number) {
   return `rgba(${red},${green},${blue},${alpha})`;
 }
 
-function getColoredButtonShadow(baseHex: string) {
-  return {
-    shadow: `0 6px 18px ${hexToRgba(baseHex, 0.32)}, 0 14px 40px ${hexToRgba(baseHex, 0.24)}`,
-    shadowHover: `0 10px 26px ${hexToRgba(baseHex, 0.4)}, 0 20px 52px ${hexToRgba(baseHex, 0.28)}`,
-  };
-}
-
 const NO_BUTTON_SHADOW = {
   shadow: 'none',
   shadowHover: 'none',
 } as const;
 
 const BUTTON_FILLED_STYLES: Record<ButtonVariant, Omit<ButtonCssVariables, '--button-font-size'>> = {
-  primary: (() => {
-    const { shadow, shadowHover } = getColoredButtonShadow(COLOR_TOKENS.primary[500]);
-
-    return {
-      '--button-bg': COLOR_TOKENS.primary[500],
-      '--button-bg-hover': COLOR_TOKENS.primary[600],
-      '--button-text': COLOR_TOKENS.base.white,
-      '--button-bg-disabled': hexToRgba(COLOR_TOKENS.primary[500], 0.5),
-      '--button-text-disabled': COLOR_TOKENS.base.white,
-      '--button-border': COLOR_TOKENS.primary[500],
-      '--button-border-hover': COLOR_TOKENS.primary[600],
-      '--button-border-disabled': hexToRgba(COLOR_TOKENS.primary[500], 0.5),
-      '--button-shadow': shadow,
-      '--button-shadow-hover': shadowHover,
-    };
-  })(),
+  primary: {
+    '--button-bg': COLOR_TOKENS.primary[500],
+    '--button-bg-hover': COLOR_TOKENS.primary[600],
+    '--button-text': COLOR_TOKENS.base.white,
+    '--button-bg-disabled': hexToRgba(COLOR_TOKENS.primary[500], 0.5),
+    '--button-text-disabled': COLOR_TOKENS.base.white,
+    '--button-border': COLOR_TOKENS.primary[500],
+    '--button-border-hover': COLOR_TOKENS.primary[600],
+    '--button-border-disabled': hexToRgba(COLOR_TOKENS.primary[500], 0.5),
+    '--button-shadow': NO_BUTTON_SHADOW.shadow,
+    '--button-shadow-hover': NO_BUTTON_SHADOW.shadowHover,
+  },
 
   secondary: {
     '--button-bg': COLOR_TOKENS.secondary[500],

@@ -1,14 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
+import { Link } from 'react-router';
 
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import {
   formatAed,
   getFinalPeriodPrice,
 } from '../../data/checkoutPricing';
+import { getTrialPricing } from '../../data/trialPricing';
 import { getCheckoutOrderPricing } from './mealCalendarAddDaysPricing';
 import type { TestAddress } from '../../data/testAddresses';
 import { getPromoCodeDiscount } from '../../config/promoCodes';
+import { LEGAL_ROUTES } from '../../legal/routes';
 import { Button } from '../common/Button';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
 import { COLOR_TOKENS } from '../common/colorTokens';
@@ -177,6 +180,7 @@ type PaymentScreenProps = {
   onPay?: () => void;
   appliedPromoCode?: string;
   onAppliedPromoCodeChange?: (code: string) => void;
+  isTrial?: boolean;
 };
 
 export function PaymentScreen({
@@ -194,21 +198,24 @@ export function PaymentScreen({
   onPay,
   appliedPromoCode = '',
   onAppliedPromoCodeChange,
+  isTrial = false,
 }: PaymentScreenProps) {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethodId>('card');
   const [sessionSeconds, setSessionSeconds] = useState(SESSION_SECONDS);
 
-  const orderPricing = useMemo(
+  const standardOrderPricing = useMemo(
     () => getCheckoutOrderPricing({ plan, days, duration, persons, extraMealDayKeys }),
     [plan, days, duration, persons, extraMealDayKeys],
   );
+  const trialOrderPricing = useMemo(() => getTrialPricing(persons), [persons]);
+  const orderPricing = isTrial ? trialOrderPricing : standardOrderPricing;
   const promoDiscount = useMemo(
-    () => (appliedPromoCode ? getPromoCodeDiscount(appliedPromoCode) : null),
-    [appliedPromoCode],
+    () => (!isTrial && appliedPromoCode ? getPromoCodeDiscount(appliedPromoCode) : null),
+    [appliedPromoCode, isTrial],
   );
   const finalPeriodPrice = useMemo(
-    () => getFinalPeriodPrice(orderPricing.periodPrice, promoDiscount),
-    [orderPricing.periodPrice, promoDiscount],
+    () => (isTrial ? orderPricing.periodPrice : getFinalPeriodPrice(orderPricing.periodPrice, promoDiscount)),
+    [isTrial, orderPricing.periodPrice, promoDiscount],
   );
   const planTariffChips = useMemo(
     () =>
@@ -345,16 +352,20 @@ export function PaymentScreen({
             </div>
           </div>
 
-          <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
+          {isTrial ? null : (
+            <>
+              <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
-          <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap12} ${CHECKOUT_STEP_SECTION_PX}`}>
-            <CheckoutPromoCode
-              variant="payment"
-              inputId="payment-promo-code"
-              appliedCode={appliedPromoCode}
-              onAppliedCodeChange={onAppliedPromoCodeChange ?? (() => {})}
-            />
-          </div>
+              <div className={`${CHECKOUT_STEP_PAGE_LAYOUT.cardSectionGap12} ${CHECKOUT_STEP_SECTION_PX}`}>
+                <CheckoutPromoCode
+                  variant="payment"
+                  inputId="payment-promo-code"
+                  appliedCode={appliedPromoCode}
+                  onAppliedCodeChange={onAppliedPromoCodeChange ?? (() => {})}
+                />
+              </div>
+            </>
+          )}
 
           <Divider color="var(--payment-divider)" className={CHECKOUT_STEP_PAGE_LAYOUT.divider} />
 
@@ -400,9 +411,29 @@ export function PaymentScreen({
                   'w-full text-left font-sans text-[length:var(--payment-small-fs)] font-medium leading-[140%] text-[var(--payment-muted)]',
                 ].join(' ')}
               >
-                {paymentMethod === 'tabby'
-                  ? 'This is a one-time order via Tabby — to continue your meals, place a new order at the end of this period'
-                  : "Your subscription renews automatically — we'll send the upcoming amount 5 days before each charge. Change or cancel anytime."}
+                {isTrial ? (
+                  <>
+                    By placing this order, you accept our{' '}
+                    <Link
+                      to={LEGAL_ROUTES.terms}
+                      className="underline underline-offset-2 hover:text-[var(--payment-primary)]"
+                    >
+                      Terms
+                    </Link>{' '}
+                    and{' '}
+                    <Link
+                      to={LEGAL_ROUTES.privacy}
+                      className="underline underline-offset-2 hover:text-[var(--payment-primary)]"
+                    >
+                      Privacy Policy
+                    </Link>
+                    . This is a one-time trial order — no subscription, no auto-renewal.
+                  </>
+                ) : paymentMethod === 'tabby' ? (
+                  'This is a one-time order via Tabby — to continue your meals, place a new order at the end of this period'
+                ) : (
+                  "Your subscription renews automatically — we'll send the upcoming amount 5 days before each charge. Change or cancel anytime."
+                )}
               </p>
 
               <p

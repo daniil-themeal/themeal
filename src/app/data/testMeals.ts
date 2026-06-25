@@ -243,3 +243,16 @@ export const testMenuDays: MenuDay[] = Array.from({ length: MENU_DAYS_COUNT }, (
     createMeal('Soup', getMealName('Soup', dayIndex), dayIndex),
   ],
 }));
+
+export const TRIAL_MEALS: Meal[] = [
+  buildMealDetail('Breakfast', 'Spinach quiche', imgMeal0, { id: 'trial-breakfast' }),
+  buildMealDetail('Lunch', 'Grilled shrimps', imgMeal1, { id: 'trial-lunch' }),
+  buildMealDetail('Dinner', 'Chicken tikka with basmati rice', imgMeal2, { id: 'trial-dinner' }),
+  buildMealDetail('Soup', 'Pumpkin cream soup', imgMeal3, { id: 'trial-soup' }),
+];
+
+export const trialMenuDay: MenuDay = {
+  id: 'trial-day',
+  date: getDateString(0),
+  meals: TRIAL_MEALS,
+};

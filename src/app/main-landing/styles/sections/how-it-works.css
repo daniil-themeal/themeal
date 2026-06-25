@@ -37,8 +37,7 @@
 .main-landing #how .how-illu .truck-wheel,
 .main-landing #how .how-illu .truck-pin,
 .main-landing #how .how-illu .fried-egg,
-.main-landing #how .how-illu .sausage,
-.main-landing #how .how-illu .pea {
+.main-landing #how .how-illu .sausage {
   transform-box: fill-box;
   transform-origin: center;
 }
@@ -93,16 +92,6 @@
   animation: how-sausage-sizzle-b .65s ease-in-out infinite;
   animation-delay: .08s;
 }
-/* peas hop in place, staggered so they don't move in unison */
-.main-landing #how .how-step-card--2:hover .pea {
-  animation: how-pea-hop .55s ease-in-out infinite;
-}
-.main-landing #how .how-step-card--2:hover .pea--1 { animation-delay: 0s; }
-.main-landing #how .how-step-card--2:hover .pea--2 { animation-delay: .09s; }
-.main-landing #how .how-step-card--2:hover .pea--3 { animation-delay: .18s; }
-.main-landing #how .how-step-card--2:hover .pea--4 { animation-delay: .27s; }
-.main-landing #how .how-step-card--2:hover .pea--5 { animation-delay: .14s; }
-.main-landing #how .how-step-card--2:hover .pea--6 { animation-delay: .22s; }
 @keyframes how-egg-jiggle {
   0%, 100% { transform: scale(1, 1)        rotate(0); }
   25%      { transform: scale(1.06, 0.94)  rotate(-3deg); }
@@ -120,10 +109,6 @@
   50%      { transform: translate(0, -1px)    rotate(0); }
   80%      { transform: translate(-1px, 1px)  rotate(-3deg); }
 }
-@keyframes how-pea-hop {
-  0%, 100% { transform: translateY(0)    scale(1); }
-  50%      { transform: translateY(-2px) scale(1.08); }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .main-landing #delivery .delivery-feat-card:hover,
@@ -136,8 +121,7 @@
   .main-landing #how .how-step-card--1:hover .truck-pin,
   .main-landing #how .how-step-card--2:hover .fried-egg,
   .main-landing #how .how-step-card--2:hover .sausage--a,
-  .main-landing #how .how-step-card--2:hover .sausage--b,
-  .main-landing #how .how-step-card--2:hover .pea {
+  .main-landing #how .how-step-card--2:hover .sausage--b {
     animation: none;
   }
 }

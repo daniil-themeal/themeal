@@ -81,8 +81,14 @@ import {
   PAYMENT_METHOD_ICON_LABELS,
   PAYMENT_METHOD_ICON_SLOT_SIZE_PX,
   PAYMENT_METHOD_ICON_TILE_SIZE_PX,
+  PAYMENT_METHOD_SVG_IDS,
+  PAYMENT_METHOD_SVG_VARIANTS,
+  PAYMENT_METHOD_SVG_NATIVE_SIZE,
+  type PaymentMethodSvgId,
+  type PaymentMethodSvgVariant,
 } from './common/paymentMethodIconTokens';
 import {
+  PaymentBrandLogo,
   PaymentMethodBrandIcon,
   PaymentMethodCardIcon,
   PaymentMethodIcon,
@@ -671,6 +677,54 @@ function PaymentMethodCardIconTokenRow({
   );
 }
 
+function PaymentBrandLogoTokenRow({
+  id,
+}: {
+  id: PaymentMethodSvgId;
+}) {
+  const native = PAYMENT_METHOD_SVG_NATIVE_SIZE[id];
+  return (
+    <div className="flex flex-col gap-[12px] rounded-[12px] border border-[var(--demo-card-border)] bg-[var(--demo-card-bg)] p-[16px]">
+      <DemoSubheading>
+        <CodeLabel>{`PAYMENT_METHOD_SVG_IDS · "${id}"`}</CodeLabel>
+      </DemoSubheading>
+
+      <p className="font-sans text-[14px] font-semibold leading-[140%] text-[var(--demo-body)]">
+        {PAYMENT_METHOD_ICON_LABELS[id]}
+      </p>
+
+      <div className="grid grid-cols-2 gap-[12px]">
+        {PAYMENT_METHOD_SVG_VARIANTS.map((variant: PaymentMethodSvgVariant) => {
+          const isMono = variant === 'mono';
+          return (
+            <div
+              key={variant}
+              className="flex flex-col items-center justify-center gap-[8px] rounded-[8px] p-[12px]"
+              style={{
+                background: isMono ? '#F02978' : '#FFFFFF',
+                color: isMono ? '#FFFFFF' : 'inherit',
+                border: isMono ? 'none' : '1px solid var(--demo-card-border)',
+              }}
+            >
+              <PaymentBrandLogo id={id} variant={variant} height={20} />
+              <p
+                className="font-mono text-[11px] font-medium"
+                style={{ color: isMono ? 'rgba(255,255,255,.82)' : 'var(--demo-description)' }}
+              >
+                {variant}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+
+      <p className="font-sans text-[12px] font-medium leading-[140%] text-[var(--demo-description)]">
+        {`native ${native.width}×${native.height} · scales by height`}
+      </p>
+    </div>
+  );
+}
+
 function PaymentMethodIconTokenRow({
   id,
   variant = 'tile',
@@ -980,6 +1034,19 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
 
               {PAYMENT_METHOD_BRAND_ICON_IDS.map((id) => (
                 <PaymentMethodIconTokenRow key={id} id={id} variant="brand-badge" />
+              ))}
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="payment-brand-logo"
+            title="Payment brand logos (SVG)"
+            description="Inline SVG wordmarks for Apple Pay, Google Pay and Tabby. `colored` keeps the brand palette; `mono` inherits the parent's `currentColor` so the same asset can sit on any background (e.g. the dark CTA button at the end of the landing)."
+            className="lg:col-span-2"
+          >
+            <div className="grid grid-cols-1 gap-[16px] md:grid-cols-3">
+              {PAYMENT_METHOD_SVG_IDS.map((id) => (
+                <PaymentBrandLogoTokenRow key={id} id={id} />
               ))}
             </div>
           </DemoCard>

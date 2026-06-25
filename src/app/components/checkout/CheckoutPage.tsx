@@ -8,6 +8,9 @@ import { IngredientsBlock } from './IngredientsBlock';
 import { DaysBlock } from './DaysBlock';
 import { DurationBlock } from './DurationBlock';
 import { OrderSummary } from './OrderSummary';
+import { TrialOrderSummary } from './TrialOrderSummary';
+import { TrialPlanHeader } from './TrialPlanHeader';
+import { TrialUpsellBanner } from './TrialUpsellBanner';
 import { BottomFloatTotalBlock } from './BottomFloatTotalBlock';
 import { FullMenuModal } from './FullMenuModal';
 import { CheckoutAuthModal } from './CheckoutAuthModal';
@@ -81,6 +84,9 @@ type CheckoutPageProps = {
   initialSelection?: CheckoutInitialSelection;
   onSessionUpdate?: (session: PhoneSession) => void;
   onResetPhone?: () => void;
+  isTrial?: boolean;
+  onExitTrial?: () => void;
+  onReturnToTrial?: () => void;
 };
 
 type CheckoutPageCssVariables = CSSProperties & {
@@ -152,6 +158,9 @@ export function CheckoutPage({
   initialSelection,
   onSessionUpdate,
   onResetPhone,
+  isTrial = false,
+  onExitTrial,
+  onReturnToTrial,
 }: CheckoutPageProps) {
   const {
     isClosing,
@@ -874,24 +883,39 @@ export function CheckoutPage({
                 style={checkoutLeftColumnStyle}
                 className="flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
               >
-                <PlanSelectorBlock
-                  selected={plan}
-                  onSelect={setPlan}
-                  lightMealOption={lightMealOption}
-                  onLightMealOptionChange={setLightMealOption}
-                />
+                {isTrial ? (
+                  <>
+                    <TrialPlanHeader />
 
-                <IngredientsBlock selected={ingredients} onToggle={toggleIngredient} />
+                    <IngredientsBlock selected={ingredients} onToggle={toggleIngredient} />
 
-                <DaysBlock selected={days} onSelect={setDays} />
+                    {onExitTrial ? (
+                      <TrialUpsellBanner onExitTrial={onExitTrial} />
+                    ) : null}
+                  </>
+                ) : (
+                  <>
+                    <PlanSelectorBlock
+                      selected={plan}
+                      onSelect={setPlan}
+                      lightMealOption={lightMealOption}
+                      onLightMealOptionChange={setLightMealOption}
+                      onBackToTrial={onReturnToTrial}
+                    />
 
-                <DurationBlock
-                  selected={duration}
-                  onSelect={setDuration}
-                  plan={plan}
-                  days={days}
-                  persons={persons}
-                />
+                    <IngredientsBlock selected={ingredients} onToggle={toggleIngredient} />
+
+                    <DaysBlock selected={days} onSelect={setDays} />
+
+                    <DurationBlock
+                      selected={duration}
+                      onSelect={setDuration}
+                      plan={plan}
+                      days={days}
+                      persons={persons}
+                    />
+                  </>
+                )}
               </div>
 
               <div
@@ -899,26 +923,41 @@ export function CheckoutPage({
                 style={checkoutLeftColumnStyle}
                 className="w-full min-w-0 max-md:max-w-none max-md:pt-0 md:max-h-[calc(100svh-56px)] md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:min-h-0 md:overflow-x-hidden md:overflow-y-hidden lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
               >
-                <OrderSummary
-                  plan={plan}
-                  days={days}
-                  duration={duration}
-                  ingredients={ingredients}
-                  persons={persons}
-                  lightMealOption={lightMealOption}
-                  extraMealDayKeys={extraMealDayKeys}
-                  onPersonsChange={setPersons}
-                  onOpenMenu={() => setMenuOpen(true)}
-                  onOrder={handleContinueFromPlan}
-                  phone={phone}
-                  isPhoneVerified={isAuthComplete}
-                  onResetPhone={handleResetPhone}
-                  planTariffAnchorRef={planTariffAnchorRef}
-                  todayTotalAnchorRef={todayTotalRef}
-                  appliedPromoCode={appliedPromoCode}
-                  onAppliedPromoCodeChange={setAppliedPromoCode}
-                  onMealDetailOpenChange={setIsMealDetailOpen}
-                />
+                {isTrial ? (
+                  <TrialOrderSummary
+                    persons={persons}
+                    onPersonsChange={setPersons}
+                    onOpenMenu={() => setMenuOpen(true)}
+                    onOrder={handleContinueFromPlan}
+                    phone={phone}
+                    isPhoneVerified={isAuthComplete}
+                    onResetPhone={handleResetPhone}
+                    planTariffAnchorRef={planTariffAnchorRef}
+                    todayTotalAnchorRef={todayTotalRef}
+                    onMealDetailOpenChange={setIsMealDetailOpen}
+                  />
+                ) : (
+                  <OrderSummary
+                    plan={plan}
+                    days={days}
+                    duration={duration}
+                    ingredients={ingredients}
+                    persons={persons}
+                    lightMealOption={lightMealOption}
+                    extraMealDayKeys={extraMealDayKeys}
+                    onPersonsChange={setPersons}
+                    onOpenMenu={() => setMenuOpen(true)}
+                    onOrder={handleContinueFromPlan}
+                    phone={phone}
+                    isPhoneVerified={isAuthComplete}
+                    onResetPhone={handleResetPhone}
+                    planTariffAnchorRef={planTariffAnchorRef}
+                    todayTotalAnchorRef={todayTotalRef}
+                    appliedPromoCode={appliedPromoCode}
+                    onAppliedPromoCodeChange={setAppliedPromoCode}
+                    onMealDetailOpenChange={setIsMealDetailOpen}
+                  />
+                )}
               </div>
             </div>
           </div>
@@ -928,18 +967,23 @@ export function CheckoutPage({
             onClose={() => setMenuOpen(false)}
             plan={plan}
             lightMealOption={lightMealOption}
-          />
-
-          <BottomFloatTotalBlock
-            plan={plan}
             days={days}
             duration={duration}
-            persons={persons}
-            lightMealOption={lightMealOption}
-            extraMealDayKeys={extraMealDayKeys}
-            onScrollToSummary={handleScrollToSummary}
-            hidden={summaryVisible || isMealDetailOpen}
+            isTrial={isTrial}
           />
+
+          {isTrial ? null : (
+            <BottomFloatTotalBlock
+              plan={plan}
+              days={days}
+              duration={duration}
+              persons={persons}
+              lightMealOption={lightMealOption}
+              extraMealDayKeys={extraMealDayKeys}
+              onScrollToSummary={handleScrollToSummary}
+              hidden={summaryVisible || isMealDetailOpen}
+            />
+          )}
         </>
       ) : !resultOverlay && checkoutStep === 'delivery' && deliveryStep === 'address' ? (
         <div ref={bodyRef} className={checkoutFormStepScrollClassName} {...{ [SPACING_CONTENT_ATTR]: '' }}>
@@ -984,6 +1028,7 @@ export function CheckoutPage({
             onPay={handlePay}
             appliedPromoCode={appliedPromoCode}
             onAppliedPromoCodeChange={setAppliedPromoCode}
+            isTrial={isTrial}
           />
         </div>
       ) : null}

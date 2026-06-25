@@ -30,6 +30,7 @@ import './styles/index.css';
 type MainLandingPageProps = {
   onOrderClick: () => void;
   onQuizClick: () => void;
+  onTrialClick?: () => void;
   onPhoneSubmit: (phone: string) => void;
   onContinueClick: () => void;
   onResumeVerification?: () => void;
@@ -46,6 +47,7 @@ type MainLandingPageProps = {
 export default function MainLandingPage({
   onOrderClick,
   onQuizClick,
+  onTrialClick,
   onPhoneSubmit,
   onContinueClick,
   onResumeVerification,
@@ -99,7 +101,13 @@ export default function MainLandingPage({
         <FinalOffer t={t} onOrder={onOrderClick} />
       </main>
       <Footer t={t} />
-      <OrderFab t={t} onOrderClick={onOrderClick} onQuizClick={onQuizClick} hidden={checkoutOpen || quizOpen} />
+      <OrderFab
+        t={t}
+        onOrderClick={onOrderClick}
+        onQuizClick={onQuizClick}
+        onTrialClick={onTrialClick}
+        hidden={checkoutOpen || quizOpen}
+      />
       <ScrollToTopFab hidden={checkoutOpen || quizOpen} />
       {isDevToolsEnabled ? <DevToolsOverlays /> : null}
     </div>

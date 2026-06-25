@@ -208,6 +208,8 @@ export function BottomFloatTotalBlock({
                   isActive={menuOpen}
                   plan={plan}
                   lightMealOption={lightMealOption}
+                  days={days}
+                  duration={duration}
                   onMealDetailOpenChange={setMealDetailOpen}
                 />
               </div>

@@ -31,10 +31,11 @@ type OrderFabProps = {
   t: MealContentEn;
   onOrderClick: () => void;
   onQuizClick: () => void;
+  onTrialClick?: () => void;
   hidden?: boolean;
 };
 
-export function OrderFab({ t, onOrderClick, onQuizClick, hidden }: OrderFabProps) {
+export function OrderFab({ t, onOrderClick, onQuizClick, onTrialClick, hidden }: OrderFabProps) {
   const [showOrder, setShowOrder] = useState(false);
 
   useEffect(() => {
@@ -66,6 +67,18 @@ export function OrderFab({ t, onOrderClick, onQuizClick, hidden }: OrderFabProps
       >
         <OrderFabWhatsAppIcon />
       </a>
+
+      {onTrialClick ? (
+        <button
+          type="button"
+          onClick={onTrialClick}
+          aria-label="Open trial offer"
+          className="order-fab-trial"
+        >
+          <Icon.star size={20} />
+          Trial
+        </button>
+      ) : null}
 
       <div className="order-fab-order-wrap">
         <div className="order-fab-order-clip">

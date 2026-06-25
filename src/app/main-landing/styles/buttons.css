@@ -30,10 +30,17 @@
   box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9);
 }
 .btn-lg { padding:20px 36px; font-size:var(--fs-20); }
+.btn-xl { padding:26px 44px; font-size:var(--fs-25); border-radius:var(--r-pill); }
 .menu-head-cta { flex-shrink:0; padding:4px 20px; white-space:nowrap; }
 .menu-head-cta .stack > * { white-space:nowrap; }
 .btn-md { height:48px; padding:0 20px; font-size:var(--fs-16); gap:8px; }
 .btn-sm { padding:12px 20px; font-size:var(--fs-16); border-radius:var(--r-sm); }
+
+/* CTA with stacked label + payment-logos row inside the button. */
+.btn-cta-payments { flex-direction:column; gap:14px; height:auto; line-height:1; }
+.btn-cta-payments__label { display:inline-flex; align-items:center; gap:12px; white-space:nowrap; }
+.btn-cta-payments__logos { display:inline-flex; align-items:center; gap:18px; color:#fff; opacity:.92; }
+.btn-cta-payments__logos > * { height:20px; flex:0 0 auto; }
 
 .order-fab-group {
   --shadow-fab:0 4px 12px rgba(154,56,239,.28), 0 8px 24px rgba(154,56,239,.20);
@@ -124,6 +131,33 @@
   box-shadow:var(--shadow-fab-hover);
   transform:translateY(-2px);
   background:var(--brand-600);
+}
+.order-fab-trial {
+  --shadow-trial:0 4px 12px rgba(251, 213, 105, .35), 0 8px 24px rgba(251, 213, 105, .25);
+  --shadow-trial-hover:0 6px 16px rgba(251, 213, 105, .4), 0 10px 28px rgba(251, 213, 105, .3);
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  height:40px;
+  padding:0 14px;
+  flex-shrink:0;
+  border:none;
+  border-radius:var(--r-pill);
+  background:#FBD569;
+  color:#2A2230;
+  font-family:inherit;
+  font-weight:700;
+  font-size:14px;
+  line-height:1;
+  letter-spacing:.01em;
+  box-shadow:var(--shadow-trial);
+  cursor:pointer;
+  transition:transform .15s var(--ease), box-shadow .15s var(--ease), background .15s var(--ease);
+}
+.order-fab-trial:hover {
+  transform:translateY(-2px);
+  background:#FCDD85;
+  box-shadow:var(--shadow-trial-hover);
 }
 a.order-fab-wa {
   display:flex;

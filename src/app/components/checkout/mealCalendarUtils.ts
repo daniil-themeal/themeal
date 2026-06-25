@@ -1,4 +1,6 @@
 import type { DayOption, Duration } from '../../data/checkoutPricing';
+import { MENU_DAYS_COUNT, testMenuDays } from '../../data/testMeals';
+import type { MenuDay } from '../../types/meal';
 
 import { MONTH_ABBR } from '../common/dateFormatTokens';
 
@@ -163,6 +165,91 @@ export function getSubscriptionDays(duration: Duration): number {
   if (duration === 'weekly') return 7;
   if (duration === 'monthly') return 28;
   return 56;
+}
+
+function getDaysBetweenDates(from: Date, to: Date): number {
+  const normalizedFrom = normalizeDate(from);
+  const normalizedTo = normalizeDate(to);
+
+  return Math.round(
+    (normalizedTo.getTime() - normalizedFrom.getTime()) / (24 * 60 * 60 * 1000),
+  );
+}
+
+export function collectDefaultMealDays({
+  startDate,
+  endDate,
+  dayOption,
+}: {
+  startDate: Date;
+  endDate: Date;
+  dayOption: DayOption;
+}): Date[] {
+  const mealDays: Date[] = [];
+  const cursor = new Date(startDate);
+
+  while (cursor < endDate) {
+    if (isDefaultMealDay({ date: cursor, startDate, endDate, dayOption })) {
+      mealDays.push(new Date(cursor));
+    }
+
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  return mealDays;
+}
+
+export function getSubscriptionMealDates({
+  dayOption,
+  duration,
+  firstDeliveryDate,
+}: {
+  dayOption: DayOption;
+  duration: Duration;
+  firstDeliveryDate?: Date;
+}): Date[] {
+  const deliveryDates = getUpcomingDeliveryDates(60, dayOption);
+  const startDate = normalizeDate(firstDeliveryDate ?? deliveryDates[0] ?? addDays(new Date(), 2));
+  const endDate = addDays(startDate, getSubscriptionDays(duration));
+
+  return collectDefaultMealDays({ startDate, endDate, dayOption });
+}
+
+export function buildMenuDayForDate(date: Date, anchorDate: Date): MenuDay {
+  const dateKey = getMealDayKey(date);
+  const dayOffset = getDaysBetweenDates(anchorDate, date);
+  const templateIndex =
+    ((dayOffset % MENU_DAYS_COUNT) + MENU_DAYS_COUNT) % MENU_DAYS_COUNT;
+  const template = testMenuDays[templateIndex];
+
+  return {
+    id: dateKey,
+    date: dateKey,
+    meals: template.meals.map((meal) => ({
+      ...meal,
+      id: `${dateKey}-${meal.type.toLowerCase()}`,
+    })),
+  };
+}
+
+export function getSubscriptionMenuDays({
+  dayOption,
+  duration,
+  firstDeliveryDate,
+}: {
+  dayOption: DayOption;
+  duration: Duration;
+  firstDeliveryDate?: Date;
+}): MenuDay[] {
+  const mealDates = getSubscriptionMealDates({ dayOption, duration, firstDeliveryDate });
+
+  if (mealDates.length === 0) {
+    return [];
+  }
+
+  const anchorDate = mealDates[0];
+
+  return mealDates.map((date) => buildMenuDayForDate(date, anchorDate));
 }
 
 export function getCalendarWeeks(startDate: Date, duration: Duration): Date[][] {
