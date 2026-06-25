@@ -106,7 +106,7 @@ const TRAY_BELT_AUTO_SPEED = 26; // px per second
 const TRAY_BELT_MOMENTUM_FRICTION = 4.5;
 const TRAY_BELT_MOMENTUM_THRESHOLD = 8; // px/s
 const TRAY_BELT_MAX_VELOCITY = 2400; // px/s
-const TRAY_BELT_ARC_SCALE_MOBILE = 0.72;
+const TRAY_BELT_ARC_SCALE_MOBILE = 0.78;
 
 function getTrayBeltArcScale() {
   return window.innerWidth < 768 ? TRAY_BELT_ARC_SCALE_MOBILE : 1;
@@ -402,7 +402,7 @@ function Compare({ t }) {
         ),
         ),
         /* price — cost per meal (compact) */
-        t.compare.compare && createElement('div', { className:'card reveal compare-card--cost', style:{ background:'#fff', padding:'var(--space-24) var(--space-32) clamp(var(--space-24), 3vw, var(--space-32))', marginTop:'var(--space-24)', height:'fit-content' } },
+        t.compare.compare && createElement('div', { className:'card reveal compare-card--cost', style:{ background:'var(--neutral-50)', padding:'var(--space-24) var(--space-32) clamp(var(--space-24), 3vw, var(--space-32))', marginTop:'var(--space-24)', height:'fit-content' } },
           createElement('div', { style:{ marginBottom:'var(--space-8)' } },
             createElement('span', { className:'label', style:{ color:'var(--stone)', fontSize:'14px', fontWeight:700, letterSpacing:'.12em', textTransform:'uppercase' } }, t.compare.costTitle)),
           createElement('div', { className:'compare-cost-grid' },
