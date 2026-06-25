@@ -8,6 +8,7 @@ import { buildMealDetail } from '../../../data/testMeals';
 import { useTestimonialIframe } from '../../useTestimonialIframe';
 import { useHorizontalScroll } from '../../useHorizontalScroll';
 import { Icon, Logo } from '../icons';
+import { getMenuMealImages } from '../../content/heroTrayMeals';
 
 /* ---------------- Weekly menu ---------------- */
 function Menu({ t, onOrder }) {
@@ -15,7 +16,7 @@ function Menu({ t, onOrder }) {
   const [day, setDay] = useState(0);
   const [slideDirection, setSlideDirection] = useState('left');
   const [selectedMeal, setSelectedMeal] = useState(null);
-  const imgs = ['/main-landing/assets/img/p6.png','/main-landing/assets/meals/meal_03.png','/main-landing/assets/meals/meal_04.png','/main-landing/assets/meals/meal_05.png'];
+  const imgs = getMenuMealImages(day);
   const meals = t.menu.meals[dayKeys[day]];
   const dayTabsScroll = useHorizontalScroll();
   const meta = [
@@ -27,7 +28,7 @@ function Menu({ t, onOrder }) {
 
   const openMeal = (name, slotIndex) => {
     const type = t.menu.slots[slotIndex];
-    setSelectedMeal(buildMealDetail(type, name, imgs[slotIndex % imgs.length], {
+    setSelectedMeal(buildMealDetail(type, name, imgs[slotIndex], {
       id: `${dayKeys[day]}-${slotIndex}-${name}`,
       kcal: meta[slotIndex].kcal,
       weight: meta[slotIndex].g,
@@ -113,7 +114,7 @@ function Menu({ t, onOrder }) {
             },
               createElement('article', { className:'menucard' },
                 createElement('div', { className:'menucard-img-wrap' },
-                  createElement('img', { className:'menucard-img', src:imgs[i%imgs.length], alt:'', loading:'lazy', draggable:false })),
+                  createElement('img', { className:'menucard-img', src:imgs[i], alt:'', loading:'lazy', draggable:false })),
                 createElement('div', { className:'menucard-body' },
                   createElement('p', { className:'menucard-meta' },
                     createElement('span', { className:'menucard-meta-nutrition' }, `${meta[i].kcal} ccal • ${meta[i].g} g`),

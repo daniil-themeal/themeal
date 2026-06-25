@@ -8,6 +8,7 @@ import { HeroStats } from '../HeroStats';
 import { HeroPrice } from '../HeroPrice';
 import { ACCENT_CARD_VARIANTS, ACCENT_CARD_VARIANT_ORDER } from '../../../components/common/accentCardTokens';
 import { HowIllustration } from '../HowIllustrations';
+import { HERO_TRAY_MEALS } from '../../content/heroTrayMeals';
 
 /* ---------------- Header (scroll + cursor reveal — Bender) ---------------- */
 function Header({
@@ -101,21 +102,6 @@ function Header({
 }
 
 /* ---------------- TrayBelt: looping conveyor shaped as a fan ---------------- */
-const HERO_TRAY_MEALS = [
-  '/main-landing/assets/meals/meal-01.avif',
-  '/main-landing/assets/meals/meal-03.avif',
-  '/main-landing/assets/meals/meal-05.avif',
-  '/main-landing/assets/meals/meal-07.avif',
-  '/main-landing/assets/meals/meal-09.avif',
-  '/main-landing/assets/meals/meal-11.avif',
-  '/main-landing/assets/meals/meal-16.avif',
-  '/main-landing/assets/meals/meal-17.avif',
-  '/main-landing/assets/meals/meal-18.avif',
-  '/main-landing/assets/meals/meal-20.avif',
-  '/main-landing/assets/meals/meal-22.avif',
-  '/main-landing/assets/meals/meal-23.avif',
-];
-
 const TRAY_BELT_AUTO_SPEED = 26; // px per second
 const TRAY_BELT_MOMENTUM_FRICTION = 4.5;
 const TRAY_BELT_MOMENTUM_THRESHOLD = 8; // px/s

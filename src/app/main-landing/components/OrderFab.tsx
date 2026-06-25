@@ -48,11 +48,11 @@ export function OrderFab({ t, onOrderClick, onQuizClick, onTrialClick, hidden }:
 
   if (hidden) return null;
 
-  const showPromoFabs = !isDevToolsEnabled;
+  const showDevFabs = isDevToolsEnabled;
 
   return createPortal(
     <div className={`order-fab-group${showOrder ? ' order-fab-group--order-visible' : ''}`}>
-      {showPromoFabs ? (
+      {showDevFabs ? (
         <button
           type="button"
           onClick={onQuizClick}
@@ -73,7 +73,7 @@ export function OrderFab({ t, onOrderClick, onQuizClick, onTrialClick, hidden }:
         <OrderFabWhatsAppIcon />
       </a>
 
-      {onTrialClick && showPromoFabs ? (
+      {onTrialClick && showDevFabs ? (
         <button
           type="button"
           onClick={onTrialClick}
