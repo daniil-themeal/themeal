@@ -6,6 +6,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite",
+    "restart": "npx --yes kill-port 5173 && vite",
     "icons:import": "node scripts/import-feather-icons.mjs",
     "icons:generate": "node scripts/generate-feather-icon-components.mjs",
     "favicon:generate": "node scripts/generate-favicon.mjs",

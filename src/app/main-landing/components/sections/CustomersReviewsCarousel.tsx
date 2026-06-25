@@ -476,3 +476,4 @@ export function CustomersReviewsCarousel({ t }) {
       review: selectedReview,
       onClose: () => setSelectedReview(null),
     }));
+}

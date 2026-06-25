@@ -21,11 +21,10 @@
 .main-landing #how .how-step-card--2 {
   box-shadow:var(--shadow-how-plum);
 }
-.main-landing #how .card.reveal.in {
-  transform:translateY(0);
+.main-landing #how .card {
   transition:transform .2s var(--ease), box-shadow .2s var(--ease);
 }
-.main-landing #how .card.reveal.in:hover {
+.main-landing #how .card:hover {
   transform:translateY(-4px);
 }
 

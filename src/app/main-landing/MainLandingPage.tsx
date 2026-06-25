@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import { isDevToolsEnabled } from '../devToolsEnabled';
 import { mealContentEn } from './content/mealContentEn';
 import { landingLayoutStyle } from './landingLayoutTokens';
-import { useScrollReveal } from './useScrollReveal';
 import { OrderFab } from './components/OrderFab';
 import { ScrollToTopFab } from './components/ScrollToTopFab';
 import { DevToolsOverlays } from './components/DevToolsOverlays';
@@ -61,8 +60,6 @@ export default function MainLandingPage({
   pendingPhone,
 }: MainLandingPageProps) {
   const t = mealContentEn;
-
-  useScrollReveal();
 
   useEffect(() => {
     document.documentElement.lang = 'en';

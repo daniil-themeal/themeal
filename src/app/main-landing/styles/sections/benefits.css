@@ -7,11 +7,10 @@
 .main-landing #benefits .card {
   border-radius: 50px;
 }
-.main-landing #benefits .card.reveal.in {
-  transform:translateY(0);
+.main-landing #benefits .card {
   transition:transform .2s var(--ease);
 }
-.main-landing #benefits .card.reveal.in:hover {
+.main-landing #benefits .card:hover {
   transform:translateY(-4px);
 }
 #benefits .eyebrow {

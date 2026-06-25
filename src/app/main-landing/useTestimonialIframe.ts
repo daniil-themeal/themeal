@@ -65,16 +65,32 @@ export function useTestimonialIframe(iframeId: string) {
     const iframe = document.getElementById(iframeId) as IFrameResizerElement | null;
     if (!iframe) return;
 
-    const handleIframeLoad = () => {
+    const markLoaded = () => {
       iframe.classList.add('loaded');
+      iframe.dataset.testimonialReady = '1';
+    };
+
+    const handleIframeLoad = () => {
+      markLoaded();
       initIframeResizer(iframeId);
     };
 
     const removeScriptListener = loadResizerScript(() => initIframeResizer(iframeId));
     iframe.addEventListener('load', handleIframeLoad);
-    if (iframe.complete) handleIframeLoad();
+    if (iframe.dataset.testimonialReady === '1') {
+      markLoaded();
+      initIframeResizer(iframeId);
+    }
+
+    const fallbackShow = window.setTimeout(() => {
+      if (!iframe.classList.contains('loaded')) {
+        markLoaded();
+        initIframeResizer(iframeId);
+      }
+    }, 1500);
 
     return () => {
+      window.clearTimeout(fallbackShow);
       removeScriptListener();
       iframe.removeEventListener('load', handleIframeLoad);
       iframe.classList.remove('loaded');

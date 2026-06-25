@@ -11,10 +11,9 @@
 .main-landing #why .compare-card--cost {
   box-shadow:var(--shadow-why-white);
 }
-.main-landing #why .card.reveal.in {
-  transform:translateY(0);
+.main-landing #why .card {
   transition:transform .2s var(--ease), box-shadow .2s var(--ease);
 }
-.main-landing #why .card.reveal.in:hover {
+.main-landing #why .card:hover {
   transform:translateY(-4px);
 }

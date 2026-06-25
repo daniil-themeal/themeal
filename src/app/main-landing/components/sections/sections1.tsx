@@ -381,7 +381,7 @@ function CompareMark({ kind }) {
 
 function Compare({ t }) {
   return (
-    createElement('section', { className:'section section--cream', id:'why' },
+    createElement('section', { className:'section section--white', id:'why' },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'section-stack' },
         createElement('div', { className:'center reveal section-intro', style:{ maxWidth:760, marginInline:'auto' } },
@@ -473,7 +473,7 @@ function HowIllu({ i }) {
 
 function HowItWorks({ t }) {
   return (
-    createElement('section', { className:'section section--white', id:'how' },
+    createElement('section', { className:'section section--cream', id:'how' },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'section-stack' },
         createElement('div', { className:'center reveal section-intro', style:{ maxWidth:680, marginInline:'auto' } },

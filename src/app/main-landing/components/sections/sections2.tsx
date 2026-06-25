@@ -45,7 +45,7 @@ function Menu({ t, onOrder }) {
   }, [day]);
 
   return (
-    createElement('section', { className:'section section--cream menu-section', id:'menu', style:{ paddingBottom:'clamp(var(--space-48), 6vw, var(--space-80))' } },
+    createElement('section', { className:'section section--white menu-section', id:'menu', style:{ paddingBottom:'clamp(var(--space-48), 6vw, var(--space-80))' } },
       createElement('div', { className:'section-stack menu-top-stack' },
       createElement('div', { className:'wrap', style:{ height:'fit-content' } },
         createElement('div', { className:'menu-head reveal' },
@@ -72,7 +72,7 @@ function Menu({ t, onOrder }) {
       ),
 
       createElement('div', { className:'menu-body' },
-      /* day tabs вЂ” align with .wrap via gutter-x */
+      /* day tabs — align with .wrap via gutter-x */
       createElement('div', { className:'menu-days-wrap reveal' },
         createElement('div', {
           ref: dayTabsScroll.ref,
@@ -89,9 +89,6 @@ function Menu({ t, onOrder }) {
 
       /* meal cards — responsive grid: 4 cols desktop, 2×2 below lg */
       createElement('div', { className:'menu-grid-wrap reveal' },
-        createElement('div', {
-          className:'menu-grid-shell reveal',
-        },
             createElement('div', {
               key: dayKeys[day],
               className:'menu-grid menu-grid--cards reveal',
@@ -115,16 +112,15 @@ function Menu({ t, onOrder }) {
               },
             },
               createElement('article', { className:'menucard' },
-                createElement('img', { className:'menucard-img', src:imgs[i%imgs.length], alt:'', loading:'lazy', draggable:false }),
+                createElement('div', { className:'menucard-img-wrap' },
+                  createElement('img', { className:'menucard-img', src:imgs[i%imgs.length], alt:'', loading:'lazy', draggable:false })),
                 createElement('div', { className:'menucard-body' },
                   createElement('p', { className:'menucard-meta' },
-                    createElement('span', { className:'menucard-meta-nutrition' }, `${meta[i].kcal} ccal вЂў ${meta[i].g} g`),
+                    createElement('span', { className:'menucard-meta-nutrition' }, `${meta[i].kcal} ccal • ${meta[i].g} g`),
                     createElement('span', { className:'menucard-meta-slot' }, t.menu.slots[i])),
                   createElement('p', { className:'menucard-title' }, m))
               )
-            ))
-          )
-        )
+            )))
       ),
       ),
       ),
@@ -160,11 +156,6 @@ function Menu({ t, onOrder }) {
             align-self:stretch;
             display:flex;
             flex-direction:column;
-            padding:32px;
-            border-radius:50px;
-            background:#fff;
-            box-shadow:var(--shadow-landing-sm);
-            transition:box-shadow .2s var(--ease), transform .2s var(--ease);
             cursor:pointer;
           }
           .menucard {
@@ -176,26 +167,16 @@ function Menu({ t, onOrder }) {
             min-height:0;
             cursor:pointer;
           }
-          @media (min-width:641px) {
-            .menucard-shell:hover {
-              box-shadow:var(--shadow-landing-lg);
-              transform:translateY(-3px);
-            }
-          }
           .menucard-img {
-            width:100%;
-            aspect-ratio:4/3;
             object-fit:cover;
-            border-radius:16px;
-            transition:transform .4s var(--ease);
           }
           .menucard-body {
             flex:1;
             display:flex;
             flex-direction:column;
             min-height:0;
+            padding-inline:4px;
           }
-          .menucard-shell:hover .menucard-img { transform:scale(1.03); }
           .menucard-meta {
             margin:0 0 16px;
             display:flex;
@@ -212,7 +193,7 @@ function Menu({ t, onOrder }) {
             margin:4px 0 0;
             flex:1;
             font-weight:600;
-            font-size:var(--fs-16);
+            font-size:var(--fs-20);
             line-height:1.35;
             color:var(--primary);
           }
@@ -251,10 +232,13 @@ function Customers({ t }) {
           ),
           createElement('div', { className:'testimonial-wrapper reveal' },
             createElement('iframe', {
-              id:IFRAME_ID,
-              src:`https://embed-v2.testimonial.to/carousel/all/themeal?id=${EMBED_ID}`,
-              frameBorder:'0', scrolling:'no', width:'100%', height:'960',
-              title:t.customers.title,
+              id: IFRAME_ID,
+              src: `https://embed-v2.testimonial.to/carousel/all/themeal?id=${EMBED_ID}`,
+              frameBorder: '0',
+              scrolling: 'no',
+              width: '100%',
+              height: '960',
+              title: t.customers.title,
             })
           )
         )
@@ -483,7 +467,7 @@ function LeadCapture({
   };
 
   return (
-    createElement('section', { className:'section section--cream lead-section', id:'lead', style:{ paddingTop:0, paddingBottom:'clamp(var(--space-64), 8vw, var(--space-96))' } },
+    createElement('section', { className:'section lead-section', id:'lead', style:{ paddingTop:0, paddingBottom:'clamp(var(--space-64), 8vw, var(--space-96))' } },
       createElement('div', { className:'wrap' },
         createElement('div', { className:'reveal lead-card', style:{
           position:'relative', overflow:'hidden', borderRadius:'var(--r-2xl)',

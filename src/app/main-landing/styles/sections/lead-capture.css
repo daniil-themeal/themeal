@@ -1,3 +1,8 @@
+/* ---- lead capture section ---- */
+#lead.lead-section {
+  background-color: var(--background);
+}
+
 /* ---- lead capture grid ---- */
 .lead-section .lead-grid {
   display: grid;
