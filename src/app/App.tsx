@@ -213,14 +213,22 @@ function HomePage() {
     });
   }, [onTrialRoute, openCheckoutAt]);
 
-  const closeCheckout = () => {
+  const closeCheckout = useCallback(() => {
+    const session = phoneSession ?? loadPhoneSession();
+    if (session?.isVerified) {
+      setInitialIsVerified(true);
+      if (session.phone) {
+        setCheckoutInitialPhone(session.phone);
+      }
+    }
+
     setCheckoutOpen(false);
     setCameFromTrial(false);
     if (onTrialRoute) {
       setTrialActive(false);
       navigate('/', { replace: true });
     }
-  };
+  }, [navigate, onTrialRoute, phoneSession]);
 
   const handleExitTrial = useCallback(() => {
     setTrialActive(false);

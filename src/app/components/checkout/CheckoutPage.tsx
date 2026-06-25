@@ -241,17 +241,28 @@ export function CheckoutPage({
     ) => {
       if (!onSessionUpdate) return;
 
-      const normalized = normalizeUaePhone(phone) ?? patch.phone ?? '';
-      const isVerified = verifiedOverride ?? patch.isVerified ?? isSessionVerified;
+      const current = loadPhoneSession();
+      const normalized =
+        normalizeUaePhone(phone) ?? patch.phone ?? current?.phone ?? '';
+      const isVerified =
+        verifiedOverride ??
+        patch.isVerified ??
+        isSessionVerified ??
+        current?.isVerified ??
+        false;
 
       onSessionUpdate(
-        mergePhoneSession(null, {
-          phone: normalized || patch.phone || '',
+        mergePhoneSession(current, {
+          phone: normalized || patch.phone || current?.phone || '',
           isVerified,
           checkoutStep: patch.checkoutStep ?? checkoutStep,
           deliveryStep: patch.deliveryStep ?? deliveryStep,
-          selectedAddressId: patch.selectedAddressId ?? selectedAddress?.id,
-          deliveryDetails: patch.deliveryDetails ?? serializeDeliveryDetails(deliveryDetails),
+          selectedAddressId:
+            patch.selectedAddressId ?? selectedAddress?.id ?? current?.selectedAddressId,
+          deliveryDetails:
+            patch.deliveryDetails ??
+            serializeDeliveryDetails(deliveryDetails) ??
+            current?.deliveryDetails,
         }),
       );
     },
@@ -311,7 +322,9 @@ export function CheckoutPage({
           (nextState.shouldOpenAuthModal || pendingSmsVerification),
       );
 
-      const digits = phoneDigitsFromInitial(initialPhone);
+      const digits =
+        phoneDigitsFromInitial(initialPhone) ||
+        phoneDigitsFromInitial(session?.phone);
       if (digits) {
         setPhone(formatUaePhoneInput(digits));
       } else if (nextState.flowStep === 'plan' && !initialIsVerified && !sessionIsVerified) {
