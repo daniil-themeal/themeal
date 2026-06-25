@@ -18,7 +18,6 @@ function Menu({ t, onOrder }) {
   const imgs = ['/main-landing/assets/img/p6.png','/main-landing/assets/meals/meal_03.png','/main-landing/assets/meals/meal_04.png','/main-landing/assets/meals/meal_05.png'];
   const meals = t.menu.meals[dayKeys[day]];
   const dayTabsScroll = useHorizontalScroll();
-  const menuGridScroll = useHorizontalScroll({ wheel: false, allowVerticalTouch: true });
   const meta = [
     { kcal:572, g:330 },
     { kcal:648, g:420 },
@@ -40,10 +39,6 @@ function Menu({ t, onOrder }) {
     setSlideDirection(nextDay > day ? 'left' : 'right');
     setDay(nextDay);
   };
-
-  useEffect(() => {
-    menuGridScroll.resetScroll();
-  }, [day]);
 
   useEffect(() => {
     setSelectedMeal(null);
@@ -92,19 +87,14 @@ function Menu({ t, onOrder }) {
         )
       ),
 
-      /* meal cards вЂ” full-bleed scroll on mobile; grid in .wrap-width container on desktop */
+      /* meal cards — responsive grid: 4 cols desktop, 2×2 below lg */
       createElement('div', { className:'menu-grid-wrap reveal' },
         createElement('div', {
           className:'menu-grid-shell reveal',
         },
-          createElement('div', {
-            ref: menuGridScroll.ref,
-            onMouseDown: menuGridScroll.onMouseDown,
-            className:`menu-grid-scroll no-scrollbar ${menuGridScroll.className} reveal`,
-          },
             createElement('div', {
               key: dayKeys[day],
-              className:'menu-grid menu-grid--cards',
+              className:'menu-grid menu-grid--cards reveal',
               style: {
                 animation: slideDirection === 'left'
                   ? 'menuMealsSlideFromRight 260ms ease-out both'
@@ -116,7 +106,7 @@ function Menu({ t, onOrder }) {
               className:'menucard-shell',
               role:'button',
               tabIndex:0,
-              onClick: menuGridScroll.guardClick(() => openMeal(m, i)),
+              onClick: () => openMeal(m, i),
               onKeyDown: (e) => {
                 if (e.key === 'Enter' || e.key === ' ') {
                   e.preventDefault();
@@ -133,7 +123,6 @@ function Menu({ t, onOrder }) {
                   createElement('p', { className:'menucard-title' }, m))
               )
             ))
-          )
           )
         )
       ),
@@ -167,7 +156,7 @@ function Menu({ t, onOrder }) {
             width:100%;
           }
           .menucard-shell {
-            flex:0 0 auto;
+            min-width:0;
             align-self:stretch;
             display:flex;
             flex-direction:column;
