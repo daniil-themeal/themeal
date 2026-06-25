@@ -193,35 +193,25 @@
   z-index: 60;
 }
 .site-nav-drawer {
+  --site-nav-drawer-inset: 12px;
   z-index: 60 !important;
-  width: min(100%, 360px) !important;
+  top: var(--site-nav-drawer-inset) !important;
+  right: var(--site-nav-drawer-inset) !important;
+  bottom: var(--site-nav-drawer-inset) !important;
+  left: auto !important;
+  width: min(calc(100vw - 2 * var(--site-nav-drawer-inset)), 360px) !important;
   max-width: 360px !important;
+  height: calc(100svh - 2 * var(--site-nav-drawer-inset)) !important;
+  max-height: calc(100svh - 2 * var(--site-nav-drawer-inset)) !important;
   gap: 0 !important;
   padding: 0 !important;
   border: none !important;
+  border-radius: var(--r-lg) !important;
+  overflow: hidden !important;
+  box-shadow: var(--shadow-landing-lg) !important;
   background: var(--plum-900) !important;
   color: #fff;
   font-family: var(--font);
-}
-.site-nav-drawer > button[data-slot="sheet-close"] {
-  color: rgba(255,255,255,.7);
-  top: 14px;
-  right: 14px;
-  width: 44px;
-  height: 44px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-}
-.site-nav-drawer > button[data-slot="sheet-close"] svg {
-  width: 24px;
-  height: 24px;
-}
-.site-nav-drawer > button[data-slot="sheet-close"]:hover {
-  color: #fff;
-  opacity: 1;
-  background: rgba(255,255,255,.1);
 }
 .site-nav-drawer__body {
   flex: 1;
@@ -234,7 +224,7 @@
 .site-nav-drawer__section {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 16px;
 }
 .site-nav-drawer__heading {
   margin: 0;

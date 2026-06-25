@@ -1,5 +1,6 @@
 import { useCallback } from 'react';
 import { Link, useLocation } from 'react-router';
+import { CircularCloseButton } from '../../components/common/CircularCloseButton';
 import { MenuIcon } from '../../components/common/icons/feather/MenuIcon';
 import { UserIcon } from '../../components/common/icons/feather/UserIcon';
 import {
@@ -83,10 +84,22 @@ export function SiteNavDrawer({
     <Sheet open={open} onOpenChange={onOpenChange}>
       <SheetContent
         side="right"
+        showClose={false}
         className="site-nav-drawer"
         aria-describedby={undefined}
       >
         <SheetTitle className="sr-only">{t.siteNav.menuTitle}</SheetTitle>
+
+        <CircularCloseButton
+          onClick={close}
+          aria-label="Close menu"
+          className="absolute top-0 right-0 z-10"
+          style={{
+            '--circular-close-bg': 'rgba(255,255,255,0.08)',
+            '--circular-close-bg-hover': 'rgba(255,255,255,0.16)',
+          }}
+          iconClassName="text-white/70 group-hover:text-white"
+        />
 
         <div className="site-nav-drawer__body">
           <section className="site-nav-drawer__section site-nav-drawer__account">
