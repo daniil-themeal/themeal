@@ -297,7 +297,7 @@ export const mealContentEn = {
     "twice": "Multiple times a week",
     "twiceD": "Monday, Thursday & Saturday",
     "anyPlace": "Any place",
-    "anyPlaceD": "All 9 emirates covered",
+    "anyPlaceD": "All emirates covered",
     "cta": "Make an order"
   },
   "faq": {
