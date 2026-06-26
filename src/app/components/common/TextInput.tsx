@@ -8,10 +8,9 @@ import {
   FIELD_CLEAR_SUCCESS_STYLES,
   type FieldClearCssVariables,
 } from './fieldClearTokens';
-import { getFieldCheckIconSizePx, getFieldSizeStyle, type FieldSize } from './fieldSizeTokens';
+import { getFieldSizeStyle, type FieldSize } from './fieldSizeTokens';
 import { FormLabel } from './FormLabel';
-import { CheckIcon } from './icons/feather/CheckIcon';
-import type { IconSize } from './icons/iconSize';
+import { InputCheckIndicator } from './InputCheckIndicator';
 import { InputClearButton } from './InputClearButton';
 import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
@@ -72,7 +71,7 @@ const FIELD_STATE_STYLES: Record<TextInputState, TextInputCssVariables> = {
 
   success: {
     ...FIELD_CLEAR_SUCCESS_STYLES,
-    '--text-input-bg': COLOR_TOKENS.success[50],
+    '--text-input-bg': COLOR_TOKENS.neutral[50],
     '--text-input-border': 'transparent',
     '--text-input-focus-border': COLOR_TOKENS.neutral[300],
     '--text-input-text': COLOR_TOKENS.neutral[900],
@@ -85,7 +84,7 @@ const FIELD_STATE_STYLES: Record<TextInputState, TextInputCssVariables> = {
     '--text-input-border': 'transparent',
     '--text-input-focus-border': COLOR_TOKENS.danger[200],
     '--text-input-text': COLOR_TOKENS.neutral[900],
-    '--text-input-placeholder': COLOR_TOKENS.neutral[200],
+    '--text-input-placeholder': COLOR_TOKENS.danger[200],
   },
 };
 
@@ -215,7 +214,6 @@ export function TextInput({
     !disabled &&
     !hasError &&
     !rightIcon;
-  const successIconSize = getFieldCheckIconSizePx(size) as IconSize;
 
   const handleClear = () => {
     if (!onChange) return;
@@ -229,7 +227,7 @@ export function TextInput({
   const trailingSlot = showClearButton ? (
     <InputClearButton onClick={handleClear} />
   ) : showSuccessIcon ? (
-    <CheckIcon size={successIconSize} />
+    <InputCheckIndicator />
   ) : (
     rightIcon
   );
@@ -311,13 +309,7 @@ export function TextInput({
         {showClearButton ? (
           <InputClearButton onClick={handleClear} />
         ) : showSuccessIcon ? (
-          <span
-            className={iconSlotClassName}
-            style={{ color: COLOR_TOKENS.success[600] }}
-            aria-hidden
-          >
-            <CheckIcon size={successIconSize} />
-          </span>
+          <InputCheckIndicator />
         ) : rightIcon ? (
           <span
             className={iconSlotClassName}

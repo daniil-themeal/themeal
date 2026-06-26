@@ -48,7 +48,7 @@ export const FIELD_SIZE_CONFIG: Record<FieldSize, FieldSizeConfig> = {
   },
 };
 
-export const FIELD_CLEAR_CIRCLE_SIZE_PX = 24;
+export const FIELD_CLEAR_CIRCLE_SIZE_PX = 20;
 export const FIELD_CLEAR_ICON_SIZE_PX = 12;
 export const CALENDAR_CELL_ACTION_CIRCLE_SIZE_PX = 36;
 

@@ -14,6 +14,7 @@ import {
   type FieldSize,
 } from './fieldSizeTokens';
 import { FormLabel } from './FormLabel';
+import { InputCheckIndicator } from './InputCheckIndicator';
 import { InputClearButton } from './InputClearButton';
 import { TEXT_TRIM_CLASS_NAME } from './textTrimTokens';
 
@@ -68,7 +69,7 @@ const FIELD_STATE_STYLES: Record<TextAreaState, TextAreaCssVariables> = {
 
   success: {
     ...FIELD_CLEAR_SUCCESS_STYLES,
-    '--text-area-bg': COLOR_TOKENS.success[50],
+    '--text-area-bg': COLOR_TOKENS.neutral[50],
     '--text-area-border': 'transparent',
     '--text-area-focus-border': COLOR_TOKENS.neutral[300],
     '--text-area-text': COLOR_TOKENS.neutral[900],
@@ -81,7 +82,7 @@ const FIELD_STATE_STYLES: Record<TextAreaState, TextAreaCssVariables> = {
     '--text-area-border': 'transparent',
     '--text-area-focus-border': COLOR_TOKENS.danger[200],
     '--text-area-text': COLOR_TOKENS.neutral[900],
-    '--text-area-placeholder': COLOR_TOKENS.neutral[200],
+    '--text-area-placeholder': COLOR_TOKENS.danger[200],
   },
 };
 
@@ -118,12 +119,24 @@ function getSafeRows(rows: ComponentPropsWithoutRef<'textarea'>['rows']) {
 function getFieldState({
   explicitState,
   hasError,
+  hasValue,
+  isFocused,
 }: {
   explicitState?: TextAreaState;
   hasError: boolean;
+  hasValue: boolean;
+  isFocused: boolean;
 }) {
   if (hasError) {
     return 'error';
+  }
+
+  if (explicitState === 'success' && hasValue && !isFocused) {
+    return 'success';
+  }
+
+  if (explicitState === 'success' && isFocused) {
+    return 'default';
   }
 
   return explicitState ?? 'default';
@@ -165,12 +178,23 @@ export function TextArea({
 }: TextAreaProps) {
   const [isFocused, setIsFocused] = useState(false);
   const hasError = Boolean(error);
-  const fieldState = getFieldState({ explicitState, hasError });
   const descriptionId = id && (error || hint) ? `${id}-description` : undefined;
   const safeRows = getSafeRows(rows);
   const stringValue = value == null ? '' : String(value);
   const hasValue = stringValue.length > 0;
+  const fieldState = getFieldState({
+    explicitState,
+    hasError,
+    hasValue,
+    isFocused,
+  });
   const showClearButton = clearable && hasValue && !disabled && isFocused;
+  const showSuccessIcon =
+    explicitState === 'success' &&
+    hasValue &&
+    !isFocused &&
+    !disabled &&
+    !hasError;
 
   const handleClear = () => {
     if (!onChange) return;
@@ -231,7 +255,7 @@ export function TextArea({
           aria-describedby={descriptionId}
           className={[
             textareaBaseClassName,
-            showClearButton ? 'pr-[length:var(--field-icon-slot-width)]' : '',
+            showClearButton || showSuccessIcon ? 'pr-[length:var(--field-icon-slot-width)]' : '',
             className,
           ]
             .filter(Boolean)
@@ -245,6 +269,8 @@ export function TextArea({
 
         {showClearButton ? (
           <InputClearButton onClick={handleClear} placement="corner" />
+        ) : showSuccessIcon ? (
+          <InputCheckIndicator placement="corner" />
         ) : null}
       </div>
 

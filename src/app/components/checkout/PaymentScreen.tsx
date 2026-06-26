@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { CSSProperties, ReactNode } from 'react';
-import { Link } from 'react-router';
 
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import {
@@ -11,7 +10,6 @@ import { getTrialPricing } from '../../data/trialPricing';
 import { getCheckoutOrderPricing } from './mealCalendarAddDaysPricing';
 import type { TestAddress } from '../../data/testAddresses';
 import { getPromoCodeDiscount } from '../../config/promoCodes';
-import { LEGAL_ROUTES } from '../../legal/routes';
 import { Button } from '../common/Button';
 import { CheckoutTodayTotal } from '../common/CheckoutTodayTotal';
 import { COLOR_TOKENS } from '../common/colorTokens';
@@ -417,25 +415,9 @@ export function PaymentScreen({
                   'w-full text-left font-sans text-[length:var(--payment-small-fs)] font-medium leading-[140%] text-[var(--payment-muted)]',
                 ].join(' ')}
               >
-                {isTrial ? (
-                  <>
-                    By placing this order, you accept our{' '}
-                    <Link
-                      to={LEGAL_ROUTES.terms}
-                      className="underline underline-offset-2 hover:text-[var(--payment-primary)]"
-                    >
-                      Terms
-                    </Link>{' '}
-                    and{' '}
-                    <Link
-                      to={LEGAL_ROUTES.privacy}
-                      className="underline underline-offset-2 hover:text-[var(--payment-primary)]"
-                    >
-                      Privacy Policy
-                    </Link>
-                    . This is a one-time trial order — no subscription, no auto-renewal.
-                  </>
-                ) : paymentMethod === 'tabby' ? (
+                {isTrial
+                  ? 'This is a one-time trial order — no subscription, no auto-renewal.'
+                  : paymentMethod === 'tabby' ? (
                   'This is a one-time order via Tabby — to continue your meals, place a new order at the end of this period'
                 ) : (
                   "Your subscription renews automatically — we'll send the upcoming amount 5 days before each charge. Change or cancel anytime."

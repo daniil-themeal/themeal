@@ -78,7 +78,8 @@
   display: inline-flex;
   align-items: center;
   height: 100%;
-  padding-inline: 24px;
+  padding-inline: var(--hdr-nav-link-padding-inline, 24px);
+  transition: padding-inline 0.2s ease, color 0.15s;
 }
 .navlink__short {
   display: none;
@@ -387,6 +388,12 @@
   color: #fff;
 }
 
+@media (width < theme(--breakpoint-md)) {
+  .hdr-nav:not(.hdr-nav--measure) {
+    display: none;
+  }
+}
+
 @media (width < theme(--breakpoint-lg)) {
   .hdr-row {
     gap: 8px;
@@ -405,9 +412,6 @@
     min-width: 32px;
     padding: 9px 15px;
     font-size: 11px;
-  }
-  .hdr-nav .navlink {
-    padding-inline: 8px;
   }
   .navlink--design-system .navlink__full {
     display: none;

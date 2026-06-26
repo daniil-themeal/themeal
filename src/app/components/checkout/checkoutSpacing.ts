@@ -13,7 +13,7 @@ export const CHECKOUT_SELECTOR_CARD_PADDING_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 4 / 448), 24px)';
 
 export const CHECKOUT_SECTION_GAP_CLAMP =
-  'clamp(20px, calc(20px + (100vw - 20rem) * 4 / 448), 24px)';
+  'clamp(24px, calc(24px + (100vw - 20rem) * 8 / 448), 32px)';
 
 /** Quiz step body — vertical gap between header, sliders, and options. */
 export const QUIZ_STEP_BODY_GAP_CLAMP =

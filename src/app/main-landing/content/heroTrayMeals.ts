@@ -13,6 +13,20 @@ export const HERO_TRAY_MEALS = [
   '/main-landing/assets/meals/meal-23.avif',
 ] as const;
 
+const HERO_TRAY_BELT_COUNT = 15;
+/** Coprime with HERO_TRAY_MEALS.length so the belt visits meals in mixed order, not 0→1→2…. */
+const HERO_TRAY_BELT_STRIDE = 5;
+const HERO_TRAY_BELT_OFFSET = 2;
+
+/** Fixed mixed order for the hero tray belt (15 slots × 2 halves for seamless loop). */
+export const HERO_TRAY_BELT_SEQUENCE: readonly string[] = Array.from(
+  { length: HERO_TRAY_BELT_COUNT },
+  (_, i) =>
+    HERO_TRAY_MEALS[
+      (i * HERO_TRAY_BELT_STRIDE + HERO_TRAY_BELT_OFFSET) % HERO_TRAY_MEALS.length
+    ],
+);
+
 /** Breakfast & lunch stay fixed; dinner & soup rotate through hero-belt photos. */
 const MENU_DINNER_HERO_INDICES = [3, 4, 5, 6, 7, 8, 9] as const;
 const MENU_SOUP_HERO_INDICES = [8, 9, 10, 11, 2, 5] as const;

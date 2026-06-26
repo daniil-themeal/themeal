@@ -19,6 +19,10 @@ import { DeliveryAddressScreen } from './DeliveryAddressScreen';
 import { DeliveryDetailsScreen } from './DeliveryDetailsScreen';
 import { createInitialDeliveryDetails, deserializeDeliveryDetails, serializeDeliveryDetails } from './deliveryDetailsTypes';
 import type { DeliveryDetailsData } from './deliveryDetailsTypes';
+import {
+  createInitialDeliveryFormValidation,
+  type DeliveryFormValidationState,
+} from './deliveryFormValidation';
 import { buildCheckoutOrderPayload } from './checkoutOrderTypes';
 import { submitCheckoutOrder } from '../../api/checkoutIntegrations';
 import { PaymentScreen } from './PaymentScreen';
@@ -30,7 +34,7 @@ import type { LightMealOption } from '../../data/testMeals';
 import type { TestAddress } from '../../data/testAddresses';
 import { testUaeAddresses } from '../../data/testAddresses';
 import type { PhoneSession } from '../../phoneSession';
-import { loadPhoneSession, mergePhoneSession } from '../../phoneSession';
+import { isPhoneSessionChanged, loadPhoneSession, mergePhoneSession } from '../../phoneSession';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_SELECTOR_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
 import { useEscapeLayer } from '../common/escapeStack';
@@ -200,6 +204,9 @@ export function CheckoutPage({
   const [deliveryDetails, setDeliveryDetails] = useState<DeliveryDetailsData>(() =>
     createInitialDeliveryDetails(),
   );
+  const [deliveryFormValidation, setDeliveryFormValidation] = useState<DeliveryFormValidationState>(
+    () => createInitialDeliveryFormValidation(),
+  );
   const [phone, setPhone] = useState('');
   const [smsError, setSmsError] = useState<string | undefined>();
   const [isSmsVerifying, setIsSmsVerifying] = useState(false);
@@ -250,23 +257,53 @@ export function CheckoutPage({
         isSessionVerified ??
         current?.isVerified ??
         false;
+      const phoneChanged = isPhoneSessionChanged(current?.phone, patch.phone);
+      const mergePatch: Partial<PhoneSession> = {
+        phone: normalized || patch.phone || current?.phone || '',
+        isVerified,
+        checkoutStep: patch.checkoutStep ?? checkoutStep,
+        deliveryStep: patch.deliveryStep ?? deliveryStep,
+      };
 
-      onSessionUpdate(
-        mergePhoneSession(current, {
-          phone: normalized || patch.phone || current?.phone || '',
-          isVerified,
-          checkoutStep: patch.checkoutStep ?? checkoutStep,
-          deliveryStep: patch.deliveryStep ?? deliveryStep,
-          selectedAddressId:
-            patch.selectedAddressId ?? selectedAddress?.id ?? current?.selectedAddressId,
-          deliveryDetails:
-            patch.deliveryDetails ??
-            serializeDeliveryDetails(deliveryDetails) ??
-            current?.deliveryDetails,
-        }),
-      );
+      if (phoneChanged) {
+        setSelectedAddress(null);
+        setDeliveryDetails(createInitialDeliveryDetails());
+        setDeliveryFormValidation(createInitialDeliveryFormValidation());
+
+        if (patch.selectedAddressId !== undefined) {
+          mergePatch.selectedAddressId = patch.selectedAddressId;
+        }
+
+        if (patch.deliveryDetails !== undefined) {
+          mergePatch.deliveryDetails = patch.deliveryDetails;
+        }
+
+        if (patch.deliveryFormValidation !== undefined) {
+          mergePatch.deliveryFormValidation = patch.deliveryFormValidation;
+        }
+      } else {
+        mergePatch.selectedAddressId =
+          patch.selectedAddressId ?? selectedAddress?.id ?? current?.selectedAddressId;
+        mergePatch.deliveryDetails =
+          patch.deliveryDetails ??
+          serializeDeliveryDetails(deliveryDetails) ??
+          current?.deliveryDetails;
+        mergePatch.deliveryFormValidation =
+          patch.deliveryFormValidation ?? deliveryFormValidation;
+      }
+
+      onSessionUpdate(mergePhoneSession(current, mergePatch));
     },
-    [checkoutStep, deliveryDetails, deliveryStep, isSessionVerified, onSessionUpdate, phone, selectedAddress?.id],
+    [
+      checkoutStep,
+      deliveryDetails,
+      deliveryFormValidation,
+      deliveryStep,
+      isSessionVerified,
+      onSessionUpdate,
+      phone,
+      selectedAddress?.id,
+    ],
   );
 
   useEffect(() => {
@@ -296,6 +333,9 @@ export function CheckoutPage({
         session?.deliveryDetails
           ? deserializeDeliveryDetails(session.deliveryDetails)
           : createInitialDeliveryDetails(),
+      );
+      setDeliveryFormValidation(
+        session?.deliveryFormValidation ?? createInitialDeliveryFormValidation(),
       );
       setDeliveryStep(
         initialDeliveryStep === 'details' && restoredAddress
@@ -443,6 +483,9 @@ export function CheckoutPage({
     setDeliveryStep('address');
     setMenuOpen(false);
     setSummaryVisible(false);
+    setSelectedAddress(null);
+    setDeliveryDetails(createInitialDeliveryDetails());
+    setDeliveryFormValidation(createInitialDeliveryFormValidation());
   }, [onResetPhone]);
 
   const openAuthModal = useCallback(() => {
@@ -635,8 +678,10 @@ export function CheckoutPage({
   };
 
   const handleDeliveryDetailsContinue = () => {
+    const clearedValidation = createInitialDeliveryFormValidation();
+    setDeliveryFormValidation(clearedValidation);
     setCheckoutStep('payment');
-    persistSession({ checkoutStep: 'payment' });
+    persistSession({ checkoutStep: 'payment', deliveryFormValidation: clearedValidation });
     scrollBodyToTop();
   };
 
@@ -683,6 +728,35 @@ export function CheckoutPage({
     scrollBodyToTop();
   };
 
+  const handleDeliveryFormValidationChange = useCallback(
+    (validation: DeliveryFormValidationState) => {
+      setDeliveryFormValidation(validation);
+
+      if (onSessionUpdate) {
+        onSessionUpdate(
+          mergePhoneSession(loadPhoneSession(), {
+            phone: normalizeUaePhone(phone) ?? '',
+            isVerified: isSessionVerified,
+            checkoutStep,
+            deliveryStep,
+            selectedAddressId: selectedAddress?.id,
+            deliveryDetails: serializeDeliveryDetails(deliveryDetails),
+            deliveryFormValidation: validation,
+          }),
+        );
+      }
+    },
+    [
+      checkoutStep,
+      deliveryDetails,
+      deliveryStep,
+      isSessionVerified,
+      onSessionUpdate,
+      phone,
+      selectedAddress?.id,
+    ],
+  );
+
   const handleDeliveryDetailsChange = (patch: Partial<DeliveryDetailsData>) => {
     setDeliveryDetails((current) => {
       const next = { ...current, ...patch };
@@ -696,6 +770,7 @@ export function CheckoutPage({
             deliveryStep,
             selectedAddressId: selectedAddress?.id,
             deliveryDetails: serializeDeliveryDetails(next),
+            deliveryFormValidation,
           }),
         );
       }
@@ -709,7 +784,28 @@ export function CheckoutPage({
   };
 
   const handleDeliveryDetailsSkip = () => {
-    handleDeliveryDetailsChange(getSampleDeliveryDetailsFill(days));
+    const clearedValidation = createInitialDeliveryFormValidation();
+    setDeliveryFormValidation(clearedValidation);
+
+    setDeliveryDetails((current) => {
+      const next = { ...current, ...getSampleDeliveryDetailsFill(days) };
+
+      if (onSessionUpdate) {
+        onSessionUpdate(
+          mergePhoneSession(loadPhoneSession(), {
+            phone: normalizeUaePhone(phone) ?? '',
+            isVerified: isSessionVerified,
+            checkoutStep,
+            deliveryStep,
+            selectedAddressId: selectedAddress?.id,
+            deliveryDetails: serializeDeliveryDetails(next),
+            deliveryFormValidation: clearedValidation,
+          }),
+        );
+      }
+
+      return next;
+    });
   };
 
   const handleExtraMealDayKeysChange = (keys: string[]) => {
@@ -1004,7 +1100,7 @@ export function CheckoutPage({
             selectedAddress={selectedAddress}
             onSelectedAddressChange={handleSelectedAddressChange}
             onContinue={handleAddressContinue}
-            onSkip={handleDeliveryAddressSkip}
+            onSkip={isDevToolsEnabled ? handleDeliveryAddressSkip : undefined}
           />
         </div>
       ) : !resultOverlay && checkoutStep === 'delivery' && deliveryStep === 'details' ? (
@@ -1021,7 +1117,9 @@ export function CheckoutPage({
             extraMealDayKeys={extraMealDayKeys}
             onExtraMealDayKeysChange={handleExtraMealDayKeysChange}
             onContinue={handleDeliveryDetailsContinue}
-            onSkip={handleDeliveryDetailsSkip}
+            onSkip={isDevToolsEnabled ? handleDeliveryDetailsSkip : undefined}
+            formValidation={deliveryFormValidation}
+            onFormValidationChange={handleDeliveryFormValidationChange}
           />
         </div>
       ) : !resultOverlay && checkoutStep === 'payment' ? (

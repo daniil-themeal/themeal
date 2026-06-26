@@ -28,8 +28,8 @@ const MAPPING = [
   { src: 'c__Users_Bender_AppData_Roaming_Cursor_User_workspaceStorage_8b5eddf9d5577ebda98f796a9cef73ae_images_q_Grilled_chicken_kofta_with_aromatic_brown_onion_pilaf_and_veggies_1-c0bc472a-b8ca-4989-bb93-33557515fa6e.png', dst: 'meal-23.avif' },
 ];
 
-const TARGET_W = 834;
-const TARGET_H = 606;
+const TARGET_W = 432;
+const TARGET_H = 317;
 // Two thresholds, in 0–255 channel-distance from the sampled corner colour:
 //  - pixels closer than BG_HARD are treated as pure background (alpha 0)
 //  - pixels farther than BG_SOFT are treated as pure foreground (alpha 255)
@@ -53,7 +53,7 @@ async function convert({ src, dst }) {
   // sharp on Windows may fail on long paths; pre-read into a buffer to bypass.
   const inputBuffer = fs.readFileSync(srcPath);
 
-  // Resize to match the standard 834x606 canvas of the existing meals while
+  // Resize to match the standard 432x317 canvas of the existing meals while
   // keeping the original aspect ratio (the user's PNGs are 4:3-ish so this is
   // effectively a downscale).
   const resized = await sharp(inputBuffer)

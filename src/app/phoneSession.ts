@@ -1,4 +1,6 @@
 import type { SerializedDeliveryDetails } from './components/checkout/deliveryDetailsTypes';
+import type { DeliveryFormValidationState } from './components/checkout/deliveryFormValidation';
+import { isDeliveryFormValidationState } from './components/checkout/deliveryFormValidation';
 
 export type PhoneSessionCheckoutStep = 'plan' | 'verification' | 'delivery' | 'payment';
 export type PhoneSessionDeliveryStep = 'address' | 'details';
@@ -10,6 +12,7 @@ export type PhoneSession = {
   deliveryStep?: PhoneSessionDeliveryStep;
   selectedAddressId?: string;
   deliveryDetails?: SerializedDeliveryDetails;
+  deliveryFormValidation?: DeliveryFormValidationState;
 };
 
 const STORAGE_KEY = 'themeal_phone_session';
@@ -67,6 +70,9 @@ export function loadPhoneSession(): PhoneSession | null {
     if (isSerializedDeliveryDetails(parsed.deliveryDetails)) {
       session.deliveryDetails = parsed.deliveryDetails;
     }
+    if (isDeliveryFormValidationState(parsed.deliveryFormValidation)) {
+      session.deliveryFormValidation = parsed.deliveryFormValidation;
+    }
 
     return session;
   } catch {
@@ -94,16 +100,41 @@ export function clearPhoneSession(): void {
   }
 }
 
+export function isPhoneSessionChanged(
+  previousPhone: string | undefined,
+  nextPhone: string | undefined,
+): boolean {
+  if (!nextPhone || !previousPhone) return false;
+
+  return nextPhone !== previousPhone;
+}
+
 export function mergePhoneSession(
   current: PhoneSession | null,
   patch: Partial<PhoneSession>,
 ): PhoneSession {
+  const nextPhone = patch.phone ?? current?.phone ?? '';
+  const phoneChanged = isPhoneSessionChanged(current?.phone, patch.phone);
+
+  if (phoneChanged) {
+    return {
+      phone: nextPhone,
+      isVerified: patch.isVerified ?? current?.isVerified ?? false,
+      checkoutStep: patch.checkoutStep ?? current?.checkoutStep,
+      deliveryStep: patch.deliveryStep ?? current?.deliveryStep,
+      selectedAddressId: patch.selectedAddressId,
+      deliveryDetails: patch.deliveryDetails,
+      deliveryFormValidation: patch.deliveryFormValidation,
+    };
+  }
+
   return {
-    phone: patch.phone ?? current?.phone ?? '',
+    phone: nextPhone,
     isVerified: patch.isVerified ?? current?.isVerified ?? false,
     checkoutStep: patch.checkoutStep ?? current?.checkoutStep,
     deliveryStep: patch.deliveryStep ?? current?.deliveryStep,
     selectedAddressId: patch.selectedAddressId ?? current?.selectedAddressId,
     deliveryDetails: patch.deliveryDetails ?? current?.deliveryDetails,
+    deliveryFormValidation: patch.deliveryFormValidation ?? current?.deliveryFormValidation,
   };
 }

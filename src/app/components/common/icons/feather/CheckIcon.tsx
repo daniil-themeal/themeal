@@ -1,3 +1,4 @@
+import CheckIconSvg12 from '../svg/check-12.svg?raw';
 import CheckIconSvg16 from '../svg/check-16.svg?raw';
 import CheckIconSvg20 from '../svg/check-20.svg?raw';
 import CheckIconSvg24 from '../svg/check-24.svg?raw';
@@ -9,6 +10,7 @@ import type { IconProps } from '../iconProps';
 import { RawSvgIcon } from '../RawSvgIcon';
 
 const CHECK_ICON_SVG_BY_SIZE = {
+  12: CheckIconSvg12,
   16: CheckIconSvg16,
   20: CheckIconSvg20,
   24: CheckIconSvg24,

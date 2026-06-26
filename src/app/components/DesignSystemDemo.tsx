@@ -1361,7 +1361,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                     label="E-mail *"
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
-                    placeholder="email@themeal.menu"
+                    placeholder="name@example.com"
                   />
                 </div>
               ))}
@@ -1372,7 +1372,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
               label="E-mail *"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="email@themeal.menu"
+              placeholder="name@example.com"
             />
 
             <TextInput

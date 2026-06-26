@@ -6,8 +6,14 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '../../components/ui/dropdown-menu';
+import { BREAKPOINTS } from '../../components/common/breakpoints';
 
-const COMPACT_BREAKPOINT = 880;
+const MIN_LINK_PADDING_PX = 8;
+const MAX_LINK_PADDING_PX = 24;
+
+type HeaderNavCssVariables = CSSProperties & {
+  '--hdr-nav-link-padding-inline': string;
+};
 
 export type HeaderNavLink = {
   href: string;
@@ -43,16 +49,20 @@ export function HeaderNav({
   navigationLabel = 'Navigation',
 }: HeaderNavProps) {
   const measureRef = useRef<HTMLElement>(null);
-  const [compact, setCompact] = useState(
-    () => typeof window !== 'undefined' && window.innerWidth <= COMPACT_BREAKPOINT,
+  const [hidden, setHidden] = useState(
+    () => typeof window !== 'undefined' && window.innerWidth < BREAKPOINTS.md,
   );
+  const [compact, setCompact] = useState(false);
+  const [linkPadding, setLinkPadding] = useState(MAX_LINK_PADDING_PX);
 
   const evaluate = useCallback(() => {
     const width = window.innerWidth;
-    if (width <= COMPACT_BREAKPOINT) {
-      setCompact(true);
+    if (width < BREAKPOINTS.md) {
+      setHidden(true);
       return;
     }
+
+    setHidden(false);
 
     const measureNav = measureRef.current;
     const row = measureNav?.closest('.hdr-row');
@@ -63,9 +73,28 @@ export function HeaderNav({
     const rowStyles = window.getComputedStyle(row);
     const rowGap = Number.parseFloat(rowStyles.columnGap || rowStyles.gap || '0') || 0;
     const availableWidth = row.clientWidth - logoWidth - actionsWidth - rowGap * 2 - 8;
+    const linkCount = links.length;
 
-    setCompact(measureNav.scrollWidth > availableWidth);
-  }, []);
+    if (linkCount === 0) {
+      setCompact(false);
+      setLinkPadding(MAX_LINK_PADDING_PX);
+      return;
+    }
+
+    const widthAtMaxPadding = measureNav.scrollWidth;
+    const textWidth =
+      widthAtMaxPadding - 2 * MAX_LINK_PADDING_PX * linkCount;
+    const minRequiredWidth = textWidth + 2 * MIN_LINK_PADDING_PX * linkCount;
+
+    if (minRequiredWidth > availableWidth) {
+      setCompact(true);
+      return;
+    }
+
+    const fitPadding = Math.floor((availableWidth - textWidth) / (2 * linkCount));
+    setLinkPadding(Math.max(MIN_LINK_PADDING_PX, Math.min(MAX_LINK_PADDING_PX, fitPadding)));
+    setCompact(false);
+  }, [links]);
 
   useEffect(() => {
     evaluate();
@@ -97,6 +126,12 @@ export function HeaderNav({
     },
   };
 
+  const inlineNavStyle: HeaderNavCssVariables = {
+    fontWeight: 600,
+    color: textColor,
+    '--hdr-nav-link-padding-inline': `${linkPadding}px`,
+  };
+
   return (
     <>
       <nav
@@ -116,7 +151,7 @@ export function HeaderNav({
         ))}
       </nav>
 
-      {compact ? (
+      {hidden ? null : compact ? (
         <div className="hdr-nav hdr-nav--compact">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -148,7 +183,7 @@ export function HeaderNav({
       ) : (
         <nav
           className="row hdr-nav hdr-nav--inline"
-          style={{ fontWeight: 600, color: textColor }}
+          style={inlineNavStyle}
         >
           {links.map((link) => (
             <a

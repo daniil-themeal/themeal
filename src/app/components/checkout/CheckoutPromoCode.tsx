@@ -1,6 +1,7 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 
 import { getPromoCodeDiscount, validatePromoCode, VALID_PROMO_CODES } from '../../config/promoCodes';
+import { isDevToolsEnabled } from '../../devToolsEnabled';
 import { formatAed } from '../../data/checkoutPricing';
 import { PromoCodeEstimateHint } from './PromoCodeEstimateHint';
 import { PROMO_ACTIVATE_BUTTON_PADDING_X_CLAMP } from './checkoutSpacing';
@@ -53,6 +54,8 @@ function getInitialView(variant: CheckoutPromoCodeVariant, appliedCode: string):
 }
 
 function PromoCodeDevHint({ onSelect }: { onSelect: (code: string) => void }) {
+  if (!isDevToolsEnabled) return null;
+
   return (
     <p className="font-sans text-[10px] font-medium leading-[140%] text-[var(--promo-code-muted)]">
       {VALID_PROMO_CODES.map((code, index) => (

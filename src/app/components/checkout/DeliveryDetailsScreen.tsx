@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import type { TestAddress } from '../../data/testAddresses';
@@ -23,6 +23,13 @@ import {
 } from './checkoutStepPageLayoutTokens';
 import type { DeliveryDetailsData } from './deliveryDetailsTypes';
 import {
+  createInitialDeliveryFormValidation,
+  DELIVERY_TEXT_FIELDS,
+  restoreDeliveryFieldErrors,
+  type DeliveryFormValidationState,
+  type DeliveryTextField,
+} from './deliveryFormValidation';
+import {
   getDeliveryEmailFieldError,
   getDeliveryFieldError,
   validateDeliveryDetails,
@@ -34,10 +41,6 @@ import { getUpcomingDeliveryDates } from './mealCalendarUtils';
 import { DeliverySkipButton } from './DeliverySkipButton';
 
 const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
-
-type DeliveryTextField = 'apartment' | 'fullName' | 'email';
-
-const DELIVERY_TEXT_FIELDS: DeliveryTextField[] = ['apartment', 'fullName', 'email'];
 
 /** Temporarily hidden — set to true to re-enable add-meal-day controls on the calendar. */
 const ENABLE_ADD_MEAL_DAYS = false;
@@ -59,19 +62,22 @@ function getFirstDeliveryFieldErrorId(errors: DeliveryDetailsFieldErrors) {
 function getDeliveryTextInputState({
   field,
   deliveryDetails,
-  touchedFields,
   error,
 }: {
   field: DeliveryTextField;
   deliveryDetails: DeliveryDetailsData;
-  touchedFields: Set<DeliveryTextField>;
   error?: string;
 }) {
   if (error) return undefined;
-  if (!touchedFields.has(field)) return undefined;
   if (!getDeliveryFieldError(field, deliveryDetails)) return 'success' as const;
 
   return undefined;
+}
+
+function getDeliveryInstructionsTextAreaState(
+  instructions: string,
+): 'success' | undefined {
+  return instructions.trim().length > 0 ? 'success' : undefined;
 }
 
 function InfoBox() {
@@ -107,6 +113,8 @@ type DeliveryDetailsScreenProps = {
   onExtraMealDayKeysChange: (keys: string[]) => void;
   onContinue?: () => void;
   onSkip?: () => void;
+  formValidation?: DeliveryFormValidationState;
+  onFormValidationChange?: (validation: DeliveryFormValidationState) => void;
 };
 
 export function DeliveryDetailsScreen({
@@ -122,11 +130,31 @@ export function DeliveryDetailsScreen({
   onExtraMealDayKeysChange,
   onContinue,
   onSkip,
+  formValidation = createInitialDeliveryFormValidation(),
+  onFormValidationChange,
 }: DeliveryDetailsScreenProps) {
-  const [fieldErrors, setFieldErrors] = useState<DeliveryDetailsFieldErrors>({});
-  const [touchedFields, setTouchedFields] = useState<Set<DeliveryTextField>>(() => new Set());
-  const [submitAttempted, setSubmitAttempted] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<DeliveryDetailsFieldErrors>(() =>
+    restoreDeliveryFieldErrors(deliveryDetails, formValidation),
+  );
+  const [touchedFields, setTouchedFields] = useState<Set<DeliveryTextField>>(
+    () => new Set(formValidation.touchedFields),
+  );
+  const [submitAttempted, setSubmitAttempted] = useState(formValidation.submitAttempted);
   const deliveryDates = useMemo(() => getUpcomingDeliveryDates(60, days), [days]);
+
+  useEffect(() => {
+    onFormValidationChange?.({
+      submitAttempted,
+      touchedFields: [...touchedFields],
+    });
+  }, [onFormValidationChange, submitAttempted, touchedFields]);
+
+  const resetFormValidation = () => {
+    setFieldErrors({});
+    setSubmitAttempted(false);
+    setTouchedFields(new Set());
+    onFormValidationChange?.(createInitialDeliveryFormValidation());
+  };
 
   const addressTitle = selectedAddress?.title ?? 'Delivery address';
   const addressSub = selectedAddress?.subtitle ?? 'Select your delivery address';
@@ -225,8 +253,7 @@ export function DeliveryDetailsScreen({
   };
 
   const handleSkip = () => {
-    setFieldErrors({});
-    setSubmitAttempted(false);
+    resetFormValidation();
     onSkip?.();
   };
 
@@ -254,8 +281,7 @@ export function DeliveryDetailsScreen({
       return;
     }
 
-    setFieldErrors({});
-    setSubmitAttempted(false);
+    resetFormValidation();
     onContinue?.();
   };
 
@@ -288,11 +314,10 @@ export function DeliveryDetailsScreen({
               state={getDeliveryTextInputState({
                 field: 'apartment',
                 deliveryDetails,
-                touchedFields,
                 error: fieldErrors.apartment,
               })}
               error={fieldErrors.apartment}
-              placeholder="67"
+              placeholder=""
             />
 
             <TextArea
@@ -300,6 +325,7 @@ export function DeliveryDetailsScreen({
               label="How can the courier find you?"
               value={deliveryDetails.instructions}
               onChange={(e) => onDeliveryDetailsChange({ instructions: e.target.value })}
+              state={getDeliveryInstructionsTextAreaState(deliveryDetails.instructions)}
               placeholder="E.g. Tower B, gate 2 from main road, blue door at end of hallway"
               rows={3}
             />
@@ -313,11 +339,10 @@ export function DeliveryDetailsScreen({
               state={getDeliveryTextInputState({
                 field: 'fullName',
                 deliveryDetails,
-                touchedFields,
                 error: fieldErrors.fullName,
               })}
               error={fieldErrors.fullName}
-              placeholder="Ahmed"
+              placeholder="Type your name"
             />
 
             <TextInput
@@ -330,11 +355,10 @@ export function DeliveryDetailsScreen({
               state={getDeliveryTextInputState({
                 field: 'email',
                 deliveryDetails,
-                touchedFields,
                 error: fieldErrors.email,
               })}
               error={fieldErrors.email}
-              placeholder="email@themeal.menu"
+              placeholder="Type your e-mail"
             />
           </div>
 

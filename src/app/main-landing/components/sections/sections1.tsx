@@ -8,7 +8,7 @@ import { HeroStats } from '../HeroStats';
 import { HeroPrice } from '../HeroPrice';
 import { ACCENT_CARD_VARIANTS, ACCENT_CARD_VARIANT_ORDER } from '../../../components/common/accentCardTokens';
 import { HowIllustration } from '../HowIllustrations';
-import { HERO_TRAY_MEALS } from '../../content/heroTrayMeals';
+import { HERO_TRAY_BELT_SEQUENCE } from '../../content/heroTrayMeals';
 
 /* ---------------- Header (scroll + cursor reveal — Bender) ---------------- */
 function Header({
@@ -22,6 +22,22 @@ function Header({
   const [solid, setSolid] = useState(false);
   const [hovered, setHovered] = useState(false);
   const last = useRef(0);
+  const suppressHoverRef = useRef(false);
+
+  const armHoverSuppress = () => {
+    suppressHoverRef.current = true;
+    const release = () => {
+      suppressHoverRef.current = false;
+    };
+    window.addEventListener('mousemove', release, { once: true });
+    window.addEventListener('scroll', release, { once: true, passive: true });
+  };
+
+  const setHeaderHovered = (value) => {
+    if (value && (suppressHoverRef.current || navOpen)) return;
+    setHovered(value);
+  };
+
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
@@ -35,7 +51,18 @@ function Header({
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const visible = shown || hovered;
+  const handleNavOpenChange = (open) => {
+    setNavOpen(open);
+    setHovered(false);
+    if (open) {
+      suppressHoverRef.current = true;
+    } else {
+      last.current = window.scrollY;
+      armHoverSuppress();
+    }
+  };
+
+  const visible = shown || (hovered && !navOpen);
   const onDark = true;
   const txt = solid ? 'rgba(255,255,255,.82)' : 'rgba(255,255,255,.85)';
   const navLinks = [
@@ -56,11 +83,12 @@ function Header({
     createElement('div', { style:{ position:'fixed', insetInline:0, top:0, zIndex:50, pointerEvents:'none' } },
       createElement('div', {
         style:{ position:'absolute', insetInline:0, top:0, height:8, pointerEvents:'auto' },
-        onMouseEnter:()=>setHovered(true),
+        onMouseEnter:()=>setHeaderHovered(true),
+        onMouseLeave:()=>setHeaderHovered(false),
       }),
       createElement('header', {
-        onMouseEnter:()=>setHovered(true),
-        onMouseLeave:()=>setHovered(false),
+        onMouseEnter:()=>setHeaderHovered(true),
+        onMouseLeave:()=>setHeaderHovered(false),
         style:{
           pointerEvents:'auto',
           transform: visible ? 'translateY(0)' : 'translateY(-105%)',
@@ -92,7 +120,7 @@ function Header({
       ),
       createElement(SiteNavDrawer, {
         open: navOpen,
-        onOpenChange: setNavOpen,
+        onOpenChange: handleNavOpenChange,
         t,
         onOrderClick: onOrder,
       })
@@ -268,7 +296,7 @@ function TrayBelt() {
               createElement('img', {
                 key: `${half}-${i}`,
                 className: 'hero-tray-belt__img',
-                src: HERO_TRAY_MEALS[i % HERO_TRAY_MEALS.length],
+                src: HERO_TRAY_BELT_SEQUENCE[i],
                 alt: '',
                 draggable: false,
               })

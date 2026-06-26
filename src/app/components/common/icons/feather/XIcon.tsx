@@ -1,3 +1,4 @@
+import XIconSvg12 from '../svg/x-12.svg?raw';
 import XIconSvg16 from '../svg/x-16.svg?raw';
 import XIconSvg20 from '../svg/x-20.svg?raw';
 import XIconSvg24 from '../svg/x-24.svg?raw';
@@ -9,6 +10,7 @@ import type { IconProps } from '../iconProps';
 import { RawSvgIcon } from '../RawSvgIcon';
 
 const XICON_SVG_BY_SIZE = {
+  12: XIconSvg12,
   16: XIconSvg16,
   20: XIconSvg20,
   24: XIconSvg24,

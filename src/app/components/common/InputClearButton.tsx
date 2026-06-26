@@ -53,7 +53,7 @@ export function InputClearButton({
       tabIndex={-1}
       aria-label={ariaLabel}
       iconTone="inline"
-      iconSize={16}
+      iconSize={12}
       iconClassName={inputClearIconClassName}
       style={inputClearButtonStyle}
       className={[

@@ -15,13 +15,13 @@ export const FIELD_CLEAR_NEUTRAL_STYLES: FieldClearCssVariables = {
 };
 
 export const FIELD_CLEAR_SUCCESS_STYLES: FieldClearCssVariables = {
-  '--field-clear-bg': COLOR_TOKENS.success[75],
-  '--field-clear-bg-hover': COLOR_TOKENS.success[100],
-  '--field-clear-icon': COLOR_TOKENS.success[600],
+  '--field-clear-bg': COLOR_TOKENS.success[600],
+  '--field-clear-bg-hover': COLOR_TOKENS.success[700],
+  '--field-clear-icon': COLOR_TOKENS.base.white,
 };
 
 export const FIELD_CLEAR_ERROR_STYLES: FieldClearCssVariables = {
   '--field-clear-bg': COLOR_TOKENS.danger[75],
   '--field-clear-bg-hover': COLOR_TOKENS.danger[100],
-  '--field-clear-icon': COLOR_TOKENS.danger[200],
+  '--field-clear-icon': COLOR_TOKENS.danger[300],
 };
