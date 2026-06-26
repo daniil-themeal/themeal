@@ -88,7 +88,7 @@ function Menu({ t, onOrder }) {
         )
       ),
 
-      /* meal cards — responsive grid: 4 cols desktop, 2×2 below lg */
+      /* meal cards — responsive grid: 4 cols desktop, 2 cols below lg (including mobile) */
       createElement('div', { className:'menu-grid-wrap reveal' },
             createElement('div', {
               key: dayKeys[day],

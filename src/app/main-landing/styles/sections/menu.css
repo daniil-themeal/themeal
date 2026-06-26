@@ -221,7 +221,16 @@
 }
 @media (width < theme(--breakpoint-sm)) {
   .menu-section .menu-grid.menu-grid--cards {
-    grid-template-columns:minmax(0, 1fr);
+    gap:var(--space-16);
+  }
+  .menu-section .menucard-shell > .menucard {
+    gap:var(--space-16);
+  }
+  .menu-section .menucard-meta {
+    font-size:var(--fs-12);
+  }
+  .menu-section .menucard-title {
+    font-size:var(--fs-16);
   }
   .menu-section .menu-head {
     flex-direction: column;
