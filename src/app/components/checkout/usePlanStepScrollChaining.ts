@@ -1,20 +1,34 @@
 import { useEffect, type RefObject } from 'react';
 
-const SCROLL_SYNC_DRIFT_THRESHOLD = 24;
 const SCROLL_LERP = 0.18;
 const SCROLL_STOP_EPSILON = 0.5;
 const SCROLL_EPSILON = 1;
+/**
+ * If the actual scrollTop diverges from what runSmoothScroll set on the previous tick
+ * by more than this, treat it as an external (native / scripted) scroll and abandon the
+ * smooth animation so it does not fight the user.
+ */
+const EXTERNAL_SCROLL_DRIFT_THRESHOLD = 2;
 const PLAN_DESKTOP_MEDIA_QUERY = '(min-width: 768px)';
-const LAYOUT_SETTLE_MS = 150;
+/**
+ * Window after a real layout change in which we still abort in-flight smooth animations.
+ * Wheel handlers are NOT gated by this — they always re-read fresh scrollHeight/clientHeight
+ * and can start a new animation immediately, so the user is never locked out of scrolling.
+ */
+const LAYOUT_SETTLE_MS = 80;
+/** Skip ResizeObserver entries whose size barely changed (subpixel rounding, etc). */
+const LAYOUT_CHANGE_MIN_DELTA_PX = 1;
 
 type SmoothScroller = {
   targetScrollTop: number;
   rafId: number | null;
   isAnimating: boolean;
+  /** scrollTop value we wrote on the last lerp tick; used to detect external scrolls. */
+  expectedScrollTop: number;
 };
 
 function createSmoothScroller(): SmoothScroller {
-  return { targetScrollTop: 0, rafId: null, isAnimating: false };
+  return { targetScrollTop: 0, rafId: null, isAnimating: false, expectedScrollTop: 0 };
 }
 
 function getScrollDelta(event: WheelEvent): number {
@@ -55,12 +69,14 @@ function runSmoothScroll(
   if (Math.abs(distance) < SCROLL_STOP_EPSILON) {
     element.scrollTop = scroller.targetScrollTop;
     scroller.targetScrollTop = element.scrollTop;
+    scroller.expectedScrollTop = element.scrollTop;
     scroller.isAnimating = false;
     scroller.rafId = null;
     return;
   }
 
   element.scrollTop += distance * SCROLL_LERP;
+  scroller.expectedScrollTop = element.scrollTop;
   scroller.rafId = requestAnimationFrame(() => runSmoothScroll(element, scroller, shouldAbort));
 }
 
@@ -76,6 +92,7 @@ function applySmoothDelta(
 
   if (scroller.rafId === null) {
     scroller.targetScrollTop = element.scrollTop;
+    scroller.expectedScrollTop = element.scrollTop;
   }
 
   const maxScrollTop = getMaxScrollTop(element);
@@ -106,24 +123,26 @@ function stopSmoothScroller(element: HTMLElement, scroller: SmoothScroller) {
 
   scroller.isAnimating = false;
   scroller.targetScrollTop = element.scrollTop;
+  scroller.expectedScrollTop = element.scrollTop;
 }
 
+/**
+ * Called from the scroll listener. If the actual scrollTop diverges from what our last
+ * lerp tick wrote, the scroll came from outside (native wheel, scripted scrollTo, key,
+ * touch). In that case we abandon the smooth animation so it does not pull the user back.
+ */
 function syncScrollerTarget(element: HTMLElement, scroller: SmoothScroller) {
-  if (scroller.isAnimating) return;
+  const driftFromExpected = Math.abs(element.scrollTop - scroller.expectedScrollTop);
 
-  const drift = Math.abs(element.scrollTop - scroller.targetScrollTop);
-
-  if (drift <= SCROLL_SYNC_DRIFT_THRESHOLD) {
-    scroller.targetScrollTop = element.scrollTop;
+  if (driftFromExpected <= EXTERNAL_SCROLL_DRIFT_THRESHOLD) {
+    if (scroller.rafId === null) {
+      scroller.targetScrollTop = element.scrollTop;
+      scroller.expectedScrollTop = element.scrollTop;
+    }
     return;
   }
 
-  if (scroller.rafId !== null) {
-    cancelAnimationFrame(scroller.rafId);
-    scroller.rafId = null;
-  }
-
-  scroller.targetScrollTop = element.scrollTop;
+  stopSmoothScroller(element, scroller);
 }
 
 function clampScrollerTarget(element: HTMLElement, scroller: SmoothScroller) {
@@ -156,34 +175,15 @@ export function usePlanStepScrollChaining({
     const rightScroller = createSmoothScroller();
     const desktopMediaQuery = window.matchMedia(PLAN_DESKTOP_MEDIA_QUERY);
 
-    // #region agent log
-    const debugLog = (
-      location: string,
-      message: string,
-      data: Record<string, unknown>,
-      hypothesisId: string,
-    ) => {
-      fetch('http://127.0.0.1:7774/ingest/74a9562f-1e4a-456e-88d5-c6f7971d9185', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Debug-Session-Id': 'dbfb70' },
-        body: JSON.stringify({
-          sessionId: 'dbfb70',
-          location,
-          message,
-          data,
-          timestamp: Date.now(),
-          hypothesisId,
-        }),
-      }).catch(() => {});
-    };
-    let lastBodyScrollTop = body.scrollTop;
-    let lastSmoothLogAt = 0;
-    // #endregion
-
     const isDesktop = () => desktopMediaQuery.matches;
     let isLayoutChanging = false;
     let layoutSettleTimer: number | null = null;
 
+    /**
+     * Used ONLY by `runSmoothScroll` to abort an in-flight animation when the layout shifts.
+     * Wheel handlers no longer gate on this — they always re-read fresh sizes so the user
+     * is never locked out of scrolling, even when ResizeObserver fires repeatedly.
+     */
     const shouldAbortSmoothScroll = () => isLayoutChanging;
 
     const stopAllSmoothScrollers = () => {
@@ -195,19 +195,6 @@ export function usePlanStepScrollChaining({
       isLayoutChanging = true;
       stopAllSmoothScrollers();
 
-      // #region agent log
-      debugLog(
-        'usePlanStepScrollChaining.ts:markLayoutChanging',
-        'layout changing – smooth scroll aborted',
-        {
-          bodyScrollTop: body.scrollTop,
-          bodyScrollHeight: body.scrollHeight,
-          rightScrollHeight: right.scrollHeight,
-        },
-        'H1',
-      );
-      // #endregion
-
       if (layoutSettleTimer !== null) {
         window.clearTimeout(layoutSettleTimer);
       }
@@ -215,56 +202,17 @@ export function usePlanStepScrollChaining({
       layoutSettleTimer = window.setTimeout(() => {
         isLayoutChanging = false;
         layoutSettleTimer = null;
-        // #region agent log
-        debugLog(
-          'usePlanStepScrollChaining.ts:layoutSettled',
-          'layout settled',
-          { bodyScrollTop: body.scrollTop },
-          'H1',
-        );
-        // #endregion
       }, LAYOUT_SETTLE_MS);
     };
 
     const applyBodyOverflowDelta = (delta: number): number => {
       if (delta > 0 && !canScrollDown(body)) return delta;
       if (delta < 0 && !canScrollUp(body)) return delta;
-      if (isLayoutChanging) {
-        // #region agent log
-        debugLog(
-          'usePlanStepScrollChaining.ts:applyBodyOverflowDelta',
-          'body overflow delta aborted by layout lock',
-          { delta, bodyScrollTop: body.scrollTop },
-          'H1',
-        );
-        // #endregion
-        return delta;
-      }
-      const remaining = applySmoothDelta(body, bodyScroller, delta, shouldAbortSmoothScroll);
-      // #region agent log
-      if (remaining !== delta) {
-        const now = Date.now();
-        if (now - lastSmoothLogAt > 80) {
-          lastSmoothLogAt = now;
-          debugLog(
-            'usePlanStepScrollChaining.ts:applyBodyOverflowDelta',
-            'smooth scroll applied to body from right overflow',
-            {
-              delta,
-              remaining,
-              bodyScrollTop: body.scrollTop,
-              bodyTarget: bodyScroller.targetScrollTop,
-            },
-            'H2',
-          );
-        }
-      }
-      // #endregion
-      return remaining;
+      return applySmoothDelta(body, bodyScroller, delta, shouldAbortSmoothScroll);
     };
 
     const handleRightWheel = (event: WheelEvent) => {
-      if (!isDesktop() || isLayoutChanging) return;
+      if (!isDesktop()) return;
 
       const delta = getScrollDelta(event);
       if (delta === 0) return;
@@ -290,7 +238,7 @@ export function usePlanStepScrollChaining({
     };
 
     const handleBodyWheel = (event: WheelEvent) => {
-      if (!isDesktop() || isLayoutChanging) return;
+      if (!isDesktop()) return;
 
       const target = event.target;
       if (!(target instanceof Node) || right.contains(target)) return;
@@ -300,140 +248,57 @@ export function usePlanStepScrollChaining({
 
       if (!canScrollVertically(right)) return;
 
-      const scrollDown = canScrollDown(body);
-      const scrollUp = canScrollUp(body);
-      let branch = 'unknown';
-
       if (delta > 0) {
-        if (scrollDown) {
-          branch = 'native-scroll-down';
-          // #region agent log
-          if (bodyScroller.isAnimating || bodyScroller.rafId !== null) {
-            debugLog(
-              'usePlanStepScrollChaining.ts:handleBodyWheel',
-              'native scroll while body smooth-scroller active',
-              {
-                branch,
-                delta,
-                bodyScrollTop: body.scrollTop,
-                bodyTarget: bodyScroller.targetScrollTop,
-                isAnimating: bodyScroller.isAnimating,
-              },
-              'H2',
-            );
-          }
-          // #endregion
+        if (canScrollDown(body)) {
+          stopSmoothScroller(body, bodyScroller);
           return;
         }
         if (!canScrollDown(right)) {
-          branch = 'prevent-at-bottom';
           event.preventDefault();
-          // #region agent log
-          debugLog(
-            'usePlanStepScrollChaining.ts:handleBodyWheel',
-            'wheel prevented at bottom edge',
-            { branch, delta, bodyScrollTop: body.scrollTop },
-            'H3',
-          );
-          // #endregion
           return;
         }
-        branch = 'redirect-to-right-down';
       } else {
-        if (scrollUp) {
-          branch = 'native-scroll-up';
-          // #region agent log
-          if (bodyScroller.isAnimating || bodyScroller.rafId !== null) {
-            debugLog(
-              'usePlanStepScrollChaining.ts:handleBodyWheel',
-              'native scroll while body smooth-scroller active',
-              {
-                branch,
-                delta,
-                bodyScrollTop: body.scrollTop,
-                bodyTarget: bodyScroller.targetScrollTop,
-                isAnimating: bodyScroller.isAnimating,
-              },
-              'H2',
-            );
-          }
-          // #endregion
+        if (canScrollUp(body)) {
+          stopSmoothScroller(body, bodyScroller);
           return;
         }
         if (!canScrollUp(right)) {
-          branch = 'prevent-at-top';
           event.preventDefault();
-          // #region agent log
-          debugLog(
-            'usePlanStepScrollChaining.ts:handleBodyWheel',
-            'wheel prevented at top edge',
-            { branch, delta, bodyScrollTop: body.scrollTop },
-            'H3',
-          );
-          // #endregion
           return;
         }
-        branch = 'redirect-to-right-up';
       }
 
       applySmoothDelta(right, rightScroller, delta, shouldAbortSmoothScroll);
       event.preventDefault();
-      // #region agent log
-      debugLog(
-        'usePlanStepScrollChaining.ts:handleBodyWheel',
-        'wheel redirected to right column',
-        { branch, delta, bodyScrollTop: body.scrollTop },
-        'H3',
-      );
-      // #endregion
     };
 
-    const handleBodyScroll = () => {
-      // #region agent log
-      const scrollDelta = body.scrollTop - lastBodyScrollTop;
-      if (Math.abs(scrollDelta) > 0 && Math.abs(scrollDelta) < 8) {
-        debugLog(
-          'usePlanStepScrollChaining.ts:handleBodyScroll',
-          'small body scroll tick (possible jitter)',
-          {
-            scrollTop: body.scrollTop,
-            scrollDelta,
-            targetScrollTop: bodyScroller.targetScrollTop,
-            isAnimating: bodyScroller.isAnimating,
-            drift: Math.abs(body.scrollTop - bodyScroller.targetScrollTop),
-          },
-          'H4',
-        );
-      }
-      lastBodyScrollTop = body.scrollTop;
-      // #endregion
-      const driftBefore = Math.abs(body.scrollTop - bodyScroller.targetScrollTop);
-      syncScrollerTarget(body, bodyScroller);
-      // #region agent log
-      if (driftBefore > SCROLL_SYNC_DRIFT_THRESHOLD) {
-        debugLog(
-          'usePlanStepScrollChaining.ts:syncScrollerTarget',
-          'large drift resync on body',
-          {
-            scrollTop: body.scrollTop,
-            targetScrollTop: bodyScroller.targetScrollTop,
-            driftBefore,
-          },
-          'H4',
-        );
-      }
-      // #endregion
-    };
+    const handleBodyScroll = () => syncScrollerTarget(body, bodyScroller);
     const handleRightScroll = () => syncScrollerTarget(right, rightScroller);
 
-    const handleScrollerLayoutChange = () => {
+    let lastBodyContentSize = { w: body.clientWidth, h: body.scrollHeight };
+    let lastRightContentSize = { w: right.clientWidth, h: right.scrollHeight };
+
+    const makeResizeHandler = (
+      element: HTMLElement,
+      lastSize: { w: number; h: number },
+    ) => () => {
+      const w = element.clientWidth;
+      const h = element.scrollHeight;
+      const dw = Math.abs(w - lastSize.w);
+      const dh = Math.abs(h - lastSize.h);
+      if (dw < LAYOUT_CHANGE_MIN_DELTA_PX && dh < LAYOUT_CHANGE_MIN_DELTA_PX) return;
+      lastSize.w = w;
+      lastSize.h = h;
       markLayoutChanging();
       clampScrollerTarget(body, bodyScroller);
       clampScrollerTarget(right, rightScroller);
     };
 
-    const bodyResizeObserver = new ResizeObserver(handleScrollerLayoutChange);
-    const rightResizeObserver = new ResizeObserver(handleScrollerLayoutChange);
+    const handleBodyResize = makeResizeHandler(body, lastBodyContentSize);
+    const handleRightResize = makeResizeHandler(right, lastRightContentSize);
+
+    const bodyResizeObserver = new ResizeObserver(handleBodyResize);
+    const rightResizeObserver = new ResizeObserver(handleRightResize);
 
     bodyResizeObserver.observe(body);
     rightResizeObserver.observe(right);

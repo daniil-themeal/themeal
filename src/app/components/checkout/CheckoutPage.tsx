@@ -28,6 +28,7 @@ import { submitCheckoutOrder } from '../../api/checkoutIntegrations';
 import { PaymentScreen } from './PaymentScreen';
 import { PaymentFailedScreen } from './PaymentFailedScreen';
 import type { PaymentResultTab } from './PaymentResultHeader';
+import { PaymentResultHeader } from './PaymentResultHeader';
 import { PaymentSuccessScreen } from './PaymentSuccessScreen';
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
 import type { LightMealOption } from '../../data/testMeals';
@@ -977,7 +978,7 @@ export function CheckoutPage({
         {...devResultSelectProps}
       />
 
-      {!resultOverlay && checkoutStep === 'plan' ? (
+      {checkoutStep === 'plan' ? (
         <>
           <div
             ref={bodyRef}
@@ -1088,6 +1089,7 @@ export function CheckoutPage({
               duration={duration}
               persons={persons}
               lightMealOption={lightMealOption}
+              ingredients={ingredients}
               extraMealDayKeys={extraMealDayKeys}
               onScrollToSummary={handleScrollToSummary}
               hidden={summaryVisible || isMealDetailOpen}
@@ -1162,36 +1164,40 @@ export function CheckoutPage({
           className="absolute inset-0 flex flex-col"
           style={{ zIndex: CHECKOUT_LAYER_Z_INDEX.resultOverlay }}
         >
-          <button
-            type="button"
-            className="absolute inset-0 bg-black/40 modal-overlay-enter"
-            onClick={handleDismissResultOverlay}
-            aria-label="Close payment result"
+          <PaymentResultHeader
+            activeTab={resultOverlay}
+            onTabChange={handleResultTabChange}
+            onClose={handleDismissResultOverlay}
           />
 
-          <div
-            ref={resultBodyRef}
-            className="relative flex flex-1 flex-col overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide modal-enter-responsive"
-            {...{ [SPACING_CONTENT_ATTR]: '' }}
-          >
-            {resultOverlay === 'success' ? (
-              <PaymentSuccessScreen
-                days={days}
-                duration={duration}
-                startDate={deliveryDetails.selectedDate}
-                extraMealDayKeys={extraMealDayKeys}
-                onClose={handleDismissResultOverlay}
-                onTabChange={handleResultTabChange}
-                onGoToMain={handleGoToMain}
-              />
-            ) : (
-              <PaymentFailedScreen
-                onClose={handleDismissResultOverlay}
-                onTabChange={handleResultTabChange}
-                onRepeatPayment={handleReturnToPayment}
-                onChangePaymentMethod={handleReturnToPayment}
-              />
-            )}
+          <div className="relative flex min-h-0 flex-1 flex-col">
+            <button
+              type="button"
+              className="absolute inset-0 bg-black/40"
+              onClick={handleDismissResultOverlay}
+              aria-label="Close payment result"
+            />
+
+            <div
+              ref={resultBodyRef}
+              className="relative flex flex-1 flex-col overflow-y-auto bg-[var(--checkout-page-bg)] scrollbar-hide"
+              {...{ [SPACING_CONTENT_ATTR]: '' }}
+            >
+              {resultOverlay === 'success' ? (
+                <PaymentSuccessScreen
+                  days={days}
+                  duration={duration}
+                  startDate={deliveryDetails.selectedDate}
+                  extraMealDayKeys={extraMealDayKeys}
+                  onGoToMain={handleGoToMain}
+                />
+              ) : (
+                <PaymentFailedScreen
+                  onRepeatPayment={handleReturnToPayment}
+                  onChangePaymentMethod={handleReturnToPayment}
+                />
+              )}
+            </div>
           </div>
         </div>
       ) : null}

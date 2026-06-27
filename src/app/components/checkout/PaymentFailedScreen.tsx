@@ -1,5 +1,3 @@
-import type { PaymentResultTab } from './PaymentResultHeader';
-import { PaymentResultHeader } from './PaymentResultHeader';
 import { Button } from '../common/Button';
 import {
   CHECKOUT_STEP_PAGE_LAYOUT,
@@ -12,16 +10,12 @@ const DEFAULT_FAILED_MESSAGE =
   'The purchase amount is below the minimum amount required to use Tabby, try adding more items or use another payment method';
 
 type PaymentFailedScreenProps = {
-  onClose: () => void;
-  onTabChange: (tab: PaymentResultTab) => void;
   onRepeatPayment: () => void;
   onChangePaymentMethod: () => void;
   message?: string;
 };
 
 export function PaymentFailedScreen({
-  onClose,
-  onTabChange,
   onRepeatPayment,
   onChangePaymentMethod,
   message = DEFAULT_FAILED_MESSAGE,
@@ -31,8 +25,6 @@ export function PaymentFailedScreen({
       className={CHECKOUT_STEP_PAGE_LAYOUT.page}
       style={CHECKOUT_STEP_PAGE_VARS}
     >
-      <PaymentResultHeader activeTab="failed" onTabChange={onTabChange} onClose={onClose} />
-
       <div className={CHECKOUT_STEP_PAGE_LAYOUT.container}>
         <div className={CHECKOUT_STEP_PAGE_LAYOUT.resultHero}>
           <div className={CHECKOUT_STEP_PAGE_LAYOUT.header}>

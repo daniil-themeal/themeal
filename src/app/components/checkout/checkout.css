@@ -3,3 +3,22 @@
   background: #eadbfb;
   color: #371259;
 }
+
+@keyframes checkoutFloatMenuTogglePulse {
+  0%,
+  100% {
+    box-shadow: none;
+    background-color: var(--button-bg, #eef0f4);
+    color: var(--button-text, #383e48);
+  }
+
+  50% {
+    box-shadow: 0 0 0 2px var(--checkout-float-active-muted);
+    background-color: var(--checkout-float-active-soft);
+    color: var(--checkout-float-active);
+  }
+}
+
+.checkout-float-menu-toggle-pulse {
+  animation: checkoutFloatMenuTogglePulse 600ms ease-in-out 2;
+}

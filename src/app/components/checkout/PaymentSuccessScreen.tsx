@@ -12,8 +12,6 @@ import {
   CHECKOUT_STEP_SECTION_PX,
 } from './checkoutStepPageLayoutTokens';
 import { CHECKOUT_FONT_CLAMP_25_31 } from './checkoutSpacing';
-import type { PaymentResultTab } from './PaymentResultHeader';
-import { PaymentResultHeader } from './PaymentResultHeader';
 import { MealCalendar } from './MealCalendar';
 import {
   SuccessContactSection,
@@ -28,8 +26,6 @@ type PaymentSuccessScreenProps = {
   duration: Duration;
   startDate: Date;
   extraMealDayKeys?: string[];
-  onClose: () => void;
-  onTabChange: (tab: PaymentResultTab) => void;
   onGoToMain: () => void;
 };
 
@@ -143,8 +139,6 @@ export function PaymentSuccessScreen({
   duration,
   startDate,
   extraMealDayKeys = [],
-  onClose,
-  onTabChange,
   onGoToMain,
 }: PaymentSuccessScreenProps) {
   return (
@@ -155,8 +149,6 @@ export function PaymentSuccessScreen({
         '--checkout-success-rules-title-fs': CHECKOUT_FONT_CLAMP_25_31,
       }}
     >
-      <PaymentResultHeader activeTab="success" onTabChange={onTabChange} onClose={onClose} />
-
       <div className={CHECKOUT_STEP_PAGE_LAYOUT.container}>
         <div className={CHECKOUT_STEP_PAGE_LAYOUT.resultHero}>
           <div className={CHECKOUT_STEP_PAGE_LAYOUT.header}>

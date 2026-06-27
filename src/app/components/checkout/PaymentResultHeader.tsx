@@ -22,8 +22,11 @@ export function PaymentResultHeader({
 }: PaymentResultHeaderProps) {
   return (
     <div
-      className="relative h-[56px] shrink-0 border-b bg-white"
-      style={{ borderColor: COLOR_TOKENS.neutral[100] }}
+      className="relative z-[1] h-[56px] shrink-0 border-b bg-[var(--checkout-header-bg)]"
+      style={{
+        borderColor: COLOR_TOKENS.neutral[100],
+        '--checkout-header-bg': COLOR_TOKENS.base.white,
+      } as CSSProperties}
     >
       <div className="grid h-full w-full grid-cols-[56px_1fr_56px] items-center">
         <div aria-hidden />

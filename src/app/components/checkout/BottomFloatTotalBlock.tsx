@@ -21,6 +21,15 @@ import { CHECKOUT_FONT_CLAMP_14_16, CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_SCROLL
 import { FullMenuPanel } from './FullMenuPanel';
 
 const MENU_EXIT_ANIMATION_FALLBACK_MS = 260;
+const MENU_TOGGLE_PULSE_MS = 1200;
+
+function getMenuTogglePulseKey(
+  plan: Plan,
+  lightMealOption: LightMealOption,
+  ingredients: string[],
+) {
+  return `${plan}|${lightMealOption}|${[...ingredients].sort().join(',')}`;
+}
 
 type BottomFloatTotalBlockCssVariables = CSSProperties & {
   '--checkout-card-padding': string;
@@ -76,6 +85,7 @@ export function BottomFloatTotalBlock({
   duration,
   persons = 1,
   lightMealOption,
+  ingredients = [],
   onScrollToSummary,
   hidden = false,
   extraMealDayKeys = [],
@@ -86,6 +96,7 @@ export function BottomFloatTotalBlock({
   duration: Duration;
   persons?: number;
   lightMealOption: LightMealOption;
+  ingredients?: string[];
   onScrollToSummary: () => void;
   hidden?: boolean;
   extraMealDayKeys?: string[];
@@ -94,9 +105,15 @@ export function BottomFloatTotalBlock({
   const [menuOpen, setMenuOpen] = useState(false);
   const [menuClosing, setMenuClosing] = useState(false);
   const [mealDetailOpen, setMealDetailOpen] = useState(false);
+  const [menuTogglePulseActive, setMenuTogglePulseActive] = useState(false);
 
   const menuClosingRef = useRef(false);
   const menuCloseTimerRef = useRef<number | null>(null);
+  const menuTogglePulseTimerRef = useRef<number | null>(null);
+  const isFirstMenuTogglePulseRef = useRef(true);
+  const lastMenuTogglePulseKeyRef = useRef(
+    getMenuTogglePulseKey(plan, lightMealOption, ingredients),
+  );
 
   const orderPricing = getCheckoutOrderPricing({
     pricingTable,
@@ -115,6 +132,29 @@ export function BottomFloatTotalBlock({
       menuCloseTimerRef.current = null;
     }
   }, []);
+
+  const clearMenuTogglePulseTimer = useCallback(() => {
+    if (menuTogglePulseTimerRef.current !== null) {
+      window.clearTimeout(menuTogglePulseTimerRef.current);
+      menuTogglePulseTimerRef.current = null;
+    }
+  }, []);
+
+  const triggerMenuTogglePulse = useCallback(() => {
+    if (menuOpen) return;
+
+    clearMenuTogglePulseTimer();
+    setMenuTogglePulseActive(false);
+
+    window.requestAnimationFrame(() => {
+      setMenuTogglePulseActive(true);
+
+      menuTogglePulseTimerRef.current = window.setTimeout(() => {
+        setMenuTogglePulseActive(false);
+        menuTogglePulseTimerRef.current = null;
+      }, MENU_TOGGLE_PULSE_MS);
+    });
+  }, [clearMenuTogglePulseTimer, menuOpen]);
 
   const finishMenuClose = useCallback(() => {
     clearMenuCloseTimer();
@@ -159,10 +199,29 @@ export function BottomFloatTotalBlock({
   };
 
   useEffect(() => {
+    const nextKey = getMenuTogglePulseKey(plan, lightMealOption, ingredients);
+
+    if (isFirstMenuTogglePulseRef.current) {
+      isFirstMenuTogglePulseRef.current = false;
+      lastMenuTogglePulseKeyRef.current = nextKey;
+      return;
+    }
+
+    if (nextKey === lastMenuTogglePulseKeyRef.current) return;
+
+    lastMenuTogglePulseKeyRef.current = nextKey;
+
+    if (!menuOpen) {
+      triggerMenuTogglePulse();
+    }
+  }, [ingredients, lightMealOption, menuOpen, plan, triggerMenuTogglePulse]);
+
+  useEffect(() => {
     return () => {
       clearMenuCloseTimer();
+      clearMenuTogglePulseTimer();
     };
-  }, [clearMenuCloseTimer]);
+  }, [clearMenuCloseTimer, clearMenuTogglePulseTimer]);
 
   return (
     <div
@@ -177,7 +236,10 @@ export function BottomFloatTotalBlock({
           variant="neutral"
           size="x-small"
           onClick={toggleMenu}
-          className="!rounded-tl-[4px] !rounded-tr-[4px] !rounded-bl-none !rounded-br-none [corner-shape:round]"
+          className={[
+            '!rounded-tl-[4px] !rounded-tr-[4px] !rounded-bl-none !rounded-br-none [corner-shape:round]',
+            menuTogglePulseActive && !menuOpen ? 'checkout-float-menu-toggle-pulse' : '',
+          ].join(' ')}
           rightIcon={
             <ChevronRightIcon
               size={16}
