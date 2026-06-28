@@ -10,6 +10,7 @@ import type {
   HomeMenuPlanConfig,
 } from '../types/account.types';
 import { getUpcomingDeliveryDatesForDayOption } from './accountDeliveryDates';
+import { DELIVERY_ADDRESS_NOTE } from './deliveryLogisticsCopy';
 
 const WEEKDAY_FULL = [
   'Sunday',
@@ -44,6 +45,7 @@ export function homeDeliveryFromListEntry(
     weekday: WEEKDAY_FULL[date.getDay()],
     timeSlot: entry.timeSlot,
     address: entry.address,
+    addressNote: DELIVERY_ADDRESS_NOTE,
     leaveAtDoor,
   };
 }
@@ -96,6 +98,7 @@ export function buildNextDelivery({
     weekday: WEEKDAY_FULL[nextDeliveryDate.getDay()],
     timeSlot: sampleDetails.selectedTimeSlot ?? '7AM – 11AM',
     address: `${apartment}${sampleAddress.title}, ${sampleAddress.subtitle}`,
+    addressNote: DELIVERY_ADDRESS_NOTE,
     leaveAtDoor: sampleDetails.leaveAtDoor ?? false,
   };
 }

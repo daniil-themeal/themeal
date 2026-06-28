@@ -35,6 +35,7 @@ export type HomeDelivery = {
   weekday: string;
   timeSlot: string;
   address: string;
+  addressNote?: string;
   leaveAtDoor: boolean;
 };
 

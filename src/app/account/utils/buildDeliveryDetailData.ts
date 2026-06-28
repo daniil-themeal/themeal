@@ -2,6 +2,7 @@ import type { DeliveryDetailData, DeliveryListEntry, HomeDelivery, HomeMenuPlanC
 import { canRescheduleDelivery } from './applyDeliveryReschedule';
 import { DELIVERY_TIME_SLOTS } from '../../components/checkout/deliveryTimeSlots';
 import { buildDeliveryMenuDays } from './buildHomeScreenData';
+import { DELIVERY_ADDRESS_NOTE, PAST_DELIVERY_ADDRESS_NOTE } from './deliveryLogisticsCopy';
 
 const WEEKDAY_FULL = [
   'Sunday',
@@ -14,9 +15,6 @@ const WEEKDAY_FULL = [
 ] as const;
 
 const DETAIL_TIME_SLOT = DELIVERY_TIME_SLOTS[0];
-const ADDRESS_NOTE = 'Call upon arrival. Door code: 4521';
-const PAST_DELIVERY_ADDRESS_NOTE =
-  "Delivery orders involve receiving goods or services at a specified location, typically your home or office.";
 
 type BuildDeliveryDetailDataOptions = {
   deliveryIndex: number;
@@ -51,7 +49,7 @@ export function buildDeliveryDetailData(
     weekday: WEEKDAY_FULL[deliveryDate.getDay()],
     timeSlot: DETAIL_TIME_SLOT,
     address: entry.address,
-    addressNote: canRescheduleDelivery(entry) ? ADDRESS_NOTE : PAST_DELIVERY_ADDRESS_NOTE,
+    addressNote: canRescheduleDelivery(entry) ? DELIVERY_ADDRESS_NOTE : PAST_DELIVERY_ADDRESS_NOTE,
     leaveAtDoor,
     canEditLogistics: canRescheduleDelivery(entry),
     menuPlan,

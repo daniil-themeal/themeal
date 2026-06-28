@@ -1,48 +1,22 @@
 import * as SelectPrimitive from '@radix-ui/react-select';
-import { useEffect, useState, type ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 
 import { DELIVERY_TIME_SLOTS } from '../../../components/checkout/deliveryTimeSlots';
 import { Badge } from '../../../components/common/Badge';
 import { Button } from '../../../components/common/Button';
-import { Checkbox } from '../../../components/common/Checkbox';
 import { Divider } from '../../../components/common/Divider';
 import { DropdownSelectMenu } from '../../../components/common/Dropdown';
 import { ChevronDownIcon } from '../../../components/common/icons/feather/ChevronDownIcon';
-import { ChevronRightIcon } from '../../../components/common/icons/feather/ChevronRightIcon';
 import { ClockIcon } from '../../../components/common/icons/feather/ClockIcon';
 import { CornerUpRightIcon } from '../../../components/common/icons/feather/CornerUpRightIcon';
-import { MapPinIcon } from '../../../components/common/icons/feather/MapPinIcon';
 import type { DeliveryDetailData } from '../../types/account.types';
-import { useInlineSuccessNotice, type InlineSuccessPhase } from '../../hooks/useInlineSuccessNotice';
+import { useInlineSuccessNotice } from '../../hooks/useInlineSuccessNotice';
 import { shouldShowProductionFixationBadge } from '../../utils/productionFixationBadge';
+import { DeliveryAddressRow } from '../shared/DeliveryAddressRow';
+import { DeliveryLeaveAtDoorRow } from '../shared/DeliveryLeaveAtDoorRow';
+import { InlineSuccessNotice } from '../shared/InlineSuccessNotice';
 
 const TIME_SLOT_OPTIONS = DELIVERY_TIME_SLOTS.map((slot) => ({ value: slot, label: slot }));
-
-type InlineSuccessNoticeProps = {
-  phase: InlineSuccessPhase;
-  children: ReactNode;
-};
-
-function InlineSuccessNotice({ phase, children }: InlineSuccessNoticeProps) {
-  if (phase === 'hidden') {
-    return null;
-  }
-
-  return (
-    <p
-      className={[
-        'account-delivery-sheet__inline-success',
-        phase === 'leaving' ? 'account-delivery-sheet__inline-success--leaving' : '',
-      ]
-        .filter(Boolean)
-        .join(' ')}
-      role="status"
-      aria-live="polite"
-    >
-      <span>{children}</span>
-    </p>
-  );
-}
 
 type DeliveryDetailLogisticsProps = {
   detail: DeliveryDetailData;
@@ -105,28 +79,6 @@ export function DeliveryDetailLogistics({
   ]
     .filter(Boolean)
     .join(' ');
-
-  const addressRowClassName = [
-    'account-delivery-sheet__row-btn account-delivery-sheet__row-btn--address',
-    !canEdit ? 'account-delivery-sheet__row-btn--static' : '',
-  ]
-    .filter(Boolean)
-    .join(' ');
-
-  const addressContent = (
-    <>
-      <MapPinIcon size={20} className="account-delivery-sheet__row-icon" />
-      <span className="account-delivery-sheet__address-copy">
-        <span className="account-delivery-sheet__address-line">{detail.address}</span>
-        {detail.addressNote ? (
-          <span className="account-delivery-sheet__address-note">{detail.addressNote}</span>
-        ) : null}
-      </span>
-      {canEdit ? (
-        <ChevronRightIcon size={16} className="account-delivery-sheet__row-chevron" />
-      ) : null}
-    </>
-  );
 
   return (
     <section className="account-delivery-sheet__logistics" aria-label="Delivery details">
@@ -217,31 +169,19 @@ export function DeliveryDetailLogistics({
 
       <Divider className="account-delivery-sheet__divider" />
 
-      {canEdit ? (
-        <button
-          type="button"
-          className={addressRowClassName}
-          onClick={onAddressClick}
-          aria-label="Change delivery address"
-        >
-          {addressContent}
-        </button>
-      ) : (
-        <div className={addressRowClassName}>{addressContent}</div>
-      )}
+      <DeliveryAddressRow
+        address={detail.address}
+        addressNote={detail.addressNote}
+        canEdit={canEdit}
+        onClick={onAddressClick}
+      />
 
-      <div className="account-delivery-sheet__leave-at-door-row">
-        <Checkbox
-          checked={leaveAtDoor}
-          onChange={handleLeaveAtDoorChange}
-          label="Leave the box at the door"
-          disabled={!canEdit}
-        />
-
-        {canEdit && leaveAtDoorSuccessPhase !== 'hidden' ? (
-          <InlineSuccessNotice phase={leaveAtDoorSuccessPhase}>Updated</InlineSuccessNotice>
-        ) : null}
-      </div>
+      <DeliveryLeaveAtDoorRow
+        checked={leaveAtDoor}
+        onChange={handleLeaveAtDoorChange}
+        disabled={!canEdit}
+        successPhase={leaveAtDoorSuccessPhase}
+      />
     </section>
   );
 }

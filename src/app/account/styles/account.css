@@ -1114,19 +1114,6 @@
   line-height: 1.3;
 }
 
-.account-home-plan__address-card {
-  border: none;
-  border-radius: 0;
-  padding-inline: 0;
-  padding-block: 8px;
-  background: transparent;
-}
-
-.account-home-plan__address-card:hover:enabled {
-  background: transparent;
-  border-color: transparent;
-}
-
 .account-home-plan__menu {
   overflow: hidden;
 }

@@ -1,18 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Badge } from '../../../components/common/Badge';
 import { Button } from '../../../components/common/Button';
-import { Checkbox } from '../../../components/common/Checkbox';
 import { Divider } from '../../../components/common/Divider';
-import { PayMethodCard } from '../../../components/common/PayMethodCard';
 import { PlanTariffSummary } from '../../../components/common/PlanTariffSummary';
 import { FullMenuPanel } from '../../../components/checkout/FullMenuPanel';
-import { ChevronRightIcon } from '../../../components/common/icons/feather/ChevronRightIcon';
-import { MapPinIcon } from '../../../components/common/icons/feather/MapPinIcon';
 import { CornerUpRightIcon } from '../../../components/common/icons/feather/CornerUpRightIcon';
 import type { HomeDelivery, HomeMenuPlanConfig, HomePlan } from '../../types/account.types';
+import { useInlineSuccessNotice } from '../../hooks/useInlineSuccessNotice';
 import { shouldShowProductionFixationBadge } from '../../utils/productionFixationBadge';
 import type { MenuDay } from '../../../types/meal';
+import { DeliveryAddressRow } from '../shared/DeliveryAddressRow';
+import { DeliveryLeaveAtDoorRow } from '../shared/DeliveryLeaveAtDoorRow';
 
 type HomePlanBlockProps = {
   plan: HomePlan;
@@ -34,7 +33,25 @@ export function HomePlanBlock({
   onAddressClick,
 }: HomePlanBlockProps) {
   const [leaveAtDoor, setLeaveAtDoor] = useState(delivery.leaveAtDoor);
+  const {
+    phase: leaveAtDoorSuccessPhase,
+    show: showLeaveAtDoorSuccess,
+    reset: resetLeaveAtDoorSuccess,
+  } = useInlineSuccessNotice();
   const showProductionFixation = shouldShowProductionFixationBadge(delivery.dateIso);
+
+  const handleLeaveAtDoorChange = (next: boolean) => {
+    if (next !== leaveAtDoor) {
+      showLeaveAtDoorSuccess();
+    }
+
+    setLeaveAtDoor(next);
+  };
+
+  useEffect(() => {
+    setLeaveAtDoor(delivery.leaveAtDoor);
+    resetLeaveAtDoorSuccess();
+  }, [delivery.dateIso, delivery.leaveAtDoor, resetLeaveAtDoorSuccess]);
 
   return (
     <article className="account-home-plan">
@@ -87,24 +104,17 @@ export function HomePlanBlock({
 
           <p className="account-home-plan__time-slot">{delivery.timeSlot}</p>
 
-          <div className="account-home-plan__address-wrap">
-            <PayMethodCard
-              title={delivery.address}
-              leftIcon={<MapPinIcon size={16} />}
-              actionLabel={<ChevronRightIcon size={16} />}
-              className="account-home-plan__address-card"
-              onClick={onAddressClick ?? (() => undefined)}
-              aria-label="Change delivery address"
-            />
-          </div>
+          <DeliveryAddressRow
+            address={delivery.address}
+            addressNote={delivery.addressNote}
+            onClick={onAddressClick}
+          />
 
-          <div className="account-home-plan__leave-at-door">
-            <Checkbox
-              checked={leaveAtDoor}
-              onChange={setLeaveAtDoor}
-              label="Leave it by the door"
-            />
-          </div>
+          <DeliveryLeaveAtDoorRow
+            checked={leaveAtDoor}
+            onChange={handleLeaveAtDoorChange}
+            successPhase={leaveAtDoorSuccessPhase}
+          />
         </div>
       </section>
 
