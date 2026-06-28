@@ -9,6 +9,7 @@
   --account-text-chip: var(--neutral-700, #5e697a);
   --account-border: var(--neutral-100, #d9dee5);
   --account-primary: var(--primary-500, #9a38ef);
+  --account-bottom-tabs-height: 56px;
   min-height: 100dvh;
   background: var(--account-bg);
   color: var(--account-text);
@@ -195,7 +196,37 @@
 }
 
 .account-page-message {
-  padding-inline: 8px;
+  position: fixed;
+  inset-inline: 0;
+  bottom: var(--account-bottom-tabs-height);
+  z-index: 29;
+  padding: 0;
+  pointer-events: none;
+}
+
+.account-page-message > * {
+  pointer-events: auto;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+
+.account-page-message__banner {
+  --system-message-bg: var(--success-500, #7fd24c) !important;
+  --system-message-icon: #fff !important;
+  --system-message-title: #fff !important;
+  --system-message-text: #fff !important;
+  --system-message-radius: 0 !important;
+  align-items: center !important;
+  justify-content: center !important;
+  border-radius: 0 !important;
+  padding-block: 12px;
+  padding-inline: 16px;
+}
+
+.account-page-message__banner > div {
+  flex: 0 1 auto;
+  text-align: center;
 }
 
 /* Shared mealplan / person switcher */
@@ -275,18 +306,26 @@
   flex: 1;
   min-height: 0;
   flex-direction: column;
-  gap: 32px;
+  gap: 8px;
 }
 
-.account-deliveries__body > .account-page-message {
+.account-deliveries__tabs-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
   padding-inline: var(--account-section-padding);
-  margin-top: -16px;
 }
 
 .account-deliveries__tabs-wrap {
+  flex: 1;
   display: flex;
-  justify-content: center;
-  padding-inline: var(--account-section-padding);
+  justify-content: flex-start;
+  padding-inline: 0;
+}
+
+.account-deliveries__calendar-button {
+  flex-shrink: 0;
 }
 
 .account-deliveries__list-wrap {
@@ -304,7 +343,7 @@
   flex-direction: column;
   gap: 8px;
   overflow-y: auto;
-  padding: var(--account-section-gap) var(--account-section-padding) var(--account-section-padding);
+  padding: 32px var(--account-section-padding) var(--account-section-padding);
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -792,6 +831,14 @@
   padding-bottom: 0;
 }
 
+.account-reschedule-calendar--overview {
+  padding-bottom: 24px;
+}
+
+.account-reschedule-calendar--overview .account-reschedule-calendar__legend {
+  padding-top: 8px;
+}
+
 .account-reschedule-calendar__subtitle {
   margin: -16px 0 0;
   padding: 0 24px 24px;
@@ -944,13 +991,13 @@
 
 .account-reschedule-calendar__cell-inner--selectable {
   cursor: pointer;
-  border: 2px dashed var(--account-text);
+  border: 2px dashed var(--neutral-900, #383e48);
   border-radius: 8px;
 }
 
 .account-reschedule-calendar__cell-inner--selectable:hover {
   background: var(--primary-50, #f5ebfd);
-  border-color: var(--primary-300, #bb7af4);
+  border-color: var(--primary-500, #9a38ef);
 }
 
 .account-reschedule-calendar__cell-inner--selectable:hover .account-reschedule-calendar__day {
@@ -1000,7 +1047,7 @@
 
 .account-reschedule-calendar__day--source-gap {
   position: relative;
-  color: var(--account-text);
+  color: var(--neutral-900, #383e48);
 }
 
 .account-reschedule-calendar__day--source-gap::after {
@@ -1020,7 +1067,7 @@
   font-weight: 700;
   line-height: 1;
   text-align: center;
-  color: var(--account-text-subtle);
+  color: var(--neutral-300, #adb7c7);
 }
 
 .account-reschedule-calendar__day--out-of-range {
@@ -1032,7 +1079,7 @@
 }
 
 .account-reschedule-calendar__day--delivery {
-  color: var(--account-text);
+  color: var(--neutral-900, #383e48);
 }
 
 .account-reschedule-footer {

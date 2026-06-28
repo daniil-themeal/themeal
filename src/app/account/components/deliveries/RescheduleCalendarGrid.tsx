@@ -25,7 +25,7 @@ import {
 
 export type MealDayRadiusPosition = 'start' | 'end' | 'single';
 
-export type RescheduleCalendarGridMode = 'pick' | 'preview';
+export type RescheduleCalendarGridMode = 'pick' | 'preview' | 'overview';
 
 export function getMealDayRadiusModifier(position: MealDayRadiusPosition | null): string {
   if (position === 'start') {
@@ -122,9 +122,10 @@ function RescheduleCalendarCell({
   const isAccountDelivery = isAccountDeliveryDay(date, menuPlan.days);
   const isPickDelivery =
     mode === 'pick' && inSubscription && isAccountDelivery && (isScheduledDelivery || isFreeSlot);
-  const isPreviewDelivery = mode === 'preview' && isScheduledDelivery && isAccountDelivery;
-  const isMealDay =
-    mode === 'preview' && previewMealDayKeys
+  const isPreviewDelivery =
+    (mode === 'preview' || mode === 'overview') && isScheduledDelivery && isAccountDelivery;
+  const isMealDayFromKeys =
+    (mode === 'preview' || mode === 'overview') && previewMealDayKeys
       ? previewMealDayKeys.has(dateIso)
       : inSubscription &&
         isSubscriptionMealDay({
@@ -133,8 +134,11 @@ function RescheduleCalendarCell({
           endDate: subscriptionEnd,
           dayOption: menuPlan.days,
         });
+  const isMealDay = isMealDayFromKeys;
   const isSource = dateIso === sourceDateIso;
   const isSourceGap = mode === 'preview' && isSource && !isScheduledDelivery;
+  const isPickSource = mode === 'pick' && isSource;
+  const showSourceStrike = isSourceGap || isPickSource;
   const isSelected = mode === 'preview' && targetDateIso != null && dateIso === targetDateIso;
   const isSelectable =
     mode === 'pick' &&
@@ -147,10 +151,10 @@ function RescheduleCalendarCell({
       menuPlan.days,
     );
 
-  const showMealDay = mode === 'preview' && isMealDay;
+  const showMealDay = (mode === 'preview' || mode === 'overview') && isMealDay;
   const showDeliveryIcon = isPreviewDelivery;
   const radiusModifier =
-    mode === 'preview'
+    mode === 'preview' || mode === 'overview'
       ? getMealDayRadiusModifier(mealRadiusPosition)
       : isSelectable
         ? 'account-reschedule-calendar__cell-inner--radius-single'
@@ -172,7 +176,7 @@ function RescheduleCalendarCell({
     'account-reschedule-calendar__day',
     !inRange ? 'account-reschedule-calendar__day--out-of-range' : '',
     mode === 'pick' && isSelectable ? 'account-reschedule-calendar__day--delivery' : '',
-    isSourceGap ? 'account-reschedule-calendar__day--source-gap' : '',
+    showSourceStrike ? 'account-reschedule-calendar__day--source-gap' : '',
   ]
     .filter(Boolean)
     .join(' ');
@@ -251,7 +255,7 @@ export function RescheduleCalendarGrid({
 
   const previewMealDayKeys = useMemo(
     () =>
-      mode === 'preview'
+      mode === 'preview' || mode === 'overview'
         ? buildScheduledDeliveryMealDayKeys(scheduledDeliveryDates, menuPlan.days)
         : undefined,
     [mode, menuPlan.days, scheduledDeliveryDates],
@@ -284,7 +288,7 @@ export function RescheduleCalendarGrid({
           <div className="account-reschedule-calendar__week">
             {week.map((date, dayIndex) => {
               const mealRadiusByIndex =
-                mode === 'preview' && previewMealDayKeys
+                (mode === 'preview' || mode === 'overview') && previewMealDayKeys
                   ? getMealDayRadiusByIndexForDateKeys(week, previewMealDayKeys)
                   : getMealDayRadiusByIndex({
                       week,

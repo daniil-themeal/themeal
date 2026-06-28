@@ -1,10 +1,12 @@
 import { useMemo, useState } from 'react';
 
 import { SystemMessage } from '../../components/common/SystemMessage';
+import { CheckIcon } from '../../components/common/icons/feather/CheckIcon';
 import { AccountMealplanSwitcher } from '../components/AccountMealplanSwitcher';
 import { DeliveryRescheduleSheet } from '../components/deliveries/DeliveryRescheduleSheet';
 import { HomePlanBlock } from '../components/home/HomePlanBlock';
 import { HomePromoCarousel } from '../components/home/HomePromoCarousel';
+import { AccountPageMessage } from '../components/shared/AccountPageMessage';
 import { useAccountMockStore } from '../context/AccountMockStore';
 import { useTransientMessage } from '../hooks/useTransientMessage';
 import {
@@ -78,12 +80,6 @@ export function AccountHomePage() {
     <div className="account-home">
       <HomePromoCarousel banners={promos} />
       <div className="account-home__plan-wrap">
-        {rescheduleSuccessMessage.isVisible ? (
-          <div className="account-page-message">
-            <SystemMessage variant="success">Delivery date successfully changed</SystemMessage>
-          </div>
-        ) : null}
-
         <AccountMealplanSwitcher
           title={activePlan.mealplan.planTitle}
           planCount={mealplans.length}
@@ -107,6 +103,16 @@ export function AccountHomePage() {
         scheduledDeliveryDates={scheduledDeliveryDates}
         onConfirm={handleRescheduleConfirm}
       />
+
+      <AccountPageMessage isVisible={rescheduleSuccessMessage.isVisible}>
+        <SystemMessage
+          variant="success"
+          className="account-page-message__banner"
+          icon={<CheckIcon size={20} />}
+        >
+          Delivery date successfully changed
+        </SystemMessage>
+      </AccountPageMessage>
     </div>
   );
 }

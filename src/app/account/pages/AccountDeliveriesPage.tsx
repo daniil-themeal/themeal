@@ -1,13 +1,16 @@
 import { useMemo, useState } from 'react';
 
 import { SystemMessage } from '../../components/common/SystemMessage';
+import { CheckIcon } from '../../components/common/icons/feather/CheckIcon';
 import { AccountMealplanSwitcher } from '../components/AccountMealplanSwitcher';
+import { DeliveriesCalendarSheet } from '../components/deliveries/DeliveriesCalendarSheet';
 import { DeliveriesList } from '../components/deliveries/DeliveriesList';
 import { DeliveriesScopeTabs } from '../components/deliveries/DeliveriesScopeTabs';
 import {
   DeliveryDetailSheet,
   type DeliveryDetailSheetView,
 } from '../components/deliveries/DeliveryDetailSheet';
+import { AccountPageMessage } from '../components/shared/AccountPageMessage';
 import { useAccountMockStore } from '../context/AccountMockStore';
 import { useTransientMessage } from '../hooks/useTransientMessage';
 import type { DeliveriesScope, DeliveryListEntry } from '../types/account.types';
@@ -27,6 +30,7 @@ export function AccountDeliveriesPage() {
   const [scope, setScope] = useState<DeliveriesScope>('next');
   const [selectedDelivery, setSelectedDelivery] = useState<DeliveryListEntry | null>(null);
   const [sheetView, setSheetView] = useState<DeliveryDetailSheetView>('detail');
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const rescheduleSuccessMessage = useTransientMessage();
 
   const activePersonDeliveries =
@@ -98,15 +102,20 @@ export function AccountDeliveriesPage() {
       />
 
       <div className="account-deliveries__body">
-        {rescheduleSuccessMessage.isVisible ? (
-          <div className="account-page-message">
-            <SystemMessage variant="success">Delivery date successfully changed</SystemMessage>
-          </div>
-        ) : null}
-
-        <DeliveriesScopeTabs value={scope} onChange={handleScopeChange} />
+        <DeliveriesScopeTabs
+          value={scope}
+          onChange={handleScopeChange}
+          onCalendarClick={() => setIsCalendarOpen(true)}
+        />
         <DeliveriesList deliveries={deliveries} onDeliveryClick={setSelectedDelivery} />
       </div>
+
+      <DeliveriesCalendarSheet
+        isOpen={isCalendarOpen}
+        onClose={() => setIsCalendarOpen(false)}
+        menuPlan={activePlan.menuPlan}
+        scheduledDeliveryDates={scheduledDeliveryDates}
+      />
 
       <DeliveryDetailSheet
         isOpen={selectedDelivery !== null}
@@ -119,6 +128,16 @@ export function AccountDeliveriesPage() {
         }
         onRescheduleConfirm={handleRescheduleConfirm}
       />
+
+      <AccountPageMessage isVisible={rescheduleSuccessMessage.isVisible}>
+        <SystemMessage
+          variant="success"
+          className="account-page-message__banner"
+          icon={<CheckIcon size={20} />}
+        >
+          Delivery date successfully changed
+        </SystemMessage>
+      </AccountPageMessage>
     </div>
   );
 }
