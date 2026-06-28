@@ -481,8 +481,6 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     ...fullMenuPanelStyle,
     ...(isEmbedded
       ? {
-          '--full-menu-meal-carousel-inset': '24px',
-          '--checkout-scroll-edge-fade-width': '24px',
           '--full-menu-meal-card-width': FULL_MENU_MEAL_CARD_WIDTH_CONTAINER_CLAMP,
           '--full-menu-meal-card-width-md': FULL_MENU_MEAL_CARD_WIDTH_MD_CONTAINER_CLAMP,
           '--full-menu-meal-gap': FULL_MENU_MEAL_GAP_CONTAINER_CLAMP,
@@ -541,7 +539,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
         ) : null}
 
         <div
-          className="shrink-0 px-[24px] pt-0 pb-0"
+          className="shrink-0 px-[length:var(--checkout-card-padding)] pt-0 pb-0"
           style={isTrial ? { display: 'none' } : undefined}
         >
           <div className="flex w-full items-stretch gap-[12px]" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
@@ -696,7 +694,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                 onMouseMove={handleMealsMouseMove}
                 onMouseUp={stopMealsMouseDrag}
                 onMouseLeave={stopMealsMouseDrag}
-                className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain ${isEmbedded ? 'px-[24px]' : 'px-0'} pb-[length:var(--full-menu-meal-carousel-padding-bottom)] ${isEmbedded ? 'pt-[16px]' : 'pt-[6px]'} [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+                className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain ${isEmbedded ? 'px-[length:var(--checkout-card-padding)]' : 'px-0'} pb-[length:var(--full-menu-meal-carousel-padding-bottom)] ${isEmbedded ? 'pt-[16px]' : 'pt-[6px]'} [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
                   isEmbedded ? '' : 'md:cursor-default md:overflow-x-hidden'
                 } ${isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'}`}
                 style={{

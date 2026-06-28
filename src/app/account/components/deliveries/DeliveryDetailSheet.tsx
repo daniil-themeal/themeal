@@ -1,6 +1,9 @@
+import { createPortal } from 'react-dom';
+
 import { FullMenuPanel } from '../../../components/checkout/FullMenuPanel';
 import { ModalShell } from '../../../components/common/ModalShell';
 import { Z_INDEX_TOKENS } from '../../../components/common/zIndexTokens';
+import { useAccountOverlayScrollLock } from '../../hooks/useAccountOverlayScrollLock';
 import type { DeliveryDetailData } from '../../types/account.types';
 import { DeliveryDetailLogistics } from './DeliveryDetailLogistics';
 import { DeliveryRescheduleFlow } from './DeliveryRescheduleFlow';
@@ -28,11 +31,14 @@ export function DeliveryDetailSheet({
 }: DeliveryDetailSheetProps) {
   const isRescheduleView = view === 'reschedule';
 
-  return (
+  useAccountOverlayScrollLock(isOpen);
+
+  return createPortal(
     <ModalShell
       isOpen={isOpen}
       onClose={onClose}
       variant="bottom-sheet"
+      sheetVerticalAlign="center-on-md"
       zIndex={Z_INDEX_TOKENS.overlay}
       panelClassName={[
         'account-delivery-sheet__panel',
@@ -40,7 +46,6 @@ export function DeliveryDetailSheet({
       ]
         .filter(Boolean)
         .join(' ')}
-      sheetVerticalAlign="bottom"
     >
       {() =>
         detail ? (
@@ -85,6 +90,7 @@ export function DeliveryDetailSheet({
           </div>
         ) : null
       }
-    </ModalShell>
+    </ModalShell>,
+    document.body,
   );
 }

@@ -171,7 +171,7 @@ function RescheduleCalendarCell({
   const dayClassName = [
     'account-reschedule-calendar__day',
     !inRange ? 'account-reschedule-calendar__day--out-of-range' : '',
-    mode === 'pick' && isSelectable ? 'account-reschedule-calendar__day--delivery' : '',
+    mode === 'pick' && isSelectable ? 'account-reschedule-calendar__day--selectable' : '',
     isSourceGap ? 'account-reschedule-calendar__day--source-gap' : '',
   ]
     .filter(Boolean)

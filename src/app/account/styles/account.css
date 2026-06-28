@@ -1,6 +1,8 @@
 .account-shell {
   --account-bg: var(--neutral-50, #f3f4f7);
-  --account-max-width: 390px;
+  --account-max-width: 688px;
+  --account-section-padding: clamp(20px, calc(20px + (100vw - 20rem) * 12 / 448), 32px);
+  --account-section-gap: clamp(24px, calc(24px + (100vw - 20rem) * 8 / 448), 32px);
   --account-text: var(--neutral-900, #383e48);
   --account-text-muted: var(--neutral-500, #8594ac);
   --account-text-subtle: var(--neutral-300, #adb7c7);
@@ -105,8 +107,6 @@
   z-index: 30;
   display: flex;
   width: 100%;
-  max-width: var(--account-max-width);
-  margin-inline: auto;
   height: 56px;
   background: #fff;
   box-shadow: 0 -2px 2px rgba(0, 0, 0, 0.1);
@@ -151,11 +151,11 @@
 .account-home {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: var(--account-section-gap);
 }
 
 .account-home-promo {
-  padding: 24px 0 16px 16px;
+  padding: var(--account-section-gap) 0 16px 16px;
 }
 
 .account-home-promo__track {
@@ -191,7 +191,7 @@
   display: flex;
   flex-direction: column;
   gap: 32px;
-  padding: 0 16px 40px;
+  padding: 0 var(--account-section-padding) var(--account-section-padding);
 }
 
 .account-page-message {
@@ -267,7 +267,7 @@
   min-height: 0;
   flex-direction: column;
   gap: 32px;
-  padding-top: 24px;
+  padding-top: var(--account-section-gap);
 }
 
 .account-deliveries__body {
@@ -279,14 +279,14 @@
 }
 
 .account-deliveries__body > .account-page-message {
-  padding-inline: 24px;
+  padding-inline: var(--account-section-padding);
   margin-top: -16px;
 }
 
 .account-deliveries__tabs-wrap {
   display: flex;
   justify-content: center;
-  padding-inline: 24px;
+  padding-inline: var(--account-section-padding);
 }
 
 .account-deliveries__list-wrap {
@@ -304,7 +304,7 @@
   flex-direction: column;
   gap: 8px;
   overflow-y: auto;
-  padding: 12px 24px 24px;
+  padding: var(--account-section-gap) var(--account-section-padding) var(--account-section-padding);
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
@@ -434,22 +434,38 @@
 }
 
 .account-delivery-sheet__panel {
+  --account-max-width: 688px;
+  --account-section-padding: clamp(20px, calc(20px + (100vw - 20rem) * 12 / 448), 32px);
+  --account-section-gap: clamp(24px, calc(24px + (100vw - 20rem) * 8 / 448), 32px);
   display: flex;
+  min-height: 0;
   max-height: 88svh;
   width: 100%;
   max-width: var(--account-max-width);
   flex-direction: column;
   overflow: hidden;
-  border-radius: 12px 12px 0 0;
+  border-radius: 20px 20px 0 0;
   background: #fff;
-  box-shadow: 0 -8px 32px rgb(0 0 0 / 12%);
+  box-shadow: 0 25px 50px -12px rgb(0 0 0 / 25%);
+}
+
+@media (width >= 768px) {
+  .account-delivery-sheet__panel {
+    max-height: 85vh;
+    width: min(var(--account-max-width), calc(100vw - 48px));
+    max-width: min(var(--account-max-width), calc(100vw - 48px));
+    margin-inline: 24px;
+    border-radius: 20px;
+  }
 }
 
 .account-delivery-sheet {
+  --account-delivery-sheet-section-padding: var(--account-section-padding);
   display: flex;
   min-height: 0;
   flex: 1;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .account-delivery-sheet__handle-wrap {
@@ -470,18 +486,36 @@
   background: var(--account-text-chip, #d1d5db);
 }
 
+@media (width >= 768px) {
+  .account-delivery-sheet__handle-wrap {
+    padding: var(--account-delivery-sheet-section-padding) 0 0;
+  }
+
+  .account-delivery-sheet__handle {
+    display: none;
+  }
+}
+
 .account-delivery-sheet__scroll {
   min-height: 0;
   flex: 1;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.account-delivery-sheet__scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .account-delivery-sheet__logistics {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 0 24px 24px;
+  padding: 0 var(--account-delivery-sheet-section-padding) var(--account-section-padding);
 }
 
 .account-delivery-sheet__label-row {
@@ -548,7 +582,10 @@
 }
 
 .account-delivery-sheet__divider {
-  margin: 0;
+  align-self: stretch;
+  width: calc(100% + 2 * var(--account-delivery-sheet-section-padding));
+  margin-inline: calc(-1 * var(--account-delivery-sheet-section-padding));
+  margin-block: 0;
   background: var(--account-border, #f3f4f6);
 }
 
@@ -713,12 +750,12 @@
   align-items: center;
   gap: 12px;
   min-width: 0;
-  padding-top: 4px;
+  padding-top: 0;
 }
 
 .account-delivery-sheet__menu {
   overflow: hidden;
-  padding-bottom: 24px;
+  padding-bottom: var(--account-section-padding);
 }
 
 .account-delivery-sheet__panel--reschedule {
@@ -730,6 +767,7 @@
   min-height: 0;
   flex: 1;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .account-delivery-sheet__reschedule-body {
@@ -737,18 +775,19 @@
   min-height: 0;
   flex: 1;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .account-reschedule-calendar {
   --calendar-date-fs: 16px;
   --calendar-weekday-fs: 14px;
   --calendar-delivery-icon-size: clamp(12px, calc(12px + (100vw - 20rem) * 4 / 448), 16px);
-  --calendar-section-padding: clamp(20px, calc(20px + (100vw - 20rem) * 12 / 448), 32px);
+  --calendar-section-padding: var(--account-section-padding);
   display: flex;
   min-height: 0;
   flex: 1;
   flex-direction: column;
-  padding-bottom: 24px;
+  overflow: hidden;
 }
 
 .account-reschedule-calendar--with-footer {
@@ -756,8 +795,8 @@
 }
 
 .account-reschedule-calendar__subtitle {
-  margin: -16px 0 0;
-  padding: 0 24px 24px;
+  margin: 0;
+  padding: 16px var(--calendar-section-padding) var(--account-section-gap);
   font-size: 14px;
   font-weight: 500;
   line-height: 1.5;
@@ -767,13 +806,17 @@
 
 .account-reschedule-calendar__title {
   margin: 0;
-  padding: 12px 24px 24px;
+  padding: 0 var(--calendar-section-padding) var(--account-section-gap);
   font-size: 25px;
   font-weight: 700;
   line-height: 1.3;
   letter-spacing: -0.5px;
   text-align: center;
   color: var(--account-text);
+}
+
+.account-reschedule-calendar:has(.account-reschedule-calendar__subtitle) .account-reschedule-calendar__title {
+  padding-bottom: 0;
 }
 
 .account-reschedule-calendar__legend {
@@ -831,9 +874,17 @@
   flex: 1;
   flex-direction: column;
   gap: 8px;
+  overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding: 8px var(--calendar-section-padding) 72px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  padding: var(--account-section-gap) var(--calendar-section-padding) var(--account-section-padding);
+}
+
+.account-reschedule-calendar__scroll::-webkit-scrollbar {
+  display: none;
 }
 
 .account-reschedule-calendar__scroll--with-footer {
@@ -901,14 +952,14 @@
   border-radius: 8px;
 }
 
-.account-reschedule-calendar__cell-inner--delivery-day {
-  border: 2px dashed var(--account-text);
-}
-
 .account-reschedule-calendar__cell-inner--selectable {
   cursor: pointer;
   border: 2px dashed var(--account-text);
   border-radius: 8px;
+}
+
+.account-reschedule-calendar__cell-inner--selectable .account-reschedule-calendar__day {
+  color: var(--account-text);
 }
 
 .account-reschedule-calendar__cell-inner--selectable:hover {
@@ -935,8 +986,7 @@
 }
 
 .account-reschedule-calendar__scroll--preview {
-  padding-left: 24px;
-  padding-right: 24px;
+  padding-inline: var(--calendar-section-padding);
 }
 
 .account-reschedule-calendar__scroll--preview .account-reschedule-calendar__day {
@@ -994,7 +1044,7 @@
   color: var(--neutral-400, #9da9bd);
 }
 
-.account-reschedule-calendar__day--delivery {
+.account-reschedule-calendar__day--selectable {
   color: var(--account-text);
 }
 
@@ -1002,7 +1052,7 @@
   display: flex;
   flex-shrink: 0;
   gap: 12px;
-  padding: 16px 24px 24px;
+  padding: var(--account-section-gap) var(--account-section-padding) var(--account-section-padding);
   background: #fff;
   box-shadow: 0 -4px 16px rgb(0 0 0 / 6%);
 }
@@ -1015,9 +1065,8 @@
 .account-home-plan {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding-top: 24px;
-  padding-bottom: 24px;
+  gap: var(--account-section-gap);
+  padding-block: var(--account-section-padding);
   background: #fff;
   border-radius: 12px;
   overflow: hidden;
@@ -1027,7 +1076,7 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 0 24px;
+  padding: 0 var(--account-section-padding);
 }
 
 .account-home-plan__active-until {
@@ -1042,7 +1091,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 0 24px;
+  padding: 0 var(--account-section-padding);
 }
 
 .account-home-plan__delivery-label {
@@ -1051,7 +1100,6 @@
   align-items: center;
   justify-content: flex-start;
   gap: 4px;
-  padding-top: 4px;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: -0.12px;
@@ -1067,8 +1115,8 @@
 .account-home-plan__delivery-body {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding-top: 4px;
+  gap: 16px;
+  padding-top: 0;
 }
 
 .account-home-plan__delivery-date-row {
@@ -1108,8 +1156,8 @@
 }
 
 .account-home-plan__time-slot {
-  margin: 16px 0 0;
-  font-size: 14px;
+  margin: 0;
+  font-size: 16px;
   font-weight: 600;
   line-height: 1.3;
 }
@@ -1119,7 +1167,7 @@
 }
 
 .account-page-placeholder {
-  padding: 24px;
+  padding: var(--account-section-padding);
 }
 
 .account-page-placeholder__title {

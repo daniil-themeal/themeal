@@ -25,13 +25,23 @@ export function DeliveryRescheduleCalendar({
       <RescheduleCalendarLegend />
       <RescheduleCalendarWeekdays />
 
-      <RescheduleCalendarGrid
-        mode="pick"
-        menuPlan={menuPlan}
-        sourceDateIso={sourceDateIso}
-        scheduledDeliveryDates={scheduledDeliveryDates}
-        onSelectDate={onSelectDate}
-      />
+      <div className="account-reschedule-calendar__scroll-wrap">
+        <div
+          className="account-reschedule-calendar__scroll-fade account-reschedule-calendar__scroll-fade--top"
+          aria-hidden
+        />
+        <RescheduleCalendarGrid
+          mode="pick"
+          menuPlan={menuPlan}
+          sourceDateIso={sourceDateIso}
+          scheduledDeliveryDates={scheduledDeliveryDates}
+          onSelectDate={onSelectDate}
+        />
+        <div
+          className="account-reschedule-calendar__scroll-fade account-reschedule-calendar__scroll-fade--bottom"
+          aria-hidden
+        />
+      </div>
     </section>
   );
 }

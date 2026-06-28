@@ -1,5 +1,8 @@
+import { createPortal } from 'react-dom';
+
 import { ModalShell } from '../../../components/common/ModalShell';
 import { Z_INDEX_TOKENS } from '../../../components/common/zIndexTokens';
+import { useAccountOverlayScrollLock } from '../../hooks/useAccountOverlayScrollLock';
 import type { HomeMenuPlanConfig } from '../../types/account.types';
 import { DeliveryRescheduleFlow } from './DeliveryRescheduleFlow';
 
@@ -20,14 +23,16 @@ export function DeliveryRescheduleSheet({
   scheduledDeliveryDates,
   onConfirm,
 }: DeliveryRescheduleSheetProps) {
-  return (
+  useAccountOverlayScrollLock(isOpen);
+
+  return createPortal(
     <ModalShell
       isOpen={isOpen}
       onClose={onClose}
       variant="bottom-sheet"
+      sheetVerticalAlign="center-on-md"
       zIndex={Z_INDEX_TOKENS.overlay}
       panelClassName="account-delivery-sheet__panel account-delivery-sheet__panel--reschedule"
-      sheetVerticalAlign="bottom"
     >
       {() => (
         <div className="account-delivery-sheet account-delivery-sheet--reschedule">
@@ -44,6 +49,7 @@ export function DeliveryRescheduleSheet({
           />
         </div>
       )}
-    </ModalShell>
+    </ModalShell>,
+    document.body,
   );
 }

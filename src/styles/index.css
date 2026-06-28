@@ -337,6 +337,30 @@
   }
 }
 
+@media (width >= theme(--breakpoint-md)) {
+  .modal-enter-responsive-md {
+    animation: modal-rise-from-below 420ms cubic-bezier(0.22, 1, 0.36, 1)
+      both;
+  }
+
+  .modal-exit-responsive-md {
+    animation: modal-fall-to-below 220ms cubic-bezier(0.64, 0, 0.78, 0)
+      both;
+  }
+}
+
+@media (width < theme(--breakpoint-md)) {
+  .modal-enter-responsive-md {
+    animation: modal-slide-up-full 420ms cubic-bezier(0.22, 1, 0.36, 1)
+      both;
+  }
+
+  .modal-exit-responsive-md {
+    animation: modal-slide-down-full 220ms cubic-bezier(0.64, 0, 0.78, 0)
+      both;
+  }
+}
+
 /* Tabby promo.js injects its own dialog; we use TabbyPromoModal instead. */
 #TabbyDialogContainer {
   display: none !important;

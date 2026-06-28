@@ -28,6 +28,21 @@ type ModalShellProps = {
   onEscape?: () => boolean;
 };
 
+function getBottomSheetAnimationClassName(
+  isClosing: boolean,
+  sheetVerticalAlign: NonNullable<ModalShellProps['sheetVerticalAlign']>,
+): string {
+  if (sheetVerticalAlign === 'bottom') {
+    return isClosing ? 'modal-exit-mobile-full' : 'modal-enter-mobile-full';
+  }
+
+  if (sheetVerticalAlign === 'center-on-md') {
+    return isClosing ? 'modal-exit-responsive-md' : 'modal-enter-responsive-md';
+  }
+
+  return isClosing ? 'modal-exit-responsive' : 'modal-enter-responsive';
+}
+
 export function useModalShell(onClose: () => void) {
   const [isClosing, setIsClosing] = useState(false);
   const isClosingRef = useRef(false);
@@ -127,9 +142,16 @@ export function ModalShell({
 
   if (!isOpen) return null;
 
-  const animationClassName = isClosing ? 'modal-exit-responsive' : 'modal-enter-responsive';
+  const defaultAnimationClassName = isClosing ? 'modal-exit-responsive' : 'modal-enter-responsive';
+  const bottomSheetAnimationClassName = getBottomSheetAnimationClassName(
+    isClosing,
+    sheetVerticalAlign,
+  );
   const overlayAnimationClassName = isClosing ? 'modal-overlay-exit' : 'modal-overlay-enter';
-  const panelClasses = [animationClassName, panelClassName].filter(Boolean).join(' ');
+  const panelClasses = [defaultAnimationClassName, panelClassName].filter(Boolean).join(' ');
+  const bottomSheetPanelClasses = [bottomSheetAnimationClassName, panelClassName]
+    .filter(Boolean)
+    .join(' ');
   const overlayClasses = [
     'pointer-events-none absolute inset-0 z-0 bg-black/40',
     overlayAnimationClassName,
@@ -219,7 +241,7 @@ export function ModalShell({
   return (
     <div
       className={[
-        'fixed inset-0 flex justify-center',
+        'fixed inset-0 flex justify-center overflow-hidden',
         sheetVerticalAlign === 'bottom'
           ? 'items-end'
           : sheetVerticalAlign === 'center-on-sm'
@@ -237,7 +259,7 @@ export function ModalShell({
       <div className={overlayClasses} />
 
       <div
-        className={[panelClasses, 'pointer-events-auto relative z-10'].filter(Boolean).join(' ')}
+        className={[bottomSheetPanelClasses, 'pointer-events-auto relative z-10'].filter(Boolean).join(' ')}
         style={panelStyle}
         onClick={(event) => event.stopPropagation()}
         onAnimationEnd={handlePanelAnimationEnd}
