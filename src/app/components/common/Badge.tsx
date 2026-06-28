@@ -2,7 +2,7 @@ import type { CSSProperties } from 'react';
 
 import { COLOR_TOKENS } from './colorTokens';
 
-export const BADGE_VARIANTS = ['most-popular', 'best-value'] as const;
+export const BADGE_VARIANTS = ['most-popular', 'best-value', 'production-fixation'] as const;
 
 export type BadgeVariant = (typeof BADGE_VARIANTS)[number];
 
@@ -25,11 +25,16 @@ const BADGE_VARIANT_STYLES: Record<BadgeVariant, BadgeCssVariables> = {
     '--badge-bg': COLOR_TOKENS.success[500],
     '--badge-text': COLOR_TOKENS.base.white,
   },
+  'production-fixation': {
+    '--badge-bg': COLOR_TOKENS.warning[500],
+    '--badge-text': COLOR_TOKENS.neutral[900],
+  },
 };
 
 const BADGE_LABELS: Record<BadgeVariant, string> = {
   'most-popular': 'Most Popular',
   'best-value': 'Best Value',
+  'production-fixation': 'Production Fixation',
 };
 
 const baseClassName = [

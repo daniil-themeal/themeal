@@ -232,6 +232,26 @@ export function buildMenuDayForDate(date: Date, anchorDate: Date): MenuDay {
   };
 }
 
+export function getMealDaysForDelivery(deliveryDate: Date, dayOption: DayOption): Date[] {
+  const block = getMealBlockForDelivery(deliveryDate.getDay(), dayOption);
+  if (!block) return [];
+
+  const startOffset = block.startOffset ?? 0;
+
+  return Array.from({ length: block.daysCount }, (_, index) =>
+    addDays(deliveryDate, startOffset + index),
+  );
+}
+
+export function getDeliveryMenuDays(deliveryDate: Date, dayOption: DayOption): MenuDay[] {
+  const mealDates = getMealDaysForDelivery(deliveryDate, dayOption);
+  if (mealDates.length === 0) return [];
+
+  const anchorDate = mealDates[0];
+
+  return mealDates.map((date) => buildMenuDayForDate(date, anchorDate));
+}
+
 export function getSubscriptionMenuDays({
   dayOption,
   duration,

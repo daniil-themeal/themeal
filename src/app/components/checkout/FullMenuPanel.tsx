@@ -27,7 +27,10 @@ import {
   FULL_MENU_MEAL_CAROUSEL_PADDING_BOTTOM_FLOAT_CLAMP,
   FULL_MENU_MEAL_CARD_WIDTH_CLAMP,
   FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP,
+  FULL_MENU_MEAL_CARD_WIDTH_CONTAINER_CLAMP,
+  FULL_MENU_MEAL_CARD_WIDTH_MD_CONTAINER_CLAMP,
   FULL_MENU_MEAL_GAP_CLAMP,
+  FULL_MENU_MEAL_GAP_CONTAINER_CLAMP,
   FULL_MENU_LIGHT_OPTION_GAP_CLAMP,
   FULL_MENU_LIGHT_OPTION_FONT_SIZE_CLAMP,
   FULL_MENU_LIGHT_OPTION_MAX_WIDTH_CLAMP,
@@ -44,9 +47,10 @@ import {
 } from './checkoutStepPageLayoutTokens';
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
 import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
+import { FullMenuMealCard } from './FullMenuMealCard';
+import { Button } from '../common/Button';
 import { ModalHeader } from '../common/Modal';
 import { SPACING_CONTENT_ATTR } from '../../main-landing/getSpacingMeasureRoot';
-import { TEXT_TRIM_CLASS_NAME } from '../common/textTrimTokens';
 import { MealDetailModal } from './MealDetailModal';
 import { getSubscriptionMenuDays } from './mealCalendarUtils';
 import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
@@ -56,6 +60,8 @@ const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Se
 const REFERENCE_DAY_COUNT = 14;
 const MOBILE_REF_TRACK_PERCENT = 280;
 const DESKTOP_REF_TRACK_PERCENT = 200;
+/** Account embed — wider pills, ~3–4 days visible in the date scroller. */
+const EMBEDDED_DAY_TRACK_PERCENT = 420;
 const DAY_PILL_GAP_PX = 8;
 const REFERENCE_GAP_TOTAL_PX = (REFERENCE_DAY_COUNT - 1) * DAY_PILL_GAP_PX;
 const MOUSE_DRAG_CLICK_THRESHOLD = 6;
@@ -65,7 +71,7 @@ const FULL_MENU_SURVEY_URL = 'https://survey.survicate.com/581878889e53a60e/?p=a
 const fullMenuDisclaimerClassName =
   'font-sans text-[length:var(--full-menu-day-meta-font-size)] font-normal leading-[140%] whitespace-normal break-words text-[var(--full-menu-disclaimer-text)]';
 type SlideDirection = 'left' | 'right';
-type FullMenuPanelVariant = 'modal' | 'float';
+type FullMenuPanelVariant = 'modal' | 'float' | 'embedded';
 
 type FullMenuDayPillCssVariables = CSSProperties & {
   '--full-menu-day-bg': string;
@@ -191,10 +197,12 @@ export type FullMenuPanelProps = {
   lightMealOption: LightMealOption;
   days?: DayOption;
   duration?: Duration;
+  menuDays?: MenuDay[];
   onRequestClose?: () => void;
   onMealDetailOpenChange?: (open: boolean) => void;
   className?: string;
   isTrial?: boolean;
+  showRateMealsButton?: boolean;
 };
 
 export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>(function FullMenuPanel(
@@ -205,10 +213,12 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     lightMealOption,
     days = 'weekdays',
     duration = 'monthly',
+    menuDays,
     onRequestClose,
     onMealDetailOpenChange,
     className = '',
     isTrial = false,
+    showRateMealsButton = false,
   },
   ref,
 ) {
@@ -219,18 +229,25 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   const [selectedMeal, setSelectedMeal] = useState<MealDetail | null>(null);
 
   const subscriptionMenuDays = useMemo(
-    () => (isTrial ? [] : getSubscriptionMenuDays({ dayOption: days, duration })),
-    [days, duration, isTrial],
+    () =>
+      isTrial
+        ? []
+        : menuDays ?? getSubscriptionMenuDays({ dayOption: days, duration }),
+    [days, duration, isTrial, menuDays],
   );
   const menuDayLabels = useMemo(
     () => getMenuDayLabels(subscriptionMenuDays),
     [subscriptionMenuDays],
   );
   const menuDaysCount = menuDayLabels.length;
+  const mobileDayTrackPercent =
+    variant === 'embedded' ? EMBEDDED_DAY_TRACK_PERCENT : MOBILE_REF_TRACK_PERCENT;
+  const desktopDayTrackPercent =
+    variant === 'embedded' ? EMBEDDED_DAY_TRACK_PERCENT : DESKTOP_REF_TRACK_PERCENT;
   const dayScrollContainerStyle: FullMenuDayScrollCssVariables = {
     containerType: 'inline-size',
-    '--day-pill-w': `calc((${MOBILE_REF_TRACK_PERCENT}cqw - ${REFERENCE_GAP_TOTAL_PX}px) / ${REFERENCE_DAY_COUNT})`,
-    '--day-pill-w-md': `calc((${DESKTOP_REF_TRACK_PERCENT}cqw - ${REFERENCE_GAP_TOTAL_PX}px) / ${REFERENCE_DAY_COUNT})`,
+    '--day-pill-w': `calc((${mobileDayTrackPercent}cqw - ${REFERENCE_GAP_TOTAL_PX}px) / ${REFERENCE_DAY_COUNT})`,
+    '--day-pill-w-md': `calc((${desktopDayTrackPercent}cqw - ${REFERENCE_GAP_TOTAL_PX}px) / ${REFERENCE_DAY_COUNT})`,
   };
   const dayTrackGapTotalPx = Math.max(0, menuDaysCount - 1) * DAY_PILL_GAP_PX;
   const dayTrackStyle: FullMenuDayTrackCssVariables = {
@@ -257,6 +274,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   const canGoPrev = selectedDayIndex > 0;
   const canGoNext = menuDaysCount > 0 && selectedDayIndex < menuDaysCount - 1;
   const isModal = variant === 'modal';
+  const isEmbedded = variant === 'embedded';
 
   const selectedMenuDay = subscriptionMenuDays[selectedDayIndex];
   const mealSlots = isTrial
@@ -438,12 +456,22 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
 
   const mealsOuterClassName = isModal
     ? 'flex-1 overflow-x-hidden overflow-y-auto'
-    : 'max-h-[min(52svh,420px)] overflow-x-hidden overflow-y-auto';
+    : isEmbedded
+      ? 'overflow-x-hidden overflow-y-visible'
+      : 'max-h-[min(52svh,420px)] overflow-x-hidden overflow-y-auto';
 
-  const mealsBleedClassName = isModal ? FULL_MENU_MEAL_CAROUSEL_BLEED : CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING;
+  const mealsBleedClassName = isEmbedded
+    ? 'w-full'
+    : isModal
+      ? FULL_MENU_MEAL_CAROUSEL_BLEED
+      : CHECKOUT_CARD_SECTION_BLEED_FROM_PADDING;
 
   const rootClassName = [
-    isModal ? 'relative flex min-h-0 flex-1 flex-col overflow-hidden' : 'relative flex flex-col bg-[var(--full-menu-bg)]',
+    isModal
+      ? 'relative flex min-h-0 flex-1 flex-col overflow-hidden'
+      : isEmbedded
+        ? '@container relative flex w-full min-w-0 flex-col overflow-visible bg-transparent'
+        : 'relative flex flex-col bg-[var(--full-menu-bg)]',
     className,
   ]
     .filter(Boolean)
@@ -451,10 +479,21 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
 
   const panelStyle: FullMenuPanelCssVariables = {
     ...fullMenuPanelStyle,
+    ...(isEmbedded
+      ? {
+          '--full-menu-meal-carousel-inset': '24px',
+          '--checkout-scroll-edge-fade-width': '24px',
+          '--full-menu-meal-card-width': FULL_MENU_MEAL_CARD_WIDTH_CONTAINER_CLAMP,
+          '--full-menu-meal-card-width-md': FULL_MENU_MEAL_CARD_WIDTH_MD_CONTAINER_CLAMP,
+          '--full-menu-meal-gap': FULL_MENU_MEAL_GAP_CONTAINER_CLAMP,
+        }
+      : {}),
     '--full-menu-meal-carousel-padding-bottom':
       variant === 'float'
         ? FULL_MENU_MEAL_CAROUSEL_PADDING_BOTTOM_FLOAT_CLAMP
-        : '8px',
+        : isEmbedded
+          ? '0px'
+          : '8px',
   };
 
   return (
@@ -502,37 +541,39 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
         ) : null}
 
         <div
-          className="shrink-0 px-[8px] pt-[12px] pb-0"
+          className="shrink-0 px-[24px] pt-0 pb-0"
           style={isTrial ? { display: 'none' } : undefined}
         >
-          <div className="flex w-full items-stretch" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
-            <button
-              type="button"
-              onClick={handlePrevDay}
-              disabled={!canGoPrev}
-              className={[
-                'flex w-[40px] shrink-0 items-center justify-center rounded-[8px] text-[var(--full-menu-muted)] transition-colors',
-                canGoPrev ? 'cursor-pointer hover:bg-[var(--full-menu-day-bg-hover)]' : 'cursor-default',
-              ].join(' ')}
-              aria-label="Previous day"
-            >
-              <svg
-                fill="none"
-                viewBox="0 0 7 12"
-                width="7"
-                height="12"
-                className={canGoPrev ? undefined : 'opacity-30'}
-                aria-hidden
+          <div className="flex w-full items-stretch gap-[12px]" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
+            {!isEmbedded ? (
+              <button
+                type="button"
+                onClick={handlePrevDay}
+                disabled={!canGoPrev}
+                className={[
+                  'flex w-[40px] shrink-0 items-center justify-center rounded-[8px] text-[var(--full-menu-muted)] transition-colors',
+                  canGoPrev ? 'cursor-pointer hover:bg-[var(--full-menu-day-bg-hover)]' : 'cursor-default',
+                ].join(' ')}
+                aria-label="Previous day"
               >
-                <path
-                  d="M6 11L1 6L6 1"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                />
-              </svg>
-            </button>
+                <svg
+                  fill="none"
+                  viewBox="0 0 7 12"
+                  width="7"
+                  height="12"
+                  className={canGoPrev ? undefined : 'opacity-30'}
+                  aria-hidden
+                >
+                  <path
+                    d="M6 11L1 6L6 1"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </button>
+            ) : null}
 
             <div className="relative min-w-0 flex-1">
               <div
@@ -613,24 +654,32 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
               />
             </div>
 
-            <button
-              type="button"
-              onClick={handleNextDay}
-              className={`flex w-[40px] shrink-0 items-center justify-center rounded-[8px] text-[var(--full-menu-muted)] transition-colors hover:bg-[var(--full-menu-day-bg-hover)] ${
-                !canGoNext ? 'pointer-events-none opacity-0' : 'cursor-pointer'
-              }`}
-              aria-label="Next day"
-            >
-              <svg fill="none" viewBox="0 0 7 12" width="7" height="12">
-                <path
-                  d="M1 11L6 6L1 1"
-                  stroke="currentColor"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                />
-              </svg>
-            </button>
+            {!isEmbedded ? (
+              <button
+                type="button"
+                onClick={handleNextDay}
+                className={`flex w-[40px] shrink-0 items-center justify-center rounded-[8px] text-[var(--full-menu-muted)] transition-colors hover:bg-[var(--full-menu-day-bg-hover)] ${
+                  !canGoNext ? 'pointer-events-none opacity-0' : 'cursor-pointer'
+                }`}
+                aria-label="Next day"
+              >
+                <svg fill="none" viewBox="0 0 7 12" width="7" height="12">
+                  <path
+                    d="M1 11L6 6L1 1"
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                  />
+                </svg>
+              </button>
+            ) : null}
+
+            {isEmbedded && showRateMealsButton ? (
+              <Button type="button" variant="primary" size="small" className="shrink-0 self-center">
+                Rate meals
+              </Button>
+            ) : null}
           </div>
         </div>
 
@@ -647,9 +696,9 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                 onMouseMove={handleMealsMouseMove}
                 onMouseUp={stopMealsMouseDrag}
                 onMouseLeave={stopMealsMouseDrag}
-                className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain px-0 pb-[length:var(--full-menu-meal-carousel-padding-bottom)] pt-[6px] [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden md:cursor-default md:overflow-x-hidden ${
-                  isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'
-                }`}
+                className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain ${isEmbedded ? 'px-[24px]' : 'px-0'} pb-[length:var(--full-menu-meal-carousel-padding-bottom)] ${isEmbedded ? 'pt-[16px]' : 'pt-[6px]'} [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
+                  isEmbedded ? '' : 'md:cursor-default md:overflow-x-hidden'
+                } ${isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'}`}
                 style={{
                   animation:
                     slideDirection === 'left'
@@ -657,66 +706,43 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                       : 'mealsSlideFromLeft 260ms ease-out both',
                 }}
               >
-                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                {!isEmbedded ? (
+                  <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                ) : null}
                 {mealSlots
                   .filter((slot) => slot.active)
                   .map(({ meal }) => (
-                  <button
-                    key={meal.id}
-                    type="button"
-                    onClick={() => handleMealClick(meal)}
-                    className="group relative z-0 flex w-[length:var(--full-menu-meal-card-width)] shrink-0 cursor-pointer flex-col gap-[12px] text-left hover:z-10 focus-visible:z-10 md:w-[length:var(--full-menu-meal-card-width-md)]"
-                  >
-                    <div className="flex aspect-[25/19] w-full items-center justify-center overflow-visible">
-                      <img
-                        src={meal.img}
-                        alt={meal.name}
-                        draggable={false}
-                        className="pointer-events-none h-[94.74%] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105"
-                      />
-                    </div>
-
-                    <div className="flex w-full flex-col gap-[8px] px-[4px]">
-                      <p
-                        className={[
-                          TEXT_TRIM_CLASS_NAME,
-                          'flex w-full flex-wrap items-center gap-x-[0.35em] font-sans text-[length:var(--full-menu-meal-meta-font-size)] font-medium leading-[140%] text-[var(--full-menu-muted)]',
-                        ].join(' ')}
-                      >
-                        <span>{meal.kcal} kcal • {meal.weight} g</span>
-                        <span>{meal.type}</span>
-                      </p>
-
-                      <p
-                        className={[
-                          'line-clamp-3 w-full [text-box-edge:auto] [text-box-trim:none] font-sans text-[length:var(--full-menu-meal-title-font-size)] font-semibold leading-[140%] text-[var(--full-menu-title)] transition-colors group-hover:text-[var(--full-menu-active)]',
-                        ].join(' ')}
-                      >
-                        {meal.name}
-                      </p>
-                    </div>
-                  </button>
-                ))}
-                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                    <FullMenuMealCard
+                      key={meal.id}
+                      meal={meal}
+                      onClick={() => handleMealClick(meal)}
+                      showRateMealButton={showRateMealsButton}
+                    />
+                  ))}
+                {!isEmbedded ? (
+                  <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                ) : null}
               </div>
 
-              <div className="flex w-full min-w-0 gap-[length:var(--full-menu-meal-gap)]">
-                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
-                <p className={`min-w-0 flex-1 px-[4px] pt-[4px] pb-[16px] ${fullMenuDisclaimerClassName}`}>
-                  {FULL_MENU_DISCLAIMER}{' '}
-                  Not a fit?{' '}
-                  <a
-                    href={FULL_MENU_SURVEY_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="break-words underline underline-offset-2 text-[var(--full-menu-active)] transition-colors hover:text-[var(--full-menu-active-muted)]"
-                  >
-                    Take a quick survey
-                  </a>
-                  .
-                </p>
-                <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
-              </div>
+              {!isEmbedded ? (
+                <div className="flex w-full min-w-0 gap-[length:var(--full-menu-meal-gap)]">
+                  <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                  <p className={`min-w-0 flex-1 px-[4px] pt-[4px] pb-[16px] ${fullMenuDisclaimerClassName}`}>
+                    {FULL_MENU_DISCLAIMER}{' '}
+                    Not a fit?{' '}
+                    <a
+                      href={FULL_MENU_SURVEY_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="break-words underline underline-offset-2 text-[var(--full-menu-active)] transition-colors hover:text-[var(--full-menu-active-muted)]"
+                    >
+                      Take a quick survey
+                    </a>
+                    .
+                  </p>
+                  <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                </div>
+              ) : null}
             </div>
 
             <CheckoutScrollEdgeFades
@@ -724,7 +750,9 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
               showEnd={showMealsEndFade}
               edgeColor={COLOR_TOKENS.base.white}
               fadeWidthClassName="w-[length:var(--full-menu-meal-carousel-inset)]"
-              className="bottom-[4px] top-[6px] md:hidden"
+              className={
+                isEmbedded ? 'bottom-0 top-[16px]' : 'bottom-[4px] top-[6px] md:hidden'
+              }
               startPositionClassName="left-0"
               endPositionClassName="right-0"
             />

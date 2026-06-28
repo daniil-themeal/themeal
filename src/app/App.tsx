@@ -10,6 +10,12 @@ import NotFoundPage from './NotFoundPage';
 import { LEGAL_ROUTES } from './legal/routes';
 import { isDevToolsEnabled } from './devToolsEnabled';
 import {
+  AccountDeliveriesPage,
+  AccountHomePage,
+  AccountLayout,
+  AccountProfilePage,
+} from './account';
+import {
   loadPhoneSession,
   mergePhoneSession,
   type PhoneSession,
@@ -46,7 +52,11 @@ function resumeCheckoutStep(session: PhoneSession): InitialCheckoutStep {
   return step;
 }
 
-function HomePage() {
+type HomePageProps = {
+  onDesignSystemClick?: () => void;
+};
+
+function HomePage({ onDesignSystemClick }: HomePageProps) {
   const location = useLocation();
   const navigate = useNavigate();
   const onTrialRoute = location.pathname === '/trial';
@@ -67,7 +77,6 @@ function HomePage() {
   const [trialActive, setTrialActive] = useState(onTrialRoute);
   const [cameFromTrial, setCameFromTrial] = useState(false);
   const [quizOpen, setQuizOpen] = useState(false);
-  const [designSystemOpen, setDesignSystemOpen] = useState(false);
   const [initialCheckoutStep, setInitialCheckoutStep] =
     useState<InitialCheckoutStep>('plan');
   const [initialDeliveryStep, setInitialDeliveryStep] =
@@ -255,18 +264,6 @@ function HomePage() {
     }
   }, [navigate, onTrialRoute]);
 
-  const openDesignSystem = () => {
-    setDesignSystemOpen(true);
-  };
-
-  const closeDesignSystem = () => {
-    setDesignSystemOpen(false);
-  };
-
-  if (designSystemOpen) {
-    return <DesignSystemDemo onClose={closeDesignSystem} />;
-  }
-
   return (
     <>
       <MainLandingPage
@@ -278,7 +275,7 @@ function HomePage() {
         onResumeVerification={handleResumeVerification}
         onResetPhone={() => resetPhoneAndCheckout()}
         onSignInClick={openSignIn}
-        onDesignSystemClick={isDevToolsEnabled ? openDesignSystem : undefined}
+        onDesignSystemClick={onDesignSystemClick}
         checkoutOpen={checkoutOpen}
         quizOpen={quizOpen}
         isPhoneVerified={isPhoneVerified}
@@ -316,13 +313,27 @@ function HomePage() {
 }
 
 export default function App() {
+  const [designSystemOpen, setDesignSystemOpen] = useState(false);
+  const openDesignSystem = () => setDesignSystemOpen(true);
+  const closeDesignSystem = () => setDesignSystemOpen(false);
+  const onDesignSystemClick = isDevToolsEnabled ? openDesignSystem : undefined;
+
+  if (designSystemOpen) {
+    return <DesignSystemDemo onClose={closeDesignSystem} />;
+  }
+
   return (
     <PhoneAuthProvider>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/trial" element={<HomePage />} />
+        <Route path="/" element={<HomePage onDesignSystemClick={onDesignSystemClick} />} />
+        <Route path="/trial" element={<HomePage onDesignSystemClick={onDesignSystemClick} />} />
         <Route path={LEGAL_ROUTES.privacy} element={<PrivacyPolicyPage />} />
         <Route path={LEGAL_ROUTES.terms} element={<TermsAndConditionsPage />} />
+        <Route path="/account" element={<AccountLayout onDesignSystemClick={onDesignSystemClick} />}>
+          <Route index element={<AccountHomePage />} />
+          <Route path="deliveries" element={<AccountDeliveriesPage />} />
+          <Route path="profile" element={<AccountProfilePage />} />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </PhoneAuthProvider>

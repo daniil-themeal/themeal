@@ -1,0 +1,11 @@
+.segmented-tabs__tab {
+  cursor: pointer;
+}
+
+.segmented-tabs__tab[aria-selected='false'] {
+  color: var(--neutral-900, #383e48);
+}
+
+.segmented-tabs__tab[aria-selected='false']:hover {
+  color: var(--primary-500, #9a38ef);
+}

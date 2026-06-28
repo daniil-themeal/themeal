@@ -11,7 +11,7 @@ import { IconButton } from './common/IconButton';
 import { VerifiedPhoneLogoutButton } from './common/VerifiedPhoneLogoutButton';
 import { Checkbox } from './common/Checkbox';
 import { CHECKBOX_SIZE_LABELS, CHECKBOX_SIZES, RADIO_SIZE_LABELS, RADIO_SIZES } from './common/checkboxSizeTokens';
-import { Radio, RadioGroup } from './common/Radio';
+import { SystemMessage, SYSTEM_MESSAGE_VARIANTS } from './common/SystemMessage';
 import { COLOR_TOKENS } from './common/colorTokens';
 import { Divider } from './common/Divider';
 import { Dropdown } from './common/Dropdown';
@@ -142,7 +142,9 @@ type DemoAnchorId =
   | 'icon-button-variants'
   | 'icon-button-soft'
   | 'icon-button-sizes'
+  | 'segmented-tabs'
   | 'badge-variants'
+  | 'system-message'
   | 'tooltip';
 
 type DemoNavigationItem = {
@@ -208,6 +210,7 @@ const demoNavigationItems: DemoNavigationItem[] = [
       { id: 'dropdown', label: 'Dropdown' },
       { id: 'quiz-value-slider', label: 'QuizValueSlider' },
       { id: 'checkbox', label: 'Checkbox' },
+      { id: 'segmented-tabs', label: 'SegmentedTabs' },
       { id: 'radio', label: 'Radio' },
       { id: 'divider', label: 'Divider' },
     ],
@@ -237,6 +240,7 @@ const demoNavigationItems: DemoNavigationItem[] = [
     label: 'Indicators',
     children: [
       { id: 'badge-variants', label: 'Badge variants' },
+      { id: 'system-message', label: 'SystemMessage' },
       { id: 'tooltip', label: 'Tooltip' },
     ],
   },
@@ -840,6 +844,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
   const [email, setEmail] = useState('email@themeal.menu');
   const [name, setName] = useState('');
   const [checkboxChecked, setCheckboxChecked] = useState(false);
+  const [segmentedTabsScope, setSegmentedTabsScope] = useState<'next' | 'previous'>('next');
   const [radioValue, setRadioValue] = useState('lunch-dinner');
   const [dropdownValue, setDropdownValue] = useState('');
   const [dropdownWithIconValue, setDropdownWithIconValue] = useState('monthly');
@@ -1786,6 +1791,22 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           </DemoCard>
 
           <DemoCard
+            id="segmented-tabs"
+            title="SegmentedTabs"
+            description="Two-option segmented control (ManagerTabs). Used on account Deliveries for Next / Previous scope."
+          >
+            <SegmentedTabs
+              options={[
+                { value: 'next', label: 'Next' },
+                { value: 'previous', label: 'Previous' },
+              ]}
+              value={segmentedTabsScope}
+              onChange={setSegmentedTabsScope}
+              aria-label="Delivery scope"
+            />
+          </DemoCard>
+
+          <DemoCard
             id="radio"
             title="Radio"
             description="Sizes: small (16px, 12px label, 4px gap) and medium (20px, 16px label, 8px gap, default). Circular control with dot indicator."
@@ -2365,7 +2386,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
           <DemoCard
             id="badge-variants"
             title="Badge variants"
-            description="Two semantic variants tied to business intent — not generic color aliases."
+            description="Semantic variants tied to business intent — not generic color aliases."
           >
             <div className="flex flex-wrap items-end gap-[24px]">
               {BADGE_VARIANTS.map((variant) => (
@@ -2377,6 +2398,60 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                   <Badge variant={variant} />
                 </div>
               ))}
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="system-message"
+            title="SystemMessage"
+            description="Inline system feedback with optional title, body text, left icon, and one or two actions. Variants: success, warning, info."
+          >
+            <div className="flex flex-col gap-[16px]">
+              {SYSTEM_MESSAGE_VARIANTS.map((variant) => (
+                <div key={variant} className="flex flex-col gap-[8px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`variant="${variant}"`}</CodeLabel>
+                  </DemoSubheading>
+
+                  <SystemMessage
+                    variant={variant}
+                    title={
+                      variant === 'success'
+                        ? 'Delivery date successfully changed'
+                        : variant === 'warning'
+                          ? 'Production fixation soon'
+                          : 'Delivery reminder'
+                    }
+                  >
+                    {variant === 'success'
+                      ? 'Your next delivery has been moved to the selected date.'
+                      : variant === 'warning'
+                        ? 'Menu changes for this delivery will lock in 24 hours.'
+                        : 'You can update the delivery time or address up to 2 days before delivery.'}
+                  </SystemMessage>
+                </div>
+              ))}
+
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>text only</CodeLabel>
+                </DemoSubheading>
+                <SystemMessage variant="success">Delivery date successfully changed</SystemMessage>
+              </div>
+
+              <div className="flex flex-col gap-[8px]">
+                <DemoSubheading>
+                  <CodeLabel>with actions</CodeLabel>
+                </DemoSubheading>
+                <SystemMessage
+                  variant="warning"
+                  title="Pause delivery?"
+                  primaryAction={{ label: 'Pause', onClick: () => undefined }}
+                  secondaryAction={{ label: 'Cancel', onClick: () => undefined }}
+                >
+                  Your plan will skip the next scheduled delivery if you continue.
+                </SystemMessage>
+              </div>
             </div>
           </DemoCard>
 

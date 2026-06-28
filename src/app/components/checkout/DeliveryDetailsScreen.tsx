@@ -40,7 +40,7 @@ import { MealCalendar } from './MealCalendar';
 import { getUpcomingDeliveryDates } from './mealCalendarUtils';
 import { DeliverySkipButton } from './DeliverySkipButton';
 
-const TIME_SLOTS = ['7AM – 11AM', '12PM – 4PM', '6PM – 10PM'];
+import { DELIVERY_TIME_SLOTS } from './deliveryTimeSlots';
 
 /** Temporarily hidden — set to true to re-enable add-meal-day controls on the calendar. */
 const ENABLE_ADD_MEAL_DAYS = false;
@@ -415,7 +415,7 @@ export function DeliveryDetailsScreen({
                 nativeOnMobile
                 id="delivery-time-slot"
                 label="Delivery time *"
-                options={TIME_SLOTS.map((slot) => ({ value: slot, label: slot }))}
+                options={DELIVERY_TIME_SLOTS.map((slot) => ({ value: slot, label: slot }))}
                 value={deliveryDetails.selectedTimeSlot}
                 onChange={(selectedTimeSlot) => {
                   const nextDetails = { ...deliveryDetails, selectedTimeSlot };

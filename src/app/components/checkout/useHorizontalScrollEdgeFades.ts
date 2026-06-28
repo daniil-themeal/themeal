@@ -64,6 +64,10 @@ export function useHorizontalScrollEdgeFades(
 
     const resizeObserver = new ResizeObserver(updateFades);
     resizeObserver.observe(element);
+    const childElements = Array.from(element.children).filter(
+      (child): child is HTMLElement => child instanceof HTMLElement,
+    );
+    childElements.forEach((child) => resizeObserver.observe(child));
 
     return () => {
       cancelled = true;

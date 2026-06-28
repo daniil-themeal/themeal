@@ -52,6 +52,16 @@ export const FULL_MENU_MEAL_CARD_WIDTH_MD_CLAMP =
 export const FULL_MENU_MEAL_GAP_CLAMP =
   'clamp(20px, calc(20px + (100vw - 48rem) * 6 / 448), 26px)';
 
+/** Embedded Full Menu — meal row scales with panel @container, not viewport. */
+export const FULL_MENU_MEAL_CARD_WIDTH_CONTAINER_CLAMP =
+  'clamp(150px, calc(150px + (100cqw - 20rem) * 45 / 448), 195px)';
+
+export const FULL_MENU_MEAL_CARD_WIDTH_MD_CONTAINER_CLAMP =
+  'clamp(160px, calc(160px + (100cqw - 48rem) * 48 / 448), 208px)';
+
+export const FULL_MENU_MEAL_GAP_CONTAINER_CLAMP =
+  'clamp(20px, calc(20px + (100cqw - 48rem) * 6 / 448), 26px)';
+
 export const FULL_MENU_LIGHT_CONTROLS_SPACING_CLAMP =
   'clamp(4px, calc(4px + (100vw - 20rem) * 4 / 448), 8px)';
 

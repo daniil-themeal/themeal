@@ -107,15 +107,13 @@ export function SiteNavDrawer({
               <span className="site-nav-drawer__avatar" aria-hidden>
                 <UserIcon size={20} />
               </span>
-              <a
-                href={personalCabinetUrl}
-                target="_blank"
-                rel="noopener noreferrer"
+              <Link
+                to={personalCabinetUrl}
                 className="site-nav-drawer__cabinet"
                 onClick={close}
               >
                 {t.siteNav.personalCabinet}
-              </a>
+              </Link>
             </div>
           </section>
 

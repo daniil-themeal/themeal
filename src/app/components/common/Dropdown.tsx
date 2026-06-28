@@ -205,6 +205,102 @@ function NativeSelectField({
   );
 }
 
+function DropdownSelectList({
+  options,
+  size,
+  contentClassName = '',
+}: {
+  options: DropdownOption[];
+  size: FieldSize;
+  contentClassName?: string;
+}) {
+  const checkIconSize = getFieldCheckIconSizePx(size);
+
+  return (
+    <SelectPrimitive.Portal>
+      <SelectPrimitive.Content
+        position="popper"
+        sideOffset={4}
+        className={[
+          'z-[300] w-[var(--radix-select-trigger-width)] overflow-hidden rounded-[length:var(--field-border-radius)] outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95',
+          contentClassName,
+        ]
+          .filter(Boolean)
+          .join(' ')}
+        style={{
+          ...getFieldSizeStyle(size),
+          backgroundColor: COLOR_TOKENS.base.white,
+          boxShadow: '0 12px 32px rgba(47,56,70,0.16)',
+        }}
+      >
+        <SelectPrimitive.Viewport>
+          {options.map((opt) => (
+            <SelectPrimitive.Item
+              key={opt.value}
+              value={opt.value}
+              disabled={opt.disabled}
+              className="flex h-[length:var(--field-height)] w-full cursor-pointer select-none items-center justify-between px-[length:var(--field-horizontal-padding)] outline-none transition-colors data-[disabled]:pointer-events-none data-[highlighted]:bg-[var(--item-hover-bg)] data-[disabled]:opacity-40"
+              style={
+                {
+                  '--item-hover-bg': COLOR_TOKENS.neutral[50],
+                  color: COLOR_TOKENS.neutral[900],
+                } as CSSProperties
+              }
+            >
+              <SelectPrimitive.ItemText>
+                <span
+                  className={[
+                    TEXT_TRIM_CLASS_NAME,
+                    'font-sans text-[length:var(--field-font-size)] font-semibold leading-[130%]',
+                  ].join(' ')}
+                >
+                  {opt.label}
+                </span>
+              </SelectPrimitive.ItemText>
+
+              <SelectPrimitive.ItemIndicator>
+                <span style={{ color: COLOR_TOKENS.primary[500] }}>
+                  <CheckIcon size={checkIconSize} />
+                </span>
+              </SelectPrimitive.ItemIndicator>
+            </SelectPrimitive.Item>
+          ))}
+        </SelectPrimitive.Viewport>
+      </SelectPrimitive.Content>
+    </SelectPrimitive.Portal>
+  );
+}
+
+type DropdownSelectMenuProps = {
+  value: string;
+  onChange: (value: string) => void;
+  options: DropdownOption[];
+  size?: FieldSize;
+  disabled?: boolean;
+  children: ReactNode;
+  contentClassName?: string;
+};
+
+/** Radix select with a custom trigger; list UI matches Dropdown. */
+export function DropdownSelectMenu({
+  value,
+  onChange,
+  options,
+  size = 'large',
+  disabled = false,
+  children,
+  contentClassName = '',
+}: DropdownSelectMenuProps) {
+  return (
+    <div style={getFieldSizeStyle(size)}>
+      <SelectPrimitive.Root value={value} onValueChange={onChange} disabled={disabled}>
+        <SelectPrimitive.Trigger asChild>{children}</SelectPrimitive.Trigger>
+        <DropdownSelectList options={options} size={size} contentClassName={contentClassName} />
+      </SelectPrimitive.Root>
+    </div>
+  );
+}
+
 function RadixSelectField({
   id,
   descriptionId,
@@ -216,7 +312,6 @@ function RadixSelectField({
   options,
   leftIcon,
   chevronSize,
-  checkIconSize,
   size,
   fieldClassName,
 }: DropdownFieldProps) {
@@ -269,52 +364,7 @@ function RadixSelectField({
         </SelectPrimitive.Icon>
       </SelectPrimitive.Trigger>
 
-      <SelectPrimitive.Portal>
-        <SelectPrimitive.Content
-          position="popper"
-          sideOffset={4}
-          className="z-[300] w-[var(--radix-select-trigger-width)] overflow-hidden rounded-[length:var(--field-border-radius)] outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95"
-          style={{
-            ...getFieldSizeStyle(size),
-            backgroundColor: COLOR_TOKENS.base.white,
-            boxShadow: '0 12px 32px rgba(47,56,70,0.16)',
-          }}
-        >
-          <SelectPrimitive.Viewport>
-            {options.map((opt) => (
-              <SelectPrimitive.Item
-                key={opt.value}
-                value={opt.value}
-                disabled={opt.disabled}
-                className="flex h-[length:var(--field-height)] w-full cursor-pointer select-none items-center justify-between px-[length:var(--field-horizontal-padding)] outline-none transition-colors data-[disabled]:pointer-events-none data-[highlighted]:bg-[var(--item-hover-bg)] data-[disabled]:opacity-40"
-                style={
-                  {
-                    '--item-hover-bg': COLOR_TOKENS.neutral[50],
-                    color: COLOR_TOKENS.neutral[900],
-                  } as CSSProperties
-                }
-              >
-                <SelectPrimitive.ItemText>
-                  <span
-                    className={[
-                      TEXT_TRIM_CLASS_NAME,
-                      'font-sans text-[length:var(--field-font-size)] font-semibold leading-[130%]',
-                    ].join(' ')}
-                  >
-                    {opt.label}
-                  </span>
-                </SelectPrimitive.ItemText>
-
-                <SelectPrimitive.ItemIndicator>
-                  <span style={{ color: COLOR_TOKENS.primary[500] }}>
-                    <CheckIcon size={checkIconSize} />
-                  </span>
-                </SelectPrimitive.ItemIndicator>
-              </SelectPrimitive.Item>
-            ))}
-          </SelectPrimitive.Viewport>
-        </SelectPrimitive.Content>
-      </SelectPrimitive.Portal>
+      <DropdownSelectList options={options} size={size} />
     </SelectPrimitive.Root>
   );
 }
