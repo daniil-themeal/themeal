@@ -44,7 +44,6 @@ import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../main-landing/getS
 import { CHECKOUT_LAYER_Z_INDEX, Z_INDEX_TOKENS } from '../common/zIndexTokens';
 import { formatUaePhoneInput, normalizeUaePhone } from './phoneValidation';
 import { isValidTestSmsCode, SMS_CODE_ERROR, SMS_CODE_SUCCESS_HOLD_MS } from './smsCodeValidation';
-import { usePlanStepScrollChaining } from './usePlanStepScrollChaining';
 import { CHECKOUT_ROOT_CLASSNAME } from './checkoutModalShellTokens';
 import { getUpcomingDeliveryDates, isSameDay } from './mealCalendarUtils';
 import { getSampleDeliveryAddress, getSampleDeliveryDetailsFill } from './deliverySampleData';
@@ -444,12 +443,6 @@ export function CheckoutPage({
 
     return () => observer.disconnect();
   }, [isOpen, checkoutStep]);
-
-  usePlanStepScrollChaining({
-    enabled: isOpen && checkoutStep === 'plan',
-    bodyRef,
-    rightRef,
-  });
 
   const toggleIngredient = (key: string) => {
     setIngredients((prev) =>
@@ -1031,7 +1024,7 @@ export function CheckoutPage({
               <div
                 ref={rightRef}
                 style={checkoutLeftColumnStyle}
-                className="w-full min-w-0 max-md:max-w-none max-md:pt-0 md:max-h-[calc(100svh-56px)] md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] md:min-h-0 md:overflow-x-hidden md:overflow-y-hidden lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
+                className="w-full min-w-0 max-md:max-w-none max-md:pt-0 md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
               >
                 {isTrial ? (
                   <TrialOrderSummary
