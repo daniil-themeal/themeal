@@ -613,7 +613,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                       >
                         <div className="flex w-full flex-col items-center gap-[4px]">
                           <p
-                            className={`font-sans text-[length:var(--full-menu-day-date-font-size)] font-bold leading-none tracking-[-0.16px] ${
+                            className={`font-sans text-[length:var(--full-menu-day-date-font-size)] font-bold leading-none tracking-[length:var(--letter-spacing-label16)] ${
                               active ? 'text-[var(--full-menu-active)]' : 'text-[var(--full-menu-title)]'
                             }`}
                           >
@@ -621,7 +621,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                           </p>
 
                           <p
-                            className={`font-sans text-[length:var(--full-menu-day-meta-font-size)] font-bold leading-none tracking-[-0.12px] ${
+                            className={`font-sans text-[length:var(--full-menu-day-meta-font-size)] font-bold leading-none tracking-[length:var(--letter-spacing-label12)] ${
                               active ? 'text-[var(--full-menu-active)]' : 'text-[var(--full-menu-title)]'
                             }`}
                           >
@@ -630,7 +630,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                         </div>
 
                         <p
-                          className={`font-sans text-[length:var(--full-menu-day-meta-font-size)] font-medium leading-none tracking-[-0.12px] ${
+                          className={`font-sans text-[length:var(--full-menu-day-meta-font-size)] font-medium leading-none tracking-[length:var(--letter-spacing-label12)] ${
                             active ? 'text-[var(--full-menu-active)]' : 'text-[var(--full-menu-muted)]'
                           }`}
                         >

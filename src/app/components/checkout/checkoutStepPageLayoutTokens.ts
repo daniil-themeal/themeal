@@ -90,7 +90,7 @@ export const CHECKOUT_STEP_PAGE_LAYOUT = {
   resultHero: `mx-auto flex w-full max-w-[688px] flex-col gap-[24px] ${CHECKOUT_STEP_SECTION_PX}`,
   headerTitle: [
     TEXT_TRIM_FIT_CLASS_NAME,
-    'font-sans text-[length:var(--checkout-step-title-fs)] font-bold leading-[130%] tracking-[-0.64px] text-[var(--checkout-step-title-color)]',
+    'font-sans text-[length:var(--checkout-step-title-fs)] font-bold leading-[130%] tracking-[length:var(--letter-spacing-title32)] text-[var(--checkout-step-title-color)]',
   ].join(' '),
   headerSubtitle: [
     TEXT_TRIM_FIT_CLASS_NAME,

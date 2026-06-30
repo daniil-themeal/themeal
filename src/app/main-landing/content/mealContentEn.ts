@@ -26,7 +26,8 @@ export const mealContentEn = {
     "continueVerification": "Continue verification",
     "whatsapp": "WhatsApp",
     "telegram": "Telegram",
-    "email": "Email"
+    "email": "Email",
+    "blog": "Blog"
   },
   "hero": {
     "badge": "Fresh, ready-to-eat meals · UAE",
@@ -393,8 +394,14 @@ export const mealContentEn = {
     "delivery": "Delivery",
     "privacy": "Privacy Policy",
     "terms": "Terms & conditions",
+    "blog": "Blog",
     "legal": "YUMGOODS-FZCO · CIF DSO-FZCO-21291 · License 22986 · IFZA Business Park, DDP, PO Box 342001, Dubai, UAE",
     "tagline": "Fresh, ready-to-eat meals delivered across the UAE."
+  },
+  "blog": {
+    "readArticle": "Read article",
+    "backToBlog": "Back to blog",
+    "notFoundDescription": "The blog article you are looking for does not exist or may have been moved."
   },
   "checkout": {
     "title": "Build your plan",

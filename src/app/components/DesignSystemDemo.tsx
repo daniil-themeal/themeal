@@ -60,6 +60,7 @@ import {
   type FontFamilyTokenName,
 } from './common/fontFamilyTokens';
 import { FONT_SIZE_TOKENS } from './common/fontSizeTokens';
+import { LETTER_SPACING_TOKENS } from './common/letterSpacingTokens';
 import { FormLabel } from './common/FormLabel';
 import { InputButtonRow } from './common/InputButtonRow';
 import { DeliveryAddressCard } from './common/DeliveryAddressCard';
@@ -109,6 +110,7 @@ type DemoAnchorId =
   | PageSectionId
   | 'color-tokens'
   | 'font-size-tokens'
+  | 'letter-spacing-tokens'
   | 'font-family-tokens'
   | 'border-radius-tokens'
   | 'spacing-tokens'
@@ -187,6 +189,7 @@ const demoNavigationItems: DemoNavigationItem[] = [
     children: [
       { id: 'color-tokens', label: 'Color tokens' },
       { id: 'font-size-tokens', label: 'Font size tokens' },
+      { id: 'letter-spacing-tokens', label: 'Letter spacing tokens' },
       { id: 'font-family-tokens', label: 'Font family tokens' },
       { id: 'border-radius-tokens', label: 'Border radius tokens' },
       { id: 'spacing-tokens', label: 'Spacing tokens' },
@@ -289,7 +292,7 @@ function PageSection({
 
         <h2
           className={[
-            'font-sans text-[32px] font-bold leading-[130%] tracking-[-0.64px] text-[var(--demo-title)]',
+            'font-sans text-[32px] font-bold leading-[130%] tracking-[length:var(--letter-spacing-title32)] text-[var(--demo-title)]',
             DEMO_HEADING_BOTTOM_GAP_CLASS,
           ].join(' ')}
         >
@@ -552,6 +555,35 @@ function FontSizeTokenRow({
         style={{ fontSize: value }}
       >
         The quick brown fox {value}
+      </p>
+    </div>
+  );
+}
+
+function LetterSpacingTokenRow({
+  token,
+  value,
+}: {
+  token: string;
+  value: string;
+}) {
+  return (
+    <div className="flex flex-col gap-[8px]">
+      <div className="flex items-baseline justify-between gap-[12px]">
+        <DemoSubheading inline>
+          <CodeLabel>{`LETTER_SPACING_TOKENS.${token}`}</CodeLabel>
+        </DemoSubheading>
+
+        <span className="font-sans text-[12px] font-semibold leading-[130%] text-[var(--demo-description)]">
+          {value}
+        </span>
+      </div>
+
+      <p
+        className="font-sans text-[25px] font-bold leading-[130%] text-[var(--demo-body)]"
+        style={{ letterSpacing: value }}
+      >
+        The quick brown fox
       </p>
     </div>
   );
@@ -944,6 +976,19 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
             <div className="grid grid-cols-1 gap-[24px] md:grid-cols-2 md:gap-[28px]">
               {Object.entries(FONT_SIZE_TOKENS).map(([token, value]) => (
                 <FontSizeTokenRow key={token} token={token} value={value} />
+              ))}
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="letter-spacing-tokens"
+            title="Letter spacing tokens"
+            description="Negative tracking tiers for headings and compact UI text. CSS vars: --letter-spacing-{name}."
+            className="lg:col-span-2"
+          >
+            <div className="grid grid-cols-1 gap-[24px] md:grid-cols-2 md:gap-[28px]">
+              {Object.entries(LETTER_SPACING_TOKENS).map(([token, value]) => (
+                <LetterSpacingTokenRow key={token} token={token} value={value} />
               ))}
             </div>
           </DemoCard>

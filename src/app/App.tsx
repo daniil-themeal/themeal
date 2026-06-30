@@ -23,6 +23,7 @@ import {
 import { PhoneAuthProvider, usePhoneAuth } from './phoneAuth/PhoneAuthProvider';
 import { siteMetadata } from './config/siteMetadata';
 import { useSiteMetadata } from './hooks/useSiteMetadata';
+import { BlogListPage, BlogPostPage, BLOG_ROUTES } from './blog';
 
 const QuizModal = lazy(() => import('./components/quiz/QuizModal'));
 
@@ -333,6 +334,8 @@ export default function App() {
         <Route path="/trial" element={<HomePage onDesignSystemClick={onDesignSystemClick} />} />
         <Route path={LEGAL_ROUTES.privacy} element={<PrivacyPolicyPage />} />
         <Route path={LEGAL_ROUTES.terms} element={<TermsAndConditionsPage />} />
+        <Route path={BLOG_ROUTES.index} element={<BlogListPage />} />
+        <Route path={`${BLOG_ROUTES.index}/:slug`} element={<BlogPostPage />} />
         <Route path="/account" element={<AccountLayout onDesignSystemClick={onDesignSystemClick} />}>
           <Route index element={<AccountHomePage />} />
           <Route path="deliveries" element={<AccountDeliveriesPage />} />

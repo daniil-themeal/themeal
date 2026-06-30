@@ -131,7 +131,7 @@ function FinalOffer({ t, onOrder }) {
     createElement('div', { 'aria-hidden':true, style:{ position:'absolute', inset:0, overflow:'hidden', background:'radial-gradient(120% 120% at 50% 0%, #5A2487, var(--plum-700) 55%, var(--plum-900))' } },
       createElement('div', { style:{ position:'absolute', top:'-20%', insetInlineStart:'50%', transform:'translateX(-50%)', width:600, height:600, borderRadius:'50%', background:'radial-gradient(circle, rgba(240,41,168,.22), transparent 65%)' } })),
     createElement('div', { className:'wrap reveal', style:{ position:'relative', display:'flex', flexDirection:'column', alignItems:'center', gap:'var(--space-24)' } },
-      createElement('h2', { className:'h2', style:{ margin:0, maxWidth:880, letterSpacing:'-0.05rem' } },
+      createElement('h2', { className:'h2', style:{ margin:0, maxWidth:880 } },
         t.final.pre, ' ', createElement('span', { style:{ color:'var(--yellow)' } }, t.final.hi)),
       createElement(HeroStats, { stats:t.hero.stats }),
       createElement('button', { className:'btn btn-secondary btn-lg', onClick:onOrder, style:{ marginTop:4 } },
@@ -153,7 +153,7 @@ function FinalOffer({ t, onOrder }) {
 
 /* ---------------- Footer ---------------- */
 function Footer({ t, lang, setLang }) {
-  const links = [[t.nav.menu,'/#menu'], [t.nav.delivery,'/#delivery'], [t.nav.qa,'/#qa'], [t.footer.privacy,'/privacy-policy'], [t.footer.terms,'/terms-and-conditions']];
+  const links = [[t.nav.menu,'/#menu'], [t.nav.delivery,'/#delivery'], [t.nav.qa,'/#qa'], [t.footer.blog,'/blog'], [t.footer.privacy,'/privacy-policy'], [t.footer.terms,'/terms-and-conditions']];
   const socials = landingFooterSocials;
   return (
     createElement('footer', { className:'site-footer' },

@@ -1,0 +1,21 @@
+/* KEEP_IN_SYNC(src/app/components/common/letterSpacingTokens.ts) — design system letter-spacing CSS variables */
+
+:root {
+  --letter-spacing-display: -0.24rem;
+  --letter-spacing-headingLg: -0.24rem;
+  --letter-spacing-headingMd: -0.12rem;
+  --letter-spacing-headingSm: -0.015em;
+  --letter-spacing-displayEm: -0.03em;
+  --letter-spacing-displayTight: -0.06em;
+  --letter-spacing-headingCompact: -0.06rem;
+  --letter-spacing-title32: -0.76px;
+  --letter-spacing-title25: -0.9px;
+  --letter-spacing-title25Bold: -0.6px;
+  --letter-spacing-title25Light: -0.3px;
+  --letter-spacing-body20: -0.48px;
+  --letter-spacing-label16: -0.19px;
+  --letter-spacing-label16Medium: -0.38px;
+  --letter-spacing-label14: -0.17px;
+  --letter-spacing-label12: -0.14px;
+  --letter-spacing-label12Bold: -0.44px;
+}

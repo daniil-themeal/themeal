@@ -5,6 +5,7 @@ import { PROSE_LIST_TOKENS } from '../components/common/proseListTokens';
 import { mealContentEn } from '../main-landing/content/mealContentEn';
 import { Footer } from '../main-landing/components/sections/sections3';
 import { LegalHeader } from './LegalHeader';
+import { LegalBreadcrumbs } from './LegalBreadcrumbs';
 import {
   parseLabeledListItem,
   parseLegalContentBlocks,
@@ -131,21 +132,12 @@ export function LegalDocumentPage({ document, current }: LegalDocumentPageProps)
 
       <main className="legal-main">
         <div className="wrap legal-main__inner">
-          <nav className="legal-breadcrumbs" aria-label="Breadcrumb">
-            <ol className={`legal-breadcrumbs__list ${legalText.breadcrumb}`}>
-              <li className="legal-breadcrumbs__item">
-                <Link to="/" className={legalText.breadcrumbLink}>
-                  Home
-                </Link>
-              </li>
-              <li
-                className={`legal-breadcrumbs__item ${legalText.breadcrumbCurrent}`}
-                aria-current="page"
-              >
-                {pageLabel}
-              </li>
-            </ol>
-          </nav>
+          <LegalBreadcrumbs
+            items={[
+              { type: 'link', to: '/', label: 'Home' },
+              { type: 'current', label: pageLabel },
+            ]}
+          />
 
           <article className="legal-article">
             <header className="legal-article__head">

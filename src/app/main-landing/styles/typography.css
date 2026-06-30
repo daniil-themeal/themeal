@@ -1,6 +1,6 @@
 /* ---- typography helpers ---- */
 .display {
-  font-weight:700; line-height:1.02; letter-spacing:-.025em;
+  font-weight:700; line-height:1.02; letter-spacing:var(--letter-spacing-displayEm);
   font-size:clamp(var(--fs-32), 6.4vw, var(--fs-48));
 }
 .h2 {
@@ -10,7 +10,7 @@
   font-size:var(--landing-h2-fs);
 }
 
-.h3 { font-weight:700; line-height:1.15; letter-spacing:-.01em; font-size:clamp(var(--fs-20), 2vw, var(--fs-25)); }
+.h3 { font-weight:700; line-height:1.15; letter-spacing:var(--letter-spacing-headingSm); font-size:clamp(var(--fs-20), 2vw, var(--fs-25)); }
 .lead { font-size:clamp(var(--fs-16), 1.4vw, var(--fs-20)); line-height:1.55; color:var(--slate); font-weight:500; }
 
 .eyebrow {

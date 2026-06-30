@@ -10,6 +10,13 @@ export {
 } from './fontSizeTokens';
 
 export {
+  LETTER_SPACING_TOKENS,
+  LETTER_SPACING_TOKEN_NAMES,
+  LETTER_SPACING_CSS_VARS,
+  type LetterSpacingTokenName,
+} from './letterSpacingTokens';
+
+export {
   FONT_FAMILY_TOKENS,
   FONT_FAMILY_CLASS_NAMES,
   getFontFamilyStyle,

@@ -136,16 +136,16 @@
   opacity:.5;
   font-weight:900;
   line-height:1;
-  letter-spacing:-0.5px;
+  letter-spacing:var(--letter-spacing-title25Bold);
 }
 .main-landing #top .hero-title__now {
-  letter-spacing:-.03em;
+  letter-spacing:var(--letter-spacing-displayEm);
   line-height:80%;
 }
 .main-landing #top .hero-title__cur {
   font-size:var(--hero-price-secondary-fs);
   line-height:1;
-  letter-spacing:-0.5px;
+  letter-spacing:var(--letter-spacing-title25Bold);
   font-weight:900;
 }
 .main-landing #top .menu-head-cta {

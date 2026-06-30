@@ -459,7 +459,7 @@ export function BottomFloatTotalBlock({
                             >
                               <div className="flex w-full flex-col items-center gap-[4px]">
                                 <p
-                                  className={`font-sans text-[length:var(--bottom-total-date-font-size)] font-bold leading-none tracking-[-0.16px] ${
+                                  className={`font-sans text-[length:var(--bottom-total-date-font-size)] font-bold leading-none tracking-[length:var(--letter-spacing-label16)] ${
                                     active
                                       ? "text-[var(--bottom-total-primary)]"
                                       : "text-[var(--bottom-total-text)]"
@@ -469,7 +469,7 @@ export function BottomFloatTotalBlock({
                                 </p>
 
                                 <p
-                                  className={`font-sans text-[length:var(--bottom-total-small-font-size)] font-bold leading-none tracking-[-0.12px] ${
+                                  className={`font-sans text-[length:var(--bottom-total-small-font-size)] font-bold leading-none tracking-[length:var(--letter-spacing-label12)] ${
                                     active
                                       ? "text-[var(--bottom-total-primary)]"
                                       : "text-[var(--bottom-total-text)]"
@@ -480,7 +480,7 @@ export function BottomFloatTotalBlock({
                               </div>
 
                               <p
-                                className={`font-sans text-[length:var(--bottom-total-small-font-size)] font-medium leading-none tracking-[-0.12px] ${
+                                className={`font-sans text-[length:var(--bottom-total-small-font-size)] font-medium leading-none tracking-[length:var(--letter-spacing-label12)] ${
                                   active
                                     ? "text-[var(--bottom-total-primary-muted)]"
                                     : "text-[var(--bottom-total-muted)]"
