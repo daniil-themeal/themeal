@@ -539,7 +539,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
         ) : null}
 
         <div
-          className="shrink-0 px-[length:var(--checkout-card-padding)] pt-0 pb-0"
+          className="shrink-0 px-[length:var(--checkout-card-padding)] pt-[12px] pb-0"
           style={isTrial ? { display: 'none' } : undefined}
         >
           <div className="flex w-full items-stretch gap-[12px]" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
@@ -682,7 +682,9 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
         </div>
 
         <div
-          className={mealsOuterClassName}
+          className={[mealsOuterClassName, isTrial && !isEmbedded ? 'pt-[12px]' : '']
+            .filter(Boolean)
+            .join(' ')}
           {...(isModal ? { [SPACING_CONTENT_ATTR]: '' } : {})}
         >
           <div className="relative w-full">
