@@ -1,11 +1,14 @@
 import { describe, expect, it } from 'vitest';
 
 import { DEFAULT_CHECKOUT_PRICING } from '../../data/checkoutPricing';
+import { TRIAL_MEALS } from '../../data/testMeals';
 import {
   addDays,
   collectDefaultMealDays,
+  getMealDayKey,
   getSubscriptionMealDates,
   getSubscriptionMenuDays,
+  getTrialMenuDays,
   getUpcomingDeliveryDates,
   isDefaultMealDay,
   isDeliveryDay,
@@ -209,5 +212,34 @@ describe('getSubscriptionMenuDays', () => {
     expect(menuDays[0].date).toBe('2024-01-08');
     expect(menuDays[0].id).toBe('2024-01-08');
     expect(menuDays[0].meals.length).toBeGreaterThan(0);
+  });
+});
+
+describe('getTrialMenuDays', () => {
+  it('returns 3 consecutive calendar days from delivery date', () => {
+    const deliveryDate = dateAt(2024, 0, 8);
+    const menuDays = getTrialMenuDays(deliveryDate);
+
+    expect(menuDays).toHaveLength(3);
+    expect(menuDays[0].date).toBe('2024-01-08');
+    expect(menuDays[1].date).toBe('2024-01-09');
+    expect(menuDays[2].date).toBe('2024-01-10');
+    expect(menuDays[0].id).toBe(getMealDayKey(deliveryDate));
+    expect(menuDays[2].id).toBe(getMealDayKey(addDays(deliveryDate, 2)));
+  });
+
+  it('uses the same TRIAL_MEALS on each day with unique ids', () => {
+    const deliveryDate = dateAt(2024, 0, 8);
+    const menuDays = getTrialMenuDays(deliveryDate);
+    const expectedMealNames = TRIAL_MEALS.map((meal) => meal.name);
+
+    for (const menuDay of menuDays) {
+      expect(menuDay.meals).toHaveLength(4);
+      expect(menuDay.meals.map((meal) => meal.name)).toEqual(expectedMealNames);
+      expect(new Set(menuDay.meals.map((meal) => meal.id)).size).toBe(4);
+    }
+
+    const allMealIds = menuDays.flatMap((menuDay) => menuDay.meals.map((meal) => meal.id));
+    expect(new Set(allMealIds).size).toBe(12);
   });
 });

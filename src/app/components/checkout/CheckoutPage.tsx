@@ -1092,6 +1092,7 @@ export function CheckoutPage({
             days={days}
             duration={duration}
             isTrial={isTrial}
+            trialDeliveryDate={isTrial ? deliveryDetails.selectedDate : undefined}
           />
 
           {isTrial ? null : (

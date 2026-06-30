@@ -11,7 +11,6 @@ import { createPortal } from 'react-dom';
 
 import {
   getFullMenuMealSlots,
-  TRIAL_MEALS,
   type LightMealOption,
 } from '../../data/testMeals';
 import type { DayOption, Duration, Plan } from '../../data/checkoutPricing';
@@ -52,7 +51,7 @@ import { Button } from '../common/Button';
 import { ModalHeader } from '../common/Modal';
 import { SPACING_CONTENT_ATTR } from '../../main-landing/getSpacingMeasureRoot';
 import { MealDetailModal } from './MealDetailModal';
-import { getSubscriptionMenuDays } from './mealCalendarUtils';
+import { getDefaultTrialDeliveryDate, getSubscriptionMenuDays, getTrialMenuDays } from './mealCalendarUtils';
 import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -202,6 +201,7 @@ export type FullMenuPanelProps = {
   onMealDetailOpenChange?: (open: boolean) => void;
   className?: string;
   isTrial?: boolean;
+  trialDeliveryDate?: Date;
   showRateMealsButton?: boolean;
 };
 
@@ -218,6 +218,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     onMealDetailOpenChange,
     className = '',
     isTrial = false,
+    trialDeliveryDate,
     showRateMealsButton = false,
   },
   ref,
@@ -231,9 +232,9 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   const subscriptionMenuDays = useMemo(
     () =>
       isTrial
-        ? []
+        ? getTrialMenuDays(trialDeliveryDate ?? getDefaultTrialDeliveryDate())
         : menuDays ?? getSubscriptionMenuDays({ dayOption: days, duration }),
-    [days, duration, isTrial, menuDays],
+    [days, duration, isTrial, menuDays, trialDeliveryDate],
   );
   const menuDayLabels = useMemo(
     () => getMenuDayLabels(subscriptionMenuDays),
@@ -257,7 +258,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
 
   useEffect(() => {
     setSelectedDayIndex(0);
-  }, [days, duration, plan, lightMealOption, isTrial]);
+  }, [days, duration, plan, lightMealOption, isTrial, trialDeliveryDate]);
 
   const dayRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const daysScrollRef = useRef<HTMLDivElement | null>(null);
@@ -278,7 +279,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
 
   const selectedMenuDay = subscriptionMenuDays[selectedDayIndex];
   const mealSlots = isTrial
-    ? TRIAL_MEALS.map((meal) => ({ meal, active: true }))
+    ? getFullMenuMealSlots(selectedMenuDay, 'plus', lightMealOption)
     : getFullMenuMealSlots(selectedMenuDay, plan, lightMealOption);
   const activeMealCount = mealSlots.filter((slot) => slot.active).length;
   const daysScrollFadeKey = `${isActive}-${menuDaysCount}`;
@@ -538,10 +539,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
           />
         ) : null}
 
-        <div
-          className="shrink-0 px-[length:var(--checkout-card-padding)] pt-[12px] pb-0"
-          style={isTrial ? { display: 'none' } : undefined}
-        >
+        <div className="shrink-0 px-[length:var(--checkout-card-padding)] pt-[12px] pb-0">
           <div className="flex w-full items-stretch gap-[12px]" style={FULL_MENU_DAY_PILL_DEFAULT_STYLE}>
             {!isEmbedded ? (
               <button
@@ -682,9 +680,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
         </div>
 
         <div
-          className={[mealsOuterClassName, isTrial && !isEmbedded ? 'pt-[12px]' : '']
-            .filter(Boolean)
-            .join(' ')}
+          className={mealsOuterClassName}
           {...(isModal ? { [SPACING_CONTENT_ATTR]: '' } : {})}
         >
           <div className="relative w-full">

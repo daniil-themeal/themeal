@@ -1,5 +1,6 @@
 import type { DayOption, Duration } from '../../data/checkoutPricing';
-import { MENU_DAYS_COUNT, testMenuDays } from '../../data/testMeals';
+import { MENU_DAYS_COUNT, testMenuDays, TRIAL_MEALS } from '../../data/testMeals';
+import { TRIAL_DAYS } from '../../data/trialPricing';
 import type { MenuDay } from '../../types/meal';
 
 import { MONTH_ABBR } from '../common/dateFormatTokens';
@@ -250,6 +251,30 @@ export function getDeliveryMenuDays(deliveryDate: Date, dayOption: DayOption): M
   const anchorDate = mealDates[0];
 
   return mealDates.map((date) => buildMenuDayForDate(date, anchorDate));
+}
+
+export function getDefaultTrialDeliveryDate(): Date {
+  const deliveryDates = getUpcomingDeliveryDates(60, 'weekdays');
+
+  return normalizeDate(deliveryDates[0] ?? addDays(new Date(), 2));
+}
+
+export function getTrialMenuDays(deliveryDate: Date): MenuDay[] {
+  const start = normalizeDate(deliveryDate);
+
+  return Array.from({ length: TRIAL_DAYS }, (_, index) => {
+    const date = addDays(start, index);
+    const dateKey = getMealDayKey(date);
+
+    return {
+      id: dateKey,
+      date: dateKey,
+      meals: TRIAL_MEALS.map((meal) => ({
+        ...meal,
+        id: `${dateKey}-${meal.id}`,
+      })),
+    };
+  });
 }
 
 export function getSubscriptionMenuDays({
