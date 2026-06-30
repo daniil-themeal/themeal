@@ -76,14 +76,26 @@ const trialOrderSummaryStyle: TrialOrderSummaryCssVariables = {
 
 const trialOrderSummarySectionPx = 'px-[length:var(--order-summary-section-padding)]';
 
-const trialOrderSummaryDividerClassName =
-  'my-[length:var(--order-summary-section-gap)] w-full shrink-0';
+type TrialOrderSummaryDividerSpacing = 'default' | 'compact-bottom' | 'compact-top';
 
-function TrialOrderSummaryDivider() {
+function getTrialOrderSummaryDividerClassName(spacing: TrialOrderSummaryDividerSpacing) {
+  const marginTop =
+    spacing === 'compact-top'
+      ? 'mt-[length:var(--order-summary-inner-gap-md)]'
+      : 'mt-[length:var(--order-summary-section-gap)]';
+  const marginBottom =
+    spacing === 'compact-bottom'
+      ? 'mb-[length:var(--order-summary-inner-gap-md)]'
+      : 'mb-[length:var(--order-summary-section-gap)]';
+
+  return [marginTop, marginBottom, 'w-full shrink-0'].join(' ');
+}
+
+function TrialOrderSummaryDivider({ spacing = 'default' }: { spacing?: TrialOrderSummaryDividerSpacing }) {
   return (
     <Divider
       color="var(--order-summary-divider)"
-      className={trialOrderSummaryDividerClassName}
+      className={getTrialOrderSummaryDividerClassName(spacing)}
     />
   );
 }
@@ -156,7 +168,7 @@ export function TrialOrderSummary({
               </div>
             </div>
 
-            <TrialOrderSummaryDivider />
+            <TrialOrderSummaryDivider spacing="compact-bottom" />
 
             <div
               className={[
@@ -191,7 +203,7 @@ export function TrialOrderSummary({
               </div>
             </div>
 
-            <TrialOrderSummaryDivider />
+            <TrialOrderSummaryDivider spacing="compact-top" />
 
             <div className={`flex flex-col ${isMealsExpanded ? 'gap-[length:var(--order-summary-inner-gap-md)]' : ''}`}>
               <div

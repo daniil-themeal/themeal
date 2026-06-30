@@ -21,6 +21,8 @@ import {
   type PhoneSession,
 } from './phoneSession';
 import { PhoneAuthProvider, usePhoneAuth } from './phoneAuth/PhoneAuthProvider';
+import { siteMetadata } from './config/siteMetadata';
+import { useSiteMetadata } from './hooks/useSiteMetadata';
 
 const QuizModal = lazy(() => import('./components/quiz/QuizModal'));
 
@@ -313,6 +315,8 @@ function HomePage({ onDesignSystemClick }: HomePageProps) {
 }
 
 export default function App() {
+  useSiteMetadata(siteMetadata);
+
   const [designSystemOpen, setDesignSystemOpen] = useState(false);
   const openDesignSystem = () => setDesignSystemOpen(true);
   const closeDesignSystem = () => setDesignSystemOpen(false);

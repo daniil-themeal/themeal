@@ -136,10 +136,29 @@ const orderSummarySectionPx = 'px-[length:var(--order-summary-section-padding)]'
 const orderSummaryScrollEdgeGutterClassName =
   'shrink-0 w-[length:var(--order-summary-section-padding)]';
 
-const orderSummaryDividerClassName = 'my-[length:var(--order-summary-section-gap)] w-full shrink-0';
+type OrderSummaryDividerSpacing = 'default' | 'compact-bottom' | 'compact-top';
 
-function OrderSummaryDivider({ color }: { color: string }) {
-  return <Divider color={color} className={orderSummaryDividerClassName} />;
+function getOrderSummaryDividerClassName(spacing: OrderSummaryDividerSpacing) {
+  const marginTop =
+    spacing === 'compact-top'
+      ? 'mt-[length:var(--order-summary-inner-gap-md)]'
+      : 'mt-[length:var(--order-summary-section-gap)]';
+  const marginBottom =
+    spacing === 'compact-bottom'
+      ? 'mb-[length:var(--order-summary-inner-gap-md)]'
+      : 'mb-[length:var(--order-summary-section-gap)]';
+
+  return [marginTop, marginBottom, 'w-full shrink-0'].join(' ');
+}
+
+function OrderSummaryDivider({
+  color,
+  spacing = 'default',
+}: {
+  color: string;
+  spacing?: OrderSummaryDividerSpacing;
+}) {
+  return <Divider color={color} className={getOrderSummaryDividerClassName(spacing)} />;
 }
 
 export function OrderSummary({
@@ -293,7 +312,7 @@ export function OrderSummary({
               <PlanTariffSummary title={getPlanTariffTitle(plan)} chips={planTariffChips} />
             </div>
 
-            <OrderSummaryDivider color="var(--order-summary-divider)" />
+            <OrderSummaryDivider color="var(--order-summary-divider)" spacing="compact-bottom" />
 
             <div className={['flex items-center gap-[length:var(--order-summary-inner-gap-sm)]', orderSummarySectionPx].join(' ')}>
               <p className="flex-[1_0_0] font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">How many people?</p>
@@ -321,7 +340,7 @@ export function OrderSummary({
               </div>
             </div>
 
-            <OrderSummaryDivider color="var(--order-summary-divider)" />
+            <OrderSummaryDivider color="var(--order-summary-divider)" spacing="compact-top" />
 
             <div className={`flex flex-col ${isMealsExpanded ? 'gap-[length:var(--order-summary-inner-gap-md)]' : ''}`}>
               <div className={['flex items-center justify-between gap-[16px]', orderSummarySectionPx].join(' ')}>
