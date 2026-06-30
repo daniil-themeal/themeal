@@ -1,7 +1,27 @@
 import { createFontSizeClamp } from '../common/fontSizeClampTokens';
 
+/** Extra desktop top inset for plan summary — PlanSelector header-to-cards gap. */
+export const CHECKOUT_PLAN_SUMMARY_ALIGN_OFFSET_CLAMP = '20px';
+
 export const CHECKOUT_CARD_PADDING_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 12 / 448), 32px)';
+
+/** Order summary section horizontal inset — 25% narrower than card padding, multiples of 4px. */
+export const CHECKOUT_ORDER_SUMMARY_SECTION_PADDING_CLAMP =
+  'clamp(16px, calc(16px + (100vw - 20rem) * 8 / 448), 24px)';
+
+/** Order summary card vertical inset — 25% less than 28px / 16px mobile, multiples of 4px. */
+export const CHECKOUT_ORDER_SUMMARY_CARD_PADDING_Y_CLAMP = '20px';
+
+export const CHECKOUT_ORDER_SUMMARY_CARD_PADDING_Y_MOBILE_CLAMP = '12px';
+
+/** Order summary divider / section vertical gap — 25% less than CHECKOUT_SECTION_GAP_CLAMP. */
+export const CHECKOUT_ORDER_SUMMARY_SECTION_GAP_CLAMP =
+  'clamp(20px, calc(20px + (100vw - 20rem) * 4 / 448), 24px)';
+
+export const CHECKOUT_ORDER_SUMMARY_INNER_GAP_MD_CLAMP = '12px';
+
+export const CHECKOUT_ORDER_SUMMARY_INNER_GAP_SM_CLAMP = '4px';
 
 /** Step page named sections — same ramp as card padding (original delivery/payment layout). */
 export const CHECKOUT_STEP_SECTION_PADDING_CLAMP = CHECKOUT_CARD_PADDING_CLAMP;

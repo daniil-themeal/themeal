@@ -37,7 +37,13 @@ import { testUaeAddresses } from '../../data/testAddresses';
 import type { PhoneSession } from '../../phoneSession';
 import { isPhoneSessionChanged, loadPhoneSession, mergePhoneSession } from '../../phoneSession';
 import { COLOR_TOKENS } from '../common/colorTokens';
-import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_SELECTOR_CARD_PADDING_CLAMP, CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP } from './checkoutSpacing';
+import {
+  CHECKOUT_CARD_PADDING_CLAMP,
+  CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
+  CHECKOUT_PLAN_SUMMARY_ALIGN_OFFSET_CLAMP,
+  CHECKOUT_SELECTOR_CARD_PADDING_CLAMP,
+  CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP,
+} from './checkoutSpacing';
 import { useEscapeLayer } from '../common/escapeStack';
 import { useModalShell } from '../common/ModalShell';
 import { SPACING_CONTENT_ATTR, SPACING_ROOT_ATTR } from '../../main-landing/getSpacingMeasureRoot';
@@ -984,7 +990,7 @@ export function CheckoutPage({
             >
               <div
                 style={checkoutLeftColumnStyle}
-                className="flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
+                className="flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pt-[40px] md:pb-[length:var(--checkout-plan-column-pb)]"
               >
                 {isTrial ? (
                   <>
@@ -1023,8 +1029,21 @@ export function CheckoutPage({
 
               <div
                 ref={rightRef}
-                style={checkoutLeftColumnStyle}
-                className="w-full min-w-0 max-md:max-w-none max-md:pt-0 md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pt-[56px] md:pb-[length:var(--checkout-plan-column-pb)]"
+                style={
+                  isTrial
+                    ? checkoutLeftColumnStyle
+                    : {
+                        ...checkoutLeftColumnStyle,
+                        '--checkout-plan-summary-align-offset':
+                          CHECKOUT_PLAN_SUMMARY_ALIGN_OFFSET_CLAMP,
+                      }
+                }
+                className={[
+                  'w-full min-w-0 max-md:max-w-none max-md:pt-0 md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pb-[length:var(--checkout-plan-column-pb)]',
+                  isTrial
+                    ? 'md:pt-[56px]'
+                    : 'md:pt-[calc(56px+var(--checkout-plan-summary-align-offset))]',
+                ].join(' ')}
               >
                 {isTrial ? (
                   <TrialOrderSummary

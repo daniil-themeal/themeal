@@ -18,16 +18,25 @@ import type { Meal as MealDetail } from '../../types/meal';
 import {
   CHECKOUT_CARD_PADDING_CLAMP,
   CHECKOUT_FONT_CLAMP_16_20,
+  CHECKOUT_ORDER_SUMMARY_CARD_PADDING_Y_CLAMP,
+  CHECKOUT_ORDER_SUMMARY_CARD_PADDING_Y_MOBILE_CLAMP,
+  CHECKOUT_ORDER_SUMMARY_INNER_GAP_MD_CLAMP,
+  CHECKOUT_ORDER_SUMMARY_INNER_GAP_SM_CLAMP,
+  CHECKOUT_ORDER_SUMMARY_SECTION_GAP_CLAMP,
+  CHECKOUT_ORDER_SUMMARY_SECTION_PADDING_CLAMP,
   CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
   CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_MOBILE_CLAMP,
-  CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
-  CHECKOUT_SECTION_GAP_CLAMP,
 } from './checkoutSpacing';
 import { MealDetailModal } from './MealDetailModal';
 import { TabbyPromoWidget } from './TabbyPromoWidget';
 
 type TrialOrderSummaryCssVariables = CSSProperties & {
   '--checkout-card-padding': string;
+  '--order-summary-section-padding': string;
+  '--order-summary-card-padding-y': string;
+  '--order-summary-card-padding-y-mobile': string;
+  '--order-summary-inner-gap-md': string;
+  '--order-summary-inner-gap-sm': string;
   '--checkout-plan-column-pb': string;
   '--checkout-plan-column-pb-mobile': string;
   '--checkout-scroll-edge-fade-width': string;
@@ -45,9 +54,14 @@ type TrialOrderSummaryCssVariables = CSSProperties & {
 
 const trialOrderSummaryStyle: TrialOrderSummaryCssVariables = {
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
+  '--order-summary-section-padding': CHECKOUT_ORDER_SUMMARY_SECTION_PADDING_CLAMP,
+  '--order-summary-card-padding-y': CHECKOUT_ORDER_SUMMARY_CARD_PADDING_Y_CLAMP,
+  '--order-summary-card-padding-y-mobile': CHECKOUT_ORDER_SUMMARY_CARD_PADDING_Y_MOBILE_CLAMP,
+  '--order-summary-inner-gap-md': CHECKOUT_ORDER_SUMMARY_INNER_GAP_MD_CLAMP,
+  '--order-summary-inner-gap-sm': CHECKOUT_ORDER_SUMMARY_INNER_GAP_SM_CLAMP,
   '--checkout-plan-column-pb': CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
   '--checkout-plan-column-pb-mobile': CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_MOBILE_CLAMP,
-  '--checkout-scroll-edge-fade-width': CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
+  '--checkout-scroll-edge-fade-width': CHECKOUT_ORDER_SUMMARY_SECTION_PADDING_CLAMP,
   '--order-summary-bg': COLOR_TOKENS.base.white,
   '--order-summary-text': COLOR_TOKENS.neutral[900],
   '--order-summary-muted': COLOR_TOKENS.neutral[500],
@@ -57,10 +71,10 @@ const trialOrderSummaryStyle: TrialOrderSummaryCssVariables = {
   '--order-summary-title-font-size': CHECKOUT_FONT_CLAMP_16_20,
   '--order-summary-body-font-size': FONT_SIZE_TOKENS[14],
   '--order-summary-small-font-size': FONT_SIZE_TOKENS[12],
-  '--order-summary-section-gap': CHECKOUT_SECTION_GAP_CLAMP,
+  '--order-summary-section-gap': CHECKOUT_ORDER_SUMMARY_SECTION_GAP_CLAMP,
 };
 
-const trialOrderSummarySectionPx = 'px-[length:var(--checkout-card-padding)]';
+const trialOrderSummarySectionPx = 'px-[length:var(--order-summary-section-padding)]';
 
 const trialOrderSummaryDividerClassName =
   'my-[length:var(--order-summary-section-gap)] w-full shrink-0';
@@ -122,16 +136,16 @@ export function TrialOrderSummary({
   return (
     <>
       <div
-        className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none max-md:pb-[length:var(--checkout-plan-column-pb-mobile)]"
+        className="flex w-full min-w-0 flex-col gap-[length:var(--order-summary-inner-gap-md)] max-md:max-w-none max-md:pb-[length:var(--checkout-plan-column-pb-mobile)]"
         style={trialOrderSummaryStyle}
       >
         <div
           ref={planTariffAnchorRef}
-          className="rounded-[16px] bg-[var(--order-summary-bg)] pt-[28px] pb-[28px] max-md:pb-[16px]"
+          className="rounded-[16px] bg-[var(--order-summary-bg)] pt-[length:var(--order-summary-card-padding-y)] pb-[length:var(--order-summary-card-padding-y)] max-md:pb-[length:var(--order-summary-card-padding-y-mobile)]"
         >
           <div className="flex flex-col">
             <div className={trialOrderSummarySectionPx}>
-              <div className="flex flex-col gap-[16px]">
+              <div className="flex flex-col gap-[length:var(--order-summary-inner-gap-md)]">
                 <p className="font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">
                   3-day trial
                 </p>
@@ -146,7 +160,7 @@ export function TrialOrderSummary({
 
             <div
               className={[
-                'flex items-center gap-[8px]',
+                'flex items-center gap-[length:var(--order-summary-inner-gap-sm)]',
                 trialOrderSummarySectionPx,
               ].join(' ')}
             >
@@ -179,7 +193,7 @@ export function TrialOrderSummary({
 
             <TrialOrderSummaryDivider />
 
-            <div className={`flex flex-col ${isMealsExpanded ? 'gap-[16px]' : ''}`}>
+            <div className={`flex flex-col ${isMealsExpanded ? 'gap-[length:var(--order-summary-inner-gap-md)]' : ''}`}>
               <div
                 className={[
                   'flex items-center justify-between gap-[16px]',
@@ -215,7 +229,7 @@ export function TrialOrderSummary({
                 >
                   <div
                     ref={mealsScrollRef}
-                    className="flex cursor-grab select-none gap-[16px] overflow-x-auto overflow-y-visible px-[length:var(--checkout-card-padding)] py-0 scrollbar-hide active:cursor-grabbing"
+                    className="flex cursor-grab select-none gap-[16px] overflow-x-auto overflow-y-visible px-[length:var(--order-summary-section-padding)] py-0 scrollbar-hide active:cursor-grabbing"
                     onMouseDown={(event) => {
                       const el = event.currentTarget;
                       const startX = event.pageX - el.offsetLeft;
@@ -337,7 +351,7 @@ export function TrialOrderSummary({
 
             <div
               className={[
-                'mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[8px]',
+                'mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[length:var(--order-summary-inner-gap-sm)]',
                 trialOrderSummarySectionPx,
               ].join(' ')}
             >

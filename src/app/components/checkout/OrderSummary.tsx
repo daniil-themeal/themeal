@@ -38,7 +38,7 @@ import { TabbyPromoWidget } from './TabbyPromoWidget';
 import { ChevronDownIcon, MinusIcon, PlusIcon } from '../common/icons';
 import { CheckoutScrollEdgeFades } from './CheckoutScrollEdgeFades';
 import { CheckoutScrollEdgeGutter } from './CheckoutScrollEdgeGutter';
-import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_FONT_CLAMP_16_20, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_MOBILE_CLAMP, CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP, CHECKOUT_SECTION_GAP_CLAMP } from './checkoutSpacing';
+import { CHECKOUT_CARD_PADDING_CLAMP, CHECKOUT_FONT_CLAMP_16_20, CHECKOUT_ORDER_SUMMARY_CARD_PADDING_Y_CLAMP, CHECKOUT_ORDER_SUMMARY_CARD_PADDING_Y_MOBILE_CLAMP, CHECKOUT_ORDER_SUMMARY_INNER_GAP_MD_CLAMP, CHECKOUT_ORDER_SUMMARY_INNER_GAP_SM_CLAMP, CHECKOUT_ORDER_SUMMARY_SECTION_GAP_CLAMP, CHECKOUT_ORDER_SUMMARY_SECTION_PADDING_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP, CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_MOBILE_CLAMP } from './checkoutSpacing';
 import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
 
 function getMaxScrollLeft(element: HTMLElement) {
@@ -85,6 +85,11 @@ function waitForNextFrame(): Promise<void> {
 
 type OrderSummaryCssVariables = CSSProperties & {
   '--checkout-card-padding': string;
+  '--order-summary-section-padding': string;
+  '--order-summary-card-padding-y': string;
+  '--order-summary-card-padding-y-mobile': string;
+  '--order-summary-inner-gap-md': string;
+  '--order-summary-inner-gap-sm': string;
   '--checkout-plan-column-pb': string;
   '--checkout-plan-column-pb-mobile': string;
   '--checkout-scroll-edge-fade-width': string;
@@ -104,9 +109,14 @@ type OrderSummaryCssVariables = CSSProperties & {
 
 const orderSummaryStyle: OrderSummaryCssVariables = {
   '--checkout-card-padding': CHECKOUT_CARD_PADDING_CLAMP,
+  '--order-summary-section-padding': CHECKOUT_ORDER_SUMMARY_SECTION_PADDING_CLAMP,
+  '--order-summary-card-padding-y': CHECKOUT_ORDER_SUMMARY_CARD_PADDING_Y_CLAMP,
+  '--order-summary-card-padding-y-mobile': CHECKOUT_ORDER_SUMMARY_CARD_PADDING_Y_MOBILE_CLAMP,
+  '--order-summary-inner-gap-md': CHECKOUT_ORDER_SUMMARY_INNER_GAP_MD_CLAMP,
+  '--order-summary-inner-gap-sm': CHECKOUT_ORDER_SUMMARY_INNER_GAP_SM_CLAMP,
   '--checkout-plan-column-pb': CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
   '--checkout-plan-column-pb-mobile': CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_MOBILE_CLAMP,
-  '--checkout-scroll-edge-fade-width': CHECKOUT_SCROLL_EDGE_FADE_WIDTH_CLAMP,
+  '--checkout-scroll-edge-fade-width': CHECKOUT_ORDER_SUMMARY_SECTION_PADDING_CLAMP,
   '--order-summary-bg': COLOR_TOKENS.base.white,
   '--order-summary-text': COLOR_TOKENS.neutral[900],
   '--order-summary-muted': COLOR_TOKENS.neutral[500],
@@ -118,10 +128,13 @@ const orderSummaryStyle: OrderSummaryCssVariables = {
   '--order-summary-body-font-size': FONT_SIZE_TOKENS[14],
   '--order-summary-small-font-size': FONT_SIZE_TOKENS[12],
   '--order-summary-price-font-size': FONT_SIZE_TOKENS[20],
-  '--order-summary-section-gap': CHECKOUT_SECTION_GAP_CLAMP,
+  '--order-summary-section-gap': CHECKOUT_ORDER_SUMMARY_SECTION_GAP_CLAMP,
 };
 
-const orderSummarySectionPx = 'px-[length:var(--checkout-card-padding)]';
+const orderSummarySectionPx = 'px-[length:var(--order-summary-section-padding)]';
+
+const orderSummaryScrollEdgeGutterClassName =
+  'shrink-0 w-[length:var(--order-summary-section-padding)]';
 
 const orderSummaryDividerClassName = 'my-[length:var(--order-summary-section-gap)] w-full shrink-0';
 
@@ -270,10 +283,10 @@ export function OrderSummary({
 
   return (
     <>
-      <div className="flex w-full min-w-0 flex-col gap-[16px] max-md:max-w-none max-md:pb-[length:var(--checkout-plan-column-pb-mobile)]" style={orderSummaryStyle}>
+      <div className="flex w-full min-w-0 flex-col gap-[length:var(--order-summary-inner-gap-md)] max-md:max-w-none max-md:pb-[length:var(--checkout-plan-column-pb-mobile)]" style={orderSummaryStyle}>
         <div
           ref={planTariffAnchorRef}
-          className="rounded-[16px] bg-[var(--order-summary-bg)] pt-[28px] pb-[28px] max-md:pb-[16px]"
+          className="rounded-[16px] bg-[var(--order-summary-bg)] pt-[length:var(--order-summary-card-padding-y)] pb-[length:var(--order-summary-card-padding-y)] max-md:pb-[length:var(--order-summary-card-padding-y-mobile)]"
         >
           <div className="flex flex-col">
             <div className={orderSummarySectionPx}>
@@ -282,7 +295,7 @@ export function OrderSummary({
 
             <OrderSummaryDivider color="var(--order-summary-divider)" />
 
-            <div className={['flex items-center gap-[8px]', orderSummarySectionPx].join(' ')}>
+            <div className={['flex items-center gap-[length:var(--order-summary-inner-gap-sm)]', orderSummarySectionPx].join(' ')}>
               <p className="flex-[1_0_0] font-sans text-[length:var(--order-summary-title-font-size)] font-bold leading-[130%] text-[var(--order-summary-text)]">How many people?</p>
 
               <div className="flex items-center gap-[16px]">
@@ -310,7 +323,7 @@ export function OrderSummary({
 
             <OrderSummaryDivider color="var(--order-summary-divider)" />
 
-            <div className={`flex flex-col ${isMealsExpanded ? 'gap-[16px]' : ''}`}>
+            <div className={`flex flex-col ${isMealsExpanded ? 'gap-[length:var(--order-summary-inner-gap-md)]' : ''}`}>
               <div className={['flex items-center justify-between gap-[16px]', orderSummarySectionPx].join(' ')}>
                 <button
                   type="button"
@@ -374,7 +387,7 @@ export function OrderSummary({
                     document.addEventListener('touchend', onTouchEnd);
                   }}
                 >
-                  <CheckoutScrollEdgeGutter />
+                  <CheckoutScrollEdgeGutter className={orderSummaryScrollEdgeGutterClassName} />
                   <div className="flex shrink-0 gap-[16px]">
                   {visibleMeals.map((meal) => (
                     <button key={meal.id} type="button" onClick={() => { if (dragMovedRef.current) return; setSelectedMeal(meal); }} className="group relative z-0 flex w-[150px] shrink-0 cursor-pointer flex-col gap-[8px] text-left hover:z-10 focus-visible:z-10">
@@ -393,7 +406,7 @@ export function OrderSummary({
                     </button>
                   ))}
                   </div>
-                  <CheckoutScrollEdgeGutter />
+                  <CheckoutScrollEdgeGutter className={orderSummaryScrollEdgeGutterClassName} />
                 </div>
                 <div
                   className="pointer-events-none absolute bottom-[4px] left-0 top-0 z-20 hidden w-[length:var(--checkout-scroll-edge-fade-width)] md:block"
@@ -458,7 +471,7 @@ export function OrderSummary({
               />
             </div>
 
-            <div className={['mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[8px]', orderSummarySectionPx].join(' ')}>
+            <div className={['mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[length:var(--order-summary-inner-gap-sm)]', orderSummarySectionPx].join(' ')}>
               {isPhoneVerified && phone && onResetPhone ? (
                 <VerifiedPhoneLogoutButton phone={phone} onClick={onResetPhone} size="large" />
               ) : null}
