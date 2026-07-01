@@ -18,7 +18,7 @@ const trialPlanHeaderStyle: TrialPlanHeaderCssVariables = {
 export function TrialPlanHeader() {
   return (
     <div
-      className="flex w-full flex-col items-start gap-[12px] px-[4px] md:flex-row md:items-center md:justify-between"
+      className="mt-[12px] flex w-full flex-col items-start gap-[12px] px-[4px] md:flex-row md:items-center md:justify-between"
       style={trialPlanHeaderStyle}
     >
       <h1 className="min-w-0 font-sans text-[length:var(--trial-header-title-font-size)] font-bold leading-[120%] text-[var(--trial-header-title-color)] md:flex-1">
