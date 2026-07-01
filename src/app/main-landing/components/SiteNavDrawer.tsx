@@ -13,6 +13,7 @@ import { landingFooterSocials } from '../../config/socialLinks';
 import { isDevToolsEnabled, toggleDevToolsEnabled } from '../../devToolsEnabled';
 import { LEGAL_ROUTES } from '../../legal/routes';
 import { BLOG_ROUTES } from '../../blog/routes';
+import { ABOUT_ROUTES } from '../../about/routes';
 import type { MealContentEn } from '../content/mealContentEn';
 import { Social } from './icons';
 
@@ -51,6 +52,7 @@ export function SiteNavDrawer({
   ];
 
   const legalItems: NavItem[] = [
+    { label: t.siteNav.about, href: ABOUT_ROUTES.about, isRoute: true },
     { label: t.siteNav.blog, href: BLOG_ROUTES.index, isRoute: true },
     { label: t.footer.privacy, href: LEGAL_ROUTES.privacy, isRoute: true },
     { label: t.footer.terms, href: LEGAL_ROUTES.terms, isRoute: true },

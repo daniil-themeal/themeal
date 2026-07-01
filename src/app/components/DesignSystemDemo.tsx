@@ -2468,7 +2468,7 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                     {variant === 'brand' ? 'Personal offer' : 'Your trial offer'}
                   </EyebrowPill>
 
-                  {variant === 'warning' ? (
+                  {variant === 'cream' ? (
                     <EyebrowPill variant={variant} icon={<StarIcon size={16} />}>
                       Your trial offer
                     </EyebrowPill>

@@ -990,7 +990,10 @@ export function CheckoutPage({
             >
               <div
                 style={checkoutLeftColumnStyle}
-                className="flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pt-[40px] md:pb-[length:var(--checkout-plan-column-pb)]"
+                className={[
+                  'flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pb-[length:var(--checkout-plan-column-pb)]',
+                  isTrial ? 'md:pt-[64px]' : 'md:pt-[56px]',
+                ].join(' ')}
               >
                 {isTrial ? (
                   <>
@@ -1041,7 +1044,7 @@ export function CheckoutPage({
                 className={[
                   'w-full min-w-0 max-md:max-w-none max-md:pt-0 md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pb-[length:var(--checkout-plan-column-pb)]',
                   isTrial
-                    ? 'md:pt-[56px]'
+                    ? 'md:pt-[64px]'
                     : 'md:pt-[calc(56px+var(--checkout-plan-summary-align-offset))]',
                 ].join(' ')}
               >

@@ -93,7 +93,7 @@ function Stepper({
   const isDevStepSelect = isDevToolsEnabled && Boolean(onStepSelect);
 
   return (
-    <div className="flex h-full items-center justify-center gap-0 px-[0px] sm:px-[8px] md:px-[16px]">
+    <div className="flex h-full shrink-0 items-center justify-center gap-0 px-[0px] sm:px-[8px] md:px-[16px]">
       {steps.map((step, index) => {
         const status = getStepStatus(index, current);
         const isActive = status === 'active';
@@ -133,7 +133,7 @@ function Stepper({
             </div>
 
             <p
-              className="font-sans text-[length:var(--checkout-header-label-font-size)] font-semibold leading-[130%] sm:text-[length:var(--checkout-header-label-font-size-sm)]"
+              className="whitespace-nowrap font-sans text-[length:var(--checkout-header-label-font-size)] font-semibold leading-[130%] sm:text-[length:var(--checkout-header-label-font-size-sm)]"
               style={{
                 color: isActive
                   ? 'var(--checkout-header-text-active)'
@@ -250,7 +250,7 @@ export function CheckoutHeader({
           )}
         </div>
 
-        <div className="flex h-full min-w-0 flex-1 items-stretch justify-center px-[8px]">
+        <div className="flex h-full min-w-0 flex-1 items-stretch overflow-x-auto overscroll-x-contain px-[8px] scrollbar-hide touch-pan-x">
           {title ? (
             <p
               className={[
@@ -261,11 +261,11 @@ export function CheckoutHeader({
               {title}
             </p>
           ) : (
-            <div className="flex h-full min-w-0 items-center justify-center">
+            <div className="mx-auto flex h-full w-max min-w-full shrink-0 items-center justify-center">
               <Stepper current={currentStepperIndex} onStepSelect={onStepSelect} />
               {isDevToolsEnabled && onAuthDevModeChange ? (
-                <div className="flex items-center">
-                  <div className="mx-[8px] h-px w-[12px] bg-[var(--checkout-header-border)]" />
+                <div className="flex shrink-0 items-center">
+                  <div className="mx-[8px] h-px w-[12px] shrink-0 bg-[var(--checkout-header-border)]" />
                   <CheckoutAuthDevTabs
                     activeMode={authDevMode}
                     onModeChange={onAuthDevModeChange}
@@ -273,8 +273,8 @@ export function CheckoutHeader({
                 </div>
               ) : null}
               {isDevToolsEnabled && onResultSelect ? (
-                <div className="hidden items-center md:flex">
-                  <div className="mx-[8px] h-px w-[12px] bg-[var(--checkout-header-border)]" />
+                <div className="flex shrink-0 items-center">
+                  <div className="mx-[8px] h-px w-[12px] shrink-0 bg-[var(--checkout-header-border)]" />
                   <PaymentResultTabs onTabChange={onResultSelect} />
                 </div>
               ) : null}

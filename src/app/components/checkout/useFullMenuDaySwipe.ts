@@ -3,6 +3,8 @@ import { useCallback, useEffect, useRef, useState, type PointerEvent as ReactPoi
 const DRAG_CLICK_THRESHOLD = 6;
 const SWIPE_RATIO = 0.18;
 const SWIPE_MIN_PX = 72;
+const PEEK_DEAD_ZONE_MIN_PX = 32;
+const PEEK_DEAD_ZONE_RATIO = 0.08;
 const RUBBER_BAND_MAX = 48;
 const RUBBER_BAND_FACTOR = 0.28;
 
@@ -24,6 +26,12 @@ function applyEdgeResistance(raw: number, day: number, dayCount: number) {
     return Math.max(-RUBBER_BAND_MAX, raw * RUBBER_BAND_FACTOR);
   }
   return raw;
+}
+
+function mapVisualDayDragOffset(raw: number, deadZone: number) {
+  const abs = Math.abs(raw);
+  if (abs <= deadZone) return 0;
+  return Math.sign(raw) * (abs - deadZone);
 }
 
 function shouldDaySwipe(
@@ -121,6 +129,9 @@ export function useFullMenuDaySwipe({
 
   const getSlideWidth = () => slideWidth || viewportRef.current?.clientWidth || 0;
 
+  const getPeekDeadZone = () =>
+    Math.max(PEEK_DEAD_ZONE_MIN_PX, getSlideWidth() * PEEK_DEAD_ZONE_RATIO);
+
   const resolveDragMode = (deltaX: number): DragMode => {
     return shouldDaySwipe(getMealScrollEl(), deltaX, isMealScrollLocked())
       ? 'daySwipe'
@@ -166,9 +177,13 @@ export function useFullMenuDaySwipe({
 
     if (dragModeRef.current === 'daySwipe') {
       const raw = dragStartOffsetRef.current + activeDeltaX;
-      const next = applyEdgeResistance(raw, dayRef.current, dayCount);
-      dragOffsetRef.current = next;
-      setDragOffset(next);
+      const visual = applyEdgeResistance(
+        mapVisualDayDragOffset(raw, getPeekDeadZone()),
+        dayRef.current,
+        dayCount,
+      );
+      dragOffsetRef.current = visual;
+      setDragOffset(visual);
     } else {
       const scrollEl = getMealScrollEl();
       if (scrollEl) {

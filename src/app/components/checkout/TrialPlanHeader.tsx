@@ -18,14 +18,14 @@ const trialPlanHeaderStyle: TrialPlanHeaderCssVariables = {
 export function TrialPlanHeader() {
   return (
     <div
-      className="flex w-full flex-col items-start gap-[16px] px-[4px]"
+      className="flex w-full flex-col items-start gap-[12px] px-[4px] md:flex-row md:items-center md:justify-between"
       style={trialPlanHeaderStyle}
     >
-      <h1 className="w-full font-sans text-[length:var(--trial-header-title-font-size)] font-bold leading-[120%] text-[var(--trial-header-title-color)]">
+      <h1 className="min-w-0 font-sans text-[length:var(--trial-header-title-font-size)] font-bold leading-[120%] text-[var(--trial-header-title-color)] md:flex-1">
         Try TheMeal for 3 days
       </h1>
 
-      <EyebrowPill variant="warning" icon={<StarIcon size={16} />}>
+      <EyebrowPill variant="cream" icon={<StarIcon size={16} />} className="shrink-0 md:self-center">
         Your trial offer
       </EyebrowPill>
     </div>

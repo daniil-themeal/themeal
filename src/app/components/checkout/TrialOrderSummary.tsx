@@ -363,7 +363,7 @@ export function TrialOrderSummary({
 
             <div
               className={[
-                'mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[length:var(--order-summary-inner-gap-sm)]',
+                'mt-[length:var(--order-summary-section-gap)] flex flex-col gap-[8px]',
                 trialOrderSummarySectionPx,
               ].join(' ')}
             >

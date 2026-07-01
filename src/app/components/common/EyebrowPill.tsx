@@ -3,7 +3,7 @@ import type { CSSProperties, ReactNode } from 'react';
 import { COLOR_TOKENS } from './colorTokens';
 import { FONT_SIZE_TOKENS } from './fontSizeTokens';
 
-export const EYEBROW_PILL_VARIANTS = ['brand', 'warning'] as const;
+export const EYEBROW_PILL_VARIANTS = ['brand', 'cream', 'warning'] as const;
 
 export type EyebrowPillVariant = (typeof EYEBROW_PILL_VARIANTS)[number];
 
@@ -36,9 +36,14 @@ const EYEBROW_PILL_VARIANT_STYLES: Record<EyebrowPillVariant, EyebrowPillCssVari
     '--eyebrow-pill-text': COLOR_TOKENS.primary[500],
     '--eyebrow-pill-font-size': FONT_SIZE_TOKENS[12],
   },
+  cream: {
+    '--eyebrow-pill-bg': COLOR_TOKENS.cream[100],
+    '--eyebrow-pill-text': COLOR_TOKENS.cream[600],
+    '--eyebrow-pill-font-size': FONT_SIZE_TOKENS[12],
+  },
   warning: {
-    '--eyebrow-pill-bg': COLOR_TOKENS.warning[500],
-    '--eyebrow-pill-text': COLOR_TOKENS.neutral[900],
+    '--eyebrow-pill-bg': hexToRgba(COLOR_TOKENS.warning[500], 0.12),
+    '--eyebrow-pill-text': COLOR_TOKENS.warning[800],
     '--eyebrow-pill-font-size': FONT_SIZE_TOKENS[12],
   },
 };

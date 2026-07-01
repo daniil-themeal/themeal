@@ -153,7 +153,7 @@ function FinalOffer({ t, onOrder }) {
 
 /* ---------------- Footer ---------------- */
 function Footer({ t, lang, setLang }) {
-  const links = [[t.nav.menu,'/#menu'], [t.nav.delivery,'/#delivery'], [t.nav.qa,'/#qa'], [t.footer.blog,'/blog'], [t.footer.privacy,'/privacy-policy'], [t.footer.terms,'/terms-and-conditions']];
+  const links = [[t.nav.menu,'/#menu'], [t.nav.delivery,'/#delivery'], [t.nav.qa,'/#qa'], [t.footer.about,'/about-us'], [t.footer.blog,'/blog'], [t.footer.privacy,'/privacy-policy'], [t.footer.terms,'/terms-and-conditions']];
   const socials = landingFooterSocials;
   return (
     createElement('footer', { className:'site-footer' },
