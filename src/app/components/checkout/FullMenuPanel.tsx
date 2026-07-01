@@ -547,6 +547,12 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
     .filter(Boolean)
     .join(' ');
 
+  /** Swipe path: no native horizontal touch — gestures go through pointer handler. */
+  const mealCarouselSwipeClassName = [
+    mealCarouselClassName,
+    'touch-none',
+  ].join(' ');
+
   const renderMealCards = (dayIndex: number, withSwipeGuard: boolean) =>
     getMealSlotsForDayIndex(dayIndex)
       .filter((slot) => slot.active)
@@ -756,12 +762,12 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
               {daySwipe.swipeEnabled ? (
                 <div
                   ref={daySwipe.viewportRef}
-                  onPointerDown={daySwipe.onPointerDown}
-                  onPointerMove={daySwipe.onPointerMove}
+                  onPointerDownCapture={daySwipe.onPointerDown}
+                  onPointerMoveCapture={daySwipe.onPointerMove}
                   onPointerUp={daySwipe.onPointerUp}
                   onPointerCancel={daySwipe.onPointerCancel}
                   className={[
-                    'overflow-hidden touch-pan-y select-none',
+                    'overflow-hidden touch-none select-none',
                     daySwipe.isDragging && daySwipe.dragMode === 'daySwipe'
                       ? 'cursor-grabbing'
                       : 'cursor-grab',
@@ -786,7 +792,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
                           ref={(el) => {
                             mealScrollRefs.current[dayIndex] = el;
                           }}
-                          className={mealCarouselClassName}
+                          className={mealCarouselSwipeClassName}
                         >
                           {!isEmbedded ? (
                             <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />

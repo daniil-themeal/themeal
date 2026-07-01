@@ -37,8 +37,8 @@ function shouldDaySwipe(
   const maxScroll = scrollEl.scrollWidth - scrollEl.clientWidth;
   if (maxScroll <= 1) return true;
 
-  const atStart = scrollEl.scrollLeft <= 1;
-  const atEnd = scrollEl.scrollLeft >= maxScroll - 1;
+  const atStart = scrollEl.scrollLeft <= 2;
+  const atEnd = scrollEl.scrollLeft >= maxScroll - 2;
 
   if (deltaX > 0 && atStart) return true;
   if (deltaX < 0 && atEnd) return true;
@@ -103,6 +103,22 @@ export function useFullMenuDaySwipe({
     };
   }, [dayCount, swipeEnabled]);
 
+  useEffect(() => {
+    const viewport = viewportRef.current;
+    if (!viewport || !swipeEnabled) return;
+
+    const blockTouchScroll = (event: TouchEvent) => {
+      if (!isDraggingRef.current) return;
+      event.preventDefault();
+    };
+
+    viewport.addEventListener('touchmove', blockTouchScroll, { passive: false });
+
+    return () => {
+      viewport.removeEventListener('touchmove', blockTouchScroll);
+    };
+  }, [swipeEnabled]);
+
   const getSlideWidth = () => slideWidth || viewportRef.current?.clientWidth || 0;
 
   const resolveDragMode = (deltaX: number): DragMode => {
@@ -124,6 +140,9 @@ export function useFullMenuDaySwipe({
     dragStartOffsetRef.current = dragOffsetRef.current;
     mealScrollStartLeftRef.current = getMealScrollEl()?.scrollLeft ?? 0;
     event.currentTarget.setPointerCapture(event.pointerId);
+    if (event.pointerType === 'touch') {
+      event.preventDefault();
+    }
   };
 
   const onPointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
