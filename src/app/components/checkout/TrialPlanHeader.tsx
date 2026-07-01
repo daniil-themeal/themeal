@@ -1,5 +1,6 @@
 import type { CSSProperties } from 'react';
 
+import { EyebrowPill } from '../common/EyebrowPill';
 import { COLOR_TOKENS } from '../common/colorTokens';
 import { StarIcon } from '../common/icons';
 import { CHECKOUT_FONT_CLAMP_25_31 } from './checkoutSpacing';
@@ -14,18 +15,6 @@ const trialPlanHeaderStyle: TrialPlanHeaderCssVariables = {
   '--trial-header-title-color': COLOR_TOKENS.neutral[900],
 };
 
-const trialEyebrowStyle: CSSProperties = {
-  alignSelf: 'flex-start',
-  background: COLOR_TOKENS.warning[500],
-  color: COLOR_TOKENS.neutral[900],
-  fontWeight: 700,
-  fontSize: 'var(--fs-12)',
-  letterSpacing: '.04em',
-  textTransform: 'uppercase',
-  padding: '0 14px',
-  height: 32,
-};
-
 export function TrialPlanHeader() {
   return (
     <div
@@ -36,10 +25,9 @@ export function TrialPlanHeader() {
         Try TheMeal for 3 days
       </h1>
 
-      <span className="chip" style={trialEyebrowStyle}>
-        <StarIcon size={16} />
+      <EyebrowPill variant="warning" icon={<StarIcon size={16} />}>
         Your trial offer
-      </span>
+      </EyebrowPill>
     </div>
   );
 }

@@ -257,7 +257,7 @@ function PlanCard({
           ].join(' ')}
         >
           <p className="font-sans text-[length:var(--plan-selector-nutrition-font-size)] font-medium leading-[140%]">
-            {plan.kcal} Kcal
+            ≈ {plan.kcal} Kcal
           </p>
 
           <div className="gap-[6px]" />

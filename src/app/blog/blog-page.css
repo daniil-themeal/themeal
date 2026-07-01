@@ -112,6 +112,47 @@
   gap: var(--legal-gap-sm);
 }
 
+.blog-share {
+  display: flex;
+  flex-direction: column;
+  gap: var(--legal-gap-sm);
+}
+
+.blog-share__label {
+  margin: 0;
+}
+
+.blog-share__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--legal-gap-xs);
+}
+
+.blog-share__button {
+  width: 42px;
+  height: 42px;
+  border: none;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: var(--typography-text);
+  background: var(--neutral-100, #d9dee5);
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    transform 0.18s var(--ease, ease),
+    background 0.15s var(--ease, ease),
+    color 0.15s var(--ease, ease);
+}
+
+.blog-share__button:hover,
+.blog-share__button:focus-visible {
+  transform: translateY(-2px);
+  background: var(--primary-500, #9a38ef);
+  color: #fff;
+  outline: none;
+}
+
 .blog-post__back {
   margin-top: var(--legal-gap-lg);
 }

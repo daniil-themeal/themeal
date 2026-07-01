@@ -20,6 +20,8 @@ type TooltipProps = {
   children: ReactElement;
   side?: TooltipSide;
   sideOffset?: number;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export function Tooltip({
@@ -27,19 +29,26 @@ export function Tooltip({
   children,
   side = 'top',
   sideOffset = 8,
+  open: openProp,
+  onOpenChange,
 }: TooltipProps) {
-  const [open, setOpen] = useState(false);
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false);
+  const isControlled = openProp !== undefined;
+  const open = isControlled ? openProp : uncontrolledOpen;
+  const setOpen = onOpenChange ?? setUncontrolledOpen;
 
   if (!isValidElement(children)) {
     return children;
   }
 
-  const trigger = cloneElement(children, {
-    onClick: (event: MouseEvent<HTMLElement>) => {
-      children.props.onClick?.(event);
-      setOpen((previousOpen) => !previousOpen);
-    },
-  });
+  const trigger = isControlled
+    ? children
+    : cloneElement(children, {
+        onClick: (event: MouseEvent<HTMLElement>) => {
+          children.props.onClick?.(event);
+          setOpen((previousOpen) => !previousOpen);
+        },
+      });
 
   return (
     <TooltipPrimitive.Provider delayDuration={200}>

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type MouseEvent } from 'react';
+import { Link } from 'react-router';
 import { ChevronDownIcon } from '../../components/common/icons/feather/ChevronDownIcon';
 import {
   DropdownMenu,
@@ -18,6 +19,8 @@ type HeaderNavCssVariables = CSSProperties & {
 export type HeaderNavLink = {
   href: string;
   label: string;
+  isRoute?: boolean;
+  routeHash?: string;
   onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
   className?: string;
 };
@@ -40,6 +43,57 @@ function renderLinkLabel(link: HeaderNavLink) {
   }
 
   return link.label;
+}
+
+function HeaderNavAnchor({
+  link,
+  className,
+  style,
+  tabIndex,
+  onClick,
+  hoverHandlers,
+}: {
+  link: HeaderNavLink;
+  className: string;
+  style?: CSSProperties;
+  tabIndex?: number;
+  onClick?: (event: MouseEvent<HTMLAnchorElement>) => void;
+  hoverHandlers?: {
+    onMouseEnter: (event: MouseEvent<HTMLAnchorElement>) => void;
+    onMouseLeave: (event: MouseEvent<HTMLAnchorElement>) => void;
+  };
+}) {
+  const content = renderLinkLabel(link);
+
+  if (link.isRoute) {
+    const to = link.routeHash ? { pathname: link.href, hash: link.routeHash } : link.href;
+
+    return (
+      <Link
+        to={to}
+        className={className}
+        style={style}
+        tabIndex={tabIndex}
+        onClick={onClick ?? link.onClick}
+        {...hoverHandlers}
+      >
+        {content}
+      </Link>
+    );
+  }
+
+  return (
+    <a
+      href={link.href}
+      className={className}
+      style={style}
+      tabIndex={tabIndex}
+      onClick={onClick ?? link.onClick}
+      {...hoverHandlers}
+    >
+      {content}
+    </a>
+  );
 }
 
 export function HeaderNav({
@@ -140,14 +194,12 @@ export function HeaderNav({
         className="row hdr-nav hdr-nav--inline hdr-nav--measure"
       >
         {links.map((link) => (
-          <a
-            key={`measure-${link.href}-${link.label}`}
-            href={link.href}
+          <HeaderNavAnchor
+            key={`measure-${link.href}-${link.routeHash ?? ''}-${link.label}`}
+            link={link}
             className={`navlink${link.className ? ` ${link.className}` : ''}`}
             tabIndex={-1}
-          >
-            {renderLinkLabel(link)}
-          </a>
+          />
         ))}
       </nav>
 
@@ -167,14 +219,12 @@ export function HeaderNav({
             </DropdownMenuTrigger>
             <DropdownMenuContent align="center" className="hdr-nav-dropdown-content">
               {links.map((link) => (
-                <DropdownMenuItem key={`${link.href}-${link.label}`} asChild>
-                  <a
-                    href={link.href}
+                <DropdownMenuItem key={`${link.href}-${link.routeHash ?? ''}-${link.label}`} asChild>
+                  <HeaderNavAnchor
+                    link={link}
                     className={`hdr-nav-dropdown-link${link.className ? ` ${link.className}` : ''}`}
                     onClick={link.onClick}
-                  >
-                    {link.label}
-                  </a>
+                  />
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -186,16 +236,14 @@ export function HeaderNav({
           style={inlineNavStyle}
         >
           {links.map((link) => (
-            <a
-              key={`${link.href}-${link.label}`}
-              href={link.href}
+            <HeaderNavAnchor
+              key={`${link.href}-${link.routeHash ?? ''}-${link.label}`}
+              link={link}
               className={`navlink${link.className ? ` ${link.className}` : ''}`}
               style={linkStyle}
               onClick={link.onClick}
-              {...linkHoverHandlers}
-            >
-              {renderLinkLabel(link)}
-            </a>
+              hoverHandlers={linkHoverHandlers}
+            />
           ))}
         </nav>
       )}

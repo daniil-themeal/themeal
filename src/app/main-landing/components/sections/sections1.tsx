@@ -9,6 +9,7 @@ import { HeroPrice } from '../HeroPrice';
 import { ACCENT_CARD_VARIANTS, ACCENT_CARD_VARIANT_ORDER } from '../../../components/common/accentCardTokens';
 import { HowIllustration } from '../HowIllustrations';
 import { HERO_TRAY_BELT_SEQUENCE } from '../../content/heroTrayMeals';
+import { buildHeaderNavLinks } from '../../headerNavLinks';
 
 /* ---------------- Header (scroll + cursor reveal — Bender) ---------------- */
 function Header({
@@ -65,11 +66,7 @@ function Header({
   const visible = shown || (hovered && !navOpen);
   const onDark = true;
   const txt = solid ? 'rgba(255,255,255,.82)' : 'rgba(255,255,255,.85)';
-  const navLinks = [
-    { href: '#menu', label: t.nav.menu },
-    { href: '#delivery', label: t.nav.delivery },
-    { href: '#qa', label: t.nav.qa },
-  ];
+  const navLinks = buildHeaderNavLinks(t);
   if (onDesignSystemClick) {
     navLinks.push({
       href: '#',

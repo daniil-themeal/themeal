@@ -5,6 +5,7 @@ import { useEscapeLayer } from './common/escapeStack';
 import { CHECKOUT_LAYER_Z_INDEX, Z_INDEX_TOKENS } from './common/zIndexTokens';
 
 import { Badge, BADGE_VARIANTS } from './common/Badge';
+import { EyebrowPill, EYEBROW_PILL_VARIANTS } from './common/EyebrowPill';
 import { Button, BUTTON_SIZE_LABELS, BUTTON_SIZES, BUTTON_VARIANTS } from './common/Button';
 import { GhostButton } from './common/GhostButton';
 import { IconButton } from './common/IconButton';
@@ -35,6 +36,7 @@ import {
   TruckIcon,
   XIcon,
   LogOutIcon,
+  StarIcon,
 } from './common/icons';
 import { InfoIcon } from './common/icons/feather/InfoIcon';
 import type { IconSize } from './common/icons/iconSize';
@@ -148,6 +150,7 @@ type DemoAnchorId =
   | 'icon-button-sizes'
   | 'segmented-tabs'
   | 'badge-variants'
+  | 'eyebrow-pill-variants'
   | 'system-message'
   | 'tooltip';
 
@@ -245,6 +248,7 @@ const demoNavigationItems: DemoNavigationItem[] = [
     label: 'Indicators',
     children: [
       { id: 'badge-variants', label: 'Badge variants' },
+      { id: 'eyebrow-pill-variants', label: 'EyebrowPill variants' },
       { id: 'system-message', label: 'SystemMessage' },
       { id: 'tooltip', label: 'Tooltip' },
     ],
@@ -2443,6 +2447,32 @@ export default function DesignSystemDemo({ onClose }: DesignSystemDemoProps) {
                   </DemoSubheading>
 
                   <Badge variant={variant} />
+                </div>
+              ))}
+            </div>
+          </DemoCard>
+
+          <DemoCard
+            id="eyebrow-pill-variants"
+            title="EyebrowPill variants"
+            description="Uppercase eyebrow labels above section titles. Optional icon. Used on the WhatsApp lead block and trial checkout header."
+          >
+            <div className="flex flex-wrap items-end gap-[24px]">
+              {EYEBROW_PILL_VARIANTS.map((variant) => (
+                <div key={variant} className="flex w-fit flex-col gap-[12px]">
+                  <DemoSubheading>
+                    <CodeLabel>{`variant="${variant}"`}</CodeLabel>
+                  </DemoSubheading>
+
+                  <EyebrowPill variant={variant}>
+                    {variant === 'brand' ? 'Personal offer' : 'Your trial offer'}
+                  </EyebrowPill>
+
+                  {variant === 'warning' ? (
+                    <EyebrowPill variant={variant} icon={<StarIcon size={16} />}>
+                      Your trial offer
+                    </EyebrowPill>
+                  ) : null}
                 </div>
               ))}
             </div>

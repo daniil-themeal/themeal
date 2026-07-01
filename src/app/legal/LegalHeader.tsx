@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
+import { HeaderNav } from '../main-landing/components/HeaderNav';
+import { buildHeaderNavLinks } from '../main-landing/headerNavLinks';
 import { Logo } from '../main-landing/components/icons';
 import { SiteLangSwitcher } from '../main-landing/components/SiteLangSwitcher';
 import { SiteNavBurgerButton, SiteNavDrawer } from '../main-landing/components/SiteNavDrawer';
@@ -55,6 +57,8 @@ export function LegalHeader({ t }: LegalHeaderProps) {
   };
 
   const visible = shown || (hovered && !navOpen);
+  const navLinks = buildHeaderNavLinks(t);
+  const txt = 'rgba(255,255,255,.85)';
 
   return (
     <div
@@ -75,6 +79,12 @@ export function LegalHeader({ t }: LegalHeaderProps) {
               <Logo tone="yellow" />
             </span>
           </Link>
+          <HeaderNav
+            links={navLinks}
+            textColor={txt}
+            onDark
+            navigationLabel={t.siteNav.navigation}
+          />
           <div className="row hdr-actions">
             <SiteLangSwitcher />
             <SiteNavBurgerButton

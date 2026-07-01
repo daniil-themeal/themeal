@@ -13,6 +13,7 @@ import '../../main-landing/styles/index.css';
 import '../../legal/legal-page.css';
 import { renderBlogSectionBlocks } from '../components/BlogPostContentBlocks';
 import { formatPublishedDate } from '../components/BlogPostCard';
+import { BlogShareButtons } from '../components/BlogShareButtons';
 import { getPostBySlug } from '../content/posts';
 import { BLOG_ROUTES } from '../routes';
 import '../blog-page.css';
@@ -73,6 +74,8 @@ export function BlogPostPage() {
               ))}
             </div>
 
+            <BlogShareButtons title={post.title} slug={post.slug} labels={t.blog} />
+
             {post.sections.map((section) => (
               <section key={section.title} className="legal-section blog-section">
                 <h2 className={`legal-section__title blog-section__title ${legalText.sectionTitle}`}>
@@ -83,6 +86,8 @@ export function BlogPostPage() {
                 </div>
               </section>
             ))}
+
+            <BlogShareButtons title={post.title} slug={post.slug} labels={t.blog} />
           </article>
 
           <p className={`blog-post__back ${legalText.caption}`}>

@@ -13,6 +13,7 @@ type TrialUpsellBannerCssVariables = CSSProperties & {
   '--trial-upsell-active-bg': string;
   '--trial-upsell-hover-border': string;
   '--trial-upsell-indicator-bg': string;
+  '--trial-upsell-indicator-hover-bg': string;
   '--trial-upsell-indicator-fg': string;
   '--trial-upsell-title-fs': string;
   '--trial-upsell-subtitle-fs': string;
@@ -26,6 +27,7 @@ const trialUpsellBannerStyle: TrialUpsellBannerCssVariables = {
   '--trial-upsell-active-bg': COLOR_TOKENS.primary[50],
   '--trial-upsell-hover-border': COLOR_TOKENS.primary[200],
   '--trial-upsell-indicator-bg': COLOR_TOKENS.primary[50],
+  '--trial-upsell-indicator-hover-bg': COLOR_TOKENS.base.white,
   '--trial-upsell-indicator-fg': COLOR_TOKENS.primary[500],
   '--trial-upsell-title-fs': CHECKOUT_FONT_CLAMP_16_20,
   '--trial-upsell-subtitle-fs': FONT_SIZE_TOKENS[14],
@@ -60,8 +62,8 @@ export function TrialUpsellBanner({ onExitTrial }: TrialUpsellBannerProps) {
         <div className="flex shrink-0 items-center">
           <span
             className={[
-              'flex size-[32px] items-center justify-center rounded-full bg-[var(--trial-upsell-indicator-bg)] text-[var(--trial-upsell-indicator-fg)] transition-transform duration-150',
-              'group-hover:translate-x-[2px] group-focus-visible:translate-x-[2px]',
+              'flex size-[32px] items-center justify-center rounded-full bg-[var(--trial-upsell-indicator-bg)] text-[var(--trial-upsell-indicator-fg)] transition-colors duration-150',
+              'group-hover:bg-[var(--trial-upsell-indicator-hover-bg)] group-focus-visible:bg-[var(--trial-upsell-indicator-hover-bg)]',
             ].join(' ')}
           >
             <ChevronRightIcon size={18} />

@@ -401,7 +401,14 @@ export const mealContentEn = {
   "blog": {
     "readArticle": "Read article",
     "backToBlog": "Back to blog",
-    "notFoundDescription": "The blog article you are looking for does not exist or may have been moved."
+    "notFoundDescription": "The blog article you are looking for does not exist or may have been moved.",
+    "shareLabel": "Share this article",
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied",
+    "shareWhatsApp": "Share on WhatsApp",
+    "shareFacebook": "Share on Facebook",
+    "shareTelegram": "Share on Telegram",
+    "shareNative": "Share"
   },
   "checkout": {
     "title": "Build your plan",
