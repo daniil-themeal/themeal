@@ -33,6 +33,7 @@ import { getCheckoutOrderPricing } from './mealCalendarAddDaysPricing';
 import { getSubscriptionMenuDays } from './mealCalendarUtils';
 import { getPromoCodeDiscount } from '../../config/promoCodes';
 import { MealDetailModal } from './MealDetailModal';
+import { OrderSummaryMealCard } from './OrderSummaryMealCard';
 import { CheckoutPromoCode } from './CheckoutPromoCode';
 import { TabbyPromoWidget } from './TabbyPromoWidget';
 import { ChevronDownIcon, MinusIcon, PlusIcon } from '../common/icons';
@@ -409,20 +410,14 @@ export function OrderSummary({
                   <CheckoutScrollEdgeGutter className={orderSummaryScrollEdgeGutterClassName} />
                   <div className="flex shrink-0 gap-[16px]">
                   {visibleMeals.map((meal) => (
-                    <button key={meal.id} type="button" onClick={() => { if (dragMovedRef.current) return; setSelectedMeal(meal); }} className="group relative z-0 flex w-[150px] shrink-0 cursor-pointer flex-col gap-[8px] text-left hover:z-10 focus-visible:z-10">
-                      <div className="flex h-[114px] w-full items-center justify-center overflow-visible">
-                        <img src={meal.img} alt={meal.name} className="pointer-events-none h-[108px] w-full rounded-[8px] object-cover origin-center transition-transform duration-200 group-hover:scale-105" />
-                      </div>
-                      <div className="w-full overflow-hidden px-[4px]">
-                        <p
-                          className={[
-                            'line-clamp-2 w-full [text-box-edge:auto] [text-box-trim:none] font-sans text-[length:var(--order-summary-body-font-size)] font-semibold leading-[140%] text-[var(--order-summary-text)] transition-colors group-hover:text-[var(--order-summary-primary)]',
-                          ].join(' ')}
-                        >
-                          {meal.name}
-                        </p>
-                      </div>
-                    </button>
+                    <OrderSummaryMealCard
+                      key={meal.id}
+                      meal={meal}
+                      onClick={() => {
+                        if (dragMovedRef.current) return;
+                        setSelectedMeal(meal);
+                      }}
+                    />
                   ))}
                   </div>
                   <CheckoutScrollEdgeGutter className={orderSummaryScrollEdgeGutterClassName} />

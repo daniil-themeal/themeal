@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import type { AnimationEvent, CSSProperties } from 'react';
 
 import { CheckoutHeader } from './CheckoutHeader';
@@ -40,7 +40,10 @@ import { COLOR_TOKENS } from '../common/colorTokens';
 import {
   CHECKOUT_CARD_PADDING_CLAMP,
   CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
-  CHECKOUT_PLAN_SUMMARY_ALIGN_OFFSET_CLAMP,
+  CHECKOUT_PLAN_COLUMN_PT_MD,
+  CHECKOUT_PLAN_LEFT_COLUMN_PL,
+  CHECKOUT_PLAN_SUBSCRIPTION_LEFT_COLUMN_PT_MD,
+  CHECKOUT_PLAN_SUMMARY_TOP_MD_FALLBACK,
   CHECKOUT_SELECTOR_CARD_PADDING_CLAMP,
   CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP,
 } from './checkoutSpacing';
@@ -109,10 +112,17 @@ const checkoutPageStyle: CheckoutPageCssVariables = {
 
 type CheckoutLeftColumnCssVariables = CSSProperties & {
   '--checkout-step-header-pt': string;
+  '--checkout-plan-column-pt-md': string;
+  '--checkout-plan-subscription-left-pt-md': string;
+  '--checkout-plan-left-pl': string;
+  '--checkout-plan-summary-top-md'?: string;
 };
 
 const checkoutLeftColumnStyle: CheckoutLeftColumnCssVariables = {
   '--checkout-step-header-pt': CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP,
+  '--checkout-plan-column-pt-md': CHECKOUT_PLAN_COLUMN_PT_MD,
+  '--checkout-plan-subscription-left-pt-md': CHECKOUT_PLAN_SUBSCRIPTION_LEFT_COLUMN_PT_MD,
+  '--checkout-plan-left-pl': CHECKOUT_PLAN_LEFT_COLUMN_PL,
 };
 
 type CheckoutPlanGridCssVariables = CSSProperties & {
@@ -218,6 +228,9 @@ export function CheckoutPage({
   const [isSmsVerifying, setIsSmsVerifying] = useState(false);
   const [appliedPromoCode, setAppliedPromoCode] = useState('');
   const [extraMealDayKeys, setExtraMealDayKeys] = useState<string[]>([]);
+  const [planSummaryTopMd, setPlanSummaryTopMd] = useState(
+    CHECKOUT_PLAN_SUMMARY_TOP_MD_FALLBACK,
+  );
 
   const smsVerifyTimerRef = useRef<number | null>(null);
   const smsSuccessPendingRef = useRef(false);
@@ -232,6 +245,8 @@ export function CheckoutPage({
   }, []);
 
   const rightRef = useRef<HTMLDivElement>(null);
+  const leftColRef = useRef<HTMLDivElement>(null);
+  const planCardsAnchorRef = useRef<HTMLDivElement>(null);
   const planTariffAnchorRef = useRef<HTMLDivElement>(null);
   const todayTotalRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -416,6 +431,34 @@ export function CheckoutPage({
   useEffect(() => {
     setExtraMealDayKeys([]);
   }, [days, duration]);
+
+  useLayoutEffect(() => {
+    if (!isOpen || checkoutStep !== 'plan' || isTrial) return;
+
+    const measurePlanSummaryTop = () => {
+      const leftCol = leftColRef.current;
+      const planCards = planCardsAnchorRef.current;
+      if (!leftCol || !planCards) return;
+
+      const offsetPx = planCards.getBoundingClientRect().top - leftCol.getBoundingClientRect().top;
+      if (offsetPx > 0) {
+        setPlanSummaryTopMd(`${Math.round(offsetPx)}px`);
+      }
+    };
+
+    measurePlanSummaryTop();
+
+    const resizeObserver = new ResizeObserver(measurePlanSummaryTop);
+    if (leftColRef.current) resizeObserver.observe(leftColRef.current);
+    if (planCardsAnchorRef.current) resizeObserver.observe(planCardsAnchorRef.current);
+
+    window.addEventListener('resize', measurePlanSummaryTop);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener('resize', measurePlanSummaryTop);
+    };
+  }, [isOpen, checkoutStep, isTrial, onReturnToTrial]);
 
   useEffect(() => {
     const dates = getUpcomingDeliveryDates(60, days);
@@ -989,10 +1032,18 @@ export function CheckoutPage({
               style={checkoutPlanGridStyle}
             >
               <div
-                style={checkoutLeftColumnStyle}
+                ref={leftColRef}
+                style={{
+                  ...checkoutLeftColumnStyle,
+                  ...(isTrial
+                    ? { '--checkout-plan-summary-top-md': planSummaryTopMd }
+                    : {}),
+                }}
                 className={[
-                  'flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pb-[length:var(--checkout-plan-column-pb)]',
-                  isTrial ? 'md:pt-[64px]' : 'md:pt-[56px]',
+                  'flex w-full min-w-0 flex-col gap-[32px] pl-[length:var(--checkout-plan-left-pl)] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pb-[length:var(--checkout-plan-column-pb)]',
+                  isTrial
+                    ? 'md:pt-[length:var(--checkout-plan-summary-top-md)]'
+                    : 'md:pt-[length:var(--checkout-plan-subscription-left-pt-md)]',
                 ].join(' ')}
               >
                 {isTrial ? (
@@ -1013,6 +1064,7 @@ export function CheckoutPage({
                       lightMealOption={lightMealOption}
                       onLightMealOptionChange={setLightMealOption}
                       onBackToTrial={onReturnToTrial}
+                      planCardsAnchorRef={planCardsAnchorRef}
                     />
 
                     <IngredientsBlock selected={ingredients} onToggle={toggleIngredient} />
@@ -1032,20 +1084,13 @@ export function CheckoutPage({
 
               <div
                 ref={rightRef}
-                style={
-                  isTrial
-                    ? checkoutLeftColumnStyle
-                    : {
-                        ...checkoutLeftColumnStyle,
-                        '--checkout-plan-summary-align-offset':
-                          CHECKOUT_PLAN_SUMMARY_ALIGN_OFFSET_CLAMP,
-                      }
-                }
+                style={{
+                  ...checkoutLeftColumnStyle,
+                  '--checkout-plan-summary-top-md': planSummaryTopMd,
+                }}
                 className={[
                   'w-full min-w-0 max-md:max-w-none max-md:pt-0 md:max-w-[clamp(320px,calc(320px+(100vw-48rem)*0.390625),460px)] lg:max-w-[460px] md:sticky md:top-0 md:self-start md:pb-[length:var(--checkout-plan-column-pb)]',
-                  isTrial
-                    ? 'md:pt-[64px]'
-                    : 'md:pt-[calc(56px+var(--checkout-plan-summary-align-offset))]',
+                  'md:pt-[length:var(--checkout-plan-summary-top-md)]',
                 ].join(' ')}
               >
                 {isTrial ? (

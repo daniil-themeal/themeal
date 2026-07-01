@@ -1,7 +1,19 @@
-import { createFontSizeClamp } from '../common/fontSizeClampTokens';
+import { createFontSizeClamp, FONT_SIZE_CLAMP_20_25 } from '../common/fontSizeClampTokens';
 
-/** Extra desktop top inset for plan summary — PlanSelector header-to-cards gap. */
-export const CHECKOUT_PLAN_SUMMARY_ALIGN_OFFSET_CLAMP = '20px';
+/** Desktop top inset for trial plan-step columns. */
+export const CHECKOUT_PLAN_COLUMN_PT_MD = '64px';
+
+/** Desktop top inset for subscription plan-step left column. */
+export const CHECKOUT_PLAN_SUBSCRIPTION_LEFT_COLUMN_PT_MD = '56px';
+
+/** Estimated desktop top inset for summary — matches PlanSelector header + Light card stack. */
+export const CHECKOUT_PLAN_SUMMARY_TOP_MD_ESTIMATE = `calc(${CHECKOUT_PLAN_SUBSCRIPTION_LEFT_COLUMN_PT_MD} + 20px + (${FONT_SIZE_CLAMP_20_25} * 1.3))`;
+
+/** Fallback desktop top inset for subscription summary until layout is measured. */
+export const CHECKOUT_PLAN_SUMMARY_TOP_MD_FALLBACK = CHECKOUT_PLAN_SUMMARY_TOP_MD_ESTIMATE;
+
+/** Desktop left inset for plan-step left column content. */
+export const CHECKOUT_PLAN_LEFT_COLUMN_PL = '12px';
 
 export const CHECKOUT_CARD_PADDING_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 12 / 448), 32px)';

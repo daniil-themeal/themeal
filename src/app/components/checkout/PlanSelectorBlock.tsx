@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type RefObject } from 'react';
 import type { CSSProperties } from 'react';
 
 import type { Plan } from '../../data/checkoutPricing';
@@ -285,12 +285,14 @@ export const PlanSelectorBlock = memo(function PlanSelectorBlock({
   lightMealOption = 'lunch-dinner',
   onLightMealOptionChange = () => {},
   onBackToTrial,
+  planCardsAnchorRef,
 }: {
   selected: Plan;
   onSelect: (plan: Plan) => void;
   lightMealOption?: LightMealOption;
   onLightMealOptionChange?: (option: LightMealOption) => void;
   onBackToTrial?: () => void;
+  planCardsAnchorRef?: RefObject<HTMLDivElement | null>;
 }) {
   return (
     <div
@@ -308,7 +310,10 @@ export const PlanSelectorBlock = memo(function PlanSelectorBlock({
         }
       />
 
-      <div className="flex w-full flex-col gap-[8px] md:gap-[12px]">
+      <div
+        ref={planCardsAnchorRef}
+        className="flex w-full flex-col gap-[8px] md:gap-[12px]"
+      >
         {plans.map((plan) => (
           <PlanCard
             key={plan.id}
