@@ -8,7 +8,6 @@ import { MealDetailModal } from '../../../components/checkout/MealDetailModal';
 import { buildMealDetail } from '../../../data/testMeals';
 import { useTestimonialIframe } from '../../useTestimonialIframe';
 import { useHorizontalScroll } from '../../useHorizontalScroll';
-import { useMenuDaySwipe } from '../../useMenuDaySwipe';
 import { Icon, Logo } from '../icons';
 import { getMenuMealImages } from '../../content/heroTrayMeals';
 
@@ -18,11 +17,9 @@ function Menu({ t, onOrder }) {
   const [day, setDay] = useState(0);
   const [slideDirection, setSlideDirection] = useState('left');
   const [selectedMeal, setSelectedMeal] = useState(null);
+  const imgs = getMenuMealImages(day);
+  const meals = t.menu.meals[dayKeys[day]];
   const dayTabsScroll = useHorizontalScroll();
-  const menuSwipe = useMenuDaySwipe(dayKeys.length, day, (nextDay, direction) => {
-    setSlideDirection(direction);
-    setDay(nextDay);
-  });
   const meta = [
     { kcal:572, g:330 },
     { kcal:648, g:420 },
@@ -30,11 +27,10 @@ function Menu({ t, onOrder }) {
     { kcal:285, g:310 },
   ];
 
-  const openMeal = (dayIndex, name, slotIndex) => {
+  const openMeal = (name, slotIndex) => {
     const type = t.menu.slots[slotIndex];
-    const imgs = getMenuMealImages(dayIndex);
     setSelectedMeal(buildMealDetail(type, name, imgs[slotIndex], {
-      id: `${dayKeys[dayIndex]}-${slotIndex}-${name}`,
+      id: `${dayKeys[day]}-${slotIndex}-${name}`,
       kcal: meta[slotIndex].kcal,
       weight: meta[slotIndex].g,
     }));
@@ -49,50 +45,6 @@ function Menu({ t, onOrder }) {
   useEffect(() => {
     setSelectedMeal(null);
   }, [day]);
-
-  const renderMealGrid = (dayIndex, withSwipeGuard) => {
-    const dk = dayKeys[dayIndex];
-    const dayImgs = getMenuMealImages(dayIndex);
-    const dayMeals = t.menu.meals[dk];
-    const gridStyle = !menuSwipe.swipeEnabled && dayIndex === day
-      ? {
-          animation: slideDirection === 'left'
-            ? 'menuMealsSlideFromRight 260ms ease-out both'
-            : 'menuMealsSlideFromLeft 260ms ease-out both',
-        }
-      : undefined;
-
-    return createElement('div', {
-      className:'menu-grid menu-grid--cards reveal',
-      style: gridStyle,
-    },
-      dayMeals.map((m,i)=>createElement('div', {
-        key:i,
-        className:'menucard-shell',
-        role:'button',
-        tabIndex:0,
-        onClick: withSwipeGuard
-          ? menuSwipe.guardMealClick(() => openMeal(dayIndex, m, i))
-          : () => openMeal(dayIndex, m, i),
-        onKeyDown: (e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            openMeal(dayIndex, m, i);
-          }
-        },
-      },
-        createElement('article', { className:'menucard' },
-          createElement('div', { className:'menucard-img-wrap' },
-            createElement('img', { className:'menucard-img', src:dayImgs[i], alt:'', loading: dayIndex === day ? 'lazy' : 'lazy', draggable:false })),
-          createElement('div', { className:'menucard-body' },
-            createElement('p', { className:'menucard-meta' },
-              createElement('span', { className:'menucard-meta-nutrition' }, `${meta[i].kcal} ccal • ${meta[i].g} g`),
-              createElement('span', { className:'menucard-meta-slot' }, t.menu.slots[i])),
-            createElement('p', { className:'menucard-title' }, m))
-        )
-      ))
-    );
-  };
 
   return (
     createElement('section', { className:'section section--white menu-section', id:'menu', style:{ paddingBottom:'clamp(var(--space-48), 6vw, var(--space-80))' } },
@@ -137,31 +89,40 @@ function Menu({ t, onOrder }) {
         )
       ),
 
-      /* meal cards — drag/swipe between days, or click tabs */
+      /* meal cards — responsive grid: 4 cols desktop, 2 cols below lg (including mobile) */
       createElement('div', { className:'menu-grid-wrap reveal' },
-        menuSwipe.swipeEnabled
-          ? createElement('div', {
-              ref: menuSwipe.viewportRef,
-              className:`menu-swipe-viewport${menuSwipe.isDragging ? ' is-dragging' : ''}`,
-              onPointerDown: menuSwipe.onPointerDown,
-              onPointerMove: menuSwipe.onPointerMove,
-              onPointerUp: menuSwipe.onPointerUp,
-              onPointerCancel: menuSwipe.onPointerCancel,
-            },
-              createElement('div', {
-                className:`menu-swipe-track${menuSwipe.isDragging ? ' is-dragging' : ''}`,
-                style: menuSwipe.trackStyle,
+            createElement('div', {
+              key: dayKeys[day],
+              className:'menu-grid menu-grid--cards reveal',
+              style: {
+                animation: slideDirection === 'left'
+                  ? 'menuMealsSlideFromRight 260ms ease-out both'
+                  : 'menuMealsSlideFromLeft 260ms ease-out both',
               },
-                dayKeys.map((dk, dayIndex) =>
-                  createElement('div', { key: dk, className:'menu-swipe-slide' },
-                    renderMealGrid(dayIndex, true),
-                  ),
-                ),
-              ),
-            )
-          : createElement('div', { key: dayKeys[day] },
-              renderMealGrid(day, false),
-            ),
+            },
+            meals.map((m,i)=>createElement('div', {
+              key:i,
+              className:'menucard-shell',
+              role:'button',
+              tabIndex:0,
+              onClick: () => openMeal(m, i),
+              onKeyDown: (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  openMeal(m, i);
+                }
+              },
+            },
+              createElement('article', { className:'menucard' },
+                createElement('div', { className:'menucard-img-wrap' },
+                  createElement('img', { className:'menucard-img', src:imgs[i], alt:'', loading:'lazy', draggable:false })),
+                createElement('div', { className:'menucard-body' },
+                  createElement('p', { className:'menucard-meta' },
+                    createElement('span', { className:'menucard-meta-nutrition' }, `${meta[i].kcal} ccal • ${meta[i].g} g`),
+                    createElement('span', { className:'menucard-meta-slot' }, t.menu.slots[i])),
+                  createElement('p', { className:'menucard-title' }, m))
+              )
+            )))
       ),
       ),
       ),

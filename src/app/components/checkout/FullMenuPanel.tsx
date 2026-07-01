@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  useCallback,
   useEffect,
   useImperativeHandle,
   useMemo,
@@ -52,6 +53,7 @@ import { ModalHeader } from '../common/Modal';
 import { SPACING_CONTENT_ATTR } from '../../main-landing/getSpacingMeasureRoot';
 import { MealDetailModal } from './MealDetailModal';
 import { getDefaultTrialDeliveryDate, getSubscriptionMenuDays, getTrialMenuDays } from './mealCalendarUtils';
+import { useFullMenuDaySwipe } from './useFullMenuDaySwipe';
 import { useHorizontalScrollEdgeFades } from './useHorizontalScrollEdgeFades';
 
 const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -263,6 +265,8 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   const dayRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const daysScrollRef = useRef<HTMLDivElement | null>(null);
   const mealsScrollRef = useRef<HTMLDivElement | null>(null);
+  const mealScrollRefs = useRef<Array<HTMLDivElement | null>>([]);
+  const activeMealScrollRef = useRef<HTMLDivElement | null>(null);
 
   const mouseDragStartXRef = useRef(0);
   const mouseDragStartScrollLeftRef = useRef(0);
@@ -278,10 +282,33 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   const isEmbedded = variant === 'embedded';
 
   const selectedMenuDay = subscriptionMenuDays[selectedDayIndex];
-  const mealSlots = isTrial
-    ? getFullMenuMealSlots(selectedMenuDay, 'plus', lightMealOption)
-    : getFullMenuMealSlots(selectedMenuDay, plan, lightMealOption);
+  const getMealSlotsForDayIndex = useCallback(
+    (dayIndex: number) => {
+      const menuDay = subscriptionMenuDays[dayIndex];
+      if (!menuDay) return [];
+
+      return isTrial
+        ? getFullMenuMealSlots(menuDay, 'plus', lightMealOption)
+        : getFullMenuMealSlots(menuDay, plan, lightMealOption);
+    },
+    [isTrial, lightMealOption, plan, subscriptionMenuDays],
+  );
+  const mealSlots = getMealSlotsForDayIndex(selectedDayIndex);
   const activeMealCount = mealSlots.filter((slot) => slot.active).length;
+
+  const getMealScrollEl = useCallback(
+    () => mealScrollRefs.current[selectedDayIndex] ?? null,
+    [selectedDayIndex],
+  );
+
+  const isMealScrollLocked = useCallback(() => {
+    if (!isEmbedded && window.matchMedia('(min-width: 768px)').matches) return true;
+
+    const scrollEl = mealScrollRefs.current[selectedDayIndex];
+    if (!scrollEl) return false;
+
+    return scrollEl.scrollWidth <= scrollEl.clientWidth + 1;
+  }, [isEmbedded, selectedDayIndex]);
   const daysScrollFadeKey = `${isActive}-${menuDaysCount}`;
   const { showStartFade: showDaysStartFade, showEndFade: showDaysEndFade } =
     useHorizontalScrollEdgeFades(daysScrollRef, daysScrollFadeKey, {
@@ -290,7 +317,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
 
   const mealsScrollFadeKey = `${isActive}-${selectedDayIndex}-${plan}-${lightMealOption}-${activeMealCount}`;
   const { showStartFade: showMealsStartFade, showEndFade: showMealsEndFade } =
-    useHorizontalScrollEdgeFades(mealsScrollRef, mealsScrollFadeKey, {
+    useHorizontalScrollEdgeFades(activeMealScrollRef, mealsScrollFadeKey, {
       alwaysVisibleWhenScrollable: true,
     });
 
@@ -314,9 +341,23 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
 
     window.requestAnimationFrame(() => {
       scrollSelectedDayIntoView(nextDayIndex);
-      mealsScrollRef.current?.scrollTo({ left: 0, behavior: 'smooth' });
+      mealScrollRefs.current[nextDayIndex]?.scrollTo({ left: 0, behavior: 'smooth' });
     });
   };
+
+  const daySwipe = useFullMenuDaySwipe({
+    dayCount: menuDaysCount,
+    day: selectedDayIndex,
+    onDayChange: (nextDay) => selectDay(nextDay),
+    getMealScrollEl,
+    isMealScrollLocked,
+  });
+
+  useEffect(() => {
+    activeMealScrollRef.current = daySwipe.swipeEnabled
+      ? mealScrollRefs.current[selectedDayIndex] ?? null
+      : mealsScrollRef.current;
+  }, [selectedDayIndex, menuDaysCount, plan, lightMealOption, activeMealCount, isActive, daySwipe.swipeEnabled]);
 
   const handlePrevDay = () => {
     if (!canGoPrev) return;
@@ -412,7 +453,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   };
 
   const handleMealClick = (meal: MealDetail) => {
-    if (suppressMealClickRef.current) {
+    if (suppressMealClickRef.current || daySwipe.suppressClickRef.current) {
       suppressMealClickRef.current = false;
       return;
     }
@@ -444,7 +485,7 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
   useEffect(() => {
     if (!isActive) return;
 
-    mealsScrollRef.current?.scrollTo({ left: 0 });
+    mealScrollRefs.current[selectedDayIndex]?.scrollTo({ left: 0 });
   }, [isActive, plan, lightMealOption, selectedDayIndex]);
 
   useEffect(() => {
@@ -494,6 +535,33 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
           ? '0px'
           : '8px',
   };
+
+  const mealCarouselClassName = [
+    'flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain',
+    isEmbedded ? 'px-[length:var(--checkout-card-padding)]' : 'px-0',
+    'pb-[length:var(--full-menu-meal-carousel-padding-bottom)]',
+    isEmbedded ? 'pt-[16px]' : 'pt-[6px]',
+    '[scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden',
+    isEmbedded ? '' : 'md:overflow-x-hidden',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+  const renderMealCards = (dayIndex: number, withSwipeGuard: boolean) =>
+    getMealSlotsForDayIndex(dayIndex)
+      .filter((slot) => slot.active)
+      .map(({ meal }) => (
+        <FullMenuMealCard
+          key={meal.id}
+          meal={meal}
+          onClick={
+            withSwipeGuard
+              ? daySwipe.guardMealClick(() => handleMealClick(meal))
+              : () => handleMealClick(meal)
+          }
+          showRateMealButton={showRateMealsButton}
+        />
+      ));
 
   return (
     <>
@@ -685,40 +753,80 @@ export const FullMenuPanel = forwardRef<FullMenuPanelHandle, FullMenuPanelProps>
         >
           <div className="relative w-full">
             <div className={mealsBleedClassName}>
-              <div
-                key={`${selectedMenuDay?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}
-                ref={mealsScrollRef}
-                onMouseDown={handleMealsMouseDown}
-                onMouseMove={handleMealsMouseMove}
-                onMouseUp={stopMealsMouseDrag}
-                onMouseLeave={stopMealsMouseDrag}
-                className={`flex touch-pan-x select-none justify-start gap-[length:var(--full-menu-meal-gap)] overflow-x-auto overflow-y-visible overscroll-x-contain ${isEmbedded ? 'px-[length:var(--checkout-card-padding)]' : 'px-0'} pb-[length:var(--full-menu-meal-carousel-padding-bottom)] ${isEmbedded ? 'pt-[16px]' : 'pt-[6px]'} [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden ${
-                  isEmbedded ? '' : 'md:cursor-default md:overflow-x-hidden'
-                } ${isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'}`}
-                style={{
-                  animation:
-                    slideDirection === 'left'
-                      ? 'mealsSlideFromRight 260ms ease-out both'
-                      : 'mealsSlideFromLeft 260ms ease-out both',
-                }}
-              >
-                {!isEmbedded ? (
-                  <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
-                ) : null}
-                {mealSlots
-                  .filter((slot) => slot.active)
-                  .map(({ meal }) => (
-                    <FullMenuMealCard
-                      key={meal.id}
-                      meal={meal}
-                      onClick={() => handleMealClick(meal)}
-                      showRateMealButton={showRateMealsButton}
-                    />
-                  ))}
-                {!isEmbedded ? (
-                  <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
-                ) : null}
-              </div>
+              {daySwipe.swipeEnabled ? (
+                <div
+                  ref={daySwipe.viewportRef}
+                  onPointerDown={daySwipe.onPointerDown}
+                  onPointerMove={daySwipe.onPointerMove}
+                  onPointerUp={daySwipe.onPointerUp}
+                  onPointerCancel={daySwipe.onPointerCancel}
+                  className={[
+                    'overflow-hidden touch-pan-y select-none',
+                    daySwipe.isDragging && daySwipe.dragMode === 'daySwipe'
+                      ? 'cursor-grabbing'
+                      : 'cursor-grab',
+                  ].join(' ')}
+                >
+                  <div
+                    style={daySwipe.trackStyle}
+                    className={[
+                      'flex will-change-transform',
+                      daySwipe.isDragging && daySwipe.dragMode === 'daySwipe'
+                        ? 'transition-none'
+                        : 'transition-transform duration-[260ms] ease-out',
+                    ].join(' ')}
+                  >
+                    {menuDayLabels.map((d, dayIndex) => (
+                      <div
+                        key={d.menuDayId}
+                        className="shrink-0 min-w-0"
+                        style={daySwipe.slideStyle}
+                      >
+                        <div
+                          ref={(el) => {
+                            mealScrollRefs.current[dayIndex] = el;
+                          }}
+                          className={mealCarouselClassName}
+                        >
+                          {!isEmbedded ? (
+                            <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                          ) : null}
+                          {renderMealCards(dayIndex, true)}
+                          {!isEmbedded ? (
+                            <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                          ) : null}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div
+                  key={`${selectedMenuDay?.id ?? selectedDayIndex}-${plan}-${lightMealOption}`}
+                  ref={mealsScrollRef}
+                  onMouseDown={handleMealsMouseDown}
+                  onMouseMove={handleMealsMouseMove}
+                  onMouseUp={stopMealsMouseDrag}
+                  onMouseLeave={stopMealsMouseDrag}
+                  className={`${mealCarouselClassName} ${
+                    isEmbedded ? '' : 'md:cursor-default'
+                  } ${isDraggingMeals ? 'cursor-grabbing' : 'cursor-grab'}`}
+                  style={{
+                    animation:
+                      slideDirection === 'left'
+                        ? 'mealsSlideFromRight 260ms ease-out both'
+                        : 'mealsSlideFromLeft 260ms ease-out both',
+                  }}
+                >
+                  {!isEmbedded ? (
+                    <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                  ) : null}
+                  {renderMealCards(selectedDayIndex, false)}
+                  {!isEmbedded ? (
+                    <CheckoutScrollEdgeGutter className={FULL_MENU_MEAL_CAROUSEL_GUTTER_CLASS_NAME} />
+                  ) : null}
+                </div>
+              )}
 
               {!isEmbedded ? (
                 <div className="flex w-full min-w-0 gap-[length:var(--full-menu-meal-gap)]">

@@ -32,32 +32,7 @@
   padding-inline:var(--gutter);
   padding-bottom:var(--space-32);
   box-sizing:border-box;
-  overflow:hidden;
-}
-.menu-swipe-viewport {
-  overflow:hidden;
-  touch-action:pan-y;
-  cursor:grab;
-}
-.menu-swipe-viewport.is-dragging {
-  cursor:grabbing;
-  user-select:none;
-}
-.menu-swipe-track {
-  display:flex;
-  will-change:transform;
-}
-.menu-swipe-track:not(.is-dragging) {
-  transition:transform 260ms ease-out;
-}
-@media (prefers-reduced-motion: reduce) {
-  .menu-swipe-track:not(.is-dragging) {
-    transition:none;
-  }
-}
-.menu-swipe-slide {
-  flex:0 0 100%;
-  min-width:0;
+  overflow:visible;
 }
 .menu-section .menu-top-stack {
   display:flex;
