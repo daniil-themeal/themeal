@@ -12,9 +12,6 @@ export const CHECKOUT_PLAN_SUMMARY_TOP_MD_ESTIMATE = `calc(${CHECKOUT_PLAN_SUBSC
 /** Fallback desktop top inset for subscription summary until layout is measured. */
 export const CHECKOUT_PLAN_SUMMARY_TOP_MD_FALLBACK = CHECKOUT_PLAN_SUMMARY_TOP_MD_ESTIMATE;
 
-/** Desktop left inset for plan-step left column content. */
-export const CHECKOUT_PLAN_LEFT_COLUMN_PL = '12px';
-
 export const CHECKOUT_CARD_PADDING_CLAMP =
   'clamp(20px, calc(20px + (100vw - 20rem) * 12 / 448), 32px)';
 

@@ -41,7 +41,6 @@ import {
   CHECKOUT_CARD_PADDING_CLAMP,
   CHECKOUT_PLAN_COLUMN_PADDING_BOTTOM_CLAMP,
   CHECKOUT_PLAN_COLUMN_PT_MD,
-  CHECKOUT_PLAN_LEFT_COLUMN_PL,
   CHECKOUT_PLAN_SUBSCRIPTION_LEFT_COLUMN_PT_MD,
   CHECKOUT_PLAN_SUMMARY_TOP_MD_FALLBACK,
   CHECKOUT_SELECTOR_CARD_PADDING_CLAMP,
@@ -114,7 +113,6 @@ type CheckoutLeftColumnCssVariables = CSSProperties & {
   '--checkout-step-header-pt': string;
   '--checkout-plan-column-pt-md': string;
   '--checkout-plan-subscription-left-pt-md': string;
-  '--checkout-plan-left-pl': string;
   '--checkout-plan-summary-top-md'?: string;
 };
 
@@ -122,7 +120,6 @@ const checkoutLeftColumnStyle: CheckoutLeftColumnCssVariables = {
   '--checkout-step-header-pt': CHECKOUT_STEP_HEADER_PADDING_TOP_CLAMP,
   '--checkout-plan-column-pt-md': CHECKOUT_PLAN_COLUMN_PT_MD,
   '--checkout-plan-subscription-left-pt-md': CHECKOUT_PLAN_SUBSCRIPTION_LEFT_COLUMN_PT_MD,
-  '--checkout-plan-left-pl': CHECKOUT_PLAN_LEFT_COLUMN_PL,
 };
 
 type CheckoutPlanGridCssVariables = CSSProperties & {
@@ -1040,7 +1037,7 @@ export function CheckoutPage({
                     : {}),
                 }}
                 className={[
-                  'flex w-full min-w-0 flex-col gap-[32px] pl-[length:var(--checkout-plan-left-pl)] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pb-[length:var(--checkout-plan-column-pb)]',
+                  'flex w-full min-w-0 flex-col gap-[32px] pt-[length:var(--checkout-step-header-pt)] md:gap-[48px] md:pb-[length:var(--checkout-plan-column-pb)]',
                   isTrial
                     ? 'md:pt-[length:var(--checkout-plan-summary-top-md)]'
                     : 'md:pt-[length:var(--checkout-plan-subscription-left-pt-md)]',
